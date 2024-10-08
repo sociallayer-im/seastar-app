@@ -205,7 +205,6 @@ function getDayViewEventHeight(event: IframeSchedulePageDataEvent,  currDate: Da
 function getDayViewEventTop(event: IframeSchedulePageDataEvent, currDate: DayjsType, timezone: string) {
     const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
     if (start.date() !== currDate.date()) {
-        console.log('top', start.date(), currDate.date())
         return 0
     }
     const minutes = start.hour() * 60 + start.minute()
