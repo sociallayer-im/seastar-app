@@ -1,0 +1,90 @@
+@import "poppins.css";
+@import "icons.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --page-width: 1000px;
+
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 210 40% 98%;
+  ----rounded-btn: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #fff;
+    --foreground: #272928;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Poppins, sans-serif;
+  overflow-y: scroll;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.shadow {
+  box-shadow: 0 2px 12px rgba(0,0,0,.1);
+}
+
+.flex-row-item-center {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.page-width {
+  min-width: 375px;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.hide-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.page-bg {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 400px;
+  position: absolute;
+  background: linear-gradient(180deg, #9efedd, rgba(237, 251, 246, 0));
+  opacity: .2;
+  pointer-events: none;
+}
+
+.schedule-bg {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 120px;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(186, 255, 173, 0.61) -7.33%, rgba(161, 244, 230, 0.23) 48.89%, rgba(128, 248, 192, 0.00) 75.74%);
+}
+
+.webkit-box-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+
