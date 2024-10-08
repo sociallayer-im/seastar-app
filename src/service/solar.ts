@@ -23,3 +23,14 @@ export const getProfileByHandle = async (handle: string) => {
     const data = await response.json()
     return data.profile as Solar.Profile
 }
+
+export const getEventDetail = async (event_id: number) => {
+    const response = await fetch(`${api}/event/get?id=${event_id}`)
+
+    if (!response.ok) {
+        return null
+    }
+
+    const data = await response.json()
+    return data as Solar.Event
+}

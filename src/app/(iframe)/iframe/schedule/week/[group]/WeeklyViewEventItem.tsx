@@ -1,16 +1,36 @@
+'use client'
+
 import OuterLink from "@/app/(iframe)/iframe/schedule/week/[group]/OuterLink"
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"
+import ScheduleEventPopup from "@/components/client/ScheduleEventPopup"
+import useModal from "@/components/client/Modal/useModal"
+import {getEventDetail} from "@/service/solar"
 
 export default function WeeklyViewEventItem({event, timezone}: {event: IframeSchedulePageDataEventDetail, timezone: string}) {
+    const {openModal, showLoading, closeModal} = useModal()
+
     const mainThemColor = event.tags[0] ? getLabelColor(event.tags[0]) : '#fff'
     const start = dayjs.tz(event.start_time, timezone)
     const end = dayjs.tz(event.end_time, timezone)
     const isAllDay = start.hour() === 0 && start.minute() === 0 && end.hour() === 23 && end.minute() === 59
     const timeDuration = start.date() !== end.date() ? `${start.format('HH:mm, Do')} - ${end.format('HH:mm, Do')}` : `${start.format('HH:mm')} - ${end.format('HH:mm')}`
 
+    const showPopup = async () => {
+        const loadingModalId = showLoading()
+        const eventDetail = await getEventDetail(event.id)
+        closeModal(loadingModalId)
+
+        if (!eventDetail) return
+
+        openModal({
+            content: () => <ScheduleEventPopup event={eventDetail}/>
+        })
+    }
+
     return <div className="bg-white p-2 h-[194px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
+        onClick={showPopup}
         style={{gridArea: event.grid, boxShadow: '0 1.988px 18px 0 rgba(0, 0, 0, 0.10)'}}>
         <div className="block content-[''] w-[2px] h-[194px] absolute left-0 top-0" style={{background: mainThemColor}}/>
         <div className="font-xs color-[#4F5150] my-1">

@@ -26,7 +26,7 @@ export async function generateMetadata({params, searchParams}: {params: IframeSc
     }
 }
 
-export default async function IframeSchedulePage({searchParams, params}: {
+export default async function IframeScheduleWeeklyPage({searchParams, params}: {
     params: IframeSchedulePageSearchParams,
     searchParams: IframeSchedulePageSearchParams
 }) {
@@ -75,10 +75,10 @@ export default async function IframeSchedulePage({searchParams, params}: {
                         <ul tabIndex={2}
                             className="min-w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
                             <li>
-                                <div>Week</div>
+                                <a href={`/iframe/schedule/week/${data.group.handle}${startDate ? `?start_date=${startDate}` : ''}`}>Week</a>
                             </li>
                             <li>
-                                <div>Day</div>
+                                <a href={`/iframe/schedule/day/${data.group.handle}${startDate ? `?start_date=${startDate}` : ''}`}>Day</a>
                             </li>
                         </ul>
                     </div>
