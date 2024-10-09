@@ -3,50 +3,15 @@
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {CSSProperties} from 'react'
 import {getLabelColor, getLightColor} from "@/utils/label_color"
+import {IframeSchedulePageDataEvent} from "@/app/(iframe)/iframe/schedule/data"
 
-const api = process.env.NEXT_PUBLIC_API_URL
 
-export interface IframeSchedulePageDataGroup {
-    id: number,
-    handle: string,
-    timezone: string,
-    nickname: string,
-}
-
-export interface IframeSchedulePageDataEvent {
-    id: number,
-    title: string,
-    start_time: string,
-    end_time: string,
-    timezone: string,
-    meeting_url: null | string,
-    location: string,
-    cover_url: string,
-    tags: string[],
-    external_url: null | string,
-    host_info: string | null
-    geo_lat: string | null,
-    geo_lng: string | null,
-}
 
 export interface ConcurrencyEvent extends IframeSchedulePageDataEvent {
     _previousConcurrentEvents: number | undefined
     _totalConcurrentEvents: number | undefined
 }
 
-export interface IframeSchedulePageData {
-    group: IframeSchedulePageDataGroup
-    tags: string[],
-    tracks: string[],
-    venues: string[],
-    events: IframeSchedulePageDataEvent[],
-    interval: DayjsType[]
-}
-
-export interface IframeSchedulePageDataProps {
-    groupName: string,
-    startDate?: string
-}
 
 export interface IframeSchedulePageDataEventDetail extends IframeSchedulePageDataEvent {
     style: CSSProperties
@@ -56,37 +21,6 @@ interface CalculateGridPositionProps {
     events: IframeSchedulePageDataEvent[],
     timezone: string,
     currDate: string
-}
-
-export async function iframeSchedulePageDailyData(props: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
-    const {start} = getInterval(props.startDate)
-    const url = `${api}/event/list_for_calendar?group_id=${props.groupName}&start_date=${start}&end_date=${start}&limit=200`
-    const response = await fetch(url)
-
-    if (!response.ok) {
-        throw new Error('Fail to get schedule data: ' + response.statusText)
-    }
-
-    const data = await response.json()
-
-    const interval = [dayjs(start)]
-
-    return {
-        group: data.group,
-        tags: data.group.event_tags || [],
-        tracks: data.group.tracks || [],
-        venues: data.group.venues || [],
-        events: data.events || [],
-        interval
-    }
-}
-
-function getInterval(startDate?: string) {
-    const start = dayjs(startDate || undefined)
-
-    return {
-        start: start.startOf('day').format('YYYY-MM-DD'),
-    }
 }
 
 export async function calculateGridPosition({events, timezone, currDate}: CalculateGridPositionProps) {
@@ -213,7 +147,7 @@ function getDayViewEventTop(event: IframeSchedulePageDataEvent, currDate: DayjsT
 
 export async function getHourLabel() {
     return new Array(24).fill('').map((_, index) => {
-        return dayjs().startOf('day').add(index, 'hour').format('hh A')
+        return index === 0 ? '00 AM' : dayjs().startOf('day').add(index, 'hour').format('hh A')
     })
 }
 

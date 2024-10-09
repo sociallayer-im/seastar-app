@@ -1,26 +1,32 @@
-import {calculateGridPosition, iframeSchedulePageDailyData} from "./data"
+import {calculateGridPosition} from "./data"
 import {redirect} from 'next/navigation'
-import {pickSearchParam} from "@/utils"
 import {getHourLabel} from "@/app/(iframe)/iframe/schedule/day/[group]/data"
 import DailyViewEventItem from "@/app/(iframe)/iframe/schedule/day/[group]/DailyViewEventItem"
 import DailyPagination from "@/app/(iframe)/iframe/schedule/day/[group]/DailyPagination"
 import ScrollFirstEventIntoView from "@/app/(iframe)/iframe/schedule/day/[group]/ScrollFirstEventIntoView"
+import FilterBtn from "@/app/(iframe)/iframe/schedule/week/[group]/FilterBtn"
+import {IframeSchedulePageData} from "@/app/(iframe)/iframe/schedule/data"
 
 interface IframeSchedulePageSearchParams {
     start_date: string | string[] | undefined
+    tags: string | string[] | undefined
+    track: string | string[] | undefined
+    venue: string | string[] | undefined
 }
 
-interface IframeSchedulePageSearchParams {
+interface IframeSchedulePageParams {
     group: string
 }
 
 export async function generateMetadata({params, searchParams}: {
-    params: IframeSchedulePageSearchParams,
+    params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams
 }) {
-    const groupName = params.group
-    const startDate = pickSearchParam(searchParams.start_date)
-    const data = await iframeSchedulePageDailyData({groupName, startDate})
+    const data = await IframeSchedulePageData({
+        params,
+        searchParams,
+        view: 'day'
+    })
 
     if (!data.group) {
         redirect('/error')
@@ -32,12 +38,15 @@ export async function generateMetadata({params, searchParams}: {
 }
 
 export default async function IframeScheduleDailyPage({searchParams, params}: {
-    params: IframeSchedulePageSearchParams,
+    params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams
 }) {
-    const groupName = params.group
-    const startDate = pickSearchParam(searchParams.start_date)
-    const data = await iframeSchedulePageDailyData({groupName, startDate})
+    const data = await IframeSchedulePageData({
+        params,
+        searchParams,
+        view: 'day'
+    })
+
     const hourLabels = await getHourLabel()
 
     if (!data.group) {
@@ -67,6 +76,13 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                         className="schedule-month text-lg mr-2 font-semibold">{data.interval[0].format('YYYY MMMM')}</div>
                 </div>
                 <div className="flex-row-item-center">
+                    <FilterBtn filters={data.filters}
+                        list={{
+                            tags: data.tags,
+                            venues: data.venues,
+                            tracks: data.tracks
+                        }} />
+
                     <div className="ml-2 dropdown">
                         <div tabIndex={1} role="button"
                             className="flex-row-item-center btn btn-outline btn-sm w-full justify-between">
@@ -76,10 +92,10 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                         <ul tabIndex={2}
                             className="min-w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
                             <li>
-                                <a href={`/iframe/schedule/week/${data.group.handle}${startDate ? `?start_date=${startDate}` : ''}`}>Week</a>
+                                <a href={`/iframe/schedule/week/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Week</a>
                             </li>
                             <li>
-                                <a href={`/iframe/schedule/day/${data.group.handle}${startDate ? `?start_date=${startDate}` : ''}`}>Day</a>
+                                <a href={`/iframe/schedule/day/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Day</a>
                             </li>
                         </ul>
                     </div>

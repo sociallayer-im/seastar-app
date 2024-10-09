@@ -1,21 +1,16 @@
-import {calculateGridPosition, IframeSchedulePageWeeklyData} from "./data"
+import {calculateGridPosition} from "./data"
 import {redirect} from 'next/navigation'
-import {pickSearchParam} from "@/utils"
 import WeeklyViewEventItem from "@/app/(iframe)/iframe/schedule/week/[group]/WeeklyViewEventItem"
 import WeeklyPagination from "@/app/(iframe)/iframe/schedule/week/[group]/WeeklyPagination"
+import FilterBtn from "@/app/(iframe)/iframe/schedule/week/[group]/FilterBtn"
+import {
+    IframeSchedulePageData,
+    IframeSchedulePageParams,
+    IframeSchedulePageSearchParams
+} from "@/app/(iframe)/iframe/schedule/data"
 
-interface IframeSchedulePageSearchParams {
-    start_date: string | string[] | undefined
-}
-
-interface IframeSchedulePageSearchParams {
-    group: string
-}
-
-export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageSearchParams, searchParams: IframeSchedulePageSearchParams}) {
-    const groupName = params.group
-    const startDate = pickSearchParam(searchParams.start_date)
-    const data = await IframeSchedulePageWeeklyData({groupName, startDate})
+export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
+    const data = await IframeSchedulePageData({params, searchParams, view: 'week'})
 
     if (!data.group) {
         redirect('/error')
@@ -27,12 +22,10 @@ export async function generateMetadata({params, searchParams}: {params: IframeSc
 }
 
 export default async function IframeScheduleWeeklyPage({searchParams, params}: {
-    params: IframeSchedulePageSearchParams,
+    params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams
 }) {
-    const groupName = params.group
-    const startDate = pickSearchParam(searchParams.start_date)
-    const data = await IframeSchedulePageWeeklyData({groupName, startDate})
+    const data = await IframeSchedulePageData({params, searchParams, view: 'week'})
 
     if (!data.group) {
         redirect('/error')
@@ -66,6 +59,13 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                     </div>
                 </div>
                 <div className="flex-row-item-center">
+                    <FilterBtn filters={data.filters}
+                        list={{
+                            tags: data.tags,
+                            venues: data.venues,
+                            tracks: data.tracks
+                        }} />
+
                     <div className="ml-2 dropdown">
                         <div tabIndex={1} role="button"
                             className="flex-row-item-center btn btn-outline btn-sm w-full justify-between">
@@ -75,10 +75,10 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                         <ul tabIndex={2}
                             className="min-w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
                             <li>
-                                <a href={`/iframe/schedule/week/${data.group.handle}${startDate ? `?start_date=${startDate}` : ''}`}>Week</a>
+                                <a href={`/iframe/schedule/week/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Week</a>
                             </li>
                             <li>
-                                <a href={`/iframe/schedule/day/${data.group.handle}${startDate ? `?start_date=${startDate}` : ''}`}>Day</a>
+                                <a href={`/iframe/schedule/day/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Day</a>
                             </li>
                         </ul>
                     </div>

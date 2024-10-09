@@ -14,7 +14,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
 
     const eventProcess = checkProcess(event.start_time, event.end_time)
 
-    const host = event.host_info?.group_host
+    const host = event.host_info?.group_host?.[0] || event.owner
 
     return <div className="sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap">
@@ -44,7 +44,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                     <div className="flex-row-item-center text-xs">
                         <img className="mr-1 w-4 h-4 flex-shrink-0 rounded-full" src={getAvatar(host.id, host.image_url)} alt=""/>
                         <span className="mr-1">by</span>
-                        <span>{host.nickname || host.username}</span>
+                        <span>{host.nickname || host.handle}</span>
                     </div>
                 }
             </div>

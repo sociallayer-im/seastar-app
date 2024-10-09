@@ -20,7 +20,7 @@ declare namespace Solar {
 
     export interface ProfileSample {
         id: number
-        username: string
+        handle: string
         nickname: string
         image_url: string
     }
@@ -49,11 +49,45 @@ declare namespace Solar {
         host_info: {
             speaker?: ProfileSample[]
             co_host?: ProfileSample[]
-            group_host?: ProfileSample
+            group_host?: ProfileSample[]
         } | null
         venue: string | null,
         group: ProfileSample,
         tickets: string[] | null
-        event_roles: string[] | null
+        event_roles: string[] | null,
+        owner: ProfileSample
+    }
+
+    export interface Venue {
+        id: number
+        title: string
+        location: string
+        about: string
+        group_id: number
+        owner_id: number
+        formatted_address: string
+        geo_lat: string
+        geo_lng: string
+        created_at: string
+        start_date: string
+        end_date: string
+        timeslots: string[] | null
+        link: string
+        capacity: number
+        overrides: string[] | null
+        require_approval: boolean | null
+        tags: string[] | null
+        removed: boolean | null
+        visibility: string | null
+    }
+
+    export interface Track {
+        tag: string
+        id: number
+        title: string
+        about: string | null
+        start_date: string | null
+        end_date: string | null
+        icon_url: string | null
     }
 }

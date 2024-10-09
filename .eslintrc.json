@@ -5,6 +5,8 @@
     "plugin:storybook/recommended"
   ],
   "rules": {
+    "no-unused-expressions": "off",
+    "@typescript-eslint/no-unused-expressions": "off",
     "semi": [
       "error",
       "never"
