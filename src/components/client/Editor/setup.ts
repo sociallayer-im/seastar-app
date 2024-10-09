@@ -58,22 +58,22 @@ export function editorSetup(options: {
   /// Can be used to override the menu content.
   menuContent?: MenuElement[][]
 }) {
-  let plugins = [
-    buildInputRules(options.schema),
-    keymap(buildKeymap(options.schema, options.mapKeys)),
-    keymap(baseKeymap),
-    dropCursor(),
-    gapCursor()
-  ]
-  // if (options.menuBar !== false)
-  //   plugins.push(menuBar({floating: options.floatingMenu !== false,
-  //                         content: options.menuContent || buildMenuItems(options.schema).fullMenu}))
-  if (options.history !== false)
-    plugins.push(history())
+    const plugins = [
+        buildInputRules(options.schema),
+        keymap(buildKeymap(options.schema, options.mapKeys)),
+        keymap(baseKeymap),
+        dropCursor(),
+        gapCursor()
+    ]
+    // if (options.menuBar !== false)
+    //   plugins.push(menuBar({floating: options.floatingMenu !== false,
+    //                         content: options.menuContent || buildMenuItems(options.schema).fullMenu}))
+    if (options.history !== false)
+        plugins.push(history())
 
-  return plugins.concat(new Plugin({
-    props: {
-      attributes: {class: "ProseMirror-example-setup-style"}
-    }
-  }))
+    return plugins.concat(new Plugin({
+        props: {
+            attributes: {class: "ProseMirror-example-setup-style"}
+        }
+    }))
 }

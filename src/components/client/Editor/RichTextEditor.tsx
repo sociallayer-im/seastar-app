@@ -16,10 +16,10 @@ export interface MenuItemForm {
 }
 
 function MenuButton({
-                        menuItemForm,
-                        editorState,
-                        editorView
-                    }: { menuItemForm: MenuItemForm, editorState?: EditorState, editorView?: EditorView }) {
+    menuItemForm,
+    editorState,
+    editorView
+}: { menuItemForm: MenuItemForm, editorState?: EditorState, editorView?: EditorView }) {
     const [enable, setEnable] = useState<boolean>(false)
 
     useEffect(() => {
@@ -69,7 +69,7 @@ export default function RichTextEditor({initText, onChange}: {
 
     useEffect(() => {
         !!onChange && onChange(text)
-    }, [text]);
+    }, [text])
 
     useEffect(() => {
         if (editorRef.current && typeof window !== 'undefined') {
@@ -118,7 +118,7 @@ export default function RichTextEditor({initText, onChange}: {
                     title: 'Link',
                     icon: 'editor-icon-link',
                     command: (editorState, dispatch, editorView) => {
-                        let {from, $from, to, empty} = editorState.selection
+                        const {from, $from, to, empty} = editorState.selection
                         let isInLink: undefined | boolean = false
                         if (empty) {
                             const node = editorState.doc.nodeAt(from)
@@ -150,7 +150,7 @@ export default function RichTextEditor({initText, onChange}: {
                             //     }
                             // })
                             return true
-                        } else return enable && !dispatch;
+                        } else return enable && !dispatch
                     }
                 },
                 {
@@ -159,9 +159,9 @@ export default function RichTextEditor({initText, onChange}: {
                     hide: true,
                     command: (state, dispatch, view) => {
                         const canInsert = () => {
-                            let $from = state.selection.$from
+                            const $from = state.selection.$from
                             for (let d = $from.depth; d >= 0; d--) {
-                                let index = $from.index(d)
+                                const index = $from.index(d)
                                 if ($from.node(d).canReplaceWith(index, index, markdownSchema.nodes.image)) return true
                             }
                             return false
@@ -191,9 +191,9 @@ export default function RichTextEditor({initText, onChange}: {
                     title: 'Url Image',
                     command: (state, dispatch, view) => {
                         const canInsert = () => {
-                            let $from = state.selection.$from
+                            const $from = state.selection.$from
                             for (let d = $from.depth; d >= 0; d--) {
-                                let index = $from.index(d)
+                                const index = $from.index(d)
                                 if ($from.node(d).canReplaceWith(index, index, markdownSchema.nodes.image)) return true
                             }
                             return false
@@ -265,9 +265,9 @@ export default function RichTextEditor({initText, onChange}: {
                     hide: true,
                     name: 'Video', title: 'Video', command: (state, dispatch, view) => {
                         const canInsert = () => {
-                            let $from = state.selection.$from
+                            const $from = state.selection.$from
                             for (let d = $from.depth; d >= 0; d--) {
-                                let index = $from.index(d)
+                                const index = $from.index(d)
                                 if ($from.node(d).canReplaceWith(index, index, markdownSchema.nodes.image)) return true
                             }
                             return false
@@ -315,16 +315,16 @@ export default function RichTextEditor({initText, onChange}: {
             {editorMenuCommand.markerMenu.length > 0 &&
                 editorMenuCommand.markerMenu.filter(item => !item.hide).map((item, index) => {
                     return <MenuButton menuItemForm={item} key={index}
-                                       editorView={editorViewRef.current || undefined}
-                                       editorState={editorState || undefined}/>
+                        editorView={editorViewRef.current || undefined}
+                        editorState={editorState || undefined}/>
                 })
             }
             <span className={'split'}/>
             {editorMenuCommand.listMenu.length > 0 &&
                 editorMenuCommand.listMenu.filter(item => !item.hide).map((item, index) => {
                     return <MenuButton menuItemForm={item} key={index}
-                                       editorView={editorViewRef.current || undefined}
-                                       editorState={editorState || undefined}/>
+                        editorView={editorViewRef.current || undefined}
+                        editorState={editorState || undefined}/>
                 })
             }
 
@@ -332,8 +332,8 @@ export default function RichTextEditor({initText, onChange}: {
             {editorMenuCommand.insertMenu.length > 0 &&
                 editorMenuCommand.insertMenu.filter(item => !item.hide).map((item, index) => {
                     return <MenuButton menuItemForm={item} key={index}
-                                       editorView={editorViewRef.current || undefined}
-                                       editorState={editorState || undefined}/>
+                        editorView={editorViewRef.current || undefined}
+                        editorState={editorState || undefined}/>
                 })
             }
             <div className={'menu-item'}><i className={'editor-icon-photo'}/></div>
@@ -341,13 +341,13 @@ export default function RichTextEditor({initText, onChange}: {
             {editorMenuCommand.historyMenu.length > 0 &&
                 editorMenuCommand.historyMenu.filter(item => !item.hide).map((item, index) => {
                     return <MenuButton menuItemForm={item} key={index}
-                                       editorView={editorViewRef.current || undefined}
-                                       editorState={editorState || undefined}/>
+                        editorView={editorViewRef.current || undefined}
+                        editorState={editorState || undefined}/>
                 })
             }
         </div>
         <div ref={editorRef} id={editorId}
-             className={'editor'}
-             style={{minHeight: `${160}px`, maxHeight: `${320}px`}}/>
+            className={'editor'}
+            style={{minHeight: `${160}px`, maxHeight: `${320}px`}}/>
     </div>
 }
