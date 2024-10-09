@@ -12,8 +12,8 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
     const {openModal, showLoading, closeModal} = useModal()
 
     const mainThemColor = event.tags[0] ? getLabelColor(event.tags[0]) : '#fff'
-    const start = dayjs.tz(event.start_time, timezone)
-    const end = dayjs.tz(event.end_time, timezone)
+    const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
+    const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
     const isAllDay = start.hour() === 0 && start.minute() === 0 && end.hour() === 23 && end.minute() === 59
     const timeDuration = start.date() !== end.date() ? `${start.format('HH:mm, Do')} - ${end.format('HH:mm, Do')}` : `${start.format('HH:mm')} - ${end.format('HH:mm')}`
 
