@@ -3,7 +3,6 @@ import styles from './RichTextEditor.module.scss'
 import {EditorView,} from "prosemirror-view"
 import {EditorState} from "prosemirror-state"
 import {defaultMarkdownParser} from "./markdown/index"
-import Empty from "@/components/Empty"
 
 
 function RichTextDisplayer({markdownStr}: { markdownStr: string }) {
@@ -25,7 +24,7 @@ function RichTextDisplayer({markdownStr}: { markdownStr: string }) {
     }, [displayer])
 
     return (!!markdownStr ? <div ref={displayer!} className={`${styles['editor-wrapper']} ${styles['display']}`}></div>
-        : <Empty />
+        : <div></div>
     )
 }
 

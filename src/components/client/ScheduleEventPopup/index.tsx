@@ -76,7 +76,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
             <RichTextDisplayer markdownStr={event.content || ''} />
         </div>
 
-        <div className="my-3 flex flex-row justify-end w-full">
+        <div className="mt-3 flex flex-row justify-end w-full">
             <a href={`${referer}event/detail/${event.id}`}
                 className="btn btn-md w-full btn-neutral sm:w-auto text-white"
                 target="_blank"
