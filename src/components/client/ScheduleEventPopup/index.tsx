@@ -2,6 +2,7 @@ import dayjs from "@/libs/dayjs"
 import {checkProcess, getAvatar} from "@/utils"
 import {getLabelColor} from "@/utils/label_color"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
+import Cookies from 'js-cookie'
 
 export default function ScheduleEventPopup({event, timezone} : {event: Solar.Event, timezone: string}) {
     const startTime = dayjs.tz(new Date(event.start_time), timezone)
@@ -15,6 +16,10 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
     const eventProcess = checkProcess(event.start_time, event.end_time)
 
     const host = event.host_info?.group_host?.[0] || event.owner
+
+    const referer = Cookies.get('referer')
+        ? new URL(Cookies.get('referer')!).href
+        : process.env.NEXT_PUBLIC_APP_URL + '/'
 
     return <div className="sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap">
@@ -72,7 +77,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
         </div>
 
         <div className="my-3 flex flex-row justify-end w-full">
-            <a href={`https://www.sola.day/event/detail/${event.id}`}
+            <a href={`${referer}event/detail/${event.id}`}
                 className="btn btn-md w-full btn-neutral sm:w-auto text-white"
                 target="_blank"
                 rel="nofollow">View Detail</a>
