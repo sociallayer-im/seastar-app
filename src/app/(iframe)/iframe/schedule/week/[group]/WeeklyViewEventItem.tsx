@@ -4,9 +4,14 @@ import OuterLink from "@/app/(iframe)/iframe/schedule/week/[group]/OuterLink"
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"
-import ScheduleEventPopup from "@/components/client/ScheduleEventPopup"
 import useModal from "@/components/client/Modal/useModal"
 import {getEventDetail} from "@/service/solar"
+import dynamic from "next/dynamic"
+
+const DynamicScheduleEventPopup = dynamic(
+    () => import('@/components/client/ScheduleEventPopup'),
+    {ssr: false}
+)
 
 export default function WeeklyViewEventItem({event, timezone}: {event: IframeSchedulePageDataEventDetail, timezone: string}) {
     const {openModal, showLoading, closeModal} = useModal()
@@ -25,7 +30,7 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
         if (!eventDetail) return
 
         openModal({
-            content: () => <ScheduleEventPopup event={eventDetail}/>
+            content: () => <DynamicScheduleEventPopup event={eventDetail} timezone={timezone}/>
         })
     }
 
