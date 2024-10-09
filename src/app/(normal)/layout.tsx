@@ -13,6 +13,13 @@ export const metadata: Metadata = {
     description: "Social Layer",
 }
 
+export const viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+}
+
 export default async function RootLayout({
     children,
 }: Readonly<{ children: ReactNode }>) {
@@ -21,8 +28,6 @@ export default async function RootLayout({
     return (<html lang={langType}>
         <Head>
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
-            <meta name="viewport"
-                content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
         </Head>
         <body className={`antialiased`}>
             <div className="min-h-[100svh]">
