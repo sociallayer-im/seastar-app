@@ -83,7 +83,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                             tracks: data.tracks
                         }} />
 
-                    <div className="ml-2 dropdown">
+                    <div className="ml-2 dropdown dropdown-end">
                         <div tabIndex={1} role="button"
                             className="flex-row-item-center btn btn-outline btn-sm w-full justify-between">
                             <div>Day</div>
