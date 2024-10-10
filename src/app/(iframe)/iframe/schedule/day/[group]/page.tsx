@@ -5,18 +5,11 @@ import DailyViewEventItem from "@/app/(iframe)/iframe/schedule/day/[group]/Daily
 import DailyPagination from "@/app/(iframe)/iframe/schedule/day/[group]/DailyPagination"
 import ScrollFirstEventIntoView from "@/app/(iframe)/iframe/schedule/day/[group]/ScrollFirstEventIntoView"
 import FilterBtn from "@/app/(iframe)/iframe/schedule/week/[group]/FilterBtn"
-import {IframeSchedulePageData} from "@/app/(iframe)/iframe/schedule/data"
-
-interface IframeSchedulePageSearchParams {
-    start_date: string | string[] | undefined
-    tags: string | string[] | undefined
-    track: string | string[] | undefined
-    venue: string | string[] | undefined
-}
-
-interface IframeSchedulePageParams {
-    group: string
-}
+import {
+    IframeSchedulePageData,
+    IframeSchedulePageParams,
+    IframeSchedulePageSearchParams
+} from "@/app/(iframe)/iframe/schedule/data"
 
 export async function generateMetadata({params, searchParams}: {
     params: IframeSchedulePageParams,
