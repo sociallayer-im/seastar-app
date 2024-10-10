@@ -2,13 +2,10 @@
 
 import useModal from "@/components/client/Modal/useModal"
 import ScheduleFilter from "@/components/client/ScheduleFilter"
+import {Filter} from "@/app/(iframe)/iframe/schedule/data"
 
 interface FilterBtnProps {
-    filters: {
-        tags: string[]
-        venueId?: number
-        trackId?: number
-    },
+    filters: Filter,
     list: {
         tags: string[]
         venues: Solar.Venue[]
@@ -18,7 +15,10 @@ interface FilterBtnProps {
 
 export default function FilterBtn({filters, list}: FilterBtnProps) {
     const {openModal} = useModal()
-    const isFiltered = filters.tags.length > 0 || !!filters.venueId || !!filters.trackId
+    const isFiltered = filters.tags.length > 0
+        || !!filters.venueId
+        || !!filters.trackId
+        || !!filters.applied
 
     const showFilter = () => {
         openModal({

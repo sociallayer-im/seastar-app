@@ -6,11 +6,13 @@ import {pickSearchParam} from "@/utils"
 const api = process.env.NEXT_PUBLIC_API_URL
 
 export interface IframeSchedulePageSearchParams {
-    start_date: string | string[] | undefined
-    tags: string | string[] | undefined
-    track: string | string[] | undefined
-    venue: string | string[] | undefined
-    popup: string | string[] | undefined
+    start_date?: string | string[]
+    tags?: string | string[]
+    track?: string | string[]
+    venue?: string | string[]
+    popup?: string | string[]
+    profile?: string | string[]
+    applied?: string | string[]
 }
 
 export interface IframeSchedulePageParams {
@@ -30,6 +32,8 @@ export interface Filter {
     tags: string[]
     venueId?: number
     trackId?: number
+    profileId?: number
+    applied?: boolean
 }
 
 export interface IframeSchedulePageDataEvent {
@@ -70,7 +74,9 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
     const filters = {
         tags: searchParams.tags ? pickSearchParam(searchParams.tags)!.split(',') : [],
         trackId: searchParams.track ? Number(pickSearchParam(searchParams.track)!) : undefined,
-        venueId: searchParams.venue ? Number(pickSearchParam(searchParams.venue)!) : undefined
+        venueId: searchParams.venue ? Number(pickSearchParam(searchParams.venue)!) : undefined,
+        profileId: searchParams.profile ? Number(pickSearchParam(searchParams.profile)!) : undefined,
+        applied: searchParams.applied === 'true'
     }
     const startDate = pickSearchParam(searchParams.start_date)
 
@@ -81,12 +87,14 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
     apiSearchParams.set('start_date', start)
     apiSearchParams.set('end_date', end)
     apiSearchParams.set('limit', '200')
-
     filters.tags?.length && apiSearchParams.set('tags', filters.tags.join(','))
     filters.trackId && apiSearchParams.set('track_id', filters.trackId.toString())
     filters.venueId && apiSearchParams.set('venue_id', filters.venueId.toString())
+    filters.profileId && apiSearchParams.set('source_profile_id', filters.profileId.toString())
+    filters.applied && apiSearchParams.set('my_event', '1')
 
-    const url = `${api}/event/list_for_calendar?${apiSearchParams.toString()}`
+    const url = `${api}/event/list?${apiSearchParams.toString()}`
+    // console.log('url', url)
     const response = await fetch(url)
 
     if (!response.ok) {
