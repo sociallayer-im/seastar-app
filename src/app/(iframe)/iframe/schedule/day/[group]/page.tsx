@@ -55,11 +55,12 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
     return <div className="min-h-[calc(100svh-48px)] relative pb-12 bg-[#F8F9F8]">
         <div className="schedule-bg"></div>
         <div className="page-width z-10 relative">
-            <div className="py-5">
-                <div className="text-2xl my-2">
-                    <a href={`/event/${data.group.handle}`} className="font-semibold text-[#6CD7B2]">
+            <div className="py-3 sm:py-5">
+                <div className="sm:text-2xl text-xl flex flex-row">
+                    <a href={`/event/${data.group.handle}`} className="font-semibold text-[#6CD7B2] mr-2">
                         {data.group.nickname || data.group.handle}
-                    </a> Event Schedule
+                    </a>
+                    <div>Event Schedule</div>
                 </div>
             </div>
 

@@ -41,10 +41,11 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
         <div className="schedule-bg !min-w-[1024px]"></div>
         <div className="page-width z-10 relative">
             <div className="py-3 sm:py-5 max-w-[100vw]">
-                <div className="text-2xl">
-                    <a href={`/event/${data.group.handle}`} className="font-semibold text-[#6CD7B2]">
+                <div className="sm:text-2xl text-xl flex flex-row">
+                    <a href={`/event/${data.group.handle}`} className="font-semibold text-[#6CD7B2] mr-2">
                         {data.group.nickname || data.group.handle}
-                    </a> Event Schedule
+                    </a>
+                    <div>Event Schedule</div>
                 </div>
             </div>
 
