@@ -76,9 +76,19 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
             <RichTextDisplayer markdownStr={event.content || ''} />
         </div>
 
-        <div className="mt-3 flex flex-row justify-end w-full">
+        <div className="mt-3 flex-row-item-center justify-between w-full">
+            <div>
+                {event.location && event.geo_lng && event.geo_lat &&
+                    <a  target="_blank"
+                        className="flex-row-item-center text-sm hover:underline"
+                        href={`https://www.google.com/maps/search/?api=1&query=${event.geo_lat},${event.geo_lng}`}>
+                        <i className="uil-location-point mr-1"/>
+                        <span className="w-[180px] sm:max-w-max overflow-hidden overflow-ellipsis whitespace-nowrap">{event.location}</span>
+                    </a>
+                }
+            </div>
             <a href={`${referer}event/detail/${event.id}`}
-                className="btn btn-md w-full btn-neutral sm:w-auto text-white"
+                className="btn btn-md  btn-neutral text-white"
                 target="_blank"
                 rel="nofollow">View Detail</a>
         </div>
