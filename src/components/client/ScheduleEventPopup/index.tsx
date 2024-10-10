@@ -79,11 +79,11 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
         <div className="mt-3 flex-row-item-center justify-between w-full">
             <div>
                 {event.location && event.geo_lng && event.geo_lat &&
-                    <a  target="_blank"
+                    <a target="_blank"
                         className="flex-row-item-center text-sm hover:underline"
                         href={`https://www.google.com/maps/search/?api=1&query=${event.geo_lat},${event.geo_lng}`}>
                         <i className="uil-location-point mr-1"/>
-                        <span className="w-[180px] sm:max-w-max overflow-hidden overflow-ellipsis whitespace-nowrap">{event.location}</span>
+                        <span className="w-[180px] sm:w-auto overflow-hidden overflow-ellipsis whitespace-nowrap">{event.location}</span>
                     </a>
                 }
             </div>
