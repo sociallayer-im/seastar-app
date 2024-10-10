@@ -10,6 +10,7 @@ export interface IframeSchedulePageSearchParams {
     tags: string | string[] | undefined
     track: string | string[] | undefined
     venue: string | string[] | undefined
+    popup: string | string[] | undefined
 }
 
 export interface IframeSchedulePageParams {

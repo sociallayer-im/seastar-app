@@ -6,6 +6,7 @@ import dayjs from "@/libs/dayjs"
 import {getEventDetail} from "@/service/solar"
 import useModal from "@/components/client/Modal/useModal"
 import dynamic from 'next/dynamic'
+import {useEffect, useCallback} from "react"
 
 const DynamicScheduleEventPopup = dynamic(
     () => import('@/components/client/ScheduleEventPopup'),
@@ -20,18 +21,27 @@ export default function DailyViewEventItem({event, timezone}: {event: IframeSche
     const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
     const timeDuration = start.date() !== end.date() ? `${start.format('HH:mm, Do')} - ${end.format('HH:mm, Do')}` : `${start.format('HH:mm')} - ${end.format('HH:mm')}`
 
-    useModal()
-    const showPopup = async () => {
+    const showPopup = useCallback(async () => {
         const loadingModalId = showLoading()
         const eventDetail = await getEventDetail(event.id)
         closeModal(loadingModalId)
 
         if (!eventDetail) return
 
+        // set search params to open the popup
+        const url = new URL(window.location.href)
+        url.searchParams.set('popup', event.id.toString())
+        window.history.pushState({}, '', url.toString())
+
         openModal({
             content: () => <DynamicScheduleEventPopup event={eventDetail} timezone={timezone}/>
         })
-    }
+    }, [event.id, timezone])
+
+    useEffect(() => {
+        const popupEvent = new URLSearchParams(window.location.search).get('popup')
+        popupEvent === event.id.toString() && showPopup()
+    }, [])
 
     return <div className="w-full absolute shadow rounded p-2 overflow-hidden duration-300 hover:z-[999] hover:scale-[1.01]"
         onClick={showPopup}
