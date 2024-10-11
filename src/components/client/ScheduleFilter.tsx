@@ -1,6 +1,6 @@
 import {useMemo, useState} from "react"
 import {getLabelColor} from "@/utils/label_color"
-import {Filter} from "@/app/(iframe)/iframe/schedule/data"
+import {Filter} from "@/app/(iframe)/schedule/data"
 
 interface ScheduleFilterProps {
     filters: Filter,

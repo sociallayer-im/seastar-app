@@ -99,8 +99,11 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
     filters.applied && apiSearchParams.set('my_event', '1')
 
     const url = `${api}/event/list?${apiSearchParams.toString()}`
-    // console.log('url', url)
-    const response = await fetch(url)
+    const response = await fetch(url, {
+        headers: {
+            'Accept': 'application/json',
+        }
+    })
 
     if (!response.ok) {
         throw new Error('Fail to get schedule data: ' + response.statusText)
@@ -116,11 +119,10 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
     }
 
     return {
-        group: data.group,
+        ...data,
         tags: data.group.event_tags || [],
         tracks: data.group.tracks || [],
         venues: data.group.venues || [],
-        events: data.events || [],
         filters: filters,
         interval,
         startDate
