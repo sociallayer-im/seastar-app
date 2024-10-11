@@ -1,15 +1,15 @@
 import {calculateGridPosition} from "./data"
 import {redirect} from 'next/navigation'
-import {getHourLabel} from "@/app/(iframe)/iframe/schedule/day/[group]/data"
-import DailyViewEventItem from "@/app/(iframe)/iframe/schedule/day/[group]/DailyViewEventItem"
-import DailyPagination from "@/app/(iframe)/iframe/schedule/day/[group]/DailyPagination"
-import ScrollFirstEventIntoView from "@/app/(iframe)/iframe/schedule/day/[group]/ScrollFirstEventIntoView"
-import FilterBtn from "@/app/(iframe)/iframe/schedule/week/[group]/FilterBtn"
+import {getHourLabel} from "@/app/(iframe)/schedule/day/[group]/data"
+import DailyViewEventItem from "@/app/(iframe)/schedule/day/[group]/DailyViewEventItem"
+import DailyPagination from "@/app/(iframe)/schedule/day/[group]/DailyPagination"
+import ScrollFirstEventIntoView from "@/app/(iframe)/schedule/day/[group]/ScrollFirstEventIntoView"
+import FilterBtn from "@/app/(iframe)/schedule/week/[group]/FilterBtn"
 import {
     IframeSchedulePageData,
     IframeSchedulePageParams,
     IframeSchedulePageSearchParams
-} from "@/app/(iframe)/iframe/schedule/data"
+} from "@/app/(iframe)/schedule/data"
 
 export async function generateMetadata({params, searchParams}: {
     params: IframeSchedulePageParams,

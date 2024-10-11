@@ -1,13 +1,13 @@
 import {calculateGridPosition} from "./data"
 import {redirect} from 'next/navigation'
-import WeeklyViewEventItem from "@/app/(iframe)/iframe/schedule/week/[group]/WeeklyViewEventItem"
-import WeeklyPagination from "@/app/(iframe)/iframe/schedule/week/[group]/WeeklyPagination"
-import FilterBtn from "@/app/(iframe)/iframe/schedule/week/[group]/FilterBtn"
+import WeeklyViewEventItem from "@/app/(iframe)/schedule/week/[group]/WeeklyViewEventItem"
+import WeeklyPagination from "@/app/(iframe)/schedule/week/[group]/WeeklyPagination"
+import FilterBtn from "@/app/(iframe)/schedule/week/[group]/FilterBtn"
 import {
     IframeSchedulePageData,
     IframeSchedulePageParams,
     IframeSchedulePageSearchParams
-} from "@/app/(iframe)/iframe/schedule/data"
+} from "@/app/(iframe)/schedule/data"
 
 export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
     const data = await IframeSchedulePageData({params, searchParams, view: 'week'})

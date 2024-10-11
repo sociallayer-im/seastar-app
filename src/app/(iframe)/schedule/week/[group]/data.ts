@@ -1,7 +1,7 @@
 'use server'
 
 import dayjs, {DayjsType} from "@/libs/dayjs"
-import {IframeSchedulePageDataEvent} from "@/app/(iframe)/iframe/schedule/data"
+import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
 
 
 export interface IframeSchedulePageDataEventDetail extends IframeSchedulePageDataEvent {

@@ -47,9 +47,14 @@ export interface IframeSchedulePageDataEvent {
     cover_url: string,
     tags: string[],
     external_url: null | string,
-    host_info: string | null
+    host_info: {
+        speaker?: Solar.ProfileSample[]
+        co_host?: Solar.ProfileSample[]
+        group_host?: Solar.ProfileSample[]
+    } | null
     geo_lat: string | null,
     geo_lng: string | null,
+    owner: Solar.ProfileSample,
 }
 
 export interface IframeSchedulePageData {

@@ -1,6 +1,6 @@
 'use client'
 
-import {IframeSchedulePageDataEventDetail} from "@/app/(iframe)/iframe/schedule/day/[group]/data"
+import {IframeSchedulePageDataEventDetail} from "@/app/(iframe)/schedule/day/[group]/data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"
 import {getEventDetail} from "@/service/solar"

@@ -1,6 +1,6 @@
 'use client'
 
-import OuterLink from "@/app/(iframe)/iframe/schedule/week/[group]/OuterLink"
+import OuterLink from "@/app/(iframe)/schedule/week/[group]/OuterLink"
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"
@@ -8,6 +8,7 @@ import useModal from "@/components/client/Modal/useModal"
 import {getEventDetail} from "@/service/solar"
 import dynamic from "next/dynamic"
 import {useEffect, useCallback} from "react"
+import {getAvatar} from "@/utils"
 
 const DynamicScheduleEventPopup = dynamic(
     () => import('@/components/client/ScheduleEventPopup'),
@@ -45,6 +46,8 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
         popupEvent === event.id.toString() && showPopup()
     }, [])
 
+    const host = event.host_info?.group_host?.[0] || event.owner
+
     return <div className="bg-white p-2 h-[194px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
         onClick={showPopup}
         style={{gridArea: event.grid, boxShadow: '0 1.988px 18px 0 rgba(0, 0, 0, 0.10)'}}>
@@ -79,6 +82,15 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
                     </div>
                     : null
             }
+        </div>
+
+        <div>
+            <div className="flex-row-item-center" >
+                <img src={getAvatar(host.id, host.image_url)} width={12} height={12} className="rounded-full mr-1" alt=""/>
+                <span className="text-nowrap overflow-hidden overflow-ellipsis max-w-[100px]">
+                   by {host.nickname || host.handle }
+                </span>
+            </div>
         </div>
 
         <div className="absolute right-2 bottom-2 flex flex-col flex-nowrap items-start">

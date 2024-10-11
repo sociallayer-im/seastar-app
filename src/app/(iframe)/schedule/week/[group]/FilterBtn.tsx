@@ -2,7 +2,7 @@
 
 import useModal from "@/components/client/Modal/useModal"
 import ScheduleFilter from "@/components/client/ScheduleFilter"
-import {Filter} from "@/app/(iframe)/iframe/schedule/data"
+import {Filter} from "@/app/(iframe)/schedule/data"
 
 interface FilterBtnProps {
     filters: Filter,
