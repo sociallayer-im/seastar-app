@@ -26,8 +26,7 @@ export async function calculateGridPosition({
         const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
         const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
         const dayIndex = days.findIndex((day) => {
-            return day.format('YYYY-MM-DD') === start.format('YYYY-MM-DD')
-                || day.format('YYYY-MM-DD') === end.format('YYYY-MM-DD')
+            return day.isBetween(start, end, 'day', '[]')
         })
 
         if (dayIndex !== -1) {
@@ -57,6 +56,16 @@ export async function calculateGridPosition({
                 grid: gridArea,
                 tagDisplayAmount,
             })
+
+            if (columnWidth > 1) {
+                let count = 0
+                while (count < columnWidth) {
+                    columnOccupation[colIndex + count].push(rowStart)
+                    count++
+                }
+            } else {
+                columnOccupation[colIndex].push(rowStart)
+            }
         })
     })
 
