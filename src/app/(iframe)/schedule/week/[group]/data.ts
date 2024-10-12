@@ -21,14 +21,13 @@ export async function calculateGridPosition({
     interval
 }: CalculateGridPositionProps): Promise<IframeSchedulePageDataEventDetail[]> {
     const dayEvents = [[], [], [], [], [], [], []] as IframeSchedulePageDataEvent[][]
-    const days = Array.from({length: 7}, (_, i) => {
-        return interval[0].add(i, 'day')
-    })
-
+    const days = interval
     events.forEach(event => {
         const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
+        const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
         const dayIndex = days.findIndex((day) => {
-            return day.year() === start.year() && day.month() === start.month() && day.date() === start.date()
+            return day.format('YYYY-MM-DD') === start.format('YYYY-MM-DD')
+                || day.format('YYYY-MM-DD') === end.format('YYYY-MM-DD')
         })
 
         if (dayIndex !== -1) {
@@ -38,13 +37,14 @@ export async function calculateGridPosition({
 
     const columnOccupation = [[], [], [], [], [], [], []] as number[][]
     const res: IframeSchedulePageDataEventDetail[] = []
-
     dayEvents.forEach((dayEvent, colIndex) => {
         dayEvent.forEach((event, rowIndex) => {
-            const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
-            const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
-            const columnWidth = Math.min(end.date() - start.date(), 6 - colIndex) + 1
-            const columnStart = start.day() || 7
+            const weekStart = interval[0]
+            const weekEnd = interval[interval.length - 1]
+            const start = dayjs.tz(Math.max(new Date(event.start_time).getTime(), weekStart.valueOf()), timezone)
+            const end = dayjs.tz(Math.min(new Date(event.end_time).getTime(), weekEnd.valueOf()), timezone)
+            const columnWidth = end.date() - start.date() + 1
+            const columnStart = start.day()
             let rowStart = rowIndex + 1
             while (columnOccupation[colIndex].includes(rowStart)) {
                 // 检查是否有重叠，若重叠往下移动
