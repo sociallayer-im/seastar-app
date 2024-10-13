@@ -48,12 +48,14 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
 
     const host = event.host_info?.group_host?.[0] || event.owner
 
-    return <div className="bg-white p-2 h-[194px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
+    return <div
+        className="bg-white p-2 h-[210px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
         onClick={showPopup}
         style={{gridArea: event.grid, boxShadow: '0 1.988px 18px 0 rgba(0, 0, 0, 0.10)'}}>
-        <div className="block content-[''] w-[2px] h-[194px] absolute left-0 top-0" style={{background: mainThemColor}}/>
+        <div className="block content-[''] w-[2px] h-[210px] absolute left-0 top-0"
+            style={{background: mainThemColor}}/>
         <div className="font-xs color-[#4F5150] my-1">
-            {isAllDay ? 'All Day': timeDuration}
+            {isAllDay ? 'All Day' : timeDuration}
         </div>
         <div className="font-semibold text-sm leading-[22px] h-[44px] overflow-hidden webkit-box-clamp-2">
             {event.title}
@@ -70,25 +72,41 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
                             maxWidth: maxWidth,
                             borderColor: themColor
                         }}>
-                        <i className="w-2 h-2 mr-1 rounded-full shrink-0" style={{background: themColor}} />
+                        <i className="w-2 h-2 mr-1 rounded-full shrink-0" style={{background: themColor}}/>
                         <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">{tag}</span>
                     </div>
                 })
             }
             {
                 event.tags.length > event.tagDisplayAmount ?
-                    <div className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0">
-                        <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">+{event.tags.length - event.tagDisplayAmount}</span>
+                    <div
+                        className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0">
+                        <span
+                            className="overflow-ellipsis overflow-hidden whitespace-nowrap">+{event.tags.length - event.tagDisplayAmount}</span>
                     </div>
                     : null
             }
         </div>
 
+        <div className="text-xs my-1">
+            {!!event.track &&
+                <div
+                    className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0"
+                    style={{
+                        borderColor: getLabelColor(event.track.title)
+                    }}>
+                    <i className="w-2 h-2 mr-1 rounded-full shrink-0" style={{background: getLabelColor(event.track.title)}}/>
+                    <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">{event.track.tag || event.track.title}</span>
+                </div>
+            }
+        </div>
+
         <div>
-            <div className="flex-row-item-center" >
-                <img src={getAvatar(host.id, host.image_url)} width={12} height={12} className="rounded-full mr-1" alt=""/>
+            <div className="flex-row-item-center">
+                <img src={getAvatar(host.id, host.image_url)} width={12} height={12} className="rounded-full mr-1"
+                    alt=""/>
                 <span className="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[100px]">
-                   by {host.nickname || host.handle }
+                   by {host.nickname || host.handle}
                 </span>
             </div>
         </div>

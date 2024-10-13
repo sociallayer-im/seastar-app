@@ -55,6 +55,8 @@ export interface IframeSchedulePageDataEvent {
     geo_lat: string | null,
     geo_lng: string | null,
     owner: Solar.ProfileSample,
+    track_id: number | null,
+    track: Solar.Track | null
 }
 
 export interface IframeSchedulePageData {
@@ -124,6 +126,12 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
 
     return {
         ...data,
+        events: data.events.map((event: IframeSchedulePageDataEvent) => {
+            return {
+                ...event,
+                track: data.group.tracks.find((track : Solar.Track) => track.id === event.track_id) || null
+            }
+        }),
         tags: data.group.event_tags || [],
         tracks: data.group.tracks || [],
         venues: data.group.venues || [],
