@@ -45,18 +45,6 @@ export async function calculateGridPosition({
             const columnWidth = end.date() - start.date() + 1
             const columnStart = colIndex + 1
             let rowStart = rowIndex + 1
-            if (event.id === 10013) {
-                console.log('event start',dayjs.tz(new Date(event.start_time).getTime(), timezone).format('YYYY-MM-DD HH:mm:ss'))
-                console.log('event start',JSON.stringify(event))
-                console.log('event start str',event.start_time)
-                console.log('columnWidth', columnWidth)
-                console.log('weekStart', weekStart.format('YYYY-MM-DD'))
-                console.log('weekEnd', weekEnd.format('YYYY-MM-DD'))
-                console.log('start', start.format('YYYY-MM-DD'))
-                console.log('end', end.format('YYYY-MM-DD'))
-                console.log('columnStart', columnStart)
-            }
-
             while (columnOccupation[colIndex].includes(rowStart)) {
                 // 检查是否有重叠，若重叠往下移动
                 rowStart++
