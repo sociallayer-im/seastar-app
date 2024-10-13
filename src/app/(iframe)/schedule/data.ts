@@ -100,6 +100,7 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
 
     const url = `${api}/event/list?${apiSearchParams.toString()}`
     const response = await fetch(url, {
+        cache: 'no-store',
         headers: {
             'Content-Type': 'application/json'
         }
