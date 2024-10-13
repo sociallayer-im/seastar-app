@@ -38,7 +38,7 @@ export async function calculateGridPosition({
     const res: IframeSchedulePageDataEventDetail[] = []
     dayEvents.forEach((dayEvent, colIndex) => {
         dayEvent.forEach((event, rowIndex) => {
-            const weekStart = interval[0]
+            const weekStart = interval[0].startOf('day')
             const weekEnd = interval[interval.length - 1]
             const start = dayjs.tz(Math.max(new Date(event.start_time).getTime(), weekStart.valueOf()), timezone)
             const end = dayjs.tz(Math.min(new Date(event.end_time).getTime(), weekEnd.valueOf()), timezone)
