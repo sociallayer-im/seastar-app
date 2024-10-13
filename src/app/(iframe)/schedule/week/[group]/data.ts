@@ -43,7 +43,7 @@ export async function calculateGridPosition({
             const start = dayjs.tz(Math.max(new Date(event.start_time).getTime(), weekStart.valueOf()), timezone)
             const end = dayjs.tz(Math.min(new Date(event.end_time).getTime(), weekEnd.valueOf()), timezone)
             const columnWidth = end.date() - start.date() + 1
-            const columnStart = start.day()
+            const columnStart = colIndex + 1
             let rowStart = rowIndex + 1
             while (columnOccupation[colIndex].includes(rowStart)) {
                 // 检查是否有重叠，若重叠往下移动

@@ -99,7 +99,11 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
     filters.applied && apiSearchParams.set('my_event', '1')
 
     const url = `${api}/event/list?${apiSearchParams.toString()}`
-    const response = await fetch(url)
+    const response = await fetch(url, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
     // console.log('url', url)
 
     if (!response.ok) {
@@ -108,10 +112,12 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
 
     const data = await response.json()
 
+    // console.log('---events', data.events.length)
+
     const interval = []
     let current = dayjs.tz(start, data.group.timezone)
     while (current.isSameOrBefore(dayjs.tz(end, data.group.timezone))) {
-        interval.push(current)
+        interval.push(current.endOf('day'))
         current = current.add(1, 'day')
     }
 
