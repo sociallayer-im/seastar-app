@@ -71,14 +71,14 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
                             borderColor: themColor
                         }}>
                         <i className="w-2 h-2 mr-1 rounded-full shrink-0" style={{background: themColor}} />
-                        <span className="overflow-ellipsis overflow-hidden text-nowrap">{tag}</span>
+                        <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">{tag}</span>
                     </div>
                 })
             }
             {
                 event.tags.length > event.tagDisplayAmount ?
                     <div className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0">
-                        <span className="overflow-ellipsis overflow-hidden text-nowrap">+{event.tags.length - event.tagDisplayAmount}</span>
+                        <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">+{event.tags.length - event.tagDisplayAmount}</span>
                     </div>
                     : null
             }
@@ -87,7 +87,7 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
         <div>
             <div className="flex-row-item-center" >
                 <img src={getAvatar(host.id, host.image_url)} width={12} height={12} className="rounded-full mr-1" alt=""/>
-                <span className="text-nowrap overflow-hidden overflow-ellipsis max-w-[100px]">
+                <span className="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[100px]">
                    by {host.nickname || host.handle }
                 </span>
             </div>
