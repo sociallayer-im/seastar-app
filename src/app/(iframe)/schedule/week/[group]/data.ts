@@ -47,6 +47,7 @@ export async function calculateGridPosition({
             let rowStart = rowIndex + 1
             if (event.id === 10013) {
                 console.log('event start',dayjs.tz(new Date(event.start_time).getTime(), timezone).format('YYYY-MM-DD HH:mm:ss'))
+                console.log('event start',JSON.stringify(event))
                 console.log('event start str',event.start_time)
                 console.log('columnWidth', columnWidth)
                 console.log('weekStart', weekStart.format('YYYY-MM-DD'))
