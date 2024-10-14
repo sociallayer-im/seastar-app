@@ -61,6 +61,17 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
             {event.title}
         </div>
         <div className="text-xs my-1">
+            {!!event.track &&
+                <div
+                    className="text-xs"
+                    style={{
+                        color: getLabelColor(event.track.title)
+                    }}>
+                    {event.track.tag || event.track.title}
+                </div>
+            }
+        </div>
+        <div className="text-xs my-1">
             {
                 event.tags.slice(0, event.tagDisplayAmount).map((tag, index) => {
                     const themColor = getLabelColor(tag)
@@ -87,20 +98,6 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
                     : null
             }
         </div>
-
-        <div className="text-xs my-1">
-            {!!event.track &&
-                <div
-                    className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0"
-                    style={{
-                        borderColor: getLabelColor(event.track.title)
-                    }}>
-                    <i className="w-2 h-2 mr-1 rounded-full shrink-0" style={{background: getLabelColor(event.track.title)}}/>
-                    <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">{event.track.tag || event.track.title}</span>
-                </div>
-            }
-        </div>
-
         <div>
             <div className="flex-row-item-center">
                 <img src={getAvatar(host.id, host.image_url)} width={12} height={12} className="rounded-full mr-1"
