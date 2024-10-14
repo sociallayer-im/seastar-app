@@ -22,11 +22,11 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
         try {
             referer = new URL(Cookies.get('referer')!).href
         } catch (e){
-            console.error(e)
+            console.log(e)
         }
     }
 
-    return <div className="sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
+    return <div className="max-h-[95svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap">
             <div className="flex-1">
                 <div className="text-xs font-semibold sm:my-3 my-2">{interval}</div>
@@ -77,7 +77,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
             </div>
         </div>
 
-        <div className="my-3 sm:max-h-[250px] max-h-[200px] overflow-auto">
+        <div className="my-3">
             <RichTextDisplayer markdownStr={event.content || ''} />
         </div>
 

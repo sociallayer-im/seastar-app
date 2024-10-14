@@ -37,7 +37,12 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
         window.history.pushState({}, '', url.toString())
 
         openModal({
-            content: () => <DynamicScheduleEventPopup event={eventDetail} timezone={timezone}/>
+            content: () => <DynamicScheduleEventPopup event={eventDetail} timezone={timezone}/>,
+            onClose: () => {
+                const url = new URL(window.location.href)
+                url.searchParams.delete('popup')
+                window.history.pushState({}, '', url.toString())
+            }
         })
     }, [event.id, timezone])
 
