@@ -93,7 +93,7 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
     apiSearchParams.set('group_id', groupName)
     apiSearchParams.set('start_date', start)
     apiSearchParams.set('end_date', end)
-    apiSearchParams.set('limit', '200')
+    apiSearchParams.set('limit', '400')
     filters.tags?.length && apiSearchParams.set('tags', filters.tags.join(','))
     filters.trackId && apiSearchParams.set('track_id', filters.trackId.toString())
     filters.venueId && apiSearchParams.set('venue_id', filters.venueId.toString())
