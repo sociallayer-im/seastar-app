@@ -102,7 +102,7 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
             <div className="flex-row-item-center">
                 <img src={getAvatar(host.id, host.image_url)} width={12} height={12} className="rounded-full mr-1"
                     alt=""/>
-                <span className="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-[100px]">
+                <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
                    by {host.nickname || host.handle}
                 </span>
             </div>

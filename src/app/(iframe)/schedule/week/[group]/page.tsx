@@ -37,7 +37,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
 
     return <div className="min-h-[100svh] relative pb-12 bg-[#F8F9F8] !min-w-[1024px]">
         <div className="schedule-bg !min-w-[1024px]"></div>
-        <div className="min-w-[1024] w-full z-10 relative px-3">
+        <div className="page-width z-10 relative">
             <div className="py-3 sm:py-5 max-w-[100vw]">
                 <div className="sm:text-2xl text-xl flex flex-row">
                     <a href={`/event/${data.group.handle}`} className="font-semibold text-[#6CD7B2] mr-2">
@@ -83,7 +83,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                     </div>
                 </div>
             </div>
-            <div className="grid gap-2 sticky top-0 z-[999] grid-cols-7 bg-[#F8F9F8] ">
+            <div className="grid gap-2 sticky top-0 z-[999] grid-cols-7 bg-[#F8F9F8] w-[1000px]">
                 {
                     data.interval.map((day, index) => {
                         return <div className="h-[52px] leading-[52px] text-center" key={index}>
@@ -93,7 +93,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                     })
                 }
             </div>
-            <div className="grid gap-2 grid-cols-7">
+            <div className="grid gap-2 grid-cols-7 w-[1000px]">
                 {
                     disPlayEvents.map((event, index) => {
                         return <WeeklyViewEventItem event={event} key={index} timezone={data.group.timezone}/>
