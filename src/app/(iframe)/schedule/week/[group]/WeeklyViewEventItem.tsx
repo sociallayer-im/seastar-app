@@ -1,6 +1,6 @@
 'use client'
 
-import OuterLink from "@/app/(iframe)/schedule/week/[group]/OuterLink"
+import OuterLink from "@/app/(iframe)/schedule/OuterLink"
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"

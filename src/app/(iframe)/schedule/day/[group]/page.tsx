@@ -4,12 +4,13 @@ import {getHourLabel} from "@/app/(iframe)/schedule/day/[group]/data"
 import DailyViewEventItem from "@/app/(iframe)/schedule/day/[group]/DailyViewEventItem"
 import DailyPagination from "@/app/(iframe)/schedule/day/[group]/DailyPagination"
 import ScrollFirstEventIntoView from "@/app/(iframe)/schedule/day/[group]/ScrollFirstEventIntoView"
-import FilterBtn from "@/app/(iframe)/schedule/week/[group]/FilterBtn"
+import FilterBtn from "@/app/(iframe)/schedule/FilterBtn"
 import {
     IframeSchedulePageData,
     IframeSchedulePageParams,
     IframeSchedulePageSearchParams
 } from "@/app/(iframe)/schedule/data"
+import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 
 export async function generateMetadata({params, searchParams}: {
     params: IframeSchedulePageParams,
@@ -70,6 +71,10 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                         className="schedule-month text-lg mr-2 font-semibold">{data.interval[0].format('YYYY MMMM')}</div>
                 </div>
                 <div className="flex-row-item-center">
+                    {!!data.filters.profileId &&
+                        <JoinedFilterBtn checked={data.filters.applied}/>
+                    }
+
                     <FilterBtn filters={data.filters}
                         list={{
                             tags: data.tags,
@@ -86,10 +91,10 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                         <ul tabIndex={2}
                             className="min-w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
                             <li>
-                                <a href={`/schedule/week/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Week</a>
+                                <a href={data.weeklyUrl}>Week</a>
                             </li>
                             <li>
-                                <a href={`/schedule/day/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Day</a>
+                                <a href={data.dailyUrl}>Day</a>
                             </li>
                         </ul>
                     </div>

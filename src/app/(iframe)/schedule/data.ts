@@ -67,13 +67,29 @@ export interface IframeSchedulePageData {
     events: IframeSchedulePageDataEvent[],
     interval: DayjsType[],
     filters: Filter,
-    startDate?: string
+    startDate?: string,
+    weeklyUrl: string,
+    dailyUrl: string
 }
 
 export interface IframeSchedulePageDataProps {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
     view: 'week' | 'day',
+}
+
+function searchParamsToString(searchParams: IframeSchedulePageSearchParams) {
+    const params = new URLSearchParams()
+
+    Object.entries(searchParams).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+            value.forEach(v => params.append(key, v))
+        } else {
+            params.set(key, value)
+        }
+    })
+
+    return params.toString()
 }
 
 export async function IframeSchedulePageData({params, searchParams, view}: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
@@ -124,6 +140,9 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
         current = current.add(1, 'day')
     }
 
+    const weeklyUrl =  `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
+    const dailyUrl =  `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
+
     return {
         ...data,
         events: data.events.map((event: IframeSchedulePageDataEvent) => {
@@ -137,7 +156,9 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
         venues: data.group.venues || [],
         filters: filters,
         interval,
-        startDate
+        startDate,
+        weeklyUrl,
+        dailyUrl
     }
 }
 

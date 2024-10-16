@@ -18,7 +18,6 @@ export default function FilterBtn({filters, list}: FilterBtnProps) {
     const isFiltered = filters.tags.length > 0
         || !!filters.venueId
         || !!filters.trackId
-        || !!filters.applied
 
     const showFilter = () => {
         openModal({

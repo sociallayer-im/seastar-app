@@ -2,12 +2,13 @@ import {calculateGridPosition} from "./data"
 import {redirect} from 'next/navigation'
 import WeeklyViewEventItem from "@/app/(iframe)/schedule/week/[group]/WeeklyViewEventItem"
 import WeeklyPagination from "@/app/(iframe)/schedule/week/[group]/WeeklyPagination"
-import FilterBtn from "@/app/(iframe)/schedule/week/[group]/FilterBtn"
+import FilterBtn from "@/app/(iframe)/schedule/FilterBtn"
 import {
     IframeSchedulePageData,
     IframeSchedulePageParams,
     IframeSchedulePageSearchParams
 } from "@/app/(iframe)/schedule/data"
+import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 
 export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
     const data = await IframeSchedulePageData({params, searchParams, view: 'week'})
@@ -35,6 +36,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
         timezone: data.group.timezone
     })
 
+
     return <div className="min-h-[100svh] relative pb-12 bg-[#F8F9F8] !min-w-[1024px]">
         <div className="schedule-bg !min-w-[1024px]"></div>
         <div className="page-width z-10 relative">
@@ -58,6 +60,10 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                     </div>
                 </div>
                 <div className="flex-row-item-center">
+                    {!!data.filters.profileId &&
+                        <JoinedFilterBtn checked={data.filters.applied}/>
+                    }
+
                     <FilterBtn filters={data.filters}
                         list={{
                             tags: data.tags,
@@ -74,10 +80,10 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                         <ul tabIndex={2}
                             className="min-w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
                             <li>
-                                <a href={`/schedule/week/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Week</a>
+                                <a href={data.weeklyUrl}>Week</a>
                             </li>
                             <li>
-                                <a href={`/schedule/day/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Day</a>
+                                <a href={data.dailyUrl}>Day</a>
                             </li>
                         </ul>
                     </div>

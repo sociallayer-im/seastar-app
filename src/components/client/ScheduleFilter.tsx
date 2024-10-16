@@ -22,6 +22,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
     const handleClear = () => {
         setFilters({
+            ...filters,
             tags: [],
             trackId: undefined,
             venueId: undefined,
@@ -72,7 +73,6 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         filters.tags.length ? currSearchParams.set('tags', filters.tags.join(',')) : currSearchParams.delete('tags')
         filters.venueId ? currSearchParams.set('venue', filters.venueId.toString()) : currSearchParams.delete('venue')
         filters.trackId ? currSearchParams.set('track', filters.trackId.toString()) : currSearchParams.delete('track')
-        filters.applied && filters.profileId ? currSearchParams.set('applied', 'true') : currSearchParams.delete('applied')
         window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
     }
 
@@ -135,20 +135,6 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                     })
             }
 
-            { !!filters.profileId &&
-                <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
-                    <div>Applied</div>
-                    <input
-                        type="checkbox"
-                        onChange={() => setFilters({
-                            ...filters,
-                            applied: !filters.applied
-                        })}
-                        checked={!!filters.applied}
-                        className="mr-2 checkbox checkbox-sm"/>
-                </div>
-            }
-
             {
                 props.list.venues.length > 0 &&
                 <>
@@ -162,7 +148,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                             <i className="uil-angle-down hidden sm:block"></i>
                         </div>
                         <ul tabIndex={0}
-                            className="max-h-[200px] overflow-auto flex-nowrap w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
+                            className="max-h-[200px] !fixed overflow-auto flex-nowrap dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
                             <li className="cursor-pointer w-full"
                                 onClick={() => updateVenue()}>
                                 <div className="flex-row-item-center">
@@ -179,7 +165,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                             </li>
 
                             {props.list.venues.map((venue) => {
-                                return <li className="cursor-pointer w-full"
+                                return <li className="cursor-pointer"
                                     key={venue.id}
                                     onClick={() => updateVenue(venue.id)}>
                                     <div className="flex-row-item-center">
