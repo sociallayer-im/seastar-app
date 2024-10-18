@@ -7,7 +7,7 @@ export default function JoinedFilterBtn(props: { checked?: boolean }) {
         window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
     }
 
-    return <div className="mr-4 flex-row-item-center text-sm cursor-pointer" onClick={handleClick}>
+    return <div className="mr-4 sm:flex flex-row items-center text-sm cursor-pointer hidden" onClick={handleClick}>
         <div>Joined</div>
         <input
             readOnly={true}

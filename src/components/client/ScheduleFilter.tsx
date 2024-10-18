@@ -73,11 +73,14 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         filters.tags.length ? currSearchParams.set('tags', filters.tags.join(',')) : currSearchParams.delete('tags')
         filters.venueId ? currSearchParams.set('venue', filters.venueId.toString()) : currSearchParams.delete('venue')
         filters.trackId ? currSearchParams.set('track', filters.trackId.toString()) : currSearchParams.delete('track')
+        filters.applied && filters.profileId ? currSearchParams.set('applied', 'true') : currSearchParams.delete('applied')
         window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
     }
 
     const selectedVenue = props.list.venues.find(venue => venue.id === filters.venueId)
     const selectedTrack = props.list.tracks.find(track => track.id === filters.trackId)
+
+    console.log('props.filters', props.filters)
 
     return <div className="bg-[--background] shadow rounded-lg p-5 w-[365px]">
         <div className="flex-row-item-center justify-between">
@@ -133,6 +136,20 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                                 className="mr-2 checkbox checkbox-sm"/>
                         </div>
                     })
+            }
+
+            {!!filters.profileId &&
+                <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
+                    <div>Applied</div>
+                    <input
+                        type="checkbox"
+                        onChange={() => setFilters({
+                            ...filters,
+                            applied: !filters.applied
+                        })}
+                        checked={!!filters.applied}
+                        className="mr-2 checkbox checkbox-sm"/>
+                </div>
             }
 
             {

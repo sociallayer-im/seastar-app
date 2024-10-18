@@ -69,13 +69,14 @@ export interface IframeSchedulePageData {
     filters: Filter,
     startDate?: string,
     weeklyUrl: string,
-    dailyUrl: string
+    dailyUrl: string,
+    listingUrl: string
 }
 
 export interface IframeSchedulePageDataProps {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
-    view: 'week' | 'day',
+    view: 'week' | 'day' | 'list',
 }
 
 function searchParamsToString(searchParams: IframeSchedulePageSearchParams) {
@@ -142,6 +143,7 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
 
     const weeklyUrl =  `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
     const dailyUrl =  `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
+    const listingUrl =  `/schedule/list/${groupName}?${searchParamsToString(searchParams)}`
 
     return {
         ...data,
@@ -158,11 +160,12 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
         interval,
         startDate,
         weeklyUrl,
-        dailyUrl
+        dailyUrl,
+        listingUrl
     }
 }
 
-function getInterval(startDate?: string, view: 'week' | 'day' = 'week') {
+function getInterval(startDate?: string, view: 'week' | 'day' | 'list' = 'week') {
     const start = dayjs(startDate || undefined)
 
     switch (view) {
@@ -172,6 +175,11 @@ function getInterval(startDate?: string, view: 'week' | 'day' = 'week') {
             end: start.endOf('week').format('YYYY-MM-DD')
         }
     case 'day':
+        return {
+            start: start.format('YYYY-MM-DD'),
+            end: start.format('YYYY-MM-DD')
+        }
+    case 'list':
         return {
             start: start.format('YYYY-MM-DD'),
             end: start.format('YYYY-MM-DD')

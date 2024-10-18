@@ -26,7 +26,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
         }
     }
 
-    return <div className="max-h-[95svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
+    return <div className="max-h-[90svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap">
             <div className="flex-1">
                 <div className="text-xs font-semibold sm:my-3 my-2">{interval}</div>
