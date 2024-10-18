@@ -78,20 +78,22 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
         </div>
         <div className="text-xs my-1">
             {
-                event.tags.slice(0, event.tagDisplayAmount).map((tag, index) => {
-                    const themColor = getLabelColor(tag)
-                    const maxWidth = event.tagDisplayAmount !== 3 ? '110px' : 'auto'
+                event.tags
+                    .filter(tag => !tag.startsWith(':'))
+                    .slice(0, event.tagDisplayAmount).map((tag, index) => {
+                        const themColor = getLabelColor(tag)
+                        const maxWidth = event.tagDisplayAmount !== 3 ? '110px' : 'auto'
 
-                    return <div key={index}
-                        className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0"
-                        style={{
-                            maxWidth: maxWidth,
-                            borderColor: themColor
-                        }}>
-                        <i className="w-2 h-2 mr-1 rounded-full shrink-0" style={{background: themColor}}/>
-                        <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">{tag}</span>
-                    </div>
-                })
+                        return <div key={index}
+                            className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0"
+                            style={{
+                                maxWidth: maxWidth,
+                                borderColor: themColor
+                            }}>
+                            <i className="w-2 h-2 mr-1 rounded-full shrink-0" style={{background: themColor}}/>
+                            <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">{tag}</span>
+                        </div>
+                    })
             }
             {
                 event.tags.length > event.tagDisplayAmount ?
