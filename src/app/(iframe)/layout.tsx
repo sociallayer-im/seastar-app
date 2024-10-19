@@ -6,7 +6,7 @@ import {ReactNode} from "react"
 import {Toaster} from '@/components/client/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {selectLang} from '@/app/actions'
-import {poppins} from "@/app/fonts"
+import {poppins, icon} from "@/app/fonts"
 
 export const metadata: Metadata = {
     title: "Social Layer",
@@ -26,7 +26,7 @@ export default async function IframeLayout({
     const langType = (await selectLang()).type
 
     return (
-        <html lang={langType} className={poppins.className}>
+        <html lang={langType} className={`${poppins.className} ${icon.variable}`}>
             <Head key={'head'}>
                 <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
             </Head>
