@@ -42,7 +42,7 @@ export async function calculateGridPosition({
             const weekEnd = interval[interval.length - 1]
             const start = dayjs.tz(Math.max(new Date(event.start_time).getTime(), weekStart.valueOf()), timezone)
             const end = dayjs.tz(Math.min(new Date(event.end_time).getTime(), weekEnd.valueOf()), timezone)
-            const columnWidth = end.date() - start.date() + 1
+            const columnWidth = end.diff(start, 'day') + 1
             const columnStart = colIndex + 1
             let rowStart = rowIndex + 1
             while (columnOccupation[colIndex].includes(rowStart)) {
