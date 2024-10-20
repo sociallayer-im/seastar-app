@@ -63,7 +63,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                 {!!event.cover_url
                     ? <img src={event.cover_url} className="w-full h-full object-cover"  alt=""/>
                     : <div className="default-cover w-[452px] h-[452px] sm:scale-[0.356] scale-[0.22]">
-                        <div className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
+                        <div className="font-semibold text-[27px] webkit-box-clamp-2 max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                             {event.title}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">

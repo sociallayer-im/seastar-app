@@ -58,7 +58,9 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                         <JoinedFilterBtn checked={data.filters.applied}/>
                     }
 
-                    <FilterBtn filters={data.filters}
+                    <FilterBtn
+                        isFiltered={data.isFiltered}
+                        filters={data.filters}
                         list={{
                             tags: data.tags,
                             venues: data.venues,

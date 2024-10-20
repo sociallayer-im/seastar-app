@@ -1,7 +1,7 @@
 'use client'
 
 import useModal from "@/components/client/Modal/useModal"
-import ScheduleFilter from "@/components/client/ScheduleFilter"
+import ScheduleFilter from "@/app/(iframe)/schedule/ScheduleFilter"
 import {Filter} from "@/app/(iframe)/schedule/data"
 
 interface FilterBtnProps {
@@ -10,15 +10,12 @@ interface FilterBtnProps {
         tags: string[]
         venues: Solar.Venue[]
         tracks: Solar.Track[]
-    }
+    },
+    isFiltered: boolean
 }
 
-export default function FilterBtn({filters, list}: FilterBtnProps) {
+export default function FilterBtn({filters, list, isFiltered}: FilterBtnProps) {
     const {openModal} = useModal()
-    const isFiltered = filters.tags.length > 0
-        || !!filters.venueId
-        || !!filters.trackId
-        || !!filters.applied
 
     const showFilter = () => {
         openModal({

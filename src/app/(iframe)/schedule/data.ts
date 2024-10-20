@@ -12,7 +12,9 @@ export interface IframeSchedulePageSearchParams {
     venue?: string | string[]
     popup?: string | string[]
     profile?: string | string[]
-    applied?: string | string[]
+    applied?: string | string[],
+    skip_repeat?: string | string[],
+    skip_multi_day?: string | string[]
 }
 
 export interface IframeSchedulePageParams {
@@ -34,6 +36,8 @@ export interface Filter {
     trackId?: number
     profileId?: number
     applied?: boolean
+    skipRecurring?: boolean
+    skipMultiDay?: boolean
 }
 
 export interface IframeSchedulePageDataEvent {
@@ -56,7 +60,8 @@ export interface IframeSchedulePageDataEvent {
     geo_lng: string | null,
     owner: Solar.ProfileSample,
     track_id: number | null,
-    track: Solar.Track | null
+    track: Solar.Track | null,
+    recurring_id: number | null,
 }
 
 export interface IframeSchedulePageData {
@@ -70,7 +75,8 @@ export interface IframeSchedulePageData {
     startDate?: string,
     weeklyUrl: string,
     dailyUrl: string,
-    listingUrl: string
+    listingUrl: string,
+    isFiltered: boolean
 }
 
 export interface IframeSchedulePageDataProps {
@@ -93,14 +99,20 @@ function searchParamsToString(searchParams: IframeSchedulePageSearchParams) {
     return params.toString()
 }
 
-export async function IframeSchedulePageData({params, searchParams, view}: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
+export async function IframeSchedulePageData({
+    params,
+    searchParams,
+    view
+}: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
     const groupName = params.group
-    const filters = {
+    const filters: Filter = {
         tags: searchParams.tags ? pickSearchParam(searchParams.tags)!.split(',') : [],
         trackId: searchParams.track ? Number(pickSearchParam(searchParams.track)!) : undefined,
         venueId: searchParams.venue ? Number(pickSearchParam(searchParams.venue)!) : undefined,
         profileId: searchParams.profile ? Number(pickSearchParam(searchParams.profile)!) : undefined,
-        applied: searchParams.applied === 'true'
+        applied: searchParams.applied === 'true',
+        skipRecurring: searchParams.skip_repeat === 'true',
+        skipMultiDay: searchParams.skip_multi_day === 'true'
     }
     const startDate = pickSearchParam(searchParams.start_date)
 
@@ -116,15 +128,17 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
     filters.venueId && apiSearchParams.set('venue_id', filters.venueId.toString())
     filters.profileId && apiSearchParams.set('source_profile_id', filters.profileId.toString())
     filters.applied && apiSearchParams.set('my_event', '1')
+    filters.skipRecurring && apiSearchParams.set('skip_recurring', '1')
+    filters.skipMultiDay && apiSearchParams.set('skip_multiday', '1')
 
     const url = `${api}/event/list?${apiSearchParams.toString()}`
+    console.log(url)
     const response = await fetch(url, {
         cache: 'no-store',
         headers: {
             'Content-Type': 'application/json'
         }
     })
-    // console.log('url', url)
 
     if (!response.ok) {
         throw new Error('Fail to get schedule data: ' + response.statusText)
@@ -141,18 +155,28 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
         current = current.add(1, 'day')
     }
 
-    const weeklyUrl =  `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
-    const dailyUrl =  `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
-    const listingUrl =  `/schedule/list/${groupName}?${searchParamsToString(searchParams)}`
+    const weeklyUrl = `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
+    const dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
+    const listingUrl = `/schedule/list/${groupName}?${searchParamsToString(searchParams)}`
+
+    const events = data.events
+        .map((event: IframeSchedulePageDataEvent) => {
+            return {
+                ...event,
+                track: data.group.tracks.find((track: Solar.Track) => track.id === event.track_id) || null
+            }
+        })
+
+    const isFiltered = filters.tags.length > 0
+        || !!filters.venueId
+        || !!filters.trackId
+        || filters.applied
+        || filters.skipRecurring
+        || filters.skipMultiDay
 
     return {
         ...data,
-        events: data.events.map((event: IframeSchedulePageDataEvent) => {
-            return {
-                ...event,
-                track: data.group.tracks.find((track : Solar.Track) => track.id === event.track_id) || null
-            }
-        }),
+        events,
         tags: data.group.event_tags || [],
         tracks: data.group.tracks || [],
         venues: data.group.venues || [],
@@ -161,7 +185,8 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
         startDate,
         weeklyUrl,
         dailyUrl,
-        listingUrl
+        listingUrl,
+        isFiltered
     }
 }
 
