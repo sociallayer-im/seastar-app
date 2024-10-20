@@ -11,17 +11,23 @@ export default function WeeklyPagination({currStartDate, timezone}: WeeklyPagina
 
     const toNextWeek = () => {
         const nextWeek = dayjs.tz(currStartDate, timezone).add(1, 'week').format('YYYY-MM-DD')
-        location.href = `${location.pathname}?start_date=${nextWeek}`
+        const url = new URL(location.href)
+        url.searchParams.set('start_date', nextWeek)
+        location.href = url.toString()
     }
 
     const toPrevWeek = () => {
         const prevWeek = dayjs.tz(currStartDate, timezone).subtract(1, 'week').format('YYYY-MM-DD')
-        location.href = `${location.pathname}?start_date=${prevWeek}`
+        const url = new URL(location.href)
+        url.searchParams.set('start_date', prevWeek)
+        location.href = url.toString()
     }
 
     const toCurrWeek = () => {
         const nextWeek = dayjs.tz(dayjs(), timezone).startOf('week').format('YYYY-MM-DD')
-        location.href = `${location.pathname}?start_date=${nextWeek}`
+        const url = new URL(location.href)
+        url.searchParams.set('start_date', nextWeek)
+        location.href = url.toString()
     }
 
     return <>

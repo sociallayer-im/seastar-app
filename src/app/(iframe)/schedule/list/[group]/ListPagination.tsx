@@ -11,17 +11,23 @@ interface WeeklyPaginationProps {
 export default function ListPagination({currStartDate, timezone}: WeeklyPaginationProps) {
     const toNextWeek = () => {
         const nextWeek = dayjs.tz(currStartDate, timezone).add(1, 'week').startOf('week').format('YYYY-MM-DD')
-        location.href = `${location.pathname}?start_date=${nextWeek}`
+        const url = new URL(location.href)
+        url.searchParams.set('start_date', nextWeek)
+        location.href = url.toString()
     }
 
     const toPrevWeek = () => {
         const prevWeek = dayjs.tz(currStartDate, timezone).subtract(1, 'week').startOf('week').format('YYYY-MM-DD')
-        location.href = `${location.pathname}?start_date=${prevWeek}`
+        const url = new URL(location.href)
+        url.searchParams.set('start_date', prevWeek)
+        location.href = url.toString()
     }
 
     const toSelected = (date: DayjsType) => {
         const selected = date.format('YYYY-MM-DD')
-        location.href = `${location.pathname}?start_date=${selected}`
+        const url = new URL(location.href)
+        url.searchParams.set('start_date', selected)
+        location.href = url.toString()
     }
 
     const interval = useMemo(() => {
