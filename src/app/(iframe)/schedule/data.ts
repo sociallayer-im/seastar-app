@@ -135,7 +135,7 @@ export async function IframeSchedulePageData({
     filters.skipMultiDay && apiSearchParams.set('skip_multiday', '1')
 
     const url = `${api}/event/list?${apiSearchParams.toString()}`
-    console.log(url)
+    // console.log(url)
     const response = await fetch(url, {
         cache: 'no-store',
         headers: {
