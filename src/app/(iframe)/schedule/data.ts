@@ -85,10 +85,13 @@ export interface IframeSchedulePageDataProps {
     view: 'week' | 'day' | 'list',
 }
 
-function searchParamsToString(searchParams: IframeSchedulePageSearchParams) {
+function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []) {
     const params = new URLSearchParams()
 
     Object.entries(searchParams).forEach(([key, value]) => {
+        if (exclude.includes(key)) {
+            return
+        }
         if (Array.isArray(value)) {
             value.forEach(v => params.append(key, v))
         } else {
@@ -156,7 +159,13 @@ export async function IframeSchedulePageData({
     }
 
     const weeklyUrl = `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
-    const dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
+
+    let dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
+    if (view === 'week' && dayjs.tz(new Date(), data.group.timezone).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
+        // if current date is in the interval, set the daily view to the current date
+        dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams, ['start_date'])}`
+    }
+
     const listingUrl = `/schedule/list/${groupName}?${searchParamsToString(searchParams)}`
 
     const events = data.events
