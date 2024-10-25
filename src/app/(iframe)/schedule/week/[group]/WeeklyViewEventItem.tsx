@@ -18,7 +18,6 @@ const DynamicScheduleEventPopup = dynamic(
 export default function WeeklyViewEventItem({event, timezone}: {event: IframeSchedulePageDataEventDetail, timezone: string}) {
     const {openModal, showLoading, closeModal} = useModal()
 
-    const mainThemColor = event.tags[0] ? getLabelColor(event.tags[0]) : '#fff'
     const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
     const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
     const isAllDay = start.hour() === 0 && start.minute() === 0 && end.hour() === 23 && end.minute() === 59
@@ -53,10 +52,13 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
 
     const host = event.host_info?.group_host?.[0] || event.owner
 
+    const bgColor = event.pinned ? '#FFF7E8' : '#fff'
+    const mainThemColor = event.tags[0] ? getLabelColor(event.tags[0]) : bgColor
+
     return <div
         className="bg-white p-2 h-[210px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
         onClick={showPopup}
-        style={{gridArea: event.grid, boxShadow: '0 1.988px 18px 0 rgba(0, 0, 0, 0.10)'}}>
+        style={{gridArea: event.grid, boxShadow: '0 1.988px 18px 0 rgba(0, 0, 0, 0.10)', background: bgColor}}>
         <div className="block content-[''] w-[2px] h-[210px] absolute left-0 top-0"
             style={{background: mainThemColor}}/>
         <div className="font-xs color-[#4F5150] my-1">
