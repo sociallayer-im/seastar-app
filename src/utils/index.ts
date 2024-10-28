@@ -46,7 +46,7 @@ export const checkProcess = (startTime: string, endTime: string) => {
     }
 }
 
-export const getAvatar = (id?: number, url?: string) => {
+export const getAvatar = (id?: number, url?: string | null) => {
     if (url) return url
 
     const defAvatars = [

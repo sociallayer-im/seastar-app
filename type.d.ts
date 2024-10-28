@@ -1,6 +1,6 @@
 declare namespace Solar {
     interface Profile {
-        id?:number
+        id:number
         handle: string | null,
         address: string | null,
         email: string | null,
@@ -20,9 +20,9 @@ declare namespace Solar {
 
     export interface ProfileSample {
         id: number
-        handle: string
-        nickname: string
-        image_url: string
+        handle: string | null
+        nickname: string | null
+        image_url: string | null
     }
 
     export interface Event {

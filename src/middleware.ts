@@ -2,9 +2,12 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
+    const headers = new Headers(request.headers)
+    headers.set("x-current-path", request.url)
+    const response = NextResponse.next({ headers })
+
     const url = new URL(request.url)
     const referer = url.searchParams.get('referer')
-    const response = NextResponse.next()
     if (referer) {
         response.cookies.set('referer', referer)
     }
@@ -13,5 +16,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/iframe/schedule/:path*'],
+    matcher: ['/((?!api|/images|/fonts|favicon.ico|sitemap.xml|robots.txt).*)'],
 }
