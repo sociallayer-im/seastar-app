@@ -6,8 +6,7 @@ import {Toaster} from '@/components/client/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {selectLang} from '@/app/actions'
 import Header from "@/components/Header"
-import Image from 'next/image'
-import {poppins, icon} from "@/app/fonts"
+import {icon, poppins} from "@/app/fonts"
 
 export const metadata: Metadata = {
     title: "Social Layer",
