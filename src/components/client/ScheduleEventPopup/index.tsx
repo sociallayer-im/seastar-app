@@ -17,11 +17,16 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
 
     const host = event.host_info?.group_host?.[0] || event.owner
 
-    const referer = Cookies.get('referer')
-        ? new URL(Cookies.get('referer')!).href
-        : process.env.NEXT_PUBLIC_APP_URL + '/'
+    let referer = process.env.NEXT_PUBLIC_APP_URL + '/'
+    if (Cookies.get('referer')) {
+        try {
+            referer = new URL(Cookies.get('referer')!).href
+        } catch (e){
+            console.log(e)
+        }
+    }
 
-    return <div className="sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
+    return <div className="max-h-[90svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap">
             <div className="flex-1">
                 <div className="text-xs font-semibold sm:my-3 my-2">{interval}</div>
@@ -58,7 +63,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                 {!!event.cover_url
                     ? <img src={event.cover_url} className="w-full h-full object-cover"  alt=""/>
                     : <div className="default-cover w-[452px] h-[452px] sm:scale-[0.356] scale-[0.22]">
-                        <div className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
+                        <div className="font-semibold text-[27px] webkit-box-clamp-2 max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                             {event.title}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">
@@ -72,7 +77,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
             </div>
         </div>
 
-        <div className="my-3 sm:max-h-[250px] max-h-[200px] overflow-auto">
+        <div className="my-3">
             <RichTextDisplayer markdownStr={event.content || ''} />
         </div>
 

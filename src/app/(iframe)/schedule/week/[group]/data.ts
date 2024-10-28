@@ -21,14 +21,12 @@ export async function calculateGridPosition({
     interval
 }: CalculateGridPositionProps): Promise<IframeSchedulePageDataEventDetail[]> {
     const dayEvents = [[], [], [], [], [], [], []] as IframeSchedulePageDataEvent[][]
-    const days = Array.from({length: 7}, (_, i) => {
-        return interval[0].add(i, 'day')
-    })
-
+    const days = interval
     events.forEach(event => {
         const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
+        const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
         const dayIndex = days.findIndex((day) => {
-            return day.year() === start.year() && day.month() === start.month() && day.date() === start.date()
+            return day.isBetween(start, end, 'day', '[]')
         })
 
         if (dayIndex !== -1) {
@@ -38,13 +36,14 @@ export async function calculateGridPosition({
 
     const columnOccupation = [[], [], [], [], [], [], []] as number[][]
     const res: IframeSchedulePageDataEventDetail[] = []
-
     dayEvents.forEach((dayEvent, colIndex) => {
         dayEvent.forEach((event, rowIndex) => {
-            const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
-            const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
-            const columnWidth = Math.min(end.date() - start.date(), 6 - colIndex) + 1
-            const columnStart = start.day() || 7
+            const weekStart = interval[0].startOf('day')
+            const weekEnd = interval[interval.length - 1]
+            const start = dayjs.tz(Math.max(new Date(event.start_time).getTime(), weekStart.valueOf()), timezone)
+            const end = dayjs.tz(Math.min(new Date(event.end_time).getTime(), weekEnd.valueOf()), timezone)
+            const columnWidth = end.diff(start, 'day') + 1
+            const columnStart = colIndex + 1
             let rowStart = rowIndex + 1
             while (columnOccupation[colIndex].includes(rowStart)) {
                 // 检查是否有重叠，若重叠往下移动
@@ -57,6 +56,16 @@ export async function calculateGridPosition({
                 grid: gridArea,
                 tagDisplayAmount,
             })
+
+            if (columnWidth > 1) {
+                let count = 0
+                while (count < columnWidth) {
+                    columnOccupation[colIndex + count].push(rowStart)
+                    count++
+                }
+            } else {
+                columnOccupation[colIndex].push(rowStart)
+            }
         })
     })
 

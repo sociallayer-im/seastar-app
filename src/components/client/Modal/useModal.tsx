@@ -4,6 +4,7 @@ import LoadingGlobal from '@/components/client/Modal/LoadingGlobal'
 
 interface ModalProps {
     content: (close?: () => void) => ReactElement
+    onClose?: () => void
     clickOutsideToClose?: boolean
 }
 
@@ -35,7 +36,7 @@ const openModal = (props: ModalProps) => {
     const content = <ModalWrapper
         clickOutsideToClose={props.clickOutsideToClose}
         content={props.content}
-        close={() => closeModal(id)}/>
+        close={() => {props.onClose?.();closeModal(id)}}/>
     const newState = [...memoryState, {content, id}]
     dispatch(newState)
     return id

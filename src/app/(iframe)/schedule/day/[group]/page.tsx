@@ -4,12 +4,14 @@ import {getHourLabel} from "@/app/(iframe)/schedule/day/[group]/data"
 import DailyViewEventItem from "@/app/(iframe)/schedule/day/[group]/DailyViewEventItem"
 import DailyPagination from "@/app/(iframe)/schedule/day/[group]/DailyPagination"
 import ScrollFirstEventIntoView from "@/app/(iframe)/schedule/day/[group]/ScrollFirstEventIntoView"
-import FilterBtn from "@/app/(iframe)/schedule/week/[group]/FilterBtn"
+import FilterBtn from "@/app/(iframe)/schedule/FilterBtn"
 import {
     IframeSchedulePageData,
     IframeSchedulePageParams,
     IframeSchedulePageSearchParams
 } from "@/app/(iframe)/schedule/data"
+import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
+import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 
 export async function generateMetadata({params, searchParams}: {
     params: IframeSchedulePageParams,
@@ -64,35 +66,30 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                 </div>
             </div>
 
-            <div className="flex-row-item-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:justify-between">
                 <div className="flex-row-item-center">
                     <div
-                        className="schedule-month text-lg mr-2 font-semibold">{data.interval[0].format('YYYY MMMM')}</div>
+                        className="schedule-month text-base sm:text-lg mr-2 font-semibold">{data.interval[0].format('YYYY MMMM')}</div>
                 </div>
-                <div className="flex-row-item-center">
-                    <FilterBtn filters={data.filters}
+                <div className="flex-row-item-center mt-3 sm:mt-0">
+                    {!!data.filters.profileId &&
+                        <JoinedFilterBtn checked={data.filters.applied}/>
+                    }
+
+                    <FilterBtn
+                        isFiltered={data.isFiltered}
+                        filters={data.filters}
                         list={{
                             tags: data.tags,
                             venues: data.venues,
                             tracks: data.tracks
                         }} />
 
-                    <div className="ml-2 dropdown dropdown-end">
-                        <div tabIndex={1} role="button"
-                            className="flex-row-item-center btn btn-outline btn-sm w-full justify-between">
-                            <div>Day</div>
-                            <i className="uil-angle-down hidden sm:block"></i>
-                        </div>
-                        <ul tabIndex={2}
-                            className="min-w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
-                            <li>
-                                <a href={`/schedule/week/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Week</a>
-                            </li>
-                            <li>
-                                <a href={`/schedule/day/${data.group.handle}${data.startDate ? `?start_date=${data.startDate}` : ''}`}>Day</a>
-                            </li>
-                        </ul>
-                    </div>
+                    <ScheduleViewSwitcher
+                        weeklyUrl={data.weeklyUrl}
+                        dailyUrl={data.dailyUrl}
+                        listingUrl={data.listingUrl}
+                        currView={'day'} />
                 </div>
             </div>
 
@@ -105,7 +102,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                     />
                 </div>
 
-                <div className="py-8 flex flex-row">
+                <div className="py-1 flex flex-row">
                     <div className="flex flex-col w-22">
                         {
                             hourLabels.map((label) => {

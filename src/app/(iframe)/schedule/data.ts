@@ -12,7 +12,9 @@ export interface IframeSchedulePageSearchParams {
     venue?: string | string[]
     popup?: string | string[]
     profile?: string | string[]
-    applied?: string | string[]
+    applied?: string | string[],
+    skip_repeat?: string | string[],
+    skip_multi_day?: string | string[]
 }
 
 export interface IframeSchedulePageParams {
@@ -34,6 +36,8 @@ export interface Filter {
     trackId?: number
     profileId?: number
     applied?: boolean
+    skipRecurring?: boolean
+    skipMultiDay?: boolean
 }
 
 export interface IframeSchedulePageDataEvent {
@@ -55,6 +59,10 @@ export interface IframeSchedulePageDataEvent {
     geo_lat: string | null,
     geo_lng: string | null,
     owner: Solar.ProfileSample,
+    track_id: number | null,
+    track: Solar.Track | null,
+    recurring_id: number | null,
+    pinned: boolean,
 }
 
 export interface IframeSchedulePageData {
@@ -65,23 +73,50 @@ export interface IframeSchedulePageData {
     events: IframeSchedulePageDataEvent[],
     interval: DayjsType[],
     filters: Filter,
-    startDate?: string
+    startDate?: string,
+    weeklyUrl: string,
+    dailyUrl: string,
+    listingUrl: string,
+    isFiltered: boolean
 }
 
 export interface IframeSchedulePageDataProps {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
-    view: 'week' | 'day',
+    view: 'week' | 'day' | 'list',
 }
 
-export async function IframeSchedulePageData({params, searchParams, view}: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
+function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []) {
+    const params = new URLSearchParams()
+
+    Object.entries(searchParams).forEach(([key, value]) => {
+        if (exclude.includes(key)) {
+            return
+        }
+        if (Array.isArray(value)) {
+            value.forEach(v => params.append(key, v))
+        } else {
+            params.set(key, value)
+        }
+    })
+
+    return params.toString()
+}
+
+export async function IframeSchedulePageData({
+    params,
+    searchParams,
+    view
+}: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
     const groupName = params.group
-    const filters = {
+    const filters: Filter = {
         tags: searchParams.tags ? pickSearchParam(searchParams.tags)!.split(',') : [],
         trackId: searchParams.track ? Number(pickSearchParam(searchParams.track)!) : undefined,
         venueId: searchParams.venue ? Number(pickSearchParam(searchParams.venue)!) : undefined,
         profileId: searchParams.profile ? Number(pickSearchParam(searchParams.profile)!) : undefined,
-        applied: searchParams.applied === 'true'
+        applied: searchParams.applied === 'true',
+        skipRecurring: searchParams.skip_repeat === 'true',
+        skipMultiDay: searchParams.skip_multi_day === 'true'
     }
     const startDate = pickSearchParam(searchParams.start_date)
 
@@ -91,17 +126,21 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
     apiSearchParams.set('group_id', groupName)
     apiSearchParams.set('start_date', start)
     apiSearchParams.set('end_date', end)
-    apiSearchParams.set('limit', '200')
+    apiSearchParams.set('limit', '400')
     filters.tags?.length && apiSearchParams.set('tags', filters.tags.join(','))
     filters.trackId && apiSearchParams.set('track_id', filters.trackId.toString())
     filters.venueId && apiSearchParams.set('venue_id', filters.venueId.toString())
     filters.profileId && apiSearchParams.set('source_profile_id', filters.profileId.toString())
     filters.applied && apiSearchParams.set('my_event', '1')
+    filters.skipRecurring && apiSearchParams.set('skip_recurring', '1')
+    filters.skipMultiDay && apiSearchParams.set('skip_multiday', '1')
 
     const url = `${api}/event/list?${apiSearchParams.toString()}`
+    // console.log(url)
     const response = await fetch(url, {
+        cache: 'no-store',
         headers: {
-            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         }
     })
 
@@ -111,25 +150,57 @@ export async function IframeSchedulePageData({params, searchParams, view}: Ifram
 
     const data = await response.json()
 
+    // console.log('---events', data.events.length)
+
     const interval = []
-    let current = dayjs(start)
-    while (current.isSameOrBefore(end)) {
-        interval.push(current)
+    let current = dayjs.tz(start, data.group.timezone)
+    while (current.isSameOrBefore(dayjs.tz(end, data.group.timezone))) {
+        interval.push(current.endOf('day'))
         current = current.add(1, 'day')
     }
 
+    const weeklyUrl = `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
+
+    let dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
+    if (view === 'week' && dayjs.tz(new Date(), data.group.timezone).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
+        // if current date is in the interval, set the daily view to the current date
+        dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams, ['start_date'])}`
+    }
+
+    const listingUrl = `/schedule/list/${groupName}?${searchParamsToString(searchParams)}`
+
+    const events = data.events
+        .map((event: IframeSchedulePageDataEvent) => {
+            return {
+                ...event,
+                track: data.group.tracks.find((track: Solar.Track) => track.id === event.track_id) || null
+            }
+        })
+
+    const isFiltered = filters.tags.length > 0
+        || !!filters.venueId
+        || !!filters.trackId
+        || filters.applied
+        || filters.skipRecurring
+        || filters.skipMultiDay
+
     return {
         ...data,
+        events,
         tags: data.group.event_tags || [],
         tracks: data.group.tracks || [],
         venues: data.group.venues || [],
         filters: filters,
         interval,
-        startDate
+        startDate,
+        weeklyUrl,
+        dailyUrl,
+        listingUrl,
+        isFiltered
     }
 }
 
-function getInterval(startDate?: string, view: 'week' | 'day' = 'week') {
+function getInterval(startDate?: string, view: 'week' | 'day' | 'list' = 'week') {
     const start = dayjs(startDate || undefined)
 
     switch (view) {
@@ -139,6 +210,11 @@ function getInterval(startDate?: string, view: 'week' | 'day' = 'week') {
             end: start.endOf('week').format('YYYY-MM-DD')
         }
     case 'day':
+        return {
+            start: start.format('YYYY-MM-DD'),
+            end: start.format('YYYY-MM-DD')
+        }
+    case 'list':
         return {
             start: start.format('YYYY-MM-DD'),
             end: start.format('YYYY-MM-DD')

@@ -1,5 +1,5 @@
-@import "poppins.css";
-@import "icons.css";
+/*@import "poppins.css";*/
+@import "font_icons.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -36,7 +36,6 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Poppins, sans-serif;
   overflow-y: scroll;
 }
 

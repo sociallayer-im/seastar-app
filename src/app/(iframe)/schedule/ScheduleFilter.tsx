@@ -22,10 +22,13 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
     const handleClear = () => {
         setFilters({
+            ...filters,
             tags: [],
             trackId: undefined,
             venueId: undefined,
-            applied: false
+            applied: false,
+            skipMultiDay: false,
+            skipRecurring: false
         })
     }
 
@@ -73,11 +76,15 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         filters.venueId ? currSearchParams.set('venue', filters.venueId.toString()) : currSearchParams.delete('venue')
         filters.trackId ? currSearchParams.set('track', filters.trackId.toString()) : currSearchParams.delete('track')
         filters.applied && filters.profileId ? currSearchParams.set('applied', 'true') : currSearchParams.delete('applied')
+        filters.skipRecurring ? currSearchParams.set('skip_repeat', 'true') : currSearchParams.delete('skip_repeat')
+        filters.skipMultiDay ? currSearchParams.set('skip_multi_day', 'true') : currSearchParams.delete('skip_multi_day')
         window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
     }
 
     const selectedVenue = props.list.venues.find(venue => venue.id === filters.venueId)
     const selectedTrack = props.list.tracks.find(track => track.id === filters.trackId)
+
+    console.log('props.filters', props.filters)
 
     return <div className="bg-[--background] shadow rounded-lg p-5 w-[365px]">
         <div className="flex-row-item-center justify-between">
@@ -135,7 +142,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                     })
             }
 
-            { !!filters.profileId &&
+            {!!filters.profileId &&
                 <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                     <div>Applied</div>
                     <input
@@ -148,6 +155,30 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                         className="mr-2 checkbox checkbox-sm"/>
                 </div>
             }
+
+            <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
+                <div>Repeating Events</div>
+                <input
+                    type="checkbox"
+                    onChange={() => setFilters({
+                        ...filters,
+                        skipRecurring: !filters.skipRecurring
+                    })}
+                    checked={!filters.skipRecurring}
+                    className="mr-2 checkbox checkbox-sm"/>
+            </div>
+
+            <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
+                <div>Multi-day Events</div>
+                <input
+                    type="checkbox"
+                    onChange={() => setFilters({
+                        ...filters,
+                        skipMultiDay: !filters.skipMultiDay
+                    })}
+                    checked={!filters.skipMultiDay}
+                    className="mr-2 checkbox checkbox-sm"/>
+            </div>
 
             {
                 props.list.venues.length > 0 &&
@@ -162,7 +193,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                             <i className="uil-angle-down hidden sm:block"></i>
                         </div>
                         <ul tabIndex={0}
-                            className="max-h-[200px] overflow-auto flex-nowrap w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
+                            className="max-h-[200px] !fixed overflow-auto flex-nowrap dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
                             <li className="cursor-pointer w-full"
                                 onClick={() => updateVenue()}>
                                 <div className="flex-row-item-center">
@@ -179,7 +210,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                             </li>
 
                             {props.list.venues.map((venue) => {
-                                return <li className="cursor-pointer w-full"
+                                return <li className="cursor-pointer"
                                     key={venue.id}
                                     onClick={() => updateVenue(venue.id)}>
                                     <div className="flex-row-item-center">
@@ -212,7 +243,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                             <i className="uil-angle-down hidden sm:block"></i>
                         </div>
                         <ul tabIndex={0}
-                            className="max-h-[200px] overflow-auto flex-nowrap w-full dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
+                            className="max-h-[200px] !fixed overflow-auto flex-nowrap dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
                             <li className="cursor-pointer w-full"
                                 onClick={() => updateTrack()}>
                                 <div className="flex-row-item-center">
@@ -254,7 +285,9 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
         <div className="flex-row-item-center mt-6 justify-center">
             <button className="btn flex-1"
-                onClick={() => {props.close && props.close()}}>
+                onClick={() => {
+                    props.close && props.close()
+                }}>
                 Cancel
             </button>
             <button className="btn btn-primary flex-1 ml-2"
