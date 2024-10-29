@@ -122,7 +122,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             </button>
         </div>
 
-        <div className="event-filter-content max-h-[70svh] overflow-auto">
+        <div className="event-filter-content max-h-[70svh] overflow-x-hidden overflow-y-auto">
             <div>
                 <div className="font-semibold mt-6 mb-3">Tags</div>
                 <label
@@ -211,7 +211,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             { props.list.venues.length > 0 &&
                 <>
                     <div className="font-semibold mt-6 mb-3">Venues</div>
-                    <div className="dropdown w-full overflow-auto">
+                    <div className="dropdown w-full">
                         <div tabIndex={0} role="button"
                             className="flex-row-item-center btn w-full justify-between">
                             <div className="w-full whitespace-nowrap text-left overflow-hidden overflow-ellipsis">
@@ -281,7 +281,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                     <div className="font-semibold mt-6 mb-3">Tracks</div>
                     <div className="dropdown w-full">
                         <div tabIndex={0} role="button"
-                            className="flex-row-item-center btn w-full justify-between">
+                            className="flex-row-item-center btn w-full justify-between overflow-x-hidden">
                             <div className="w-full whitespace-nowrap text-left overflow-hidden overflow-ellipsis">
                                 {selectedTrack?.title || 'All Tracks'}
                             </div>
