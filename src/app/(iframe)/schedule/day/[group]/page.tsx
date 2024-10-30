@@ -131,7 +131,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                         }
                     </div>
                     <div className="canvas relative flex-1">
-                        <div className="grid-rows flex w-full bg-[--background] flex-col flex-nowrap relative">
+                        <div className="grid-rows flex w-full flex-col flex-nowrap relative">
                             {
                                 hourLabels.map((label) => {
                                     return <div
