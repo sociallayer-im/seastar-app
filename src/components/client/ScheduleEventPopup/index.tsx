@@ -9,7 +9,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
     const endTime = dayjs.tz(new Date(event.end_time), timezone)
 
     let interval = `${startTime.format('HH:mm Do')} - ${endTime.format('HH:mm Do')}, ${startTime.format('MMMM')}`
-    if (startTime.date() != endTime.date()) {
+    if (startTime.format('YYYY-MM-DD') != endTime.format('YYYY-MM-DD')) {
         interval = `${startTime.format('HH:mm Do')}, ${startTime.format('MMMM')} - ${endTime.format('HH:mm Do')}, ${endTime.format('MMMM')}`
     }
 

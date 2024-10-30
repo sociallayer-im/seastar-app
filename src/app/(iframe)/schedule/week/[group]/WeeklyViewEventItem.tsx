@@ -21,7 +21,7 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
     const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
     const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
     const isAllDay = start.hour() === 0 && start.minute() === 0 && end.hour() === 23 && end.minute() === 59
-    const timeDuration = start.date() !== end.date() ? `${start.format('HH:mm, Do')} - ${end.format('HH:mm, Do')}` : `${start.format('HH:mm')} - ${end.format('HH:mm')}`
+    const timeDuration = start.format('YYYY-MM-DD') !== end.format('YYYY-MM-DD') ? `${start.format('HH:mm, MMM Do')} - ${end.format('HH:mm, MMM Do')}` : `${start.format('HH:mm')} - ${end.format('HH:mm')}`
 
     const showPopup = useCallback(async () => {
         const loadingModalId = showLoading()
