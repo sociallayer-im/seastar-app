@@ -3,6 +3,8 @@ import {checkProcess, getAvatar} from "@/utils"
 import {getLabelColor} from "@/utils/label_color"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import Cookies from 'js-cookie'
+import {buttonVariants} from "@/components/shadcn/Button"
+import {Badge} from '@/components/shadcn/Badge'
 
 export default function ScheduleEventPopup({event, timezone} : {event: Solar.Event, timezone: string}) {
     const startTime = dayjs.tz(new Date(event.start_time), timezone)
@@ -31,12 +33,9 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
             <div className="flex-1">
                 <div className="text-xs font-semibold sm:my-3 my-2">{interval}</div>
                 <div className="flex-row-item-center sm:my-2 my-1">
-                    {eventProcess === 'ongoing' && <div
-                        className="badge text-xs mr-1 bg-[--ongoing-background] text-[--ongoing-foreground] rounded">Ongoing</div>}
-                    {eventProcess === 'past' && <div
-                        className="badge text-xs mr-1 bg-[--past-background] text-[--past-foreground] rounded">Past</div>}
-                    {eventProcess === 'upcoming' && <div
-                        className="badge text-xs mr-1 bg-[--upcoming-background] text-[--upcoming-foreground] rounded">Upcoming</div>}
+                    {eventProcess === 'ongoing' && <Badge variant='ongoing'>Ongoing</Badge>}
+                    {eventProcess === 'past' && <Badge variant='past'>Past</Badge>}
+                    {eventProcess === 'upcoming' && <Badge variant='upcoming'>Upcoming</Badge>}
                 </div>
                 <div className="sm:text-base text-sm font-semibold sm:my-2 my-1">{event.title}</div>
                 {!!event.tags &&
@@ -93,7 +92,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                 }
             </div>
             <a href={`${referer}event/detail/${event.id}`}
-                className="btn btn-md  btn-neutral text-white"
+                className={`${buttonVariants({variant: 'normal'})}  font-semibold`}
                 target="_blank"
                 rel="nofollow">View Detail</a>
         </div>

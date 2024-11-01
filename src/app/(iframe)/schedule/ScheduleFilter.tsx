@@ -1,6 +1,14 @@
 import {useEffect, useMemo, useState} from "react"
 import {getLabelColor} from "@/utils/label_color"
 import {Filter} from "@/app/(iframe)/schedule/data"
+import {Checkbox} from '@/components/shadcn/Checkbox'
+import {Button, buttonVariants} from "@/components/shadcn/Button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+    DropdownMenuItem
+} from '@/components/shadcn/DropdownMenu'
 
 interface ScheduleFilterProps {
     filters: Filter,
@@ -112,7 +120,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         }
     })
 
-    return <div className="filter-dialog bg-[--background] shadow rounded-lg p-5 w-[365px]">
+    return <div className="filter-dialog bg-[--background] shadow rounded-lg p-5 max-w-[520px] w-[100vw]">
         <div className="flex-row-item-center justify-between">
             <div className="text-xl font-semibold">Filters</div>
             <button
@@ -142,11 +150,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                             style={{background: '#333'}}/>
                         All Tags
                     </div>
-                    <input
-                        type="checkbox"
-                        readOnly
-                        checked={!filters.tags.length}
-                        className="mr-2 checkbox checkbox-sm"/>
+                    <Checkbox checked={!filters.tags.length} />
                 </div>
                 {props.list.tags
                     .filter(tag => tag.toLowerCase().includes(tagSearch.trim().toLowerCase()))
@@ -159,11 +163,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                                     style={{background: getLabelColor(tag)}}/>
                                 {tag}
                             </div>
-                            <input
-                                type="checkbox"
-                                readOnly
-                                checked={filters.tags.includes(tag)}
-                                className="mr-2 checkbox checkbox-sm"/>
+                            <Checkbox checked={filters.tags.includes(tag)} />
                         </div>
                     })
                 }
@@ -172,45 +172,58 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             {!!filters.profileId &&
                 <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                     <div>Applied</div>
-                    <input
-                        type="checkbox"
-                        onChange={() => setFilters({
-                            ...filters,
-                            applied: !filters.applied
-                        })}
-                        checked={!!filters.applied}
-                        className="mr-2 checkbox checkbox-sm"/>
+                    <Checkbox checked={!!filters.applied} onCheckedChange={(checked)=> setFilters({
+                        ...filters,
+                        applied: !!checked
+                    })} />
                 </div>
             }
 
             <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                 <div>Repeating Events</div>
-                <input
-                    type="checkbox"
-                    onChange={() => setFilters({
-                        ...filters,
-                        skipRecurring: !filters.skipRecurring
-                    })}
-                    checked={!filters.skipRecurring}
-                    className="mr-2 checkbox checkbox-sm"/>
+                <Checkbox checked={!filters.skipRecurring} onCheckedChange={(checked)=> setFilters({
+                    ...filters,
+                    skipRecurring: !checked
+                })} />
             </div>
 
             <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                 <div>Multi-day Events</div>
-                <input
-                    type="checkbox"
-                    onChange={() => setFilters({
-                        ...filters,
-                        skipMultiDay: !filters.skipMultiDay
-                    })}
-                    checked={!filters.skipMultiDay}
-                    className="mr-2 checkbox checkbox-sm"/>
+                <Checkbox checked={!filters.skipMultiDay} onCheckedChange={(checked)=> setFilters({
+                    ...filters,
+                    skipMultiDay: !checked
+                })} />
             </div>
-
 
             { props.list.venues.length > 0 &&
                 <>
                     <div className="font-semibold mt-6 mb-3">Venues</div>
+                    <div className="w-full">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className={`${buttonVariants({variant: 'secondary'})} font-semibold w-full`}>
+                                <div className="flex flex-row justify-between w-full">
+                                    {selectedVenue?.title || 'All venue'}
+                                    <i className="uil-angle-down" />
+                                </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuItem>All Venue</DropdownMenuItem>
+                                {props.list.venues.map((venue) => {
+                                    return <DropdownMenuItem key={venue.id}>{venue.title}</DropdownMenuItem>
+                                })
+                                }
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </>
+
+
+            }
+
+
+            {false && props.list.venues.length > 0 &&
+                <>
+
                     <div className="dropdown w-full">
                         <div tabIndex={0} role="button"
                             className="flex-row-item-center btn w-full justify-between">
@@ -276,7 +289,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                 </>
             }
 
-            {props.list.tracks.length > 0 &&
+            {false && props.list.tracks.length > 0 &&
                 <>
                     <div className="font-semibold mt-6 mb-3">Tracks</div>
                     <div className="dropdown w-full">
@@ -329,16 +342,16 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
 
         <div className="flex-row-item-center mt-6 justify-center">
-            <button className="btn flex-1"
+            <Button variant="secondary" className="flex-1"
                 onClick={() => {
                     props.close && props.close()
                 }}>
                 Cancel
-            </button>
-            <button className="btn btn-primary flex-1 ml-2"
+            </Button>
+            <Button variant="primary" className="ml-2 flex-1"
                 onClick={handleConfirm}>
                 Show Events
-            </button>
+            </Button>
         </div>
     </div>
 }

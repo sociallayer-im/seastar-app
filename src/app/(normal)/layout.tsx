@@ -3,7 +3,7 @@ import "@/styles/globals.css"
 import Head from 'next/head'
 import {ReactNode} from "react"
 import LangSwitcher from '@/components/client/LangSwitcher'
-import {Toaster} from '@/components/client/shadcn/Toast/toaster'
+import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {selectLang} from '@/app/actions'
 import Image from 'next/image'

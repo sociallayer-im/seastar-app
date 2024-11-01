@@ -13,20 +13,25 @@ const config: Config = {
             colors: {
                 background: "var(--background)",
                 foreground: "var(--foreground)",
+                primary: "hsl(var(--primary))",
+                'primary-foreground': `hsl(var(--primary-foreground))`,
+                secondary: "var(--secondary)",
+                'secondary-foreground': `var(--secondary-foreground)`,
+
             },
         },
     },
-    plugins: [
-        daisyui
-    ],
-    daisyui: {
-        themes: [{
-            light: {
-                ...themes["light"],
-                primary: "#7FF7CE",
-                info: '#409eff'
-            }
-        }],
-    }
+    // plugins: [
+    //     daisyui
+    // ],
+    // daisyui: {
+    //     themes: [{
+    //         light: {
+    //             ...themes["light"],
+    //             primary: "#7FF7CE",
+    //             info: '#409eff'
+    //         }
+    //     }],
+    // }
 }
 export default config
