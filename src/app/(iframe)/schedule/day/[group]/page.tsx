@@ -13,6 +13,7 @@ import {
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[group]/DailyViewAllDayEventItem"
+import {cookies} from 'next/headers'
 
 export async function generateMetadata({params, searchParams}: {
     params: IframeSchedulePageParams,
@@ -21,7 +22,8 @@ export async function generateMetadata({params, searchParams}: {
     const data = await IframeSchedulePageData({
         params,
         searchParams,
-        view: 'day'
+        view: 'day',
+        cookies: cookies()
     })
 
     if (!data.group) {
@@ -40,7 +42,8 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
     const data = await IframeSchedulePageData({
         params,
         searchParams,
-        view: 'day'
+        view: 'day',
+        cookies: cookies()
     })
 
     const hourLabels = await getHourLabel()
@@ -61,7 +64,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
         <div className="page-width z-10 relative">
             <div className="py-3 sm:py-5">
                 <div className="sm:text-2xl text-xl flex flex-row">
-                    <a href={`/event/${data.group.handle}`} className="font-semibold text-[#6CD7B2] mr-2">
+                    <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2">
                         {data.group.nickname || data.group.handle}
                     </a>
                     <div>Event Schedule</div>
