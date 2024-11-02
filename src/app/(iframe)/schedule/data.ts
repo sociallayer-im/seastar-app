@@ -64,6 +64,7 @@ export interface IframeSchedulePageDataEvent {
     track: Solar.Track | null,
     recurring_id: number | null,
     pinned: boolean,
+    event_roles: Solar.EventRole[] | null
 }
 
 export interface IframeSchedulePageData {
