@@ -2,13 +2,9 @@ import {useEffect, useMemo, useState} from "react"
 import {getLabelColor} from "@/utils/label_color"
 import {Filter} from "@/app/(iframe)/schedule/data"
 import {Checkbox} from '@/components/shadcn/Checkbox'
-import {Button, buttonVariants} from "@/components/shadcn/Button"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-    DropdownMenuItem
-} from '@/components/shadcn/DropdownMenu'
+import {Button} from "@/components/shadcn/Button"
+import DropdownMenu from '@/components/client/DropdownMenu'
+import {Input} from '@/components/shadcn/Input'
 
 interface ScheduleFilterProps {
     filters: Filter,
@@ -133,16 +129,14 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         <div className="event-filter-content max-h-[70svh] overflow-x-hidden overflow-y-auto">
             <div>
                 <div className="font-semibold mt-6 mb-3">Tags</div>
-                <label
-                    className={`input flex my-3 flew-row w-full bg-gray-100 focus-within:outline-none focus-within:border-primary`}>
-                    <input
-                        placeholder={'Search tags'}
-                        className="flex-1" type="text" name="title"
-                        value={tagSearch}
-                        onChange={e => {
-                            setTagSearch(e.target.value)
-                        }}/>
-                </label>
+                <Input type="text"
+                    startAdornment={<i className="uil-search"/>}
+                    className="w-full mb-3"
+                    placeholder="Search tags"
+                    value={tagSearch}
+                    onChange={e => {
+                        setTagSearch(e.target.value)
+                    }} />
                 <div className="flex-row-item-center justify-between cursor-pointer"
                     onClick={() => updateTags()}>
                     <div className="flex-row-item-center text-[#6CD7B2] font-semibold">
@@ -150,7 +144,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                             style={{background: '#333'}}/>
                         All Tags
                     </div>
-                    <Checkbox checked={!filters.tags.length} />
+                    <Checkbox checked={!filters.tags.length}/>
                 </div>
                 {props.list.tags
                     .filter(tag => tag.toLowerCase().includes(tagSearch.trim().toLowerCase()))
@@ -163,7 +157,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                                     style={{background: getLabelColor(tag)}}/>
                                 {tag}
                             </div>
-                            <Checkbox checked={filters.tags.includes(tag)} />
+                            <Checkbox checked={filters.tags.includes(tag)}/>
                         </div>
                     })
                 }
@@ -172,172 +166,79 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             {!!filters.profileId &&
                 <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                     <div>Applied</div>
-                    <Checkbox checked={!!filters.applied} onCheckedChange={(checked)=> setFilters({
+                    <Checkbox checked={!!filters.applied} onCheckedChange={(checked) => setFilters({
                         ...filters,
                         applied: !!checked
-                    })} />
+                    })}/>
                 </div>
             }
 
             <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                 <div>Repeating Events</div>
-                <Checkbox checked={!filters.skipRecurring} onCheckedChange={(checked)=> setFilters({
+                <Checkbox checked={!filters.skipRecurring} onCheckedChange={(checked) => setFilters({
                     ...filters,
                     skipRecurring: !checked
-                })} />
+                })}/>
             </div>
 
             <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                 <div>Multi-day Events</div>
-                <Checkbox checked={!filters.skipMultiDay} onCheckedChange={(checked)=> setFilters({
+                <Checkbox checked={!filters.skipMultiDay} onCheckedChange={(checked) => setFilters({
                     ...filters,
                     skipMultiDay: !checked
-                })} />
+                })}/>
             </div>
 
-            { props.list.venues.length > 0 &&
+            {props.list.venues.length > 0 &&
                 <>
                     <div className="font-semibold mt-6 mb-3">Venues</div>
                     <div className="w-full">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className={`${buttonVariants({variant: 'secondary'})} font-semibold w-full`}>
+                        <DropdownMenu
+                            value={selectedVenue ? [selectedVenue] : []}
+                            options={[{id: 0, title: 'All venue'} as Solar.Venue, ...props.list.venues]}
+                            valueKey="id"
+                            onSelect={(values) => {
+                                values.length && updateVenue(values[0].id)
+                            }}
+                            renderOption={(option) => {
+                                return <div>{option.title}</div>
+                            }}>
+                            <Button variant="secondary" className="w-full">
                                 <div className="flex flex-row justify-between w-full">
                                     {selectedVenue?.title || 'All venue'}
-                                    <i className="uil-angle-down" />
+                                    <i className="uil-angle-down"/>
                                 </div>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuItem>All Venue</DropdownMenuItem>
-                                {props.list.venues.map((venue) => {
-                                    return <DropdownMenuItem key={venue.id}>{venue.title}</DropdownMenuItem>
-                                })
-                                }
-                            </DropdownMenuContent>
+                            </Button>
                         </DropdownMenu>
                     </div>
                 </>
-
-
             }
 
-
-            {false && props.list.venues.length > 0 &&
-                <>
-
-                    <div className="dropdown w-full">
-                        <div tabIndex={0} role="button"
-                            className="flex-row-item-center btn w-full justify-between">
-                            <div className="w-full whitespace-nowrap text-left overflow-hidden overflow-ellipsis">
-                                {selectedVenue?.title || 'All venue'}
-                            </div>
-                            <i className="uil-angle-down hidden sm:block"></i>
-                        </div>
-                        <ul tabIndex={0}
-                            className="!fixed max-h-[200px] overflow-auto flex-nowrap dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
-                            <li className="cursor-pointer w-full"
-                                onClick={() => updateVenue()}>
-                                <div className="flex-row-item-center">
-                                    <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                        All Venue
-                                    </div>
-                                    <div className="w-[20px] shrink-0 grow-0">
-                                        {!filters.venueId &&
-                                            <input type="checkbox" checked readOnly
-                                                className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                        }
-                                    </div>
-                                </div>
-                            </li>
-
-                            {props.list.venues.map((venue) => {
-                                return <li className="cursor-pointer"
-                                    key={venue.id}
-                                    onClick={() => updateVenue(venue.id)}>
-                                    <div className="flex-row-item-center">
-                                        <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                            {venue.title}
-                                        </div>
-                                        <div className="w-[20px] shrink-0 grow-0">
-                                            {filters.venueId === venue.id &&
-                                                <input type="checkbox" checked readOnly
-                                                    className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                            }
-                                        </div>
-                                    </div>
-                                </li>
-                            })}
-
-                            {props.list.venues.map((venue) => {
-                                return <li className="cursor-pointer"
-                                    key={venue.id}
-                                    onClick={() => updateVenue(venue.id)}>
-                                    <div className="flex-row-item-center">
-                                        <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                            {venue.title}
-                                        </div>
-                                        <div className="w-[20px] shrink-0 grow-0">
-                                            {filters.venueId === venue.id &&
-                                                <input type="checkbox" checked readOnly
-                                                    className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                            }
-                                        </div>
-                                    </div>
-                                </li>
-                            })}
-                        </ul>
-                    </div>
-                </>
-            }
-
-            {false && props.list.tracks.length > 0 &&
+            {props.list.tracks.length > 0 &&
                 <>
                     <div className="font-semibold mt-6 mb-3">Tracks</div>
-                    <div className="dropdown w-full">
-                        <div tabIndex={0} role="button"
-                            className="flex-row-item-center btn w-full justify-between overflow-x-hidden">
-                            <div className="w-full whitespace-nowrap text-left overflow-hidden overflow-ellipsis">
-                                {selectedTrack?.title || 'All Tracks'}
-                            </div>
-                            <i className="uil-angle-down hidden sm:block"></i>
-                        </div>
-                        <ul tabIndex={0}
-                            className="max-h-[200px] !fixed overflow-auto flex-nowrap dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
-                            <li className="cursor-pointer w-full"
-                                onClick={() => updateTrack()}>
-                                <div className="flex-row-item-center">
-                                    <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                        All Venue
-                                    </div>
-                                    <div className="w-[20px] shrink-0 grow-0">
-                                        {!filters.trackId &&
-                                            <input type="checkbox" checked readOnly
-                                                className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                        }
-                                    </div>
+                    <div className="w-full">
+                        <DropdownMenu
+                            value={selectedVenue ? [selectedVenue] : []}
+                            options={[{id: 0, title: 'All Tracks'} as Solar.Venue, ...props.list.tracks]}
+                            valueKey="id"
+                            onSelect={(values) => {
+                                values.length && updateTrack(values[0].id)
+                            }}
+                            renderOption={(option) => {
+                                return <div>{option.title}</div>
+                            }}>
+                            <Button variant="secondary" className="w-full">
+                                <div className="flex flex-row justify-between w-full">
+                                    {selectedTrack?.title || 'All Tracks'}
+                                    <i className="uil-angle-down"/>
                                 </div>
-                            </li>
-
-                            {props.list.tracks.map((track) => {
-                                return <li className="cursor-pointer w-full"
-                                    key={track.id}
-                                    onClick={() => updateTrack(track.id)}>
-                                    <div className="flex-row-item-center">
-                                        <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                            {track.title}
-                                        </div>
-                                        <div className="w-[20px] shrink-0 grow-0">
-                                            {filters.trackId === track.id &&
-                                                <input type="checkbox" checked readOnly
-                                                    className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                            }
-                                        </div>
-                                    </div>
-                                </li>
-                            })}
-                        </ul>
+                            </Button>
+                        </DropdownMenu>
                     </div>
                 </>
             }
+
         </div>
 
 

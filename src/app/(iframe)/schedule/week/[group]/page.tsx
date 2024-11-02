@@ -10,9 +10,10 @@ import {
 } from "@/app/(iframe)/schedule/data"
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
+import {cookies} from 'next/headers'
 
 export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
-    const data = await IframeSchedulePageData({params, searchParams, view: 'week'})
+    const data = await IframeSchedulePageData({params, searchParams, view: 'week', cookies: cookies()})
     if (!data.group) {
         redirect('/error')
     } else {
@@ -26,7 +27,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams
 }) {
-    const data = await IframeSchedulePageData({params, searchParams, view: 'week'})
+    const data = await IframeSchedulePageData({params, searchParams, view: 'week', cookies: cookies()})
     if (!data.group) {
         redirect('/error')
     }
@@ -43,7 +44,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
         <div className="page-width z-10 relative">
             <div className="py-3 sm:py-5 max-w-[100vw]">
                 <div className="sm:text-2xl text-xl flex flex-row">
-                    <a href={`/event/${data.group.handle}`} className="font-semibold text-[#6CD7B2] mr-2">
+                    <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2">
                         {data.group.nickname || data.group.handle}
                     </a>
                     <div>Event Schedule</div>

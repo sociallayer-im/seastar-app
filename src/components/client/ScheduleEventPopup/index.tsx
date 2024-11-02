@@ -17,7 +17,15 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
 
     const eventProcess = checkProcess(event.start_time, event.end_time)
 
-    const host = event.host_info?.group_host?.[0] || event.owner
+    const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
+    const host: Solar.ProfileSample = groupHostRole ?
+        {
+            image_url: groupHostRole.image_url,
+            nickname: groupHostRole.nickname,
+            handle: groupHostRole.nickname!,
+            id: groupHostRole.item_id!
+        }
+        : event.owner
 
     let referer = process.env.NEXT_PUBLIC_APP_URL + '/'
     if (Cookies.get('referer')) {
