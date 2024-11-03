@@ -46,7 +46,7 @@ export const checkProcess = (startTime: string, endTime: string) => {
     }
 }
 
-export const getAvatar = (id?: number, url?: string) => {
+export const getAvatar = (id?: number, url?: string | null) => {
     if (url) return url
 
     const defAvatars = [
@@ -65,6 +65,15 @@ export const getAvatar = (id?: number, url?: string) => {
     const lastNum10 = parseInt(lastNum16, 16)
     const avatarIndex = lastNum10 % defAvatars.length
     return defAvatars[avatarIndex]
+}
+
+export const getScrollBarWidth = () => {
+    const el = document.createElement("div")
+    el.style.cssText = "overflow:scroll; visibility:hidden; position:absolute;"
+    document.body.appendChild(el)
+    const width = el.offsetWidth - el.clientWidth
+    el.remove()
+    return width
 }
 
 
