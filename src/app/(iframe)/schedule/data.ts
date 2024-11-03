@@ -2,6 +2,7 @@
 
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {pickSearchParam} from "@/utils"
+import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
 
 const api = process.env.NEXT_PUBLIC_API_URL
 
@@ -63,6 +64,7 @@ export interface IframeSchedulePageDataEvent {
     track: Solar.Track | null,
     recurring_id: number | null,
     pinned: boolean,
+    event_roles: Solar.EventRole[] | null
 }
 
 export interface IframeSchedulePageData {
@@ -77,13 +79,15 @@ export interface IframeSchedulePageData {
     weeklyUrl: string,
     dailyUrl: string,
     listingUrl: string,
-    isFiltered: boolean
+    isFiltered: boolean,
+    eventHomeUrl: string
 }
 
 export interface IframeSchedulePageDataProps {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
     view: 'week' | 'day' | 'list',
+    cookies: ReadonlyRequestCookies
 }
 
 function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []) {
@@ -106,7 +110,8 @@ function searchParamsToString(searchParams: IframeSchedulePageSearchParams, excl
 export async function IframeSchedulePageData({
     params,
     searchParams,
-    view
+    view,
+    cookies
 }: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
     const groupName = params.group
     const filters: Filter = {
@@ -184,6 +189,9 @@ export async function IframeSchedulePageData({
         || filters.skipRecurring
         || filters.skipMultiDay
 
+
+    const eventHomeUrl = `${cookies.get('referer')?.value || process.env.NEXT_PUBLIC_APP_URL || ''}/event/${data.group.handle || data.group.username}`
+
     return {
         ...data,
         events,
@@ -196,7 +204,8 @@ export async function IframeSchedulePageData({
         weeklyUrl,
         dailyUrl,
         listingUrl,
-        isFiltered
+        isFiltered,
+        eventHomeUrl
     }
 }
 

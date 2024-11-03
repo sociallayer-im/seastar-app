@@ -6,7 +6,6 @@ import {getLabelColor, getLightColor} from "@/utils/label_color"
 import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
 
 
-
 export interface ConcurrencyEvent extends IframeSchedulePageDataEvent {
     _previousConcurrentEvents: number | undefined
     _totalConcurrentEvents: number | undefined
@@ -24,32 +23,50 @@ interface CalculateGridPositionProps {
 }
 
 export async function calculateGridPosition({events, timezone, currDate}: CalculateGridPositionProps) {
-    const eventConcurrent = handleEventConcurrency(events.map(e => {
-        return {...e, _previousConcurrentEvents: 0, _totalConcurrentEvents: 0}}) as ConcurrencyEvent[])
-
     const currDateObj = dayjs.tz(currDate, timezone)
-    const res : IframeSchedulePageDataEventDetail[] =[]
-    eventConcurrent.forEach((event) => {
-        const leftPosition = getDayViewEventLeft(event)
-        const eventWidth = 100 - leftPosition
-        const labelColor = event.tags && event.tags[0] ? getLabelColor(event.tags[0]) : '#000'
-        res.push({
-            ...event,
-            style: {
-                backgroundColor: getLightColor(labelColor, 0.93),
-                height: getDayViewEventHeight(event, currDateObj, timezone) + '%',
-                top: getDayViewEventTop(event, currDateObj, timezone) + '%',
-                left: leftPosition + '%',
-                width: eventWidth + '%'
-            }
-        })
+
+    const AllDayEvent: IframeSchedulePageDataEvent[] = []
+    const otherEvents: IframeSchedulePageDataEvent[] = []
+
+    events.forEach((event) => {
+        const height = getDayViewEventHeight(event, currDateObj, timezone) + '%'
+        if (height === '100%') {
+            AllDayEvent.push(event)
+        } else {
+            otherEvents.push(event)
+        }
     })
 
-    return res
+
+    const EventRes: IframeSchedulePageDataEventDetail[] = handleEventConcurrency(otherEvents.map(e => {
+        return {...e, _previousConcurrentEvents: 0, _totalConcurrentEvents: 0}
+    }) as ConcurrencyEvent[])
+        .map((event) => {
+            const leftPosition = getDayViewEventLeft(event)
+            const eventWidth = 100 - leftPosition
+            const labelColor = event.tags && event.tags[0] ? getLabelColor(event.tags[0]) : '#000'
+            const height = getDayViewEventHeight(event, currDateObj, timezone) + '%'
+
+            return {
+                ...event,
+                style: {
+                    backgroundColor: getLightColor(labelColor, 0.93),
+                    height: height,
+                    top: getDayViewEventTop(event, currDateObj, timezone) + '%',
+                    left: leftPosition + '%',
+                    width: eventWidth + '%'
+                }
+            }
+        })
+
+    return {
+        events: EventRes,
+        allDayEvents: AllDayEvent
+    }
 }
 
 
-function handleEventConcurrency (
+function handleEventConcurrency(
     sortedEvents: ConcurrencyEvent[],
     concurrentEventsCache: ConcurrencyEvent[] = [],
     currentIndex = 0
@@ -109,7 +126,7 @@ function handleEventConcurrency (
     return sortedEvents
 }
 
-function getDayViewEventLeft (calendarEvent: ConcurrencyEvent) {
+function getDayViewEventLeft(calendarEvent: ConcurrencyEvent) {
     if (
         !calendarEvent._totalConcurrentEvents ||
         !calendarEvent._previousConcurrentEvents
@@ -123,7 +140,7 @@ function getDayViewEventLeft (calendarEvent: ConcurrencyEvent) {
     )
 }
 
-function getDayViewEventHeight(event: IframeSchedulePageDataEvent,  currDate: DayjsType, timezone: string) {
+function getDayViewEventHeight(event: IframeSchedulePageDataEvent, currDate: DayjsType, timezone: string) {
     let start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
     // 处理开始时间不是在当天的情况
     if (start.date() !== currDate.date()) {

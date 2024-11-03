@@ -2,7 +2,7 @@ import type {Metadata} from "next"
 import "@/styles/globals.css"
 import Head from 'next/head'
 import {ReactNode} from "react"
-import {Toaster} from '@/components/client/shadcn/Toast/toaster'
+import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {selectLang} from '@/app/actions'
 import Header from "@/components/Header"

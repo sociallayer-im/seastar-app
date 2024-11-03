@@ -12,6 +12,8 @@ import {
 } from "@/app/(iframe)/schedule/data"
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
+import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[group]/DailyViewAllDayEventItem"
+import {cookies} from 'next/headers'
 
 export async function generateMetadata({params, searchParams}: {
     params: IframeSchedulePageParams,
@@ -20,7 +22,8 @@ export async function generateMetadata({params, searchParams}: {
     const data = await IframeSchedulePageData({
         params,
         searchParams,
-        view: 'day'
+        view: 'day',
+        cookies: cookies()
     })
 
     if (!data.group) {
@@ -39,7 +42,8 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
     const data = await IframeSchedulePageData({
         params,
         searchParams,
-        view: 'day'
+        view: 'day',
+        cookies: cookies()
     })
 
     const hourLabels = await getHourLabel()
@@ -48,18 +52,19 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
         redirect('/error')
     }
 
-    const displayEvents = await calculateGridPosition({
+    const {events: displayEvents, allDayEvents} = await calculateGridPosition({
         events: data.events,
         timezone: data.group.timezone,
         currDate: data.interval[0].format('YYYY-MM-DD')
     })
+
 
     return <div className="min-h-[calc(100svh-48px)] relative pb-12 bg-[#F8F9F8]">
         <div className="schedule-bg"></div>
         <div className="page-width z-10 relative">
             <div className="py-3 sm:py-5">
                 <div className="sm:text-2xl text-xl flex flex-row">
-                    <a href={`/event/${data.group.handle}`} className="font-semibold text-[#6CD7B2] mr-2">
+                    <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2">
                         {data.group.nickname || data.group.handle}
                     </a>
                     <div>Event Schedule</div>
@@ -101,6 +106,21 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                         currStartDate={data.interval[0].format('YYYY-MM-DD')}
                     />
                 </div>
+                <div className="py-1 flex flex-row">
+                    <div className="flex flex-col w-22">
+                        <div className="px-3 text-right text-xs text-[#71717A]">
+                            All Day
+                        </div>
+                    </div>
+                    <div className="flex-1 flex-col">
+                        { allDayEvents.map((event, index) => {
+                            return <DailyViewAllDayEventItem
+                                timezone={data.group.timezone}
+                                event={event} key={index}/>
+                        })
+                        }
+                    </div>
+                </div>
 
                 <div className="py-1 flex flex-row">
                     <div className="flex flex-col w-22">
@@ -114,7 +134,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                         }
                     </div>
                     <div className="canvas relative flex-1">
-                        <div className="grid-rows flex w-full bg-[--background] flex-col flex-nowrap relative">
+                        <div className="grid-rows flex w-full flex-col flex-nowrap relative">
                             {
                                 hourLabels.map((label) => {
                                     return <div
@@ -125,12 +145,12 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                             }
                         </div>
                         <div className="grid-cols absolute left-0 top-0 w-full h-full flex">
-                            <div className="flex-1 border border-r-[#E0E0E0]" />
-                            <div className="flex-1 border border-r-[#E0E0E0]" />
-                            <div className="flex-1 border border-r-[#E0E0E0]" />
-                            <div className="flex-1 border border-r-[#E0E0E0]" />
-                            <div className="flex-1 border border-r-[#E0E0E0]" />
-                            <div className="flex-1 border border-r-[#E0E0E0]" />
+                            <div className="flex-1 border border-r-[#E0E0E0]"/>
+                            <div className="flex-1 border border-r-[#E0E0E0]"/>
+                            <div className="flex-1 border border-r-[#E0E0E0]"/>
+                            <div className="flex-1 border border-r-[#E0E0E0]"/>
+                            <div className="flex-1 border border-r-[#E0E0E0]"/>
+                            <div className="flex-1 border border-r-[#E0E0E0]"/>
                         </div>
                         <div className="grid-events absolute left-0 top-0 w-full h-full">
                             {
@@ -138,7 +158,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                                     return <DailyViewEventItem
                                         key={index}
                                         event={event}
-                                        timezone={data.group.timezone} />
+                                        timezone={data.group.timezone}/>
                                 })
                             }
                         </div>
@@ -146,7 +166,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                 </div>
             </div>
 
-            <ScrollFirstEventIntoView />
+            <ScrollFirstEventIntoView/>
         </div>
     </div>
 }

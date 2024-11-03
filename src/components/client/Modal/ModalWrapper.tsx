@@ -11,7 +11,7 @@ export default function ModalWrapper({clickOutsideToClose = true, ...props}: {
         if (!!contentRef.current) {
             setTimeout(() => {
                 contentRef.current?.classList.add('!opacity-100')
-                contentRef.current?.classList.add('!scale-100')
+                // contentRef.current?.classList.add('!scale-100')
             }, 100)
         }
     }, [])
@@ -29,7 +29,7 @@ export default function ModalWrapper({clickOutsideToClose = true, ...props}: {
             onClick={handleClickOutside}
             className="absolute z-0 left-0 top-0 w-[100vw] h-[100svh] bg-white opacity-60 blur-2xl" />
 
-        <div ref={contentRef} className="relative z-10 opacity-0 scale-95 transition-all duration-300">
+        <div ref={contentRef} className="relative z-10 opacity-0 transition-all duration-300">
             {props.content(props.close)}
         </div>
     </div>

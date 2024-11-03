@@ -67,5 +67,14 @@ export const getAvatar = (id?: number, url?: string | null) => {
     return defAvatars[avatarIndex]
 }
 
+export const getScrollBarWidth = () => {
+    const el = document.createElement("div")
+    el.style.cssText = "overflow:scroll; visibility:hidden; position:absolute;"
+    document.body.appendChild(el)
+    const width = el.offsetWidth - el.clientWidth
+    el.remove()
+    return width
+}
+
 
 

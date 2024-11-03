@@ -9,9 +9,13 @@
   --foreground: #171717;
   --page-width: 1000px;
 
+  --rounded-btn: 0.5rem;
+
+  --primary: 160, 88%, 73%;
+  --primary-foreground: 150. 3%, 16%;
+
   --destructive: 0 100% 50%;
   --destructive-foreground: 210 40% 98%;
-  ----rounded-btn: 0.5rem;
 
   --ongoing-background: #feeeee;
   --ongoing-foreground: #f26692;
@@ -21,6 +25,9 @@
 
   --upcoming-background: #EEF2FE;
   --upcoming-foreground: #7492EF;
+
+  --secondary: #f2f2f2;
+  --secondary-foreground: #1f2937;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -103,5 +110,7 @@ body {
   background-size: 100% 100%;
   transform-origin: 0 0;
 }
+
+
 
 

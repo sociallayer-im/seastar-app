@@ -1,6 +1,10 @@
-import {useMemo, useState} from "react"
+import {useEffect, useMemo, useState} from "react"
 import {getLabelColor} from "@/utils/label_color"
 import {Filter} from "@/app/(iframe)/schedule/data"
+import {Checkbox} from '@/components/shadcn/Checkbox'
+import {Button} from "@/components/shadcn/Button"
+import DropdownMenu from '@/components/client/DropdownMenu'
+import {Input} from '@/components/shadcn/Input'
 
 interface ScheduleFilterProps {
     filters: Filter,
@@ -84,9 +88,35 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
     const selectedVenue = props.list.venues.find(venue => venue.id === filters.venueId)
     const selectedTrack = props.list.tracks.find(track => track.id === filters.trackId)
 
-    console.log('props.filters', props.filters)
+    useEffect(() => {
+        function setPosition() {
+            const dropdowns = document.querySelectorAll('.event-filter-content .dropdown')
+            const dialog = document.querySelector('.filter-dialog') as HTMLElement
+            const dialogRect = dialog.getBoundingClientRect()
+            dropdowns.forEach(dropdown => {
+                const dropdownRect = dropdown.getBoundingClientRect()
+                const top = dropdownRect.top - dialogRect.top
+                const menu = dropdown.querySelector('.dropdown-content') as HTMLElement
+                const menuRect = menu.getBoundingClientRect()
+                if (window.innerHeight - dropdownRect.bottom <= 230) {
+                    console.log('a', top)
+                    menu.style.top = `${top - menuRect.height - 6}px`
+                } else {
+                    console.log('b', top)
+                    menu.style.top = `${top + 48}px`
+                }
+            })
+        }
 
-    return <div className="bg-[--background] shadow rounded-lg p-5 w-[365px]">
+
+        document.querySelector('.event-filter-content')?.addEventListener('scroll', setPosition)
+
+        return () => {
+            document.querySelector('.event-filter-content')?.removeEventListener('scroll', setPosition)
+        }
+    })
+
+    return <div className="filter-dialog bg-[--background] shadow rounded-lg p-5 max-w-[520px] w-[100vw]">
         <div className="flex-row-item-center justify-between">
             <div className="text-xl font-semibold">Filters</div>
             <button
@@ -96,33 +126,27 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             </button>
         </div>
 
-        <div className="max-h-[70svh] overflow-auto">
-            <div className="font-semibold mt-6 mb-3">Tags</div>
-            <label
-                className={`input flex my-3 flew-row w-full bg-gray-100 focus-within:outline-none focus-within:border-primary`}>
-                <input
-                    placeholder={'Search tags'}
-                    className="flex-1" type="text" name="title"
+        <div className="event-filter-content max-h-[70svh] overflow-x-hidden overflow-y-auto">
+            <div>
+                <div className="font-semibold mt-6 mb-3">Tags</div>
+                <Input type="text"
+                    startAdornment={<i className="uil-search"/>}
+                    className="w-full mb-3"
+                    placeholder="Search tags"
                     value={tagSearch}
                     onChange={e => {
                         setTagSearch(e.target.value)
-                    }}/>
-            </label>
-            <div className="flex-row-item-center justify-between cursor-pointer"
-                onClick={() => updateTags()}>
-                <div className="flex-row-item-center text-[#6CD7B2] font-semibold">
-                    <i className="mr-2 w-[10px] h-[10px] rounded-full"
-                        style={{background: '#333'}}/>
-                    All Tags
+                    }} />
+                <div className="flex-row-item-center justify-between cursor-pointer"
+                    onClick={() => updateTags()}>
+                    <div className="flex-row-item-center text-[#6CD7B2] font-semibold">
+                        <i className="mr-2 w-[10px] h-[10px] rounded-full"
+                            style={{background: '#333'}}/>
+                        All Tags
+                    </div>
+                    <Checkbox checked={!filters.tags.length}/>
                 </div>
-                <input
-                    type="checkbox"
-                    readOnly
-                    checked={!filters.tags.length}
-                    className="mr-2 checkbox checkbox-sm"/>
-            </div>
-            {
-                props.list.tags
+                {props.list.tags
                     .filter(tag => tag.toLowerCase().includes(tagSearch.trim().toLowerCase()))
                     .map((tag, index) => {
                         return <div key={index}
@@ -133,100 +157,59 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                                     style={{background: getLabelColor(tag)}}/>
                                 {tag}
                             </div>
-                            <input
-                                type="checkbox"
-                                readOnly
-                                checked={filters.tags.includes(tag)}
-                                className="mr-2 checkbox checkbox-sm"/>
+                            <Checkbox checked={filters.tags.includes(tag)}/>
                         </div>
                     })
-            }
+                }
+            </div>
 
             {!!filters.profileId &&
                 <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                     <div>Applied</div>
-                    <input
-                        type="checkbox"
-                        onChange={() => setFilters({
-                            ...filters,
-                            applied: !filters.applied
-                        })}
-                        checked={!!filters.applied}
-                        className="mr-2 checkbox checkbox-sm"/>
+                    <Checkbox checked={!!filters.applied} onCheckedChange={(checked) => setFilters({
+                        ...filters,
+                        applied: !!checked
+                    })}/>
                 </div>
             }
 
             <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                 <div>Repeating Events</div>
-                <input
-                    type="checkbox"
-                    onChange={() => setFilters({
-                        ...filters,
-                        skipRecurring: !filters.skipRecurring
-                    })}
-                    checked={!filters.skipRecurring}
-                    className="mr-2 checkbox checkbox-sm"/>
+                <Checkbox checked={!filters.skipRecurring} onCheckedChange={(checked) => setFilters({
+                    ...filters,
+                    skipRecurring: !checked
+                })}/>
             </div>
 
             <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                 <div>Multi-day Events</div>
-                <input
-                    type="checkbox"
-                    onChange={() => setFilters({
-                        ...filters,
-                        skipMultiDay: !filters.skipMultiDay
-                    })}
-                    checked={!filters.skipMultiDay}
-                    className="mr-2 checkbox checkbox-sm"/>
+                <Checkbox checked={!filters.skipMultiDay} onCheckedChange={(checked) => setFilters({
+                    ...filters,
+                    skipMultiDay: !checked
+                })}/>
             </div>
 
-            {
-                props.list.venues.length > 0 &&
+            {props.list.venues.length > 0 &&
                 <>
                     <div className="font-semibold mt-6 mb-3">Venues</div>
-                    <div className="dropdown w-full">
-                        <div tabIndex={0} role="button"
-                            className="flex-row-item-center btn w-full justify-between">
-                            <div className="w-full whitespace-nowrap text-left overflow-hidden overflow-ellipsis">
-                                {selectedVenue?.title || 'All venue'}
-                            </div>
-                            <i className="uil-angle-down hidden sm:block"></i>
-                        </div>
-                        <ul tabIndex={0}
-                            className="max-h-[200px] !fixed overflow-auto flex-nowrap dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
-                            <li className="cursor-pointer w-full"
-                                onClick={() => updateVenue()}>
-                                <div className="flex-row-item-center">
-                                    <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                        All Venue
-                                    </div>
-                                    <div className="w-[20px] shrink-0 grow-0">
-                                        {!filters.venueId &&
-                                            <input type="checkbox" checked readOnly
-                                                className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                        }
-                                    </div>
+                    <div className="w-full">
+                        <DropdownMenu
+                            value={selectedVenue ? [selectedVenue] : []}
+                            options={[{id: 0, title: 'All venue'} as Solar.Venue, ...props.list.venues]}
+                            valueKey="id"
+                            onSelect={(values) => {
+                                values.length && updateVenue(values[0].id)
+                            }}
+                            renderOption={(option) => {
+                                return <div>{option.title}</div>
+                            }}>
+                            <Button variant="secondary" className="w-full">
+                                <div className="flex flex-row justify-between w-full">
+                                    {selectedVenue?.title || 'All venue'}
+                                    <i className="uil-angle-down"/>
                                 </div>
-                            </li>
-
-                            {props.list.venues.map((venue) => {
-                                return <li className="cursor-pointer"
-                                    key={venue.id}
-                                    onClick={() => updateVenue(venue.id)}>
-                                    <div className="flex-row-item-center">
-                                        <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                            {venue.title}
-                                        </div>
-                                        <div className="w-[20px] shrink-0 grow-0">
-                                            {filters.venueId === venue.id &&
-                                                <input type="checkbox" checked readOnly
-                                                    className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                            }
-                                        </div>
-                                    </div>
-                                </li>
-                            })}
-                        </ul>
+                            </Button>
+                        </DropdownMenu>
                     </div>
                 </>
             }
@@ -234,66 +217,42 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             {props.list.tracks.length > 0 &&
                 <>
                     <div className="font-semibold mt-6 mb-3">Tracks</div>
-                    <div className="dropdown w-full">
-                        <div tabIndex={0} role="button"
-                            className="flex-row-item-center btn w-full justify-between">
-                            <div className="w-full whitespace-nowrap text-left overflow-hidden overflow-ellipsis">
-                                {selectedTrack?.title || 'All Tracks'}
-                            </div>
-                            <i className="uil-angle-down hidden sm:block"></i>
-                        </div>
-                        <ul tabIndex={0}
-                            className="max-h-[200px] !fixed overflow-auto flex-nowrap dropdown-content menu bg-white rounded-box z-[9999] p-2 shadow">
-                            <li className="cursor-pointer w-full"
-                                onClick={() => updateTrack()}>
-                                <div className="flex-row-item-center">
-                                    <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                        All Venue
-                                    </div>
-                                    <div className="w-[20px] shrink-0 grow-0">
-                                        {!filters.trackId &&
-                                            <input type="checkbox" checked readOnly
-                                                className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                        }
-                                    </div>
+                    <div className="w-full">
+                        <DropdownMenu
+                            value={selectedVenue ? [selectedVenue] : []}
+                            options={[{id: 0, title: 'All Tracks'} as Solar.Venue, ...props.list.tracks]}
+                            valueKey="id"
+                            onSelect={(values) => {
+                                values.length && updateTrack(values[0].id)
+                            }}
+                            renderOption={(option) => {
+                                return <div>{option.title}</div>
+                            }}>
+                            <Button variant="secondary" className="w-full">
+                                <div className="flex flex-row justify-between w-full">
+                                    {selectedTrack?.title || 'All Tracks'}
+                                    <i className="uil-angle-down"/>
                                 </div>
-                            </li>
-
-                            {props.list.tracks.map((track) => {
-                                return <li className="cursor-pointer w-full"
-                                    key={track.id}
-                                    onClick={() => updateTrack(track.id)}>
-                                    <div className="flex-row-item-center">
-                                        <div className="w-[230px] whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                            {track.title}
-                                        </div>
-                                        <div className="w-[20px] shrink-0 grow-0">
-                                            {filters.trackId === track.id &&
-                                                <input type="checkbox" checked readOnly
-                                                    className="checkbox checkbox-sm shrink-0 grow-0"/>
-                                            }
-                                        </div>
-                                    </div>
-                                </li>
-                            })}
-                        </ul>
+                            </Button>
+                        </DropdownMenu>
                     </div>
                 </>
             }
+
         </div>
 
 
         <div className="flex-row-item-center mt-6 justify-center">
-            <button className="btn flex-1"
+            <Button variant="secondary" className="flex-1"
                 onClick={() => {
                     props.close && props.close()
                 }}>
                 Cancel
-            </button>
-            <button className="btn btn-primary flex-1 ml-2"
+            </Button>
+            <Button variant="primary" className="ml-2 flex-1"
                 onClick={handleConfirm}>
                 Show Events
-            </button>
+            </Button>
         </div>
     </div>
 }

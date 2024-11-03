@@ -3,19 +3,29 @@ import {checkProcess, getAvatar} from "@/utils"
 import {getLabelColor} from "@/utils/label_color"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import Cookies from 'js-cookie'
+import {buttonVariants} from "@/components/shadcn/Button"
+import {Badge} from '@/components/shadcn/Badge'
 
 export default function ScheduleEventPopup({event, timezone} : {event: Solar.Event, timezone: string}) {
     const startTime = dayjs.tz(new Date(event.start_time), timezone)
     const endTime = dayjs.tz(new Date(event.end_time), timezone)
 
     let interval = `${startTime.format('HH:mm Do')} - ${endTime.format('HH:mm Do')}, ${startTime.format('MMMM')}`
-    if (startTime.date() != endTime.date()) {
+    if (startTime.format('YYYY-MM-DD') != endTime.format('YYYY-MM-DD')) {
         interval = `${startTime.format('HH:mm Do')}, ${startTime.format('MMMM')} - ${endTime.format('HH:mm Do')}, ${endTime.format('MMMM')}`
     }
 
     const eventProcess = checkProcess(event.start_time, event.end_time)
 
-    const host = event.host_info?.group_host?.[0] || event.owner
+    const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
+    const host: Solar.ProfileSample = groupHostRole ?
+        {
+            image_url: groupHostRole.image_url,
+            nickname: groupHostRole.nickname,
+            handle: groupHostRole.nickname!,
+            id: groupHostRole.item_id!
+        }
+        : event.owner
 
     let referer = process.env.NEXT_PUBLIC_APP_URL + '/'
     if (Cookies.get('referer')) {
@@ -31,12 +41,9 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
             <div className="flex-1">
                 <div className="text-xs font-semibold sm:my-3 my-2">{interval}</div>
                 <div className="flex-row-item-center sm:my-2 my-1">
-                    {eventProcess === 'ongoing' && <div
-                        className="badge text-xs mr-1 bg-[--ongoing-background] text-[--ongoing-foreground] rounded">Ongoing</div>}
-                    {eventProcess === 'past' && <div
-                        className="badge text-xs mr-1 bg-[--past-background] text-[--past-foreground] rounded">Past</div>}
-                    {eventProcess === 'upcoming' && <div
-                        className="badge text-xs mr-1 bg-[--upcoming-background] text-[--upcoming-foreground] rounded">Upcoming</div>}
+                    {eventProcess === 'ongoing' && <Badge variant='ongoing'>Ongoing</Badge>}
+                    {eventProcess === 'past' && <Badge variant='past'>Past</Badge>}
+                    {eventProcess === 'upcoming' && <Badge variant='upcoming'>Upcoming</Badge>}
                 </div>
                 <div className="sm:text-base text-sm font-semibold sm:my-2 my-1">{event.title}</div>
                 {!!event.tags &&
@@ -93,7 +100,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                 }
             </div>
             <a href={`${referer}event/detail/${event.id}`}
-                className="btn btn-md  btn-neutral text-white"
+                className={`${buttonVariants({variant: 'normal'})}  font-semibold`}
                 target="_blank"
                 rel="nofollow">View Detail</a>
         </div>

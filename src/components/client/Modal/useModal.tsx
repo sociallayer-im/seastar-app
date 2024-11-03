@@ -1,6 +1,7 @@
 import {ReactElement, useEffect, useState} from 'react'
 import ModalWrapper from '@/components/client/Modal/ModalWrapper'
 import LoadingGlobal from '@/components/client/Modal/LoadingGlobal'
+import {getScrollBarWidth} from "@/utils"
 
 interface ModalProps {
     content: (close?: () => void) => ReactElement
@@ -69,6 +70,16 @@ export default function useModal() {
             setState(newState)
         }
         listeners.push(setFunc)
+
+        // set body overflow hidden if modal is open, and set padding right to avoid page shift
+        // calculate padding right based on scrollbar width
+        if (state.length > 0) {
+            document.body.style.overflow = 'hidden'
+            document.body.style.paddingRight = `${getScrollBarWidth()}px`
+        } else {
+            document.body.style.overflow = ''
+            document.body.style.paddingRight = ''
+        }
 
         return () => {
             const index = listeners.indexOf(setFunc)
