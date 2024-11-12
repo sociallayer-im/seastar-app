@@ -8,7 +8,7 @@ import useModal from "@/components/client/Modal/useModal"
 import {getEventDetail} from "@/service/solar"
 import dynamic from "next/dynamic"
 import {useEffect, useCallback} from "react"
-import {getAvatar} from "@/utils"
+import {genGoogleMapLink, getAvatar} from "@/utils"
 
 const DynamicScheduleEventPopup = dynamic(
     () => import('@/components/client/ScheduleEventPopup'),
@@ -129,7 +129,7 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
             {!!event.location ?
                 <OuterLink
                     text={event.location}
-                    href={`https://www.google.com/maps/search/?api=1&query=${event.geo_lat}%2C${event.geo_lng}`}
+                    href={genGoogleMapLink(event.geo_lat!, event.geo_lng!, event.location_data)}
                 />
                 : null
             }

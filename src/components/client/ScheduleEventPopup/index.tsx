@@ -1,5 +1,5 @@
 import dayjs from "@/libs/dayjs"
-import {checkProcess, getAvatar} from "@/utils"
+import {checkProcess, genGoogleMapLink, getAvatar} from "@/utils"
 import {getLabelColor} from "@/utils/label_color"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import Cookies from 'js-cookie'
@@ -93,7 +93,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                 {event.location && event.geo_lng && event.geo_lat &&
                     <a target="_blank"
                         className="flex-row-item-center text-sm hover:underline"
-                        href={`https://www.google.com/maps/search/?api=1&query=${event.geo_lat},${event.geo_lng}`}>
+                        href={genGoogleMapLink(event.geo_lat!, event.geo_lng!, event.location_data)}>
                         <i className="uil-location-point mr-1"/>
                         <span className="w-[180px] sm:w-auto overflow-hidden overflow-ellipsis whitespace-nowrap">{event.location}</span>
                     </a>
