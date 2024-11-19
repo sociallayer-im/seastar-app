@@ -1,7 +1,7 @@
 'use client'
 
 import useModal from "@/components/client/Modal/useModal"
-import ScheduleFilter from "@/app/(iframe)/schedule/ScheduleFilter"
+import ScheduleFilter, {ScheduleFilterLabels} from "@/app/(iframe)/schedule/ScheduleFilter"
 import {Filter} from "@/app/(iframe)/schedule/data"
 import {Button} from "@/components/shadcn/Button"
 
@@ -12,15 +12,17 @@ interface FilterBtnProps {
         venues: Solar.Venue[]
         tracks: Solar.Track[]
     },
-    isFiltered: boolean
+    isFiltered: boolean,
+    labels?: {filter?: string, filterDialog?: ScheduleFilterLabels}
 }
 
-export default function FilterBtn({filters, list, isFiltered}: FilterBtnProps) {
+export default function FilterBtn({filters, list, isFiltered, labels}: FilterBtnProps) {
     const {openModal} = useModal()
 
     const showFilter = () => {
         openModal({
             content: (close) => <ScheduleFilter
+                labels={labels?.filterDialog}
                 close={close}
                 filters={filters}
                 list={list}/>
@@ -29,7 +31,7 @@ export default function FilterBtn({filters, list, isFiltered}: FilterBtnProps) {
 
     return <>
         <Button onClick={showFilter} variant={'outline'} className='h-11 text-base'>
-            <span>Filter</span>
+            <span>{labels?.filter || 'Filter'}</span>
             {isFiltered && <i className="w-[10px] h-[10px] bg-red-500 rounded-full"/>}
             <i className="uil-angle-down hidden sm:block text-lg"/>
         </Button>

@@ -18,6 +18,17 @@ export const en = {
     'Your email': 'Your email',
     'Continue': 'Continue',
     'Skip': 'Skip',
+    'Event Schedule': 'Event Schedule',
+    'Joined': 'Joined',
+    'Filter': 'Filter',
+    'Filters': 'Filters',
+    'Repeating Events': 'Repeating Events',
+    'Tags': 'Tags',
+    'Multi-day Events': 'Multi-day Events',
+    'Venues': 'Venues',
+    'Tracks': 'Tracks',
+    'Cancel': 'Cancel',
+    'Show Events': 'Show Events'
 }
 
 export type Dictionary = typeof en

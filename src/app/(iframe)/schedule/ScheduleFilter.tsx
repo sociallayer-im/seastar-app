@@ -6,6 +6,18 @@ import {Button} from "@/components/shadcn/Button"
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 
+export interface ScheduleFilterLabels {
+    filters?: string
+    tags?: string
+    venues?: string
+    tracks?: string
+    joined?: string
+    recurring?: string
+    multiDay?: string,
+    cancel?: string,
+    showEvents?: string
+}
+
 interface ScheduleFilterProps {
     filters: Filter,
     list: {
@@ -13,7 +25,8 @@ interface ScheduleFilterProps {
         venues: Solar.Venue[]
         tracks: Solar.Track[]
     }
-    close?: () => void
+    close?: () => void,
+    labels?: ScheduleFilterLabels
 }
 
 export default function ScheduleFilter(props: ScheduleFilterProps) {
@@ -118,7 +131,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
     return <div className="filter-dialog bg-[--background] shadow rounded-lg p-5 max-w-[520px] w-[100vw]">
         <div className="flex-row-item-center justify-between">
-            <div className="text-xl font-semibold">Filters</div>
+            <div className="text-xl font-semibold">{props.labels?.filters || 'Filters'}</div>
             <button
                 onClick={handleClear}
                 className="btn btn-ghost btn-sm text-[#6CD7B2] font-normal hover:bg-white">
@@ -128,7 +141,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
         <div className="event-filter-content max-h-[70svh] overflow-x-hidden overflow-y-auto">
             <div>
-                <div className="font-semibold mt-6 mb-3">Tags</div>
+                <div className="font-semibold mt-6 mb-3">{props.labels?.tags || 'Tags'}</div>
                 <Input type="text"
                     startAdornment={<i className="uil-search"/>}
                     className="w-full mb-3"
@@ -165,7 +178,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
             {!!filters.profileId &&
                 <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
-                    <div>Applied</div>
+                    <div>{props.labels?.joined || 'Joined'}</div>
                     <Checkbox checked={!!filters.applied} onCheckedChange={(checked) => setFilters({
                         ...filters,
                         applied: !!checked
@@ -174,7 +187,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             }
 
             <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
-                <div>Repeating Events</div>
+                <div>{props.labels?.recurring || 'Repeating Events'}</div>
                 <Checkbox checked={!filters.skipRecurring} onCheckedChange={(checked) => setFilters({
                     ...filters,
                     skipRecurring: !checked
@@ -182,7 +195,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             </div>
 
             <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
-                <div>Multi-day Events</div>
+                <div>{props.labels?.multiDay || 'Multi-day Events'}</div>
                 <Checkbox checked={!filters.skipMultiDay} onCheckedChange={(checked) => setFilters({
                     ...filters,
                     skipMultiDay: !checked
@@ -191,7 +204,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
             {props.list.venues.length > 0 &&
                 <>
-                    <div className="font-semibold mt-6 mb-3">Venues</div>
+                    <div className="font-semibold mt-6 mb-3">{props.labels?.venues || 'Venues'}</div>
                     <div className="w-full">
                         <DropdownMenu
                             value={selectedVenue ? [selectedVenue] : []}
@@ -216,7 +229,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
             {props.list.tracks.length > 0 &&
                 <>
-                    <div className="font-semibold mt-6 mb-3">Tracks</div>
+                    <div className="font-semibold mt-6 mb-3">{props.labels?.tracks || 'Tracks'}</div>
                     <div className="w-full">
                         <DropdownMenu
                             value={selectedVenue ? [selectedVenue] : []}
@@ -247,11 +260,11 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                 onClick={() => {
                     props.close && props.close()
                 }}>
-                Cancel
+                {props.labels?.cancel || 'Cancel'}
             </Button>
             <Button variant="primary" className="ml-2 flex-1"
                 onClick={handleConfirm}>
-                Show Events
+                {props.labels?.showEvents || 'Show Events'}
             </Button>
         </div>
     </div>
