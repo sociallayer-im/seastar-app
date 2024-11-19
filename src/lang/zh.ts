@@ -20,5 +20,16 @@ export const zh: Dictionary = {
     'Your email': '您的邮箱',
     'Continue': '继续',
     'Skip': '跳过',
+    'Event Schedule': '事件日程',
+    'Joined': '已加入',
+    'Filter': '筛选',
+    'Filters': '筛选',
+    'Repeating Events': '重复事件',
+    'Tags': '标签',
+    'Multi-day Events': '多天事件',
+    'Venues': '场地',
+    'Tracks': 'Tracks',
+    'Cancel': '取消',
+    'Show Events': '显示事件'
 
 }

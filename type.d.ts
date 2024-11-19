@@ -55,7 +55,8 @@ declare namespace Solar {
         group: ProfileSample,
         tickets: string[] | null
         owner: ProfileSample,
-        event_roles: EventRole[] | null
+        event_roles: EventRole[] | null,
+        location_data: string | null,
     }
 
     export interface Venue {
@@ -78,7 +79,8 @@ declare namespace Solar {
         require_approval: boolean | null
         tags: string[] | null
         removed: boolean | null
-        visibility: string | null
+        visibility: string | null,
+        location_data: string | null,
     }
 
     export interface Track {

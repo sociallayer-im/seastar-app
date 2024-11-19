@@ -1,6 +1,6 @@
 'use client'
 
-export default function JoinedFilterBtn(props: { checked?: boolean }) {
+export default function JoinedFilterBtn(props: { checked?: boolean, label?: string }) {
     const handleClick = () => {
         const currSearchParams = new URLSearchParams(window.location.search)
         !props.checked ? currSearchParams.set('applied', 'true') : currSearchParams.delete('applied')
@@ -8,7 +8,7 @@ export default function JoinedFilterBtn(props: { checked?: boolean }) {
     }
 
     return <div className="mr-4 sm:flex flex-row items-center text-sm cursor-pointer hidden" onClick={handleClick}>
-        <div>Joined</div>
+        <div>{props.label || 'Joined' }</div>
         <input
             readOnly={true}
             type="radio" name="radio-1" className={`ml-2 radio ${props.checked ? 'radio-primary ' : ''}radio-xs`}

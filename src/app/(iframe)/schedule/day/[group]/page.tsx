@@ -14,6 +14,7 @@ import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[group]/DailyViewAllDayEventItem"
 import {cookies} from 'next/headers'
+import {selectLang} from "@/app/actions"
 
 export async function generateMetadata({params, searchParams}: {
     params: IframeSchedulePageParams,
@@ -58,6 +59,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
         currDate: data.interval[0].format('YYYY-MM-DD')
     })
 
+    const lang = (await selectLang()).lang
 
     return <div className="min-h-[calc(100svh-48px)] relative pb-12 bg-[#F8F9F8]">
         <div className="schedule-bg"></div>
@@ -67,7 +69,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                     <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2">
                         {data.group.nickname || data.group.handle}
                     </a>
-                    <div>Event Schedule</div>
+                    <div>{lang['Event Schedule']}</div>
                 </div>
             </div>
 
@@ -78,12 +80,26 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                 </div>
                 <div className="flex-row-item-center mt-3 sm:mt-0">
                     {!!data.filters.profileId &&
-                        <JoinedFilterBtn checked={data.filters.applied}/>
+                        <JoinedFilterBtn checked={data.filters.applied} label={lang['Joined']}/>
                     }
 
                     <FilterBtn
                         isFiltered={data.isFiltered}
                         filters={data.filters}
+                        labels={{
+                            filter: lang['Filter'],
+                            filterDialog: {
+                                filters: lang['Filters'],
+                                tags: lang['Tags'],
+                                venues: lang['Venues'],
+                                tracks: lang['Tracks'],
+                                joined: lang['Joined'],
+                                recurring: lang['Repeating Events'],
+                                multiDay: lang['Multi-day Events'],
+                                cancel: lang['Cancel'],
+                                showEvents: lang['Show Events']
+                            }
+                        }}
                         list={{
                             tags: data.tags,
                             venues: data.venues,

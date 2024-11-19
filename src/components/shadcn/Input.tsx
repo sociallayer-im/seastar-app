@@ -24,17 +24,17 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>,
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({className, variant, type, ...props}, ref) => {
+    ({className, variant, type, startAdornment, endAdornment, ...props}, ref) => {
         return (
             <div className={cn(inputVariants({variant}), className)}>
-                {props.startAdornment}
+                {startAdornment}
                 <input
                     type={type}
                     className="flex-1 h-full bg-transparent outline-none mx-1"
                     ref={ref}
                     {...props}
                 />
-                {props.endAdornment}
+                {endAdornment}
             </div>
         )
     }

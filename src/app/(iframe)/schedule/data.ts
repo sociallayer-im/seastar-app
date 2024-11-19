@@ -64,7 +64,8 @@ export interface IframeSchedulePageDataEvent {
     track: Solar.Track | null,
     recurring_id: number | null,
     pinned: boolean,
-    event_roles: Solar.EventRole[] | null
+    event_roles: Solar.EventRole[] | null,
+    location_data: string | null,
 }
 
 export interface IframeSchedulePageData {
@@ -230,4 +231,3 @@ function getInterval(startDate?: string, view: 'week' | 'day' | 'list' = 'week')
         }
     }
 }
-

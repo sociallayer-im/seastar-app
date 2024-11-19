@@ -76,5 +76,14 @@ export const getScrollBarWidth = () => {
     return width
 }
 
+export function genGoogleMapLink(lat: string | number, lng: string | number, place_id?: string | null) {
+    let url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
+    if (place_id) {
+        url = url + `&query_place_id=${place_id}`
+    }
+
+    return url
+}
+
 
 
