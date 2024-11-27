@@ -28,7 +28,21 @@ export const en = {
     'Venues': 'Venues',
     'Tracks': 'Tracks',
     'Cancel': 'Cancel',
-    'Show Events': 'Show Events'
+    'Show Events': 'Show Events',
+    'Email Address': 'Email Address',
+    'Wallet Address': 'Wallet Address',
+    'Close': 'Close',
+    'Copy': 'Copy',
+    'Send a badge': 'Send a badge',
+    'Followers': 'Followers',
+    'Following': 'Following',
+    'Groups': 'Groups',
+    'Events': 'Events',
+    'Badges': 'Badges',
+    'Sending': 'Sending',
+    'Collected': 'Collected',
+    'Created': 'Created',
+    'Create a Group': 'Create a Group'
 }
 
 export type Dictionary = typeof en

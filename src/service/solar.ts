@@ -3,7 +3,9 @@ const api = process.env.NEXT_PUBLIC_API_URL
 
 export const getProfileByToken = async (auth_token?: string) => {
     if (!auth_token) return null
-    const response = await fetch(`${api}/profile/me?auth_token=${auth_token}`)
+    const url = `${api}/profile/me?auth_token=${auth_token}`
+    // console.log(url)
+    const response = await fetch(url)
 
     if (!response.ok) {
         return null
@@ -14,7 +16,9 @@ export const getProfileByToken = async (auth_token?: string) => {
 }
 
 export const getProfileByHandle = async (handle: string) => {
-    const response = await fetch(`${api}/profile/get_by_handle?handle=${handle}`)
+    const url = `${api}/profile/get_by_handle?handle=${handle}`
+    // console.log(url)
+    const response = await fetch(url)
 
     if (!response.ok) {
         return null

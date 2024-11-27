@@ -1,5 +1,6 @@
 /*@import "poppins.css";*/
 @import "font_icons.css";
+@import "media_icons.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,6 +14,9 @@
 
   --primary: 160, 88%, 73%;
   --primary-foreground: 150. 3%, 16%;
+
+  --special: linear-gradient(88.02deg, rgb(186, 255, 173) -2.09%, rgb(161, 244, 230) 62.09%, rgb(128, 248, 192) 97.29%);
+  --special-foreground: 150. 3%, 16%;
 
   --destructive: 0 100% 50%;
   --destructive-foreground: 210 40% 98%;
@@ -50,6 +54,10 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.bg-special {
+  background: var(--special);
 }
 
 .shadow {

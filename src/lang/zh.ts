@@ -30,6 +30,19 @@ export const zh: Dictionary = {
     'Venues': '场地',
     'Tracks': 'Tracks',
     'Cancel': '取消',
-    'Show Events': '显示事件'
-
+    'Show Events': '显示事件',
+    'Email Address': '邮箱地址',
+    'Wallet Address': '钱包地址',
+    'Close': '关闭',
+    'Copy': '复制',
+    'Send a badge': '发送徽章',
+    'Followers': '粉丝',
+    'Following': '关注',
+    'Groups': '群组',
+    'Events': '事件',
+    'Badges': '徽章',
+    'Sending': '发送中',
+    'Collected': '已收集',
+    'Created': '已创建',
+    'Create a Group': '创建一个群组'
 }

@@ -2,9 +2,12 @@
 
 import {dictionaries} from '@/lang'
 import Cookies from 'js-cookie'
+import DropdownMenu from '@/components/client/DropdownMenu'
 
 export default function LangSwitcher(props: { value: keyof typeof dictionaries, refresh?: boolean }) {
-    const opts = Object.keys(dictionaries) as Array<keyof typeof dictionaries>
+    const langTypes = Object.keys(dictionaries) as Array<keyof typeof dictionaries>
+    const langTypesOpts = langTypes.map(langType => {return {id: langType, label: langType.toUpperCase()}})
+    const value = langTypesOpts.find(opt => opt.id === props.value) || langTypesOpts[0]
 
     const handleSelect = (lang: keyof typeof dictionaries) => {
         Cookies.set('lang', lang, {expires: 365})
@@ -13,20 +16,13 @@ export default function LangSwitcher(props: { value: keyof typeof dictionaries, 
         }
     }
 
-    return <div className="dropdown dropdown-bottom dropdown-end">
-        <div tabIndex={0} role="button"
-            className="flex-row-item-center btn btn-ghost btn-sm text-xs font-normal px-1">
-            {props.value.toUpperCase()}
-        </div>
-        <ul tabIndex={0}
-            className=" dropdown-content menu bg-white rounded-lg z-[1] p-2 shadow">
-            {
-                opts.map((opt) => {
-                    return <li key={opt}>
-                        <div onClick={() => handleSelect(opt)}>{opt.toUpperCase()}</div>
-                    </li>
-                })
-            }
-        </ul>
-    </div>
+    return <DropdownMenu
+        align="right"
+        options={langTypesOpts}
+        value={[value]}
+        renderOption={(opt) => <div className="w-14">{opt.label}</div>}
+        valueKey="id"
+        onSelect={(opts) => handleSelect(opts[0].id)}>
+        {props.value.toUpperCase()}
+    </DropdownMenu>
 }

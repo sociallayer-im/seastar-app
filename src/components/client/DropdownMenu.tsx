@@ -9,6 +9,7 @@ export default function DropdownMenu<T>(props: {
     onSelect: (values: T[]) => void,
     renderOption: (option: T) => React.ReactNode,
     valueKey: keyof T
+    align?: 'left' | 'right'
 }) {
 
     const triggerRef = useRef<HTMLDivElement>(null)
@@ -18,29 +19,25 @@ export default function DropdownMenu<T>(props: {
     const [show, setShow] = useState(false)
     const [positionStyle, setPositionStyle] = useState<CSSProperties>({})
 
-    const triggerShow = () => {
+    const trigger = () => {
+        calculatePosition()
+        setShow(!show)
+    }
+
+    const calculatePosition = () => {
         const triggerRect = triggerRef.current?.getBoundingClientRect()
         const contentRect = contentRef.current?.getBoundingClientRect()
         if (triggerRect && contentRect) {
             const contentHeight = contentRect.height
             const triggerBottomOffset = window.innerHeight - triggerRect.bottom
 
-            if(triggerBottomOffset < contentHeight) {
-                setPositionStyle({
-                    top: triggerRect.top - contentHeight,
-                    left: triggerRect.left,
-                    width: triggerRect.width
-                })
-            } else {
-                setPositionStyle({
-                    top: triggerRect.top + triggerRect.height,
-                    left: triggerRect.left,
-                    width: triggerRect.width
-                })
-            }
+            setPositionStyle({
+                top: triggerBottomOffset < contentHeight ? triggerRect.top - contentHeight : triggerRect.top + triggerRect.height,
+                left: triggerRect.left,
+                minWidth: triggerRect.width,
+                marginLeft: props.align === 'right' ?triggerRect.width - contentRect.width : '0'
+            })
         }
-
-        setShow(!show)
     }
 
     useEffect(() => {
@@ -51,8 +48,12 @@ export default function DropdownMenu<T>(props: {
         }
 
         document.addEventListener('mousedown', handleClickOutside)
-        return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
+        window.addEventListener('resize', calculatePosition)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+            window.removeEventListener('resize', calculatePosition)
+        }
+    }, [calculatePosition])
 
     const handleSelect = (option: T) => {
         if (props.multiple) {
@@ -70,7 +71,7 @@ export default function DropdownMenu<T>(props: {
     return <div className="dropwdown relative" ref={dropdownRef}>
         <div className="dropdown-trigger"
             ref={triggerRef}
-            onClick={triggerShow}>
+            onClick={trigger}>
             {props.children}
         </div>
         <div

@@ -2,43 +2,52 @@
 
 import Cookies from 'js-cookie'
 import {getAvatar} from "@/utils"
+import DropdownMenu from "@/components/client/DropdownMenu"
+import Image from "next/image"
 
 export default function ProfileMenu(props: { profile: Solar.ProfileSample }) {
-    const menus = [
-        {label: 'Profile', href: '/profile'},
-        {label: 'Settings', href: '/settings'},
-        {label: 'Create Group', href: '/group/create'},
-        {label: 'Notification', href: '/notification'},
-    ]
-
     const handleSignOut = () => {
         Cookies.remove(process.env.NEXT_PUBLIC_AUTH_FIELD!)
         window.location.reload()
     }
 
-    return <div className="dropdown dropdown-bottom dropdown-end">
-        <div tabIndex={0} role="button"
-            className="flex-row-item-center btn btn-ghost btn-sm text-xs font-normal px-1">
-            <img
+    type Menu = {
+        label: string
+        href?: string
+        action?: () => void
+    }
+
+    const menus = [
+        {label: 'Profile', href: `/profile/${props.profile.handle}`},
+        {label: 'Settings', href: '/settings'},
+        {label: 'Create Group', href: '/group/create'},
+        {label: 'Notification', href: '/notification'},
+        {label: 'Sign Out', action: handleSignOut},
+    ] as Menu[]
+
+    const handleSelect = (opt: Menu) => {
+        !!opt.action && opt.action()
+        !!opt.href && (window.location.href = opt.href)
+    }
+
+
+    return <DropdownMenu
+        align="right"
+        options={menus}
+        value={[]}
+        renderOption={(opt) => <div className="text-nowrap">{opt.label}</div>}
+        valueKey="href"
+        onSelect={(opts) => handleSelect(opts[0])}>
+        <div className="flex-row-item-center cursor-pointer">
+            <Image
                 src={getAvatar(props.profile.id, props.profile.image_url)}
                 width={16}
                 height={16}
-                className="rounded-full mr-[2]"
+                className="rounded-full mr-1"
                 alt=""/>
-            {props.profile.nickname || props.profile.handle}
+            <div className="max-w-[50px] overflow-hidden whitespace-nowrap overflow-ellipsis">
+                {props.profile.nickname || props.profile.handle}
+            </div>
         </div>
-        <ul tabIndex={0}
-            className="dropdown-content menu bg-white rounded-lg z-[1] p-2 shadow">
-            {
-                menus.map((menu, index) => {
-                    return <li key={index} >
-                        <a href={menu.href} className="whitespace-nowrap">{menu.label}</a>
-                    </li>
-                })
-            }
-            <li>
-                <div onClick={handleSignOut}>Sign out</div>
-            </li>
-        </ul>
-    </div>
+    </DropdownMenu>
 }

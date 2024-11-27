@@ -1,6 +1,4 @@
 import type { Config } from "tailwindcss"
-import daisyui from "daisyui"
-import themes from "daisyui/src/theming/themes"
 
 const config: Config = {
     content: [
@@ -17,21 +15,10 @@ const config: Config = {
                 'primary-foreground': `hsl(var(--primary-foreground))`,
                 secondary: "var(--secondary)",
                 'secondary-foreground': `var(--secondary-foreground)`,
-
+                special: "var(--special)",
+                'special-foreground': "var(--special-foreground)"
             },
         },
-    },
-    // plugins: [
-    //     daisyui
-    // ],
-    // daisyui: {
-    //     themes: [{
-    //         light: {
-    //             ...themes["light"],
-    //             primary: "#7FF7CE",
-    //             info: '#409eff'
-    //         }
-    //     }],
-    // }
+    }
 }
 export default config

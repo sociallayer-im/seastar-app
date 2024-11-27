@@ -1,7 +1,19 @@
 declare namespace Solar {
+    interface SocialMedia {
+        twitter: string | null,
+        github: string | null,
+        discord: string | null,
+        ens: string | null,
+        lens: string | null,
+        nostr: string | null,
+        website: string | null,
+        farcaster: string | null,
+        telegram: string | null,
+    }
+
     interface Profile {
         id:number
-        handle: string | null,
+        handle: string,
         address: string | null,
         email: string | null,
         phone: string | null,
@@ -15,15 +27,11 @@ declare namespace Solar {
         farcaster_fid: string | null,
         farcaster_address: string | null,
         extras: string,
-        permissions: string
+        permissions: string,
+        social_links: SocialMedia
     }
 
-    export interface ProfileSample {
-        id: number
-        handle: string
-        nickname: string | null
-        image_url: string  | null
-    }
+    export type ProfileSample = Pick<Profile, 'id' | 'handle' | 'nickname' | 'image_url'>
 
     export interface Event {
         id: number,
@@ -57,6 +65,7 @@ declare namespace Solar {
         owner: ProfileSample,
         event_roles: EventRole[] | null,
         location_data: string | null,
+        status: string | null,
     }
 
     export interface Venue {
@@ -102,5 +111,106 @@ declare namespace Solar {
         image_url: string | null
         role: 'speaker' | 'co_host' | 'group_host'
         item_type: 'Profile' | 'Group'
+    }
+
+    export interface Group {
+        id: number,
+        handle: string,
+        nickname: string | null,
+        image_url: string | null,
+        about: string | null,
+        social_links: SocialMedia,
+        location: string | null,
+        permissions: string[],
+        status: string | null,
+        event_tags: string[] | null,
+        event_enabled: boolean,
+        can_publish_event: string,
+        can_join_event: string,
+        can_view_event: string,
+        map_enabled: boolean,
+        banner_link_url: string | null,
+        banner_image_url: string | null,
+        banner_text: string | null,
+        logo_url: string | null,
+        memberships_count: number,
+        events_count: number,
+        group_tags: string[] | null,
+        timezone: string | null,
+        main_event_id: number | null,
+        start_date: string | null,
+        end_date: string | null,
+    }
+
+    export interface Membership {
+        id: number,
+        role: string,
+        profile: ProfileSample
+    }
+
+    export type SampleGroup = Pick<Group, 'id' | 'handle' | 'nickname' | 'image_url'>
+
+    export interface SampleGroupWithOwner extends Solar.SampleGroup {
+        owner: Solar.ProfileSample,
+        memberships: Solar.Membership[]
+    }
+
+    export interface BadgeClass {
+        id: number,
+        title: string,
+        creator_id: number,
+        image_url: string | null,
+        metadata: string | null,
+        content: string | null,
+        group_id: number | null,
+        transferable: null | boolean,
+        badge_type: string | null,
+        permissions: string[] | null
+        created_at: string,
+        display: string | null,
+        status: string | null,
+        can_send_badge: string,
+        creator: ProfileSample,
+    }
+
+    export interface Badge {
+        id: number
+        image_url: string | null,
+        title: string,
+        creator_id: number
+        owner_id: number,
+        metadata: string | null,
+        content: string | null,
+        display: string | null,
+        value: string | null,
+        created_at: string,
+        badge_class: BadgeClass,
+        creator: ProfileSample,
+        owner: ProfileSample,
+    }
+
+    export interface Voucher {
+        id: number
+        sender_id: number
+        badge_class_id: number,
+        counter: number,
+        expires_at: string | null
+        created_at: string,
+        badge_class: BadgeClass,
+        sender: ProfileSample
+        badges: Badge[]
+    }
+
+    export interface Participant {
+        id: number,
+        event_id: number,
+        profile_id: number,
+        role: string,
+        status: string | null,
+        created_at: string | null,
+        ticket_id: string | null,
+        payment_status: string | null,
+        event: Event,
+        profile: ProfileSample,
     }
 }

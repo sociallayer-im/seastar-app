@@ -18,6 +18,10 @@ const badgeVariants = cva(
                 ongoing: "border-transparent bg-[var(--ongoing-background)] text-[var(--ongoing-foreground)]",
                 past: "border-transparent bg-[var(--past-background)] text-[var(--past-foreground)]",
                 upcoming: "border-transparent bg-[var(--upcoming-background)] text-[var(--upcoming-foreground)]",
+                hosting: 'border-transparent bg-[#e7f4ff] text-[#5992ff]',
+                pending: 'border-transparent bg-[#fff7e8] text-[#e7c54e]',
+                cancel: 'border-transparent bg-[#bdbdbd] text-[#fff]',
+                joining: 'border-transparent bg-[#feeeee] text-[#f26692]',
             },
         },
         defaultVariants: {

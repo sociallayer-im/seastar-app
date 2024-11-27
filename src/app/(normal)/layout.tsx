@@ -6,7 +6,7 @@ import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {selectLang} from '@/app/actions'
 import Header from "@/components/Header"
-import {icon, poppins} from "@/app/fonts"
+import {icon, poppins, media_icons} from "@/app/fonts"
 
 export const metadata: Metadata = {
     title: "Social Layer",
@@ -25,7 +25,7 @@ export default async function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
     const langType = (await selectLang()).type
 
-    return (<html lang={langType} className={`${poppins.className} ${icon.variable}`}>
+    return (<html lang={langType} className={`${poppins.className} ${icon.variable} ${media_icons.variable}`}>
         <Head>
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
         </Head>
