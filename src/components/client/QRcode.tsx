@@ -22,7 +22,7 @@ function QrCode(props: QRcodeProps) {
                     dark: '#000'
                 }
             },
-            (error: any, url: string) => {
+            (error: unknown, url: string) => {
                 if (error) console.error('[app-qrcode]:' + JSON.stringify(error))
                 setDataUrl(url)
             })
