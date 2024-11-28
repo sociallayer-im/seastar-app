@@ -7,7 +7,8 @@ import Image from "next/image"
 
 export default function ProfileMenu(props: { profile: Solar.ProfileSample }) {
     const handleSignOut = () => {
-        Cookies.remove(process.env.NEXT_PUBLIC_AUTH_FIELD!)
+        const currTopDomain = window.location.hostname.split('.').slice(-2).join('.')
+        Cookies.remove(process.env.NEXT_PUBLIC_AUTH_FIELD!, {domain: currTopDomain})
         window.location.reload()
     }
 
