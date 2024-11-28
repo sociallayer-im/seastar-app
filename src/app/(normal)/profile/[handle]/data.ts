@@ -43,11 +43,6 @@ export async function ProfileData(props: ProfileDataProps): Promise<ProfileData>
 
     const profile = profiles[0]
 
-    if (profile.social_links) {
-        // social_links is type of string if getting profile by graphql
-        profile.social_links = JSON.parse(profile.social_links.toString())
-    }
-
     let currProfile: Solar.Profile | null = null
     const authToken = props.cookies.get(AUTH_FIELD)?.value
     if (!!authToken) {
@@ -79,6 +74,8 @@ const getProfileData = async (handle: string) => {
          followers: followings(where:{target:{handle: {_eq:"${handle}"}}}){id} 
          followings: followings(where:{source:{handle: {_eq:"${handle}"}}}){id} 
     }`
+
+    // console.log('doc', doc)
 
     return await request<{ profiles: ProfileDetail[], followers: Pick<Solar.ProfileSample, 'id'>[], followings: Pick<Solar.ProfileSample, 'id'>[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
 }

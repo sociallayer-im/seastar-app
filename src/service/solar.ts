@@ -64,9 +64,7 @@ export const updateProfile = async (profile: Solar.Profile, auth_token: string) 
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({...profile,
-            auth_token,
-            social_links: JSON.stringify(profile.social_links || {})})
+        body: JSON.stringify({...profile, auth_token})
     })
 
     if (!response.ok) {

@@ -1,6 +1,6 @@
 declare namespace Solar {
     interface SocialMedia {
-        x: string | null,
+        twitter: string | null,
         github: string | null,
         discord: string | null,
         ens: string | null,

@@ -18,11 +18,5 @@ export default async function EditProfileData({params} : EditProfileDataProps) {
         redirect('/error')
     }
 
-    if (profile.social_links) {
-        profile.social_links = JSON.parse(profile.social_links.toString())
-    } else {
-        profile.social_links = {} as Solar.SocialMedia
-    }
-
     return profile
 }

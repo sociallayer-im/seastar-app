@@ -12,7 +12,7 @@ export const Media_Meta: { [index in keyof Solar.SocialMedia]: Media_Meta_Type }
         valueType: 'url',
         eg: 'eg. https://xxxx.com'
     },
-    x: {
+    twitter: {
         label: 'X',
         icon: 'media-x',
         valueType: 'url',
@@ -67,7 +67,7 @@ export const getMeta = (key: keyof Solar.SocialMedia) => {
 }
 
 export const urlToUsername = (url: string, type: keyof Solar.SocialMedia) => {
-    if (type === 'x') {
+    if (type === 'twitter') {
         const match = url.match(/https:\/\/x\.com\/([^\/]+)/)
         if (match && match[1]) {
             return match[1]
@@ -133,7 +133,7 @@ export const urlToUsername = (url: string, type: keyof Solar.SocialMedia) => {
 
 export const usernameToUrl = (username: string, type: keyof Solar.SocialMedia) => {
     switch (type) {
-    case "x":
+    case "twitter":
         return `https://x.com/${username}`
     case "github":
         return `https://github.com/${username}`

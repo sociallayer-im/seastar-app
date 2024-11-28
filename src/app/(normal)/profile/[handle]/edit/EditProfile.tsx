@@ -27,7 +27,6 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
                 close={close}
                 type={type}
                 onConfirm={(value) => {
-                    alert(value)
                     setNewProfile({
                         ...newProfile,
                         social_links: {
@@ -108,7 +107,7 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
                 <div className="flex-1">
                     <div className="font-semibold pb-2">{lang['Social Links']}</div>
                     {
-                        !!profile.social_links && Object.keys(Media_Meta).map((key, i) => {
+                        !!newProfile.social_links && Object.keys(Media_Meta).map((key, i) => {
                             return <div key={i}
                                 className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
@@ -125,7 +124,7 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
                                         </span>
                                     }
                                     <Button
-                                        onClick={() => showEditSocialMedia(key as keyof typeof Media_Meta, profile.social_links?.[key as keyof typeof Media_Meta] || '')}
+                                        onClick={() => showEditSocialMedia(key as keyof typeof Media_Meta, newProfile.social_links?.[key as keyof typeof Media_Meta] || '')}
                                         size={'xs'}
                                         variant={'normal'}
                                         className="text-sm">Edit</Button>
