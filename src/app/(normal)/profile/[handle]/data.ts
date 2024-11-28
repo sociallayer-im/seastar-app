@@ -20,7 +20,7 @@ export interface ProfileDataProps {
     cookies: ReadonlyRequestCookies
 }
 
-export type ProfileDetail = Pick<Solar.Profile, 'id' | 'handle' | 'image_url' | 'about' | 'social_links' | 'nickname'>
+export type ProfileDetail = Pick<Solar.Profile, 'id' | 'handle' | 'image_url' | 'about' | 'social_links' | 'nickname' | 'location'>
 
 export interface ProfileData {
     profile: ProfileDetail,
@@ -70,6 +70,7 @@ const getProfileData = async (handle: string) => {
             nickname
             social_links
             about
+            location
          }
          followers: followings(where:{target:{handle: {_eq:"${handle}"}}}){id} 
          followings: followings(where:{source:{handle: {_eq:"${handle}"}}}){id} 

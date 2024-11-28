@@ -29,7 +29,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
     const lang = (await selectLang()).lang
 
     return <div className="bg-[#f8f8f8] min-h-[100svh] w-full">
-        <div className="page-width bg-[#f8f8f8] min-h-[100svh] pl-0 pr-0 pb-12 pt-0 sm:pt-6">
+        <div className="page-width bg-[#f8f8f8] min-h-[100svh] !pl-0 !pr-0 pb-12 pt-0 sm:pt-6">
             <div className="flex flex-col items-start sm:flex-row">
                 <div className="bg-white w-full sm:w-[375px] mb-3 relative">
                     <img src="/images/profile_bg.png" className="w-full h-[140px]"/>
@@ -76,13 +76,13 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                         </div>
                         {!!profile.social_links &&
                             <div tabIndex={0}
-                                className="inline-block max-h-7 hover:max-h-[200px] transition-all duration-1000 overflow-hidden my-3 cursor-pointer group">
+                                className="inline-block max-h-7 hover:max-h-[200px] transition-all duration-1000 overflow-hidden mb-3 cursor-pointer group">
                                 <div className="flex flex-row justify-start text-xs group-hover:flex-col">
                                     {Object.keys(profile.social_links).map(key => {
                                         return <div key={key}
                                             className="flex-row-item-center grow-0 shrink-0">
                                             <i className={`${Media_Meta[key as keyof Solar.SocialMedia].icon} text-lg mr-1`}/>
-                                            { Media_Meta[key as keyof Solar.SocialMedia].valueType === 'url' ?
+                                            {Media_Meta[key as keyof Solar.SocialMedia].valueType === 'url' ?
                                                 <a href={profile.social_links[key as keyof Solar.SocialMedia]!}
                                                     className="group-hover:inline hidden hover:underline"
                                                     target="_blank">{profile.social_links[key as keyof Solar.SocialMedia]}</a>
@@ -100,9 +100,18 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                             </div>
                         }
 
-                        <div className="text-xs mb-3">
-                            {profile.about}
-                        </div>
+                        {!!profile.location &&
+                            <div className="text-xs mb-3 flex-row-item-center">
+                                <i className="uil-location-point text-base mr-1" />
+                                <span>{profile.location}</span>
+                            </div>
+                        }
+
+                        {!!profile.about &&
+                            <div className="text-xs mb-3">
+                                {profile.about}
+                            </div>
+                        }
 
                         <a href="/send-badge"
                             className={`${buttonVariants({variant: 'special'})} w-full my-4`}>
@@ -112,8 +121,8 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                     </div>
                 </div>
 
-                <div className="flex-1 sm:ml-6 px-3">
-                    <div className="tab-titles">
+                <div className="flex-1 sm:ml-6 px-3 max-w-full">
+                    <div className="tab-titles flex-row-item-center overflow-auto">
                         <a className={buttonVariants({variant: tab === 'groups' ? 'normal' : 'ghost'})}
                             href={`/profile/${profile.handle}?tab=groups`}>
                             <span className="font-normal">{lang['Groups']}</span>
@@ -126,7 +135,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                             href={`/profile/${profile.handle}?tab=badges`}>
                             <span className="font-normal">{lang['Badges']}</span>
                         </a>
-                        { isSelf &&
+                        {isSelf &&
                             <a className={buttonVariants({variant: tab === 'sending' ? 'normal' : 'ghost'})}
                                 href={`/profile/${profile.handle}?tab=sending`}>
                                 <span className="font-normal"> {lang['Sending']}</span>
@@ -137,7 +146,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                     <div className="tab-contents">
                         {tab === 'groups' && <TabGroups profile={profile}/>}
 
-                        {tab === 'events' && <TabEvents handle={profile.handle} currUserHandle={currProfile?.handle} />}
+                        {tab === 'events' && <TabEvents handle={profile.handle} currUserHandle={currProfile?.handle}/>}
 
                         {tab === 'badges' && <TabBadges handle={profile.handle}
                             isSelf={isSelf} />

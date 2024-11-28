@@ -16,7 +16,7 @@ export default function CardEvent({event}: {event: SampleEventWithCreatorAndJoin
         .format('ddd MMM DD, HH:mm z')
 
     return <a href={`/event/detail/${event.id}`}
-        className="shadow flex rounded-lg p-3 flex-row flex-nowrap duration-200 hover:scale-105">
+        className="shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-105">
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
