@@ -44,5 +44,14 @@ export const zh: Dictionary = {
     'Sending': '发送中',
     'Collected': '已收集',
     'Created': '已创建',
-    'Create a Group': '创建一个群组'
+    'Create a Group': '创建一个群组',
+    'Edit Profile': '编辑个人资料',
+    'Avatar': '头像',
+    'Upload Avatar': '上传头像',
+    'Nickname': '昵称',
+    'Location': '位置',
+    'Bio': '个人简介',
+    'Social Links': '社交链接',
+    'Save': '保存',
+    'Edit': '编辑',
 }

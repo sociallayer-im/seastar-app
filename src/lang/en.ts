@@ -42,7 +42,16 @@ export const en = {
     'Sending': 'Sending',
     'Collected': 'Collected',
     'Created': 'Created',
-    'Create a Group': 'Create a Group'
+    'Create a Group': 'Create a Group',
+    'Edit Profile': 'Edit Profile',
+    'Avatar': 'Avatar',
+    'Upload Avatar': 'Upload Avatar',
+    'Nickname': 'Nickname',
+    'Location': 'Location',
+    'Bio': 'Bio',
+    'Social Links': 'Social Links',
+    'Save': 'Save',
+    'Edit': 'Edit'
 }
 
 export type Dictionary = typeof en

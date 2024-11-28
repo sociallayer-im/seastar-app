@@ -2,7 +2,6 @@ import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/a
 import {getProfileByToken} from "@/service/solar"
 import {AUTH_FIELD} from "@/utils"
 import {redirect} from "next/navigation"
-import {getMeta, Media_Meta_Type} from "@/utils/social_media_meta"
 import {pickSearchParam} from "@/utils"
 import {gql, request} from 'graphql-request'
 import process from "node:process"
@@ -27,7 +26,6 @@ export interface ProfileData {
     profile: ProfileDetail,
     currProfile: Solar.Profile | null,
     isSelf: boolean,
-    medias: Media_Meta_Type[],
     tab: string,
     followers: number,
     followings: number
@@ -44,6 +42,12 @@ export async function ProfileData(props: ProfileDataProps): Promise<ProfileData>
     }
 
     const profile = profiles[0]
+
+    if (profile.social_links) {
+        // social_links is type of string if getting profile by graphql
+        profile.social_links = JSON.parse(profile.social_links.toString())
+    }
+
     let currProfile: Solar.Profile | null = null
     const authToken = props.cookies.get(AUTH_FIELD)?.value
     if (!!authToken) {
@@ -52,15 +56,10 @@ export async function ProfileData(props: ProfileDataProps): Promise<ProfileData>
 
     const isSelf = currProfile?.id === profile?.id
 
-    const medias = isSelf && currProfile?.social_links
-        ? Object.keys(currProfile?.social_links).map(media => getMeta(media as keyof Solar.SocialMedia))
-        : []
-
     return {
         profile: profile,
         currProfile: currProfile,
         isSelf,
-        medias,
         tab: tab || 'groups',
         followings: followings.length,
         followers: followers.length
@@ -80,6 +79,7 @@ const getProfileData = async (handle: string) => {
          followers: followings(where:{target:{handle: {_eq:"${handle}"}}}){id} 
          followings: followings(where:{source:{handle: {_eq:"${handle}"}}}){id} 
     }`
+
     return await request<{ profiles: ProfileDetail[], followers: Pick<Solar.ProfileSample, 'id'>[], followings: Pick<Solar.ProfileSample, 'id'>[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
 }
 

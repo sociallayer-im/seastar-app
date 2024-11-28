@@ -1,9 +1,11 @@
 [class^=media-]:before, [class*=" media-"]:before  {
-  font-family: var(--media-media);
-  font-size: 16px;
+  font-family: var(--media-icon);
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.media-discord:before {
+  content: "\eaa0";
 }
 
 .media-lens:before {
@@ -20,10 +22,6 @@
 
 .media-telegram:before {
   content: "\e731";
-}
-
-.media-discord:before {
-  content: "\e60e";
 }
 
 .media-github:before {

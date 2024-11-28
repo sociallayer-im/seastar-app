@@ -10,6 +10,8 @@ import TabGroups from "@/app/(normal)/profile/[handle]/TabGroups/TabGroups"
 import TabEvents from "@/app/(normal)/profile/[handle]/TabEvents/TabEvents"
 import TabBadges from "@/app/(normal)/profile/[handle]/TabBadges/TabBadges"
 import TabVouchers from "@/app/(normal)/profile/[handle]/TabVouchers/TabVouchers"
+import {Media_Meta} from "@/utils/social_media_meta"
+import CopyText from "@/components/client/CopyText"
 
 export async function generateMetadata({params, searchParams}: { params: ProfilePageParams, searchParams: ProfilePageSearchParams }) {
     const data = await ProfileData({params, searchParams, cookies: cookies()})
@@ -23,7 +25,7 @@ export async function generateMetadata({params, searchParams}: { params: Profile
 }
 
 export default async function Profile({params, searchParams}: { params: ProfilePageParams, searchParams: ProfilePageSearchParams }) {
-    const {profile, currProfile, isSelf, medias, tab, followings, followers} = await ProfileData({params, searchParams, cookies: cookies()})
+    const {profile, currProfile, isSelf, tab, followings, followers} = await ProfileData({params, searchParams, cookies: cookies()})
     const lang = (await selectLang()).lang
 
     return <div className="bg-[#f8f8f8] min-h-[100svh] w-full">
@@ -31,9 +33,9 @@ export default async function Profile({params, searchParams}: { params: ProfileP
             <div className="flex flex-col items-start sm:flex-row">
                 <div className="bg-white w-full sm:w-[375px] mb-3 relative">
                     <img src="/images/profile_bg.png" className="w-full h-[140px]"/>
-                    <div className="flex-row-item-center absolute right-3 top-3">
-                        <div className="text-xs">{profile.nickname || profile.handle}</div>
-                        <a href={`/profile/edit/${profile.handle}`}>
+                    <div className="absolute right-3 top-3">
+                        <a href={`/profile/${profile.handle}/edit`} className='flex-row-item-center'>
+                            <div className="text-xs">{profile.nickname || profile.handle}</div>
                             <i className="uil-cog text-lg ml-1"/>
                         </a>
                     </div>
@@ -72,16 +74,25 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                             <div className="mr-4"><strong>{followers}</strong> {lang['Followers']}</div>
                             <div className="mr-4"><strong>{followings}</strong> {lang['Following']}</div>
                         </div>
-                        {!!medias.length &&
+                        {!!profile.social_links &&
                             <div tabIndex={0}
                                 className="inline-block max-h-7 hover:max-h-[200px] transition-all duration-1000 overflow-hidden my-3 cursor-pointer group">
                                 <div className="flex flex-row justify-start text-xs group-hover:flex-col">
-                                    {medias.map(media => {
-                                        return <div key={media.label}
+                                    {Object.keys(profile.social_links).map(key => {
+                                        return <div key={key}
                                             className="flex-row-item-center grow-0 shrink-0">
-                                            <i className={`${media.icon} text-lg mr-1`}/>
-                                            <a href="/" className="group-hover:inline hidden hover:underline"
-                                                target="_blank">{media.label}</a>
+                                            <i className={`${Media_Meta[key as keyof Solar.SocialMedia].icon} text-lg mr-1`}/>
+                                            { Media_Meta[key as keyof Solar.SocialMedia].valueType === 'url' ?
+                                                <a href={profile.social_links[key as keyof Solar.SocialMedia]!}
+                                                    className="group-hover:inline hidden hover:underline"
+                                                    target="_blank">{profile.social_links[key as keyof Solar.SocialMedia]}</a>
+                                                : <a className="group-hover:inline hidden hover:underline">
+                                                    <CopyText
+                                                        value={profile.social_links[key as keyof Solar.SocialMedia]}>
+                                                        {profile.social_links[key as keyof Solar.SocialMedia]}
+                                                    </CopyText>
+                                                </a>
+                                            }
                                         </div>
                                     })
                                     }
@@ -89,7 +100,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                             </div>
                         }
 
-                        <div className="text-xs my-3">
+                        <div className="text-xs mb-3">
                             {profile.about}
                         </div>
 
