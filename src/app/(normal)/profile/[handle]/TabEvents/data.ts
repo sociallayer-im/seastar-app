@@ -1,6 +1,5 @@
 import {gql, request} from 'graphql-request'
 import {cookies} from 'next/headers'
-import process from "node:process"
 
 export type SampleEvent = Pick<Solar.Event, 'id' | 'title' | 'location' | 'cover_url' | 'start_time' | 'end_time' | 'timezone' | 'tags' | 'meeting_url' | 'event_roles' | 'status' | 'owner'>
 export interface SampleEventWithCreatorAndJoinStatus extends SampleEvent {
@@ -69,15 +68,12 @@ export const ProfileEventListData = async function (handle: string, currUserHand
         }
         ${currUserHandle ? `currUserJoined: participants(where: {status: {_neq: "cancel"} profile: {handle: {_eq: "${currUserHandle}"}} event: {status: {_neq: "cancel"}}}) {
                 event { id } }` : ''}
-        ${currUserHandle ? `currUserHosting: events(where: {owner: {handle: {_eq: "${currUserHandle}"}}}) {
-                id}`: ''}    
     }`
 
     type Response = {
         attends: {event: SampleEvent}[],
         hosting: SampleEvent[],
         currUserJoined?: {event: {id: number}}[],
-        currUserHosting?: {id: number}[]
     }
 
     const [res1, res2] = await Promise.all([
@@ -87,7 +83,7 @@ export const ProfileEventListData = async function (handle: string, currUserHand
 
     const hosting = res1.hosting.map(e => {
         const isCreator = e.owner.handle === currUserHandle
-        const isJoined = !!res1.currUserHosting?.find(h => h.id === e.id)
+        const isJoined = !!res1.currUserJoined?.find(h => h.event.id === e.id)
         return {
             ...e,
             isCreator,

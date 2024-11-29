@@ -54,4 +54,14 @@ export const zh: Dictionary = {
     'Social Links': '社交链接',
     'Save': '保存',
     'Edit': '编辑',
+    'Chat': '聊天',
+    'Votes': '投票',
+    'Members': '成员',
+    'View All Event': '查看所有事件',
+    'Create an Event': '创建一个事件',
+    'Inviting': '邀请中',
+    'Request to be Issuer': '请求成为发行者',
+    'Management': '管理',
+    'Leave Group': '离开群组',
+    'Search members...':'搜索成员...'
 }

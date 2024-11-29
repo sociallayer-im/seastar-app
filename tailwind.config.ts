@@ -16,7 +16,9 @@ const config: Config = {
                 secondary: "var(--secondary)",
                 'secondary-foreground': `var(--secondary-foreground)`,
                 special: "var(--special)",
-                'special-foreground': "var(--special-foreground)"
+                'special-foreground': "var(--special-foreground)",
+                destructive: "hsl(var(--destructive))",
+                'destructive-foreground': "hsl(var(--destructive-foreground))",
             },
         },
     }

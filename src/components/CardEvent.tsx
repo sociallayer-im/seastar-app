@@ -12,6 +12,8 @@ export default function CardEvent({event}: {event: SampleEventWithCreatorAndJoin
     const cohosts = event.event_roles?.filter(r => r.role === 'co_host')
     const host = groupHost?.nickname || event.owner.nickname || event.owner.handle
 
+    console.log('event_roles', event.event_roles)
+
     const startTime = Dayjs.tz(new Date(event.start_time), event.timezone || 'Europe/London')
         .format('ddd MMM DD, HH:mm z')
 

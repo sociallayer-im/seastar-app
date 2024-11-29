@@ -33,7 +33,7 @@ export const en = {
     'Wallet Address': 'Wallet Address',
     'Close': 'Close',
     'Copy': 'Copy',
-    'Send a badge': 'Send a badge',
+    'Send a badge': 'Send a Badge',
     'Followers': 'Followers',
     'Following': 'Following',
     'Groups': 'Groups',
@@ -51,7 +51,17 @@ export const en = {
     'Bio': 'Bio',
     'Social Links': 'Social Links',
     'Save': 'Save',
-    'Edit': 'Edit'
+    'Edit': 'Edit',
+    'Chat': 'Chat',
+    'Votes': 'Votes',
+    'Members': 'Members',
+    'View All Event': 'View All Event',
+    'Create an Event': 'Create an Event',
+    'Inviting': 'Inviting',
+    'Request to be Issuer': 'Request to be Issuer',
+    'Management': 'Management',
+    'Leave Group': 'Leave Group',
+    'Search members...': 'Search members...'
 }
 
 export type Dictionary = typeof en

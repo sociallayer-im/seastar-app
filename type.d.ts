@@ -148,9 +148,9 @@ declare namespace Solar {
         profile: ProfileSample
     }
 
-    export type SampleGroup = Pick<Group, 'id' | 'handle' | 'nickname' | 'image_url'>
+    export type GroupSample = Pick<Group, 'id' | 'handle' | 'nickname' | 'image_url'>
 
-    export interface SampleGroupWithOwner extends Solar.SampleGroup {
+    export interface SampleGroupWithOwner extends Solar.GroupSample {
         owner: Solar.ProfileSample,
         memberships: Solar.Membership[]
     }
@@ -212,5 +212,25 @@ declare namespace Solar {
         payment_status: string | null,
         event: Event,
         profile: ProfileSample,
+    }
+
+    export interface Invite {
+        id: number,
+        sender_id: number
+        receiver_id: number | null,
+        group_id: number,
+        expires_at: string,
+        badge_class_id: number | null,
+        badge_id: number | null,
+        role: string,
+        status: string,
+        accepted: boolean
+        receiver_address_type: string | null,
+        receiver_address: string | null,
+        badge_class: BadgeClass | null,
+        receiver: ProfileSample | null,
+        sender: ProfileSample,
+        badges: Badge | null
+        group: GroupSample
     }
 }
