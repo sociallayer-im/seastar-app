@@ -9,6 +9,7 @@ import {selectLang} from "@/app/actions"
 import TabEvents from './TabEvents/TabEvents'
 import TabBadges from "@/app/(normal)/group/[handle]/TabBadges/TabBadges"
 import TabMembers from "@/app/(normal)/group/[handle]/TabMembers/TabMembers"
+import TabVouchers from "@/app/(normal)/group/[handle]/TabVouchers/TabVouchers"
 
 export default async function GroupPage(props: GroupDataProps) {
     const {group, tab, currProfile, currUserIsManager, currUserIsIssuer, currUserIsMember, members} = await GroupPageData(props)
@@ -75,7 +76,7 @@ export default async function GroupPage(props: GroupDataProps) {
         </div>
 
         <div className="page-width pl-0 pr-0 pb-12 pt-0">
-            <div className="flex flex-col items-start max-w-[720px]">
+            <div className="flex flex-col items-start max-w-[640px]">
                 <div className="tab-titles w-full flex-row-item-center overflow-auto">
                     <a className={`${buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})} flex-1`}
                         href={`/group/${group.handle}?tab=events`}>
@@ -132,6 +133,12 @@ export default async function GroupPage(props: GroupDataProps) {
                         isMember={currUserIsMember}
                         isManager={currUserIsManager} />
                 </div>
+                }
+
+                {
+                    tab === 'sending' && <div className="grid grid-cols-1 gap-3 w-full">
+                        <TabVouchers  handle={group.handle} />
+                    </div>
                 }
             </div>
         </div>
