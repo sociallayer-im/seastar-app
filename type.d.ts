@@ -66,6 +66,7 @@ declare namespace Solar {
         event_roles: EventRole[] | null,
         location_data: string | null,
         status: string | null,
+        track_id: number | null,
     }
 
     export interface Venue {
@@ -232,5 +233,44 @@ declare namespace Solar {
         sender: ProfileSample,
         badges: Badge | null
         group: GroupSample
+    }
+
+    export interface Ticket {
+        tracks_allowed: string[] | null,
+        id: number,
+        check_badge_class_id: number | null
+        content: string,
+        created_at: string,
+        end_time: string | null
+        event_id: number,
+        need_approval: boolean
+        payment_chain: string | null
+        payment_target_address: string | null
+        payment_token_address: string | null
+        payment_token_price: string | null
+        payment_token_name: string | null
+        quantity: number | null,
+        status: string
+        title: string,
+        payment_metadata: {
+            payment_chain: string | null
+            payment_target_address: string | null
+            payment_token_address: string | null
+            payment_token_price: string | null
+            payment_token_name: string | null
+        }[]
+        payment_methods: PaymentMethod[]
+        payment_methods_attributes: PaymentMethod[]
+        ticket_type: string
+    }
+
+    interface Track {
+        id: number,
+        title: string,
+        kind: string,
+        group_id: string,
+        start_date: string | null,
+        end_date: string | null,
+        manager_ids: string[] | null,
     }
 }

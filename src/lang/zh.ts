@@ -63,5 +63,11 @@ export const zh: Dictionary = {
     'Request to be Issuer': '请求成为发行者',
     'Management': '管理',
     'Leave Group': '离开群组',
-    'Search members...':'搜索成员...'
+    'Search members...':'搜索成员...',
+    'Edit Event': '编辑事件',
+    'Create Event': '创建事件',
+    'Event Track': 'Track',
+    'Event Name': '名称',
+    'Event Description': '描述',
+    'Event Note (Display after confirming attendance)': '备注（确认参加后显示）'
 }

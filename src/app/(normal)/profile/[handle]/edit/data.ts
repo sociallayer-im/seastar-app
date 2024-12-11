@@ -9,7 +9,6 @@ export interface EditProfileDataProps {
     params: ProfilePageParams
 }
 
-
 export default async function EditProfileData({params} : EditProfileDataProps) {
     const handle = params.handle
     const profile =  await getProfileByHandle(handle)

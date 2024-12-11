@@ -1,0 +1,38 @@
+[class^="editor-icon-"], [class*=" editor-icon-"] {
+  font-family: var(--editor-icon);
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.editor-icon-quote:before {
+  content: "\e900";
+}
+.editor-icon-code:before {
+  content: "\e901";
+}
+.editor-icon-link:before {
+  content: "\e902";
+}
+.editor-icon-photo:before {
+  content: "\e903";
+}
+.editor-icon-unordered-list:before {
+  content: "\e904";
+}
+.editor-icon-ordered-list:before {
+  content: "\e905";
+}
+.editor-icon-italic:before {
+  content: "\e906";
+}
+.editor-icon-bold:before {
+  content: "\e907";
+}
+.editor-icon-redo:before {
+  content: "\e908";
+}
+.editor-icon-undo:before {
+  content: "\e909";
+}
+

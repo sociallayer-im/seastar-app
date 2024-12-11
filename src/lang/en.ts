@@ -61,7 +61,13 @@ export const en = {
     'Request to be Issuer': 'Request to be Issuer',
     'Management': 'Management',
     'Leave Group': 'Leave Group',
-    'Search members...': 'Search members...'
+    'Search members...': 'Search members...',
+    'Edit Event': 'Edit Event',
+    'Create Event': 'Create Event',
+    'Event Track': 'Event Track',
+    'Event Name': 'Event Name',
+    'Event Description': 'Event Description',
+    'Event Note (Display after confirming attendance)': 'Event Note (Display after confirming attendance)'
 }
 
 export type Dictionary = typeof en

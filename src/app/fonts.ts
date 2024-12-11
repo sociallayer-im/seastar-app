@@ -13,6 +13,12 @@ export const media_icons = localFont({
     variable: '--media-icon'
 })
 
+export const editor_icons = localFont({
+    src: [{path: './fonts/editor_icons.woff'}],
+    display: 'block',
+    variable: '--editor-icon'
+})
+
 export const icon = localFont({
     src: [
         {path:'./fonts/unicon-line/unicons-0.woff'},

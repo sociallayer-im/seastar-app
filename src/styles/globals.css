@@ -1,6 +1,7 @@
 /*@import "poppins.css";*/
 @import "font_icons.css";
 @import "media_icons.css";
+@import "editor_icons.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
