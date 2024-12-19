@@ -126,8 +126,9 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
     }
 
     return event.timezone ? <div>
-        <div className="flex-row-item-center">
-            <div className="w-11 text-center mr-1">From</div>
+        <div className="flex-row-item-center relative">
+            <i className="uil-lock absolute text-lg left-3 top-9" />
+            <div className="w-11 text-center mr-1">{lang['From']}</div>
             <DatePicker
                 filterFn={fromDatePickerFilterFn}
                 onChange={(data) => setStartDate(data)}
@@ -143,7 +144,7 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
 
         </div>
         <div className="flex-row-item-center mt-2">
-            <div className="w-11 text-center mr-1">To</div>
+            <div className="w-11 text-center mr-1">{lang['To']}</div>
             <DatePicker
                 filterFn={toDatePickerFilterFn}
                 onChange={(data) => setEndDate(data)}

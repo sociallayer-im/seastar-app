@@ -10,7 +10,7 @@ export default function DropdownMenu<T>(props: {
     multiple?: boolean,
     value?: T[],
     onSelect: (values: T[]) => void,
-    renderOption: (option: T) => React.ReactNode,
+    renderOption: (option: T, index: number) => React.ReactNode,
     valueKey: keyof T
     align?: 'left' | 'right'
     fixWidth?: boolean,
@@ -99,7 +99,7 @@ export default function DropdownMenu<T>(props: {
                 className={`mb-1 py-2 px-3 cursor-pointer rounded-lg hover:bg-[#F1F1F1] ${props.value?.find(v => v[props.valueKey] === option[props.valueKey]) ? 'bg-[#F1F1F1]' : ''}`}
                 key={index}
                 onClick={() => handleSelect(option)}>
-                {props.renderOption(option)}</div>)
+                {props.renderOption(option, index)}</div>)
             }
         </div>
     </div>

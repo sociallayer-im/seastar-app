@@ -12,6 +12,8 @@ import {Switch} from "@/components/shadcn/Switch"
 import LocationInput from "@/components/client/LocationInput"
 import EventDateTimeInput from "@/components/client/EventDateTimeInput"
 import {eventCoverTimeStr} from "@/utils"
+import SelectedEventHost from "@/components/client/SelectedEventHost"
+import SelectTag from "@/components/client/SelectTag"
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -48,7 +50,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                             <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.72)'}}>
                                 <div
                                     className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
-                                    {draft.title || 'Event Name'}
+                                    {draft.title || lang['Event Name']}
                                 </div>
                                 <div className="text-lg absolute font-semibold left-[76px] top-[178px]">{eventCoverTimeStr(draft.start_time!, draft.timezone!).date} <br/>
                                     {eventCoverTimeStr(draft.start_time!, draft.timezone!).time}
@@ -60,7 +62,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                     }
                     <Button onClick={setCover}
                         variant={'secondary'} className="block btn mx-auto w-[324px]">
-                        Upload Cover
+                        {lang['Upload Cover']}
                     </Button>
                 </div>
 
@@ -106,18 +108,17 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                     </div>
 
                     <div className="mb-8">
-                        <div className={`${buttonVariants({variant: 'ghost'})} mb-3 w-full cursor-pointer select-none`}
-                            onClick={() => {
-                                setEnableNote(!enableNote)
-                            }}>
+                        <div className={`select-none mb-3`}>
                             <div className="flex flex-row items-center justify-between w-full">
                                 <div className="text-sm">
-                                    <div>{lang['Event Note']}</div>
-                                    <div className="text-xs text-secondary-foreground font-normal">
+                                    <div className="font-semibold">{lang['Event Note']}</div>
+                                    <div className="text-xs text-gray-500 font-normal">
                                         {lang['Display after confirming attendance']}
                                     </div>
                                 </div>
-                                <Switch checked={enableNote} aria-readonly/>
+                                <Switch onClick={() => {
+                                    setEnableNote(!enableNote)
+                                }} checked={enableNote} aria-readonly />
                             </div>
                         </div>
                         <div id="event-notes" className={`${enableNote ? '' : 'h-0'} overflow-hidden`}>
@@ -149,13 +150,32 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                     </div>
 
                     <div className="mb-8">
-                        <div className="font-semibold mb-1">Meeting URL</div>
+                        <div className="font-semibold mb-1">{lang['Meeting URL']}</div>
                         <Input className="w-full"
+                            placeholder={lang['Input meeting url']}
                             onChange={e => {
                                 setDraft({...draft, meeting_url: e.target.value})
                             }}
-                            startAdornment={<i className="uil-link text-lg" />}
-                            value={draft.meeting_url || ''} />
+                            startAdornment={<i className="uil-link text-lg"/>}
+                            value={draft.meeting_url || ''}/>
+                    </div>
+
+                    {!!data.availableHost.length &&
+                        <div className="mb-8">
+                            <div className="font-semibold mb-1">{lang['Host']}</div>
+                            <SelectedEventHost
+                                lang={lang}
+                                availableHost={data.availableHost}
+                                state={{event: draft, setEvent: setDraft}}/>
+                        </div>
+                    }
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Tags']}</div>
+                        <SelectTag
+                            onSelect={(tags) => setDraft({...draft, tags})}
+                            tags={data.tags || []}
+                            value={draft.tags || []} />
                     </div>
                 </div>
             </div>

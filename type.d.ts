@@ -130,10 +130,10 @@ declare namespace Solar {
     }
 
     export interface EventRole {
-        id: number
-        event_id: number | null
+        id?: number
+        event_id?: number | null
         item_id: number | null
-        email: string | null
+        email?: string | null
         nickname: string | null
         image_url: string | null
         role: 'speaker' | 'co_host' | 'group_host'

@@ -73,7 +73,31 @@ export const en = {
     'Input address or geo point eg. 4071.1,-74.06': 'Input address or geo point eg. 4071.1,-74.06',
     'Input a custom name for location': 'Input a custom name for location',
     'When will it happen': 'When will it happen',
-    'All Day Event': 'All Day Event'
+    'All Day Event': 'All Day Event',
+    'From': 'From',
+    'To': 'To',
+    'Meeting URL': 'Meeting URL',
+    'Input meeting url': 'Input meeting url',
+    'Other Location': 'Other Location',
+    'Timeslots': 'Timeslots',
+    'Overrides': 'Overrides',
+    'Link': 'Link',
+    'Need Approval': 'Need Approval',
+    'Select Venue': 'Select Venue',
+    'Upload Cover': 'Upload Cover',
+    'Host': 'Host',
+    'Profile': 'Profile',
+    'Group':'Group',
+    'Venue Timeslots': 'Venue Timeslots',
+    'monday': 'Monday',
+    'tuesday': 'Tuesday',
+    'wednesday': 'Wednesday',
+    'thursday': 'Thursday',
+    'friday': 'Friday',
+    'saturday': 'Saturday',
+    'sunday': 'Sunday',
+    'Available': 'Available',
+    'Unavailable': 'Unavailable'
 }
 
 export type Dictionary = typeof en
