@@ -1,10 +1,12 @@
 import {gql, request} from 'graphql-request'
-import {AUTH_FIELD} from "@/utils"
+import {AUTH_FIELD, getPrefillEventDateTime} from "@/utils"
 import {getProfileByToken} from "@/service/solar"
 import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import {redirect} from "next/navigation"
 
-export type EventDraftType = Pick<Solar.Event, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes'>
+export interface EventDraftType extends Pick<Solar.Event, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location'| 'start_time' | 'end_time' | 'meeting_url'> {
+    timezone: string | null
+}
 
 export interface CreateEventPageDataProps {
     grouphandle: string
@@ -23,7 +25,8 @@ export interface CreateEventPageDataType {
     isManager: boolean
     isMember: boolean
     availableCreator: Array<Solar.ProfileSample | Solar.GroupSample>
-    tracks: Solar.Track[]
+    tracks: Solar.Track[],
+    venues: Solar.Venue[]
 }
 
 
@@ -36,7 +39,7 @@ export default async function CreateEventPageData({params, cookies}: CreateEvent
     }
 
     const grouphandle = params.grouphandle
-    const {groups, memberships, userGroups, tracks} = await getGroupData(grouphandle)
+    const {groups, memberships, userGroups, tracks, venues} = await getGroupData(grouphandle)
     if (!groups || !groups.length) {
         redirect('/error')
     }
@@ -58,7 +61,8 @@ export default async function CreateEventPageData({params, cookies}: CreateEvent
         isManager,
         isMember,
         availableCreator,
-        tracks
+        tracks,
+        venues
     } as CreateEventPageDataType
 }
 
@@ -86,6 +90,38 @@ async function getGroupData(handle: string, currUserHandle?: string) {
                 group_id
                 kind
             }
+            venues: venues(where: {group: {handle: {_eq: "${handle}"}}, removed: {_is_null: true}}) {
+                id
+                title
+                about
+                location
+                location_data
+                formatted_address
+                geo_lat
+                geo_lng
+                start_date
+                end_date
+                capacity
+                link
+                visibility
+                require_approval
+                venue_overrides {
+                    id
+                    day
+                    disabled
+                    start_at
+                    end_at
+                    role
+                }
+                venue_timeslots {
+                    id
+                    day_of_week
+                    disabled
+                    start_at
+                    end_at
+                    role
+                }
+            }
             ${currUserHandle ? `userGroups: groups(where: {status: {_neq: "freezed"}, memberships: {role: {_in: ["owner", "manager"]}, profile: {handle: {_eq: "${currUserHandle}"}}}}, order_by: {id: desc}) {id,image_url,handle,nickname}` : ''}
         }`
 
@@ -96,6 +132,7 @@ async function getGroupData(handle: string, currUserHandle?: string) {
         userGroups?: Solar.GroupSample[],
         memberships: Solar.Membership[],
         tracks: Solar.Track[]
+        venues: Solar.Venue[]
     }
 
     return await request<GroupData>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
@@ -107,7 +144,17 @@ export const emptyEvent: EventDraftType = {
     title: '',
     track_id: null,
     content: '',
-    notes: null
+    notes: null,
+    venue_id: null,
+    geo_lat: null,
+    geo_lng: null,
+    formatted_address: null,
+    location: null,
+    location_data: null,
+    start_time: getPrefillEventDateTime().initStartTime.toISOString(),
+    end_time: getPrefillEventDateTime().initEndTime.toISOString(),
+    timezone: null,
+    meeting_url: ''
 }
 
 

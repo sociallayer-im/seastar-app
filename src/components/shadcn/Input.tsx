@@ -10,6 +10,7 @@ const inputVariants = cva(
             variant: {
                 default:
                     "bg-secondary border-secondary",
+                textCenter: "bg-secondary border-secondary [&>input]:text-center",
             },
         },
         defaultVariants: {

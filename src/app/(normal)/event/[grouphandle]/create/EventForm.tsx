@@ -2,30 +2,44 @@
 
 import type {Dictionary} from "@/lang"
 import {CreateEventPageDataType, EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
-import {useState} from "react"
-import {Button} from "@/components/shadcn/Button"
+import {useEffect, useState} from "react"
+import {Button, buttonVariants} from "@/components/shadcn/Button"
 import useUploadImage from "@/hooks/useUploadImage"
 import {Input} from "@/components/shadcn/Input"
 import {getLabelColor} from "@/utils/label_color"
 import dynamic from 'next/dynamic'
 import {Switch} from "@/components/shadcn/Switch"
+import LocationInput from "@/components/client/LocationInput"
+import EventDateTimeInput from "@/components/client/EventDateTimeInput"
+import {eventCoverTimeStr} from "@/utils"
 
-const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'),{ssr: false})
+const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
-export default function EventForm({lang, event, data}: { lang: Dictionary , event: EventDraftType, data: CreateEventPageDataType}) {
+export interface EventFormProps {
+    lang: Dictionary
+    event: EventDraftType
+    data: CreateEventPageDataType,
+}
+
+export default function EventForm({lang, event, data}: EventFormProps) {
     const [draft, setDraft] = useState<EventDraftType>(event)
     const {uploadImage} = useUploadImage()
 
     const [enableNote, setEnableNote] = useState(false)
 
     const setCover = async () => {
-        const picUrl =  await uploadImage()
+        const picUrl = await uploadImage()
         setDraft({...draft, cover_url: picUrl})
     }
 
+    useEffect(() => {
+        console.log(draft)
+    }, [draft])
+
     return <div className="min-h-[100svh] w-full">
         <div className="page-width min-h-[100svh] px-3 pb-12 pt-0">
-            <div className="py-6 font-semibold text-center text-xl">{event.id ? lang['Edit Event'] : lang['Create Event']}</div>
+            <div
+                className="py-6 font-semibold text-center text-xl">{event.id ? lang['Edit Event'] : lang['Create Event']}</div>
 
             <div className="flex flex-col sm:flex-row w-full">
                 <div className="sm:order-2 mt-4 sm:mt-0 mb-8">
@@ -36,14 +50,13 @@ export default function EventForm({lang, event, data}: { lang: Dictionary , even
                                     className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                                     {draft.title || 'Event Name'}
                                 </div>
-                                <div className="text-lg absolute font-semibold left-[76px] top-[178px]">MON, AUG 26,
-                                    2024 <br/>
-                                    03:30 — 04:00 GMT-6
+                                <div className="text-lg absolute font-semibold left-[76px] top-[178px]">{eventCoverTimeStr(draft.start_time!, draft.timezone!).date} <br/>
+                                    {eventCoverTimeStr(draft.start_time!, draft.timezone!).time}
                                 </div>
-                                <div className="text-lg absolute font-semibold left-[76px] top-[240px]">泰国清迈</div>
+                                <div className="text-lg absolute font-semibold left-[76px] top-[240px]">{draft.location}</div>
                             </div>
                         </div>
-                        :<img src={draft.cover_url} alt=""  className="w-[324px] h-auto mb-4"/>
+                        : <img src={draft.cover_url} alt="" className="w-[324px] h-auto mb-4"/>
                     }
                     <Button onClick={setCover}
                         variant={'secondary'} className="block btn mx-auto w-[324px]">
@@ -51,10 +64,10 @@ export default function EventForm({lang, event, data}: { lang: Dictionary , even
                     </Button>
                 </div>
 
-                <div className="sm:order-1 mr-8 flex-1">
+                <div className="sm:order-1 sm:mr-8 flex-1 max-w-[644px]">
                     {!!data.tracks.length && <>
                         <div className="font-semibold mb-1">{lang['Event Track']}</div>
-                        <div className='flex-row flex flex-wrap items-center mb-8'>
+                        <div className="flex-row flex flex-wrap items-center mb-8">
                             {data.tracks.map(t => {
                                 const color = getLabelColor(t.title)
                                 const themeStyle = t.id === draft.track_id ? {
@@ -84,7 +97,7 @@ export default function EventForm({lang, event, data}: { lang: Dictionary , even
                         onChange={e => setDraft({...draft, title: e.target.value})}/>
 
                     <div className="font-semibold mb-1">{lang['Event Description']}</div>
-                    <div className="mb-3 w-full">
+                    <div className="mb-3 w-full min-h-[226px] bg-secondary rounded-lg">
                         <RichTextEditorDynamic
                             initText={draft.content || ''}
                             onChange={md => {
@@ -93,18 +106,20 @@ export default function EventForm({lang, event, data}: { lang: Dictionary , even
                     </div>
 
                     <div className="mb-8">
-                        <Button className='mb-3 w-full'
-                            variant={'ghost'}
+                        <div className={`${buttonVariants({variant: 'ghost'})} mb-3 w-full cursor-pointer select-none`}
                             onClick={() => {
                                 setEnableNote(!enableNote)
                             }}>
                             <div className="flex flex-row items-center justify-between w-full">
                                 <div className="text-sm">
-                                    {lang['Event Note (Display after confirming attendance)']}
+                                    <div>{lang['Event Note']}</div>
+                                    <div className="text-xs text-secondary-foreground font-normal">
+                                        {lang['Display after confirming attendance']}
+                                    </div>
                                 </div>
                                 <Switch checked={enableNote} aria-readonly/>
                             </div>
-                        </Button>
+                        </div>
                         <div id="event-notes" className={`${enableNote ? '' : 'h-0'} overflow-hidden`}>
                             <RichTextEditorDynamic
                                 onChange={(md) => {
@@ -112,6 +127,35 @@ export default function EventForm({lang, event, data}: { lang: Dictionary , even
                                 }}
                             />
                         </div>
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Location']}</div>
+                        <LocationInput
+                            lang={lang}
+                            isManager={data.isManager}
+                            isMember={data.isMember}
+                            venues={data.venues}
+                            state={{event: draft, setEvent: setDraft}}/>
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['When will it happen']}</div>
+                        <EventDateTimeInput
+                            lang={lang}
+                            venues={data.venues}
+                            state={{event: draft, setEvent: setDraft}}
+                        />
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">Meeting URL</div>
+                        <Input className="w-full"
+                            onChange={e => {
+                                setDraft({...draft, meeting_url: e.target.value})
+                            }}
+                            startAdornment={<i className="uil-link text-lg" />}
+                            value={draft.meeting_url || ''} />
                     </div>
                 </div>
             </div>

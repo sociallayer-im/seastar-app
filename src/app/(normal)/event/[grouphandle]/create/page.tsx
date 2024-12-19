@@ -7,7 +7,6 @@ export default async function CreateEvent({ params }: { params: CreateEventPageD
     const pageData = await CreateEventPageData({ params, cookies: cookies() })
     const { lang } = await selectLang()
 
-
     return <EventForm
         data={pageData}
         lang={lang}

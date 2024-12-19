@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 import {getProfileByToken} from '@/service/solar'
 import { sha3_256 } from 'js-sha3'
+import dayjs from "dayjs"
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -83,6 +84,36 @@ export function genGoogleMapLink(lat: string | number, lng: string | number, pla
     }
 
     return url
+}
+
+export function getPrefillEventDateTime() {
+    const now = new Date()
+    const minutes = now.getMinutes()
+    const minuteRange = [0, 30, 60]
+    const nearestMinute = minuteRange.find((item) => {
+        return item >= minutes
+    })
+
+    const initStartTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), nearestMinute || 0)
+    const initEndTime = new Date(initStartTime.getTime() + 60 * 30 * 1000)
+    return {initStartTime, initEndTime}
+}
+
+export function calculateDuration(start: Date, end: Date) {
+    if (end < start) return ``
+    const duration = end.getTime() - start.getTime()
+    const day = Math.floor(duration / (1000 * 60 * 60 * 24))
+    const hour = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    const minute = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))
+    const res = `${day ? `${day}d ` : ''}` + `${hour ? `${hour}h ` : ''}` + `${minute ? `${minute}m` : ''}`
+    if (res === '23h 59m') return '1 day'
+    return res
+}
+
+export function eventCoverTimeStr(date: string, timezone: string) {
+    const time = dayjs.tz(new Date(date).getTime(), timezone)
+    const offset = time.utcOffset() / 60
+    return {date: time.format('ddd, MMM MM,YYYY') , time: `${time.format('HH:mm')} GMT${offset >= 0 ? `+` + offset : offset}`}
 }
 
 

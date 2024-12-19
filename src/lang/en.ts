@@ -67,7 +67,13 @@ export const en = {
     'Event Track': 'Event Track',
     'Event Name': 'Event Name',
     'Event Description': 'Event Description',
-    'Event Note (Display after confirming attendance)': 'Event Note (Display after confirming attendance)'
+    'Event Note': 'Event Note',
+    'Display after confirming attendance': 'Display after confirming attendance',
+    'Custom Location Name': 'Custom Location Name',
+    'Input address or geo point eg. 4071.1,-74.06': 'Input address or geo point eg. 4071.1,-74.06',
+    'Input a custom name for location': 'Input a custom name for location',
+    'When will it happen': 'When will it happen',
+    'All Day Event': 'All Day Event'
 }
 
 export type Dictionary = typeof en

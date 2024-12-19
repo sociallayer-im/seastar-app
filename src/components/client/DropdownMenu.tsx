@@ -1,5 +1,8 @@
-import {useState, useRef, useEffect, CSSProperties} from "react"
+import {useState, useRef, useEffect, CSSProperties, useCallback} from "react"
 
+export interface DropdownTrigger {
+    trigger: null | ((show: boolean) => void)
+}
 
 export default function DropdownMenu<T>(props: {
     children: React.ReactNode
@@ -10,6 +13,8 @@ export default function DropdownMenu<T>(props: {
     renderOption: (option: T) => React.ReactNode,
     valueKey: keyof T
     align?: 'left' | 'right'
+    fixWidth?: boolean,
+    trigger?: DropdownTrigger
 }) {
 
     const triggerRef = useRef<HTMLDivElement>(null)
@@ -19,12 +24,16 @@ export default function DropdownMenu<T>(props: {
     const [show, setShow] = useState(false)
     const [positionStyle, setPositionStyle] = useState<CSSProperties>({})
 
-    const trigger = () => {
+    const trigger = (show: boolean) => {
         calculatePosition()
-        setShow(!show)
+        setShow(show)
     }
 
-    const calculatePosition = () => {
+    if (props.trigger) {
+        props.trigger.trigger = trigger
+    }
+
+    const calculatePosition = useCallback(() => {
         const triggerRect = triggerRef.current?.getBoundingClientRect()
         const contentRect = contentRef.current?.getBoundingClientRect()
         if (triggerRect && contentRect) {
@@ -35,10 +44,18 @@ export default function DropdownMenu<T>(props: {
                 top: triggerBottomOffset < contentHeight ? triggerRect.top - contentHeight : triggerRect.top + triggerRect.height,
                 left: triggerRect.left,
                 minWidth: triggerRect.width,
+                maxWidth: props.fixWidth ? triggerRect.width : undefined,
                 marginLeft: props.align === 'right' ?triggerRect.width - contentRect.width : '0'
             })
         }
-    }
+    }, [props.align, props.fixWidth])
+
+    useEffect(() => {
+        if (show) {
+            const interval = window.setInterval(calculatePosition, 100)
+            return () => clearInterval(interval)
+        }
+    }, [calculatePosition, show])
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -71,7 +88,7 @@ export default function DropdownMenu<T>(props: {
     return <div className="dropwdown relative" ref={dropdownRef}>
         <div className="dropdown-trigger"
             ref={triggerRef}
-            onClick={trigger}>
+            onClick={props.trigger ? undefined : () => trigger(!show)}>
             {props.children}
         </div>
         <div
@@ -79,7 +96,7 @@ export default function DropdownMenu<T>(props: {
             style={positionStyle}
             className={`${show ? 'opacity-1 visible' : 'opacity-0 invisible'} dropdown-content max-h-[200px] overflow-auto fixed bg-background shadow rounded-lg p-2 z-[9999] decoration-2`}>
             {props.options.map((option, index) => <div
-                className={`py-2 px-3 cursor-pointer rounded-lg hover:bg-[#F1F1F1] ${props.value?.find(v => v[props.valueKey] === option[props.valueKey]) ? 'bg-[#F1F1F1]' : ''}`}
+                className={`mb-1 py-2 px-3 cursor-pointer rounded-lg hover:bg-[#F1F1F1] ${props.value?.find(v => v[props.valueKey] === option[props.valueKey]) ? 'bg-[#F1F1F1]' : ''}`}
                 key={index}
                 onClick={() => handleSelect(option)}>
                 {props.renderOption(option)}</div>)

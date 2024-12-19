@@ -111,6 +111,13 @@ body {
     overflow: hidden;
 }
 
+.webkit-box-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .default-cover {
   position: relative;
   flex-shrink: 0;
@@ -118,6 +125,10 @@ body {
   background-image: url("/images/default_event_cover.png");
   background-size: 100% 100%;
   transform-origin: 0 0;
+}
+
+input[type=time]::-webkit-calendar-picker-indicator {
+  display: none;
 }
 
 

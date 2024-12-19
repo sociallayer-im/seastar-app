@@ -69,5 +69,11 @@ export const zh: Dictionary = {
     'Event Track': 'Track',
     'Event Name': '名称',
     'Event Description': '描述',
-    'Event Note (Display after confirming attendance)': '备注（确认参加后显示）'
+    'Event Note': '备注',
+    'Display after confirming attendance': '确认参加后显示',
+    'Custom Location Name': '自定义地点名',
+    'Input address or geo point eg. 4071.1,-74.06': '输入地址或者经纬度，例如：4071.1,-74.06',
+    'Input a custom name for location': '输入自定义地点名',
+    'When will it happen': '何时发生',
+    'All Day Event': '全天事件',
 }

@@ -67,6 +67,29 @@ declare namespace Solar {
         location_data: string | null,
         status: string | null,
         track_id: number | null,
+        venue_id: number | null,
+    }
+
+    export interface VenueTimeslot {
+        id?: number
+        venue_id?: number,
+        day_of_week: Weekday,
+        disabled: boolean,
+        start_at: string,
+        end_at: string,
+        role: 'member' | 'manager' | 'all'
+        _destroy?: string
+    }
+
+    export interface VenueOverride {
+        id?: number
+        venue_id: number,
+        day: string, // '2022-01-01'
+        disabled: boolean,
+        start_at: string | null,
+        end_at: string | null,
+        role: 'member' | 'manager' | 'all'
+        _destroy?: string
     }
 
     export interface Venue {
@@ -91,6 +114,9 @@ declare namespace Solar {
         removed: boolean | null
         visibility: string | null,
         location_data: string | null,
+        group: GroupSample,
+        venue_timeslots: VenueTimeslot[] | null
+        venue_overrides: VenueOverride[] | null
     }
 
     export interface Track {
@@ -272,5 +298,15 @@ declare namespace Solar {
         start_date: string | null,
         end_date: string | null,
         manager_ids: string[] | null,
+    }
+}
+
+declare namespace google.maps.places {
+    interface QueryAutocompletePrediction {
+        place_id?: string
+        structured_formatting: {
+            main_text: string,
+            secondary_text: string
+        }
     }
 }
