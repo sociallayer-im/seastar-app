@@ -131,6 +131,26 @@ input[type=time]::-webkit-calendar-picker-indicator {
   display: none;
 }
 
+.loading-bg {
+  background-image: linear-gradient(100deg, #dddddd, #f7f7f7,#dddddd);
+  animation: loading-color 6s infinite;
+  background-size: 400%;
+}
+
+@keyframes loading-color {
+  0% {
+    background-position : 0 0;
+  }
+
+  50% {
+    background-position: 220% 0;
+  }
+
+  100% {
+    background-position: 0 0;
+  }
+}
+
 
 
 

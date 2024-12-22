@@ -106,3 +106,17 @@ export const getOccupiedTimeEvent  = async (startTime: string, endTime: string, 
     }) || null
 
 }
+
+export async function getBadgeClassDetailById(id: number) {
+    const doc = gql`query MyQuery {
+        badge_classes(where: {id: {_eq: ${id}}}) {
+            id
+            title
+            image_url
+            group_id
+        }
+    }`
+
+    const badgeClasses =  await request<{badge_classes: Solar.BadgeClass[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    return badgeClasses.badge_classes[0]
+}

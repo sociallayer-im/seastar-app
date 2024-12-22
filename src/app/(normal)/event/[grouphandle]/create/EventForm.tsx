@@ -15,7 +15,8 @@ import {eventCoverTimeStr, isEventTimeSuitable} from "@/utils"
 import SelectedEventHost from "@/components/client/SelectedEventHost"
 import SelectTag from "@/components/client/SelectTag"
 import {getOccupiedTimeEvent} from "@/service/solar"
-import useModal from "../../../../../components/client/Modal/useModal"
+import useModal from "@/components/client/Modal/useModal"
+import SelectedEventBadge from "@/components/client/SelectedEventBadge"
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -265,10 +266,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                     <div className="font-semibold mb-1 text-sm">{lang['Event Badge']}</div>
                                     <div
                                         className="text-gray-500 text-xs">{lang['When an event participant checks in, he or she automatically receives a badge at the end of the event']}</div>
-                                    <Button variant={'secondary'} className="mt-2 text-sm">
-                                        <i className="uil-plus-circle text-lg"/>
-                                        {lang['Set a POAP badge for attendees']}
-                                    </Button>
+                                    <SelectedEventBadge lang={lang} state={{event: draft, setEvent: setDraft}} />
 
                                     <div className="flex-row-item-center justify-between mt-8">
                                         <div className="font-semibold mb-1 text-sm">{lang['Maximum participants']}</div>
