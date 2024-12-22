@@ -121,6 +121,9 @@ export const en = {
     'Close Event': 'Close Event',
     'People can not RSVP the event': 'People can not RSVP the event',
     'The maximum number of tags is 3': 'The maximum number of tags is 3',
+    'Event Name is required': 'Event Name is required',
+    'Choose a badge from you created': 'Choose a badge from you created',
+    'Choose a badge from group': 'Choose a badge from group'
 }
 
 export type Dictionary = typeof en

@@ -120,3 +120,47 @@ export async function getBadgeClassDetailById(id: number) {
     const badgeClasses =  await request<{badge_classes: Solar.BadgeClass[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
     return badgeClasses.badge_classes[0]
 }
+
+export async function getUserBadgeClasses(userHandle: string) {
+    const doc = gql`query MyQuery {
+        badge_classes(where: {group: {memberships: {profile: {handle: {_eq: "${userHandle}"}}}}}) {
+            id
+            title
+            image_url
+            group_id
+            metadata
+            content
+            group_id
+            transferable
+            badge_type
+            permissions
+            created_at
+            display
+        }
+    }`
+
+    const badgeClasses =  await request<{badge_classes: Solar.BadgeClass[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    return badgeClasses.badge_classes
+}
+
+export async function getGroupBadgeClasses(groupId: number, limit = 20) {
+    const doc = gql`query MyQuery {
+        badge_classes(where: {group_id: {_eq: ${groupId}}, badge_type:{_eq: "badge"}}, ${limit ? `limit: ${limit}` : ''}) {
+            id
+            title
+            image_url
+            group_id
+            metadata
+            content
+            group_id
+            transferable
+            badge_type
+            permissions
+            created_at
+            display
+        }
+    }`
+
+    const badgeClasses =  await request<{badge_classes: Solar.BadgeClass[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    return badgeClasses.badge_classes
+}

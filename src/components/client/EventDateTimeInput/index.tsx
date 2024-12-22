@@ -34,11 +34,14 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
 
         if (venueHasTimeslots) {
             // if the venue has timeslots, the start date should be the same as the end date
+            const dateStr = result.format('YYYY/MM/DD')
+            const endTimeStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('HH:mm')
             setEvent({
                 ...event,
-                end_time: dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).set('date', result.date()).toISOString(),
+                end_time: dayjs.tz(`${dateStr} ${endTimeStr}`, event.timezone!).toISOString(),
                 start_time: result.toISOString()
             })
+            return
         }
 
         if (result.toISOString() > event.end_time) {
@@ -109,9 +112,10 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
     }
 
     const fromTimePickerFilterFn = (timeStr: string) => {
-        const startDateStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD')
-        const endDateStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('YYYY/MM/DD')
-        return startDateStr !== endDateStr || timeStr < displayTime(event.end_time, event.timezone!)
+        // const startDateStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+        // const endDateStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+        // return startDateStr !== endDateStr || timeStr < displayTime(event.end_time, event.timezone!)
+        return true
     }
 
     const toDatePickerFilterFn = (dateStr: string) => {

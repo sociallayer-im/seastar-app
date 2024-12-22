@@ -39,6 +39,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
     const [timeError, setTimeError] = useState('')
     const [occupiedEvent, setOccupiedEvent] = useState<Solar.Event | null>(null)
     const [tagError, setTagError] = useState('')
+    const [titleError, setTitleError] = useState('')
 
     const setCover = async () => {
         const picUrl = await uploadImage()
@@ -85,6 +86,24 @@ export default function EventForm({lang, event, data}: EventFormProps) {
         setTagError(!!draft.tags && draft.tags.filter(t => !t.startsWith(':')).length > 3
             ? lang['The maximum number of tags is 3'] : '')
     }, [draft.tags])
+
+    const checkDraft = () => {
+        if (!draft.title) {
+            setTitleError(lang['Event Name is required'])
+            setTimeout(() => {
+                document.querySelector('.err-msg')?.scrollIntoView({behavior: 'smooth', block: 'center'})
+            }, 200)
+            return
+        } else {
+            setTitleError('')
+        }
+
+        if (!!timeError || !!tagError || !!occupiedEvent) {
+            setTimeout(() => {
+                document.querySelector('.err-msg')?.scrollIntoView({behavior: 'smooth', block: 'center'})
+            }, 200)
+        }
+    }
 
     return <div className="min-h-[100svh] w-full">
         <div className="page-width min-h-[100svh] px-3 pb-12 pt-0">
@@ -142,12 +161,15 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                         </div>
                     </>}
 
-                    <div className="font-semibold mb-1">{lang['Event Name']} <span className="text-red-500">*</span>
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Event Name']} <span className="text-red-500">*</span>
+                        </div>
+                        <Input className="w-full"
+                            value={draft.title}
+                            required
+                            onChange={e => setDraft({...draft, title: e.target.value})}/>
+                        {!!titleError && <div className="text-red-400 mt-2 text-xs err-msg">{titleError}</div>}
                     </div>
-                    <Input className="w-full mb-8"
-                        value={draft.title}
-                        required
-                        onChange={e => setDraft({...draft, title: e.target.value})}/>
 
                     <div className="font-semibold mb-1">{lang['Event Description']}</div>
                     <div className="mb-3 w-full min-h-[226px] bg-secondary rounded-lg">
@@ -198,10 +220,10 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                             venues={data.venues}
                             state={{event: draft, setEvent: setDraft}}
                         />
-                        <div className="text-red-400 mt-2 text-xs">{timeError}</div>
+                        {!!timeError && <div className="text-red-400 mt-2 text-xs err-msg">{timeError}</div>}
                         {!!occupiedEvent &&
                             <div
-                                className="text-red-400 mt-2 text-xs">{lang['The selected time slot is occupied by another event at the current venue. Occupying event:']}
+                                className="text-red-400 mt-2 text-xs err-msg">{lang['The selected time slot is occupied by another event at the current venue. Occupying event:']}
                                 <a className="text-blue-400"
                                     target="_blank"
                                     href={`/event/detail/${occupiedEvent.id}`}>[{occupiedEvent.title}]</a>
@@ -236,7 +258,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                             onSelect={(tags) => setDraft({...draft, tags})}
                             tags={data.tags || []}
                             value={draft.tags || []}/>
-                        <div className="text-red-400 mt-2 text-xs">{tagError}</div>
+                        {!!tagError && <div className="text-red-400 mt-2 text-xs err-msg">{tagError}</div>}
                     </div>
 
                     <div className="mb-8">
@@ -266,7 +288,10 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                     <div className="font-semibold mb-1 text-sm">{lang['Event Badge']}</div>
                                     <div
                                         className="text-gray-500 text-xs">{lang['When an event participant checks in, he or she automatically receives a badge at the end of the event']}</div>
-                                    <SelectedEventBadge lang={lang} state={{event: draft, setEvent: setDraft}} />
+                                    <SelectedEventBadge
+                                        profileBadgeClasses={data.badgeClasses}
+                                        lang={lang}
+                                        state={{event: draft, setEvent: setDraft}}/>
 
                                     <div className="flex-row-item-center justify-between mt-8">
                                         <div className="font-semibold mb-1 text-sm">{lang['Maximum participants']}</div>
@@ -360,14 +385,18 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                     <div className="mt-8">
                                         <div className="flex-row-item-center justify-between">
                                             <div>
-                                                <div className="font-semibold text-sm text-orange-300">{lang['Close Event']}</div>
-                                                <div className="text-xs text-orange-300">
+                                                <div
+                                                    className="font-semibold text-sm text-amber-500">{lang['Close Event']}</div>
+                                                <div className="text-xs text-amber-500">
                                                     {lang['People can not RSVP the event']}
                                                 </div>
                                             </div>
                                             <Switch checked={draft.status === 'closed'}
                                                 onClick={() => {
-                                                    setDraft({...draft, status: draft.status === 'closed' ? (event.status === 'closed' ? 'open' : event.status) : 'closed'})
+                                                    setDraft({
+                                                        ...draft,
+                                                        status: draft.status === 'closed' ? (event.status === 'closed' ? 'open' : event.status) : 'closed'
+                                                    })
                                                 }}
                                             />
                                         </div>
@@ -376,6 +405,8 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                             </div>
                         </div>
                     </div>
+
+                    <Button variant={'special'} className="w-full" onClick={checkDraft}>Create Event</Button>
                 </div>
             </div>
         </div>

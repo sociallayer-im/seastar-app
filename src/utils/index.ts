@@ -196,7 +196,7 @@ export function isEventTimeSuitable(
     const endTime = dayjs.tz(new Date(eventEndTime!).getTime(), timezone)
 
     // 判断开始时间是否在结束时间之前
-    if (startTime.isAfter(endTime)) {
+    if (startTime.isSameOrAfter(endTime)) {
         return 'The start time should be before the end time'
     }
 

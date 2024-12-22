@@ -6,7 +6,7 @@ import {MouseEvent, useMemo} from "react"
 import {Dictionary} from "@/lang"
 import useModal from "@/components/client/Modal/useModal"
 import DialogVenueDetail from "@/components/DialogVenueDetail"
-import {checkVenueTimeAvailability, isEventTimeSuitable} from "@/utils"
+import {isEventTimeSuitable} from "@/utils"
 import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 
 export interface SelectVenueProps extends LocationInputProps {
@@ -163,21 +163,28 @@ function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
         venue,
     )
 
-    return <div className={`${notSuitable ? 'opacity-50 pointer-events-none' : ''}`}>
-        <div>{notSuitable}</div>
-        <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.title}}/>
-        <div className="text-sm text-[#999]">
-            {!!venue.venue_timeslots?.length &&
-                <Badge variant="ongoing" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
-            {!!venue.venue_overrides?.length &&
-                <Badge variant="pending" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
-            {!!venue.link && <Badge variant="hosting" className="mr-1 mt-2">{lang['Link']}</Badge>}
-            {!!venue.capacity && <Badge variant="past" className="mr-1 mt-2">{venue.capacity} Seats</Badge>}
-            {!!venue.require_approval &&
-                <Badge variant="upcoming" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
+    return <div className={`${notSuitable ? 'pointer-events-none' : ''}`}>
+        <div className={`${notSuitable ? 'opacity-50' : ''}`}>
+            <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.title}}/>
+            <div className="text-sm text-[#999]">
+                {!!venue.venue_timeslots?.length &&
+                    <Badge variant="ongoing" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
+                {!!venue.venue_overrides?.length &&
+                    <Badge variant="pending" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
+                {!!venue.link && <Badge variant="hosting" className="mr-1 mt-2">{lang['Link']}</Badge>}
+                {!!venue.capacity && <Badge variant="past" className="mr-1 mt-2">{venue.capacity} Seats</Badge>}
+                {!!venue.require_approval &&
+                    <Badge variant="upcoming" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
+            </div>
+            {!!venue.about &&
+                <div className="text-sm mt-2 text-[#999]"><i className="uil-align-left"></i> {venue.about}</div>
+            }
         </div>
-        {!!venue.about &&
-            <div className="text-sm mt-2 text-[#999]"><i className="uil-align-left"></i> {venue.about}</div>
+        {!!lang[notSuitable as keyof Dictionary] &&
+            <div className="text-red-500 text-xs mt-1 flex-row-item-center">
+                <i className="uil-info-circle text-base mr-1"/>
+                {lang[notSuitable as keyof Dictionary] || ''}
+            </div>
         }
     </div>
 }

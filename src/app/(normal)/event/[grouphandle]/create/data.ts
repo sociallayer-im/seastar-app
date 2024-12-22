@@ -27,7 +27,8 @@ export interface CreateEventPageDataType {
     availableHost: Array<Solar.ProfileSample | Solar.GroupSample>
     tracks: Solar.Track[],
     venues: Solar.Venue[],
-    tags: string[]
+    tags: string[],
+    badgeClasses: Solar.BadgeClass[]
 }
 
 
@@ -40,11 +41,13 @@ export default async function CreateEventPageData({params, cookies}: CreateEvent
     }
 
     const grouphandle = params.grouphandle
-    const {groups, memberships, userGroups, tracks, venues} = await getGroupData(grouphandle, currProfile?.handle)
+    const {groups, memberships, userGroups, tracks, venues, badgeClasses} = await getGroupData(grouphandle, currProfile?.handle)
     if (!groups || !groups.length) {
         redirect('/error')
     }
     const group = groups[0]
+
+    console.log('badgeClasses', badgeClasses?.length)
 
     const isOwner = memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'owner'
     const isManager = isOwner || memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'manager'
@@ -64,7 +67,8 @@ export default async function CreateEventPageData({params, cookies}: CreateEvent
         availableHost,
         tracks,
         venues,
-        tags: group.event_tags || []
+        tags: group.event_tags || [],
+        badgeClasses: badgeClasses || []
     } as CreateEventPageDataType
 }
 
@@ -126,6 +130,7 @@ async function getGroupData(handle: string, currUserHandle?: string) {
                 }
             }
             ${currUserHandle ? `userGroups: groups(where: {status: {_neq: "freezed"}, memberships: {role: {_in: ["owner", "manager"]}, profile: {handle: {_eq: "${currUserHandle}"}}}}, order_by: {id: desc}) {id,image_url,handle,nickname}` : ''}
+            ${currUserHandle ? `badgeClasses: badge_classes(where: {creator: {handle: {_eq: "${currUserHandle}"}}, badge_type:{_eq: "badge"}}, order_by: {id: desc}, limit: 20) {id,title,image_url}` : ''}
         }`
 
     // console.log(doc)
@@ -136,6 +141,7 @@ async function getGroupData(handle: string, currUserHandle?: string) {
         memberships: Solar.Membership[],
         tracks: Solar.Track[]
         venues: Solar.Venue[]
+        badgeClasses?: Solar.BadgeClass[]
     }
 
     return await request<GroupData>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)

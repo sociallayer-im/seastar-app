@@ -32,7 +32,7 @@ export default async function RootLayout({
         <body className={`antialiased`}>
             <div className="min-h-[100svh]">
                 <Header/>
-                <div className="relative">
+                <div className="relative pb-16">
                     {children}
                 </div>
             </div>

@@ -197,7 +197,6 @@ declare namespace Solar {
         permissions: string[] | null
         created_at: string,
         display: string | null,
-        status: string | null,
         can_send_badge: string,
         creator: ProfileSample,
     }

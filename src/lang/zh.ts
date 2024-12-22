@@ -123,4 +123,7 @@ export const zh: Dictionary = {
     'Close Event': '关闭事件',
     'People can not RSVP the event': '人们无法 RSVP 事件',
     'The maximum number of tags is 3': '标签的最大数量为 3',
+    'Event Name is required': '事件名称是必需的',
+    'Choose a badge from you created': '从您创建的徽章中选择',
+    'Choose a badge from group': '从群组中选择徽章',
 }
