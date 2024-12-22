@@ -1,3 +1,6 @@
+import {gql, request} from "graphql-request"
+import dayjs from "@/libs/dayjs"
+
 const api = process.env.NEXT_PUBLIC_API_URL
 
 
@@ -73,4 +76,33 @@ export const updateProfile = async (profile: Solar.Profile, auth_token: string) 
 
     const data = await response.json()
     return data.profile as Solar.Profile
+}
+
+export const getOccupiedTimeEvent  = async (startTime: string, endTime: string, timezone: string, venueId: number | null, eventId?:number) => {
+    if (!venueId) return null
+
+    const doc = gql`query MyQuery {
+        events(where: {venue_id: {_eq: ${venueId}}, status: {_eq: "open"}${eventId ? `,id: {_neq:${eventId}}` : ''}}) {
+            id
+            title
+            start_time
+            end_time
+        }
+    }`
+
+    const {events} = await request<{events: Solar.Event[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+
+    return events.find((e) => {
+        const eventStartTime = new Date(e.start_time!).getTime()
+        const eventEndTime = new Date(e.end_time!).getTime()
+        const selectedStartTime = new Date(startTime).getTime()
+        const selectedEndTime = new Date(endTime).getTime()
+        const eventIsAllDay = dayjs.tz(eventStartTime, timezone).hour() === 0 && (eventEndTime - eventStartTime + 60000) % 8640000 === 0
+        const selectedIsAllDay = dayjs.tz(selectedStartTime, timezone).hour() === 0 && (selectedEndTime - selectedStartTime + 60000) % 8640000 === 0
+        return ((selectedStartTime < eventStartTime && selectedEndTime > eventStartTime) ||
+                (selectedStartTime >= eventStartTime && selectedEndTime <= eventEndTime) ||
+                (selectedStartTime < eventEndTime && selectedEndTime > eventEndTime)) &&
+            (!eventIsAllDay && !selectedIsAllDay)
+    }) || null
+
 }

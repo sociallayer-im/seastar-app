@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 import {getProfileByToken} from '@/service/solar'
-import { sha3_256 } from 'js-sha3'
+import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
@@ -113,7 +113,164 @@ export function calculateDuration(start: Date, end: Date) {
 export function eventCoverTimeStr(date: string, timezone: string) {
     const time = dayjs.tz(new Date(date).getTime(), timezone)
     const offset = time.utcOffset() / 60
-    return {date: time.format('ddd, MMM MM,YYYY') , time: `${time.format('HH:mm')} GMT${offset >= 0 ? `+` + offset : offset}`}
+    return {
+        date: time.format('ddd, MMM MM,YYYY'),
+        time: `${time.format('HH:mm')} GMT${offset >= 0 ? `+` + offset : offset}`
+    }
+}
+
+export function checkVenueTimeAvailability(
+    timezone: string,
+    eventStartTime: string,
+    eventEndTime: string,
+    venue: Solar.Venue,
+    isManager: boolean,
+    isMember: boolean
+) {
+    const startTime = dayjs.tz(new Date(eventStartTime).getTime(), timezone)
+    const endTime = dayjs.tz(new Date(eventEndTime!).getTime(), timezone)
+
+    // 判断 overrides 优先级最高
+    const hasOverride = venue.venue_overrides?.find((item) => {
+        const start_at = item.start_at || '00:00'
+        const end_at = item.end_at || '23:59'
+        return startTime.isBetween(dayjs.tz(`${item.day} ${start_at}`, timezone), dayjs.tz(`${item.day} ${end_at}`, timezone), null, '[]')
+            || endTime.isBetween(dayjs.tz(`${item.day} ${start_at}`, timezone), dayjs.tz(`${item.day} ${end_at}`, timezone), null, '[]')
+    })
+
+    if (hasOverride) {
+        return !hasOverride.disabled &&
+            (hasOverride.role !== 'manager' || isManager) &&
+            (hasOverride.role !== 'member' || isMember)
+    }
+
+    // 判断 venue 的 start date 和 end date
+    let venueAvailable = true
+    const availableStart = venue.start_date ? dayjs.tz(venue.start_date, timezone) : null
+    const availableEnd = venue.end_date ? dayjs.tz(venue.end_date, timezone).hour(23).minute(59) : null
+    if (availableStart && !availableEnd) {
+        venueAvailable = startTime.isSameOrAfter(availableStart)
+    } else if (!availableStart && availableEnd) {
+        venueAvailable = endTime.isBefore(availableEnd)
+    } else if (availableStart && availableEnd) {
+        venueAvailable = startTime.isSameOrAfter(availableStart) && endTime.isBefore(availableEnd)
+    }
+
+    // 判断timeslot
+    let timeslotAvailable = true
+    const day = dayjs.tz(new Date(eventStartTime).getTime(), timezone).day()
+    const dayFullName = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    const timeslots = venue.venue_timeslots?.filter(item => item.day_of_week === dayFullName[day])
+    if (!!timeslots?.length) {
+        if (timeslots[0].disabled) {
+            timeslotAvailable = false
+        } else {
+            const eventStartTimeHour = startTime.format('HH:mm')
+            const eventEndTimeHour = endTime.format('HH:mm')
+            timeslotAvailable = timeslots.some(timeslot => {
+                let canBook = true
+                if (timeslot.role === 'manager') {
+                    canBook = isManager
+                }
+                if (timeslot.role === 'member') {
+                    canBook = isMember
+                }
+
+                return canBook && eventStartTimeHour >= timeslot.start_at && eventEndTimeHour <= timeslot.end_at
+            })
+        }
+    }
+
+    return timeslotAvailable && venueAvailable
+}
+
+export function isEventTimeSuitable(
+    timezone: string,
+    eventStartTime: string,
+    eventEndTime: string,
+    isManager: boolean,
+    isMember: boolean,
+    venue?: Solar.Venue
+) {
+    const startTime = dayjs.tz(new Date(eventStartTime).getTime(), timezone)
+    const endTime = dayjs.tz(new Date(eventEndTime!).getTime(), timezone)
+
+    // 判断开始时间是否在结束时间之前
+    if (startTime.isAfter(endTime)) {
+        return 'The start time should be before the end time'
+    }
+
+    // 如果venue不存在则跳过后面的检查
+    if (!venue) return ''
+
+    // 如果venue 存在timeslots, 只能创建日内的event
+    if (!!venue.venue_timeslots?.length) {
+        if (startTime.day() !== endTime.day()) {
+            return 'Only same-day events can be created'
+        }
+    }
+
+    // 判断 overrides 优先级最高
+    const hasOverride = venue.venue_overrides?.find((item) => {
+        const start_at = item.start_at || '00:00'
+        const end_at = item.end_at || '23:59'
+        return startTime.isBetween(dayjs.tz(`${item.day} ${start_at}`, timezone), dayjs.tz(`${item.day} ${end_at}`, timezone), null, '[]')
+            || endTime.isBetween(dayjs.tz(`${item.day} ${start_at}`, timezone), dayjs.tz(`${item.day} ${end_at}`, timezone), null, '[]')
+    })
+
+    if (hasOverride) {
+        if (hasOverride.disabled) {
+            return 'The date you selected is not available for the current venue due to the override settings'
+        }
+        if (hasOverride.role === 'manager' && !isManager) {
+            return 'The date you selected is not available for the current venue, requires manager permission'
+        }
+        if (hasOverride.role === 'member' && !isMember) {
+            return 'The date you selected is not available for the current venue, requires member permission'
+        }
+        return ''
+    }
+
+    // 判断 venue 的 start date 和 end date
+    const availableStart = venue.start_date ? dayjs.tz(venue.start_date, timezone) : null
+    const availableEnd = venue.end_date ? dayjs.tz(venue.end_date, timezone).hour(23).minute(59) : null
+    if (availableStart && !availableEnd && startTime.isBefore(availableStart)) {
+        return 'The date you selected should be after the venue start date'
+    } else if (!availableStart && availableEnd && endTime.isAfter(availableEnd)) {
+        return 'The date you selected should be before the venue end date'
+    } else if (availableStart && availableEnd && (startTime.isBefore(availableStart) || endTime.isAfter(availableEnd))) {
+        return 'The date you selected should be between the venue start date and end date'
+    }
+
+    // 判断timeslot
+    const day = startTime.day()
+    const dayFullName = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    const timeslots = venue.venue_timeslots?.filter(item => item.day_of_week === dayFullName[day])
+    if (!!timeslots?.length) {
+        if (timeslots[0].disabled) {
+            return 'The date you selected is not available for the current venue due to the timeslot settings'
+        } else {
+            const eventStartTimeHour = startTime.format('HH:mm')
+            const eventEndTimeHour = endTime.format('HH:mm')
+            const timeslotAvailable = timeslots.find(timeslot => {
+                return eventStartTimeHour >= timeslot.start_at && eventEndTimeHour <= timeslot.end_at
+            })
+
+            if (!timeslotAvailable) {
+                return 'The date you selected is not available for the current venue due to the timeslot settings'
+            }
+
+            if (timeslotAvailable.role === 'manager' && !isManager) {
+                return 'The date you selected is not available for the current venue, requires manager permission'
+            }
+
+            if (timeslotAvailable.role === 'member' && !isMember) {
+                return 'The date you selected is not available for the current venue, requires member permission'
+            }
+        }
+    }
+
+    return  ''
 }
 
 

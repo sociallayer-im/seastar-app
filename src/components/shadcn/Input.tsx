@@ -31,7 +31,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 {startAdornment}
                 <input
                     type={type}
-                    className="flex-1 h-full bg-transparent outline-none mx-1"
+                    className="w-full flex-1 h-full bg-transparent outline-none mx-1"
                     ref={ref}
                     {...props}
                 />

@@ -4,7 +4,7 @@ import {getProfileByToken} from "@/service/solar"
 import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import {redirect} from "next/navigation"
 
-export interface EventDraftType extends Pick<Solar.Event, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location'| 'start_time' | 'end_time' | 'meeting_url' | 'event_roles' | 'tags'> {
+export interface EventDraftType extends Pick<Solar.Event, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location'| 'start_time' | 'end_time' | 'meeting_url' | 'event_roles' | 'tags' | 'max_participants' | 'display' | 'pinned' | 'status'> {
     timezone: string | null
 }
 
@@ -159,7 +159,11 @@ export const emptyEvent: EventDraftType = {
     timezone: null,
     meeting_url: '',
     event_roles: [],
-    tags: []
+    tags: [],
+    max_participants: null,
+    display: 'normal',
+    pinned: false,
+    status: 'open'
 }
 
 

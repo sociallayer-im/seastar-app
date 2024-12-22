@@ -68,12 +68,14 @@ declare namespace Solar {
         status: string | null,
         track_id: number | null,
         venue_id: number | null,
+        display: string | null,
+        pinned: boolean
     }
 
     export interface VenueTimeslot {
         id?: number
         venue_id?: number,
-        day_of_week: Weekday,
+        day_of_week: string,
         disabled: boolean,
         start_at: string,
         end_at: string,

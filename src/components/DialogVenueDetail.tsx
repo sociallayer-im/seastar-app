@@ -24,6 +24,16 @@ export default function DialogVenueDetail({venue, lang}: DialogVenueDetailProps)
         <div className="text-lg font-semibold mb-4">{lang['Venue Timeslots']}</div>
 
         <div className="max-h-[60svh] overflow-auto">
+            {(!!venue.start_date || !!venue.end_date) &&
+                <div className="mb-6">
+                    <div className="font-semibold mb-1">{lang['Available Date']}</div>
+                    <div className="flex-row-item-center text-sm">
+                        {!!venue.start_date && <div  className="mr-1">{lang['From']} <b>{venue.start_date}</b></div>}
+                        {!!venue.end_date && <div>{lang['To']} <b>{venue.end_date}</b></div>}
+                    </div>
+                </div>
+            }
+
             {!venue.venue_timeslots?.length &&
                 <div>
                     <div className="font-semibold mb-1">{lang['Timeslots']}</div>

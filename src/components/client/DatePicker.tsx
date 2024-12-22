@@ -10,7 +10,8 @@ interface DatePickerProps {
     initDate: string, // 'YYYY/MM/DD'
     onChange?: (dateStr: string) => void,
     filterFn?: (dateStr: string) => boolean,
-    children?: ReactNode
+    children?: ReactNode,
+    disabled?: boolean
 }
 
 interface CalendarProps extends Omit<DatePickerProps, 'children'> {
@@ -81,11 +82,11 @@ export function Calendar(props: CalendarProps) {
 }
 
 export default function DatePicker(props: DatePickerProps) {
-    const {children, ...rest} = props
+    const {children, disabled, ...rest} = props
     const [open, setOpen] = useState(false)
 
     return <Popover open={open}>
-        <PopoverTrigger onClick={() => setOpen(true)}>
+        <PopoverTrigger disabled={disabled} onClick={() => !disabled && setOpen(true)}>
             {children}
         </PopoverTrigger>
         <PopoverContent align="start" className="bg-background" onInteractOutside={() => {setOpen(false)}}>

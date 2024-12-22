@@ -16,16 +16,16 @@ export default function SelectTag(props: SelectTagProps) {
 
     const getStyle = (tag: string) => {
         const color = getLabelColor(tag)
-        return props.value.includes(tag) ? {borderColor: color, color: color} : {borderColor: '#fff'}
+        return props.value.includes(tag) ? {borderColor: color, color: color, fontWeight: '600'} : {borderColor: '#fff'}
     }
 
     return (
         <div className="flex flex-wrap">
-            {props.tags.map(tag => {
+            {props.tags.filter(t => !t.startsWith(':')).map(tag => {
                 return <div key={tag}
                     onClick={() => handleSelect(tag)}
                     style={getStyle(tag)}
-                    className="text-sm font-semibold select-none px-2 py-1 m-1 border border-secondary rounded-full cursor-pointer flex-row-item-center !inline-flex mr-2">
+                    className="text-sm select-none px-2 py-1 m-1 border border-secondary rounded-full cursor-pointer flex-row-item-center !inline-flex mr-2">
                     <i className='mr-1 w-2 h-2 shrink-0 rounded-full'
                         style={{background: getLabelColor(tag)}}></i>
                     {tag}

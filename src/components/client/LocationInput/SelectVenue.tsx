@@ -1,13 +1,15 @@
 import DropdownMenu from "@/components/client/DropdownMenu"
 import {buttonVariants} from "@/components/shadcn/Button"
 import {Badge} from "@/components/shadcn/Badge"
-import {LocationInputProps} from "@/components/client/LocationInput/index"
+import {LocationInputProps} from "./index"
 import {MouseEvent, useMemo} from "react"
 import {Dictionary} from "@/lang"
 import useModal from "@/components/client/Modal/useModal"
 import DialogVenueDetail from "@/components/DialogVenueDetail"
+import {checkVenueTimeAvailability, isEventTimeSuitable} from "@/utils"
+import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 
-export interface SelectVenue extends LocationInputProps {
+export interface SelectVenueProps extends LocationInputProps {
     onSwitchToCreateLocation: () => void
 }
 
@@ -18,7 +20,7 @@ export default function SelectVenue({
     isManager,
     isMember,
     lang
-}: SelectVenue) {
+}: SelectVenueProps) {
     const currVenue = venues.find(v => v.id === event.venue_id)
     const {openModal} = useModal()
 
@@ -86,7 +88,13 @@ export default function SelectVenue({
             onSelect={(venue) => {
                 setVenue(venue[0])
             }}
-            renderOption={(venue) => <VenueOpt venue={venue} lang={lang}/>}
+            renderOption={(venue) => <VenueOpt
+                venue={venue}
+                lang={lang}
+                isManager={isManager}
+                isMember={isMember}
+                event={event}
+            />}
             valueKey="id"
         >
             <div
@@ -137,8 +145,26 @@ export default function SelectVenue({
     </div>
 }
 
-function VenueOpt({venue, lang}: { venue: Solar.Venue, lang: Dictionary }) {
-    return <div>
+export interface VenueOptProps {
+    venue: Solar.Venue
+    lang: Dictionary
+    isManager: boolean
+    isMember: boolean
+    event: EventDraftType
+}
+
+function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
+    const notSuitable = isEventTimeSuitable(
+        event.timezone!,
+        event.start_time,
+        event.end_time,
+        isManager,
+        isMember,
+        venue,
+    )
+
+    return <div className={`${notSuitable ? 'opacity-50 pointer-events-none' : ''}`}>
+        <div>{notSuitable}</div>
         <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.title}}/>
         <div className="text-sm text-[#999]">
             {!!venue.venue_timeslots?.length &&

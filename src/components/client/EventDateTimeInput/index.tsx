@@ -3,7 +3,7 @@ import {Input} from "@/components/shadcn/Input"
 import type {Dictionary} from "@/lang"
 import DatePicker from "@/components/client/DatePicker"
 import TimePicker from "@/components/client/TimePicker"
-import {useEffect} from "react"
+import {useEffect, useMemo} from "react"
 import dayjs from "@/libs/dayjs"
 import {calculateDuration} from "@/utils"
 import TimezonePicker from "@/components/client/TimezonePicker"
@@ -14,7 +14,7 @@ export interface EventDateTimeInputProps {
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
 }
 
-export default function EventDateTimeInput({state: {event, setEvent}, lang}: EventDateTimeInputProps) {
+export default function EventDateTimeInput({state: {event, setEvent}, lang, venues}: EventDateTimeInputProps) {
     useEffect(() => {
         if (!event.timezone && typeof window !== 'undefined') {
             setEvent({
@@ -24,11 +24,24 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
         }
     }, [event, setEvent])
 
+    const venueHasTimeslots = useMemo(() => {
+        return !!venues.find(v => v.id === event.venue_id)?.venue_timeslots?.length
+    }, [event.venue_id, venues])
+
     const setStartDate = (dateStr: string) => {
         const timeStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('HH:mm')
-        const result = dayjs.tz(`${dateStr} ${timeStr}`, event.timezone!).toISOString()
+        const result = dayjs.tz(`${dateStr} ${timeStr}`, event.timezone!)
 
-        if (result > event.end_time) {
+        if (venueHasTimeslots) {
+            // if the venue has timeslots, the start date should be the same as the end date
+            setEvent({
+                ...event,
+                end_time: dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).set('date', result.date()).toISOString(),
+                start_time: result.toISOString()
+            })
+        }
+
+        if (result.toISOString() > event.end_time) {
             const startTimeStr = dayjs(result).format('HH:mm')
             const endTimeStr = dayjs(event.end_time).format('HH:mm')
 
@@ -38,20 +51,20 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
                 setEvent({
                     ...event,
                     end_time: newEndTime.toISOString(),
-                    start_time: result
+                    start_time: result.toISOString()
                 })
             } else {
                 const newEndTime = dayjs(event.end_time).date(dayjs(result).date() + 1)
                 setEvent({
                     ...event,
                     end_time: newEndTime.toISOString(),
-                    start_time: result
+                    start_time: result.toISOString()
                 })
             }
         } else {
             setEvent({
                 ...event,
-                start_time: result
+                start_time: result.toISOString()
             })
         }
     }
@@ -85,27 +98,44 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
     }
 
     const durationFn = (timeStr: string) => {
+        const startTimeStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+        const endTimeStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+
+        if (startTimeStr !== endTimeStr) return ''
+
         const [hours, minutes] = timeStr.split(':')
-        const newEndTime = dayjs.tz(event.end_time, event.timezone!).hour(Number(hours)).minute(Number(minutes)).toDate()
-        return calculateDuration(new Date(event.start_time), new Date(newEndTime))
+        const newEndTime = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).hour(Number(hours)).minute(Number(minutes)).toDate()
+        return calculateDuration(new Date(event.start_time), newEndTime)
+    }
+
+    const fromTimePickerFilterFn = (timeStr: string) => {
+        const startDateStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+        const endDateStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+        return startDateStr !== endDateStr || timeStr < displayTime(event.end_time, event.timezone!)
     }
 
     const toDatePickerFilterFn = (dateStr: string) => {
-        const startTimeStr = dayjs(event.start_time).format('HH:mm')
-        const endTimeStr = dayjs(event.end_time).format('HH:mm')
-        if (startTimeStr < endTimeStr) {
-            return dateStr >= toDateInputStr(event.start_time, event.timezone!)
-        } else {
-            return dateStr > toDateInputStr(event.start_time, event.timezone!)
-        }
+        const startTimeStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('HH:mm')
+        const endTimeStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('HH:mm')
+        const res = startTimeStr < endTimeStr && endTimeStr !== '00:00'
+            ? dateStr >= toDateInputStr(event.start_time, event.timezone!)
+            : dateStr > toDateInputStr(event.start_time, event.timezone!)
+
+        return res
     }
 
-    const fromDatePickerFilterFn =  (dateStr: string) => {
+    const toTimePickerFilterFn = (timeStr: string) => {
+        const startDateStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+        const endDateStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+        return startDateStr !== endDateStr || timeStr > displayTime(event.start_time, event.timezone!)
+    }
+
+    const fromDatePickerFilterFn = (dateStr: string) => {
         return dateStr >= dayjs().format('YYYY/MM/DD')
     }
 
     const setToAllDayEvent = () => {
-        const date = dayjs.tz(new Date(event.start_time), event.timezone!)
+        const date = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!)
         setEvent({
             ...event,
             start_time: date.startOf('day').toISOString(),
@@ -116,7 +146,6 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
     const setTimezone = (tz: string) => {
         const startDateTimeStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD HH:mm')
         const endDateTimeStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('YYYY/MM/DD HH:mm')
-        console.log(startDateTimeStr, endDateTimeStr)
         setEvent({
             ...event,
             timezone: tz,
@@ -125,9 +154,21 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
         })
     }
 
+    useEffect(() => {
+        if (!venueHasTimeslots) return
+        const startDateTime = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!)
+        const endDateTime = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!)
+
+        if (!startDateTime.isSame(endDateTime, 'date')) {
+            setEvent({
+                ...event,
+                end_time: dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).set('date', startDateTime.date()).toISOString()
+            })
+        }
+    }, [venueHasTimeslots])
+
     return event.timezone ? <div>
-        <div className="flex-row-item-center relative">
-            <i className="uil-lock absolute text-lg left-3 top-9" />
+        <div className="flex-row-item-center">
             <div className="w-11 text-center mr-1">{lang['From']}</div>
             <DatePicker
                 filterFn={fromDatePickerFilterFn}
@@ -137,42 +178,43 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
                     className="w-[180px] ml-2 mr-2"
                     value={displayDate(event.start_time, event.timezone!)}
                     readOnly
-                    startAdornment={<i className="uil-calendar-alt"/>}/>
+                    startAdornment={<i className="uil-calendar-alt text-lg"/>}
+                />
             </DatePicker>
-            <TimePicker initTime={displayTime(event.start_time, event.timezone)}
+            <TimePicker
+                filterFn={fromTimePickerFilterFn}
+                initTime={displayTime(event.start_time, event.timezone)}
                 onChange={(timeStr) => setStartTime(timeStr)}/>
 
         </div>
         <div className="flex-row-item-center mt-2">
             <div className="w-11 text-center mr-1">{lang['To']}</div>
             <DatePicker
+                disabled={venueHasTimeslots}
                 filterFn={toDatePickerFilterFn}
                 onChange={(data) => setEndDate(data)}
                 initDate={toDateInputStr(event.end_time, event.timezone)}>
                 <Input
-                    className="w-[180px] ml-2 mr-2"
+                    className={`w-[180px] ml-2 mr-2${venueHasTimeslots ? ' opacity-40 pointer-events-none' : ''}`}
                     value={displayDate(event.end_time, event.timezone!)}
                     readOnly
-                    startAdornment={<i className="uil-calendar-alt"/>}/>
+                    endAdornment={venueHasTimeslots ? <i className="uil-lock text-lg"/> : undefined}
+                    startAdornment={<i className="uil-calendar-alt text-lg"/>}/>
             </DatePicker>
             <TimePicker
-                filterFn={(timeStr => {
-                    const startDateStr = dayjs(event.start_time).format('YYYY/MM/DD')
-                    const endDateStr = dayjs(event.end_time).format('YYYY/MM/DD')
-                    return startDateStr !== endDateStr || timeStr > displayTime(event.start_time, event.timezone!)
-                })}
+                filterFn={toTimePickerFilterFn}
                 initTime={displayTime(event.end_time, event.timezone)}
                 durationFn={durationFn}
                 onChange={(timeStr) => setEndTime(timeStr)}/>
 
             <div className="text-gray-500 hidden sm:block ml-2">
-                {calculateDuration(new Date(event.start_time), new Date(event.end_time))}
+                {durationFn(displayTime(event.end_time, event.timezone!))}
             </div>
         </div>
 
         <div className="mt-2 flex-row-item-center select-none">
             <div
-                className="cursor-pointer hover:bg-secondary px-2 rounded text-sm flex-row-item-center font-semibold active:brightness-90"
+                className="flex-shrink-0 cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center font-semibold active:brightness-90"
                 onClick={setToAllDayEvent}>
                 <i className="uil-clock-three text-lg mr-0.5"/>
                 {lang['All Day Event']}
@@ -180,13 +222,19 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang}: Eve
 
             <TimezonePicker value={event.timezone} onChange={tz => setTimezone(tz)}>
                 <div
-                    className="cursor-pointer hover:bg-secondary px-2 rounded text-sm flex-row-item-center font-semibold active:brightness-90">
+                    className="break-all cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center font-semibold active:brightness-90">
                     <i className="uil-globe text-lg mr-0.5"/>
-                    {displayTimezone(event.timezone)}
+                    <div className="webkit-box-clamp-1 max-w-34">{displayTimezone(event.timezone)}</div>
                     <img src="/images/dropdown_icon.svg" alt=""/>
                 </div>
             </TimezonePicker>
         </div>
+        {venueHasTimeslots &&
+            <div className="text-orange-300 text-xs flex-row-item-center bg-orange-50 px-2 mt-2 py-1">
+                <i className="uil-info-circle text-lg mr-1"/>
+                {lang['Due to the timeslot settings of the venue, only same-day events can be created']}
+            </div>
+        }
     </div> : null
 }
 
