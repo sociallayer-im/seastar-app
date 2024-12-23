@@ -14,9 +14,12 @@ import EventDateTimeInput from "@/components/client/EventDateTimeInput"
 import {eventCoverTimeStr, isEventTimeSuitable} from "@/utils"
 import SelectedEventHost from "@/components/client/SelectedEventHost"
 import SelectTag from "@/components/client/SelectTag"
-import {getOccupiedTimeEvent} from "@/service/solar"
+import {CreteEvent, getOccupiedTimeEvent} from "@/service/solar"
 import useModal from "@/components/client/Modal/useModal"
 import SelectedEventBadge from "@/components/client/SelectedEventBadge"
+import EventRoleInput from "@/components/client/EventRoleInput"
+import Cookies from 'js-cookie'
+import {useToast} from "@/components/shadcn/Toast/use-toast"
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -30,6 +33,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
     const [draft, setDraft] = useState<EventDraftType>(event)
     const {uploadImage} = useUploadImage()
     const {showLoading, closeModal} = useModal()
+    const {toast} = useToast()
 
     // ui
     const [enableNote, setEnableNote] = useState(false)
@@ -79,7 +83,6 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                 closeModal(loading)
             }
         })()
-
     }, [draft.end_time, draft.id, draft.start_time, draft.timezone, draft.venue_id])
 
     useEffect(() => {
@@ -102,6 +105,31 @@ export default function EventForm({lang, event, data}: EventFormProps) {
             setTimeout(() => {
                 document.querySelector('.err-msg')?.scrollIntoView({behavior: 'smooth', block: 'center'})
             }, 200)
+        }
+
+        const authToken = Cookies.get(process.env.NEXT_PUBLIC_AUTH_FIELD!)
+
+        if (!authToken) {
+            toast({
+                title: 'Please login first',
+                variant: 'destructive'
+            })
+            return
+        }
+
+        const loading = showLoading()
+        try {
+            const event = CreteEvent({...draft, auth_token: authToken})
+            console.log('event', event)
+        } catch (e: unknown) {
+            console.error(e)
+            toast({
+                title: 'Failed to create event',
+                description: e instanceof Error ? e.message : 'Unknown error',
+                variant: 'destructive'
+            })
+        } finally {
+            closeModal(loading)
         }
     }
 
@@ -165,6 +193,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                         <div className="font-semibold mb-1">{lang['Event Name']} <span className="text-red-500">*</span>
                         </div>
                         <Input className="w-full"
+                            placeholder={lang['Input event name']}
                             value={draft.title}
                             required
                             onChange={e => setDraft({...draft, title: e.target.value})}/>
@@ -262,6 +291,20 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                     </div>
 
                     <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Invite Co-hosts']}</div>
+                        <EventRoleInput lang={lang}
+                            state={{event: draft, setEvent: setDraft}}
+                            role={'co_host' as Solar.EventRoleType}/>
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Invite Speakers']}</div>
+                        <EventRoleInput lang={lang}
+                            state={{event: draft, setEvent: setDraft}}
+                            role={'speaker' as Solar.EventRoleType}/>
+                    </div>
+
+                    <div className="mb-8">
                         <div className="border border-gray-200 rounded-lg">
                             <div onClick={() => {
                                 setEnableMoreSetting(!enableMoreSetting)
@@ -294,7 +337,8 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                         state={{event: draft, setEvent: setDraft}}/>
 
                                     <div className="flex-row-item-center justify-between mt-8">
-                                        <div className="font-semibold mb-1 text-sm">{lang['Maximum participants']}</div>
+                                        <div
+                                            className="font-semibold mb-1 text-sm">{lang['Maximum participants']}</div>
                                         <Input placeholder={'No limit'}
                                             autoComplete={'off'}
                                             className="!h-[2rem] w-[130px] text-sm"
@@ -327,7 +371,8 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                             {draft.display === 'normal'
                                                 ?
                                                 <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500"/>
-                                                : <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
+                                                :
+                                                <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
                                             }
                                         </div>
                                         <div onClick={() => {
@@ -337,14 +382,16 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                             <div>
                                                 <div className="text-xs font-semibold">Private event</div>
                                                 <div className="text-gray-500 text-xs font-normal">Select a private
-                                                    event, the event you created can only be viewed through the link,
+                                                    event, the event you created can only be viewed through the
+                                                    link,
                                                     and users can view the event in My Event page.
                                                 </div>
                                             </div>
                                             {draft.display === 'private'
                                                 ?
                                                 <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500"/>
-                                                : <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
+                                                :
+                                                <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
                                             }
                                         </div>
                                         <div onClick={() => {
@@ -354,14 +401,16 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                             <div>
                                                 <div className="text-xs font-semibold">Public event</div>
                                                 <div className="text-gray-500 text-xs font-normal">Select a public
-                                                    event, the event you created is open to the public even other events
+                                                    event, the event you created is open to the public even other
+                                                    events
                                                     are hidden for non-members.
                                                 </div>
                                             </div>
                                             {draft.display === 'public'
                                                 ?
                                                 <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500"/>
-                                                : <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
+                                                :
+                                                <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
                                             }
                                         </div>
                                     </div>

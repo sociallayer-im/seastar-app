@@ -1,5 +1,6 @@
 import {gql, request} from "graphql-request"
 import dayjs from "@/libs/dayjs"
+import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 
 const api = process.env.NEXT_PUBLIC_API_URL
 
@@ -163,4 +164,50 @@ export async function getGroupBadgeClasses(groupId: number, limit = 20) {
 
     const badgeClasses =  await request<{badge_classes: Solar.BadgeClass[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
     return badgeClasses.badge_classes
+}
+
+export async function SearchProfile(keyword: string, limit=5) {
+    const doc = gql`query MyQuery {
+          exact : profiles(where: {_or: [{handle: {_eq: "${keyword}"}}, { nickname:{_eq: "${keyword}"}}]}, limit: ${limit}){
+            id
+            handle
+            username
+            nickname
+            image_url
+          }
+          predict: profiles(where: {_or: [{nickname: {_iregex: "${keyword}"}}, { handle:{_iregex: "${keyword}"}}]}, limit: ${limit}){
+            id
+            handle
+            username
+            nickname
+            image_url
+          }
+        }`
+
+    const {exact, predict} = await request<{
+        exact: Solar.ProfileSample[],
+        predict: Solar.ProfileSample[]
+    }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    return [...exact, ...predict]
+}
+
+export interface CreateEventProps extends EventDraftType {
+    auth_token: string
+}
+
+export async function CreteEvent(props: CreateEventProps) {
+    const response = await fetch(`${api}/event/create`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(props)
+    })
+
+    if (!response.ok) {
+        throw new Error('Create failed')
+    }
+
+    const data = await response.json()
+    return data.evet as Solar.Event
 }

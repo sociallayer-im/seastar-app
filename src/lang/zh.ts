@@ -126,4 +126,10 @@ export const zh: Dictionary = {
     'Event Name is required': '事件名称是必需的',
     'Choose a badge from you created': '从您创建的徽章中选择',
     'Choose a badge from group': '从群组中选择徽章',
+    'You will apply to use this venue': '您将申请使用此场地',
+    'Invite Co-hosts': '邀请共同主持人',
+    'Input event name': '输入事件名称',
+    'Input name': '输入名称',
+    'Input email to invite': '邀请邮箱',
+    'Invite Speakers': '邀请演讲者',
 }

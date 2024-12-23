@@ -142,6 +142,12 @@ export default function SelectVenue({
                 <div className="text-sm mt-2 text-[#999]"><i className="uil-align-left"></i> {currVenue.about}</div>
             }
         </div>
+        {!!currVenue?.require_approval && !isManager &&
+            <div className="text-orange-300 text-xs flex-row-item-center bg-orange-50 px-2 mt-2 py-1">
+                <i className="uil-info-circle text-lg mr-1"/>
+                {lang['You will apply to use this venue']}
+            </div>
+        }
     </div>
 }
 

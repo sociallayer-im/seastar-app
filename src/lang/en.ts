@@ -123,7 +123,13 @@ export const en = {
     'The maximum number of tags is 3': 'The maximum number of tags is 3',
     'Event Name is required': 'Event Name is required',
     'Choose a badge from you created': 'Choose a badge from you created',
-    'Choose a badge from group': 'Choose a badge from group'
+    'Choose a badge from group': 'Choose a badge from group',
+    'You will apply to use this venue': 'You will apply to use this venue',
+    'Invite Co-hosts': 'Invite Co-hosts',
+    'Input event name': 'Input event name',
+    'Input name': 'Input name',
+    'Input email to invite': 'Input email to invite',
+    'Invite Speakers': 'Invite Speakers',
 }
 
 export type Dictionary = typeof en

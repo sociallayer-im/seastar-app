@@ -60,6 +60,7 @@ declare namespace Solar {
             group_host?: ProfileSample[]
         } | null
         venue: string | null,
+        group_id?: number,
         group: ProfileSample,
         tickets: string[] | null
         owner: ProfileSample,
@@ -131,6 +132,12 @@ declare namespace Solar {
         icon_url: string | null
     }
 
+    export enum EventRoleType {
+        Speaker = 'speaker',
+        CoHost = 'co_host',
+        GroupHost = 'group_host'
+    }
+
     export interface EventRole {
         id?: number
         event_id?: number | null
@@ -138,8 +145,9 @@ declare namespace Solar {
         email?: string | null
         nickname: string | null
         image_url: string | null
-        role: 'speaker' | 'co_host' | 'group_host'
-        item_type: 'Profile' | 'Group'
+        role: EventRoleType
+        item_type: 'Profile' | 'Group',
+        _destroy?: string
     }
 
     export interface Group {

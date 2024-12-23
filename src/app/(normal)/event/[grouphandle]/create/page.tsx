@@ -10,6 +10,6 @@ export default async function CreateEvent({ params }: { params: CreateEventPageD
     return <EventForm
         data={pageData}
         lang={lang}
-        event={emptyEvent}
+        event={{...emptyEvent, group_id: pageData.group.id}}
     />
 }
