@@ -48,8 +48,8 @@ declare namespace Solar {
         cover_url: string | null,
         content: string | null,
         tags: string[] | null,
-        max_participants: number | null,
-        min_participants: number | null,
+        max_participant: number | null,
+        min_participant: number | null,
         participants_count: number,
         badge_class_id: number | null,
         external_url: string | null,
@@ -62,7 +62,7 @@ declare namespace Solar {
         venue: string | null,
         group_id?: number,
         group: ProfileSample,
-        tickets: string[] | null
+        tickets: Ticket[] | null
         owner: ProfileSample,
         event_roles: EventRole[] | null,
         location_data: string | null,
@@ -71,6 +71,49 @@ declare namespace Solar {
         venue_id: number | null,
         display: string | null,
         pinned: boolean
+        participants: Participant[] | null
+    }
+
+    export interface PaymentMethod {
+        id?: number
+        item_type: string // 'Ticket'
+        item_id?: number // ticket id
+        chain: string
+        token_name:  null |string
+        token_address:  null | string
+        receiver_address: null | string
+        price: number
+        _destroy?: string
+    }
+
+    export interface Ticket {
+        tracks_allowed: null | number[],
+        id: number,
+        check_badge_class_id: number | null
+        check_badge_class: BadgeClass | null
+        content: string,
+        created_at: string,
+        end_time: string | null
+        event_id: number,
+        need_approval: boolean
+        payment_chain: string | null
+        payment_target_address: string | null
+        payment_token_address: string | null
+        payment_token_price: string | null
+        payment_token_name: string | null
+        quantity: number | null,
+        status: string
+        title: string,
+        payment_metadata: {
+            payment_chain: string | null
+            payment_target_address: string | null
+            payment_token_address: string | null
+            payment_token_price: string | null
+            payment_token_name: string | null
+        }[],
+        payment_methods: PaymentMethod[]
+        payment_methods_attributes: PaymentMethod[]
+        ticket_type: string
     }
 
     export interface VenueTimeslot {
@@ -146,6 +189,8 @@ declare namespace Solar {
         nickname: string | null
         image_url: string | null
         role: EventRoleType
+        profile: ProfileSample | null
+        group: GroupSample | null
         item_type: 'Profile' | 'Group',
         _destroy?: string
     }
@@ -248,6 +293,7 @@ declare namespace Solar {
         payment_status: string | null,
         event: Event,
         profile: ProfileSample,
+        ticket: Ticket | null
     }
 
     export interface Invite {

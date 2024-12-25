@@ -36,7 +36,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
     const {toast} = useToast()
 
     // ui
-    const [enableNote, setEnableNote] = useState(false)
+    const [enableNote, setEnableNote] = useState(!!draft.notes)
     const [enableMoreSetting, setEnableMoreSetting] = useState(false)
 
     // errors
@@ -225,6 +225,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                         </div>
                         <div id="event-notes" className={`${enableNote ? '' : 'h-0'} overflow-hidden`}>
                             <RichTextEditorDynamic
+                                initText={draft.notes || ''}
                                 onChange={(md) => {
                                     setDraft({...event, notes: md})
                                 }}
@@ -344,13 +345,13 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                             className="!h-[2rem] w-[130px] text-sm"
                                             type={'phone'}
                                             onChange={e => {
-                                                setDraft({...draft, max_participants: parseInt(e.target.value)})
+                                                setDraft({...draft, max_participant: parseInt(e.target.value)})
                                             }}
-                                            value={draft.max_participants || ''}
-                                            endAdornment={!!draft.max_participants
+                                            value={draft.max_participant || ''}
+                                            endAdornment={!!draft.max_participant
                                                 ? <i className="uil-times-circle text-lg cursor-pointer"
                                                     onClick={() => {
-                                                        setDraft({...draft, max_participants: null})
+                                                        setDraft({...draft, max_participant: null})
                                                     }}/>
                                                 : <i className="uil-edit-alt text-lg"/>
                                             }/>

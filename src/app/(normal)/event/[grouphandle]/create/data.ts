@@ -4,7 +4,7 @@ import {getProfileByToken} from "@/service/solar"
 import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import {redirect} from "next/navigation"
 
-export interface EventDraftType extends Pick<Solar.Event, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location'| 'start_time' | 'end_time' | 'meeting_url' | 'event_roles' | 'tags' | 'max_participants' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'group_id'> {
+export interface EventDraftType extends Pick<Solar.Event, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location'| 'start_time' | 'end_time' | 'meeting_url' | 'event_roles' | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'group_id'> {
     timezone: string | null
 }
 
@@ -21,9 +21,9 @@ export interface CreateEventPageDataType {
     currProfile: Solar.Profile | null
     group: Solar.GroupSample
     memberships: Solar.Membership[]
-    isOwner: boolean
-    isManager: boolean
-    isMember: boolean
+    isGroupOwner: boolean
+    isGroupManager: boolean
+    isGroupMember: boolean
     availableHost: Array<Solar.ProfileSample | Solar.GroupSample>
     tracks: Solar.Track[],
     venues: Solar.Venue[],
@@ -38,6 +38,8 @@ export default async function CreateEventPageData({params, cookies}: CreateEvent
     let currProfile: Solar.Profile | null = null
     if (!!authToken) {
         currProfile = await getProfileByToken(authToken)
+    } else {
+        redirect('/')
     }
 
     const grouphandle = params.grouphandle
@@ -47,11 +49,9 @@ export default async function CreateEventPageData({params, cookies}: CreateEvent
     }
     const group = groups[0]
 
-    console.log('badgeClasses', badgeClasses?.length)
-
-    const isOwner = memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'owner'
-    const isManager = isOwner || memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'manager'
-    const isMember = isOwner || isManager || memberships.some(m => m.profile.handle === currProfile?.handle)
+    const isGroupOwner = memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'owner'
+    const isGroupManager = isGroupOwner || memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'manager'
+    const isGroupMember = isGroupOwner || isGroupManager || memberships.some(m => m.profile.handle === currProfile?.handle)
 
     const availableHost: Array<Solar.ProfileSample | Solar.GroupSample> = currProfile
         ? [currProfile, ...(userGroups || [])]
@@ -61,9 +61,9 @@ export default async function CreateEventPageData({params, cookies}: CreateEvent
         currProfile,
         group,
         memberships,
-        isOwner,
-        isManager,
-        isMember,
+        isGroupOwner,
+        isGroupManager,
+        isGroupMember,
         availableHost,
         tracks,
         venues,
@@ -72,7 +72,7 @@ export default async function CreateEventPageData({params, cookies}: CreateEvent
     } as CreateEventPageDataType
 }
 
-async function getGroupData(handle: string, currUserHandle?: string) {
+export async function getGroupData(handle: string, currUserHandle?: string) {
     const doc = gql`query MyQuery {
             groups: groups(where: {handle: {_eq: "${handle}"}}) {
                 id
@@ -166,7 +166,7 @@ export const emptyEvent: EventDraftType = {
     meeting_url: '',
     event_roles: [],
     tags: [],
-    max_participants: null,
+    max_participant: null,
     display: 'normal',
     pinned: false,
     status: 'open',

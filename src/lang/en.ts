@@ -130,6 +130,17 @@ export const en = {
     'Input name': 'Input name',
     'Input email to invite': 'Input email to invite',
     'Invite Speakers': 'Invite Speakers',
+    'Share': 'Share',
+    'You have registered for the event.': 'You have registered for the event.',
+    'Welcome! To join the event, please register below.': 'Welcome! To join the event, please register below.',
+    'Add to Calendar': 'Add to Calendar',
+    'FeedBack': 'FeedBack',
+    'Join Event': 'Join Event',
+    'Check-In': 'Check-In',
+    'Check-In For Participants': 'Check-In For Participants',
+    'Check-In And Send POAP': 'Check-In And Send POAP',
+    'Tickets': 'Tickets',
+    'You have purchased the ticket': 'You have purchased the ticket'
 }
 
 export type Dictionary = typeof en

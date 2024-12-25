@@ -2,6 +2,8 @@ import Cookies from 'js-cookie'
 import {getProfileByToken} from '@/service/solar'
 import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
+import BigNumber from "bignumber.js"
+import {paymentTokenList} from "@/utils/payment_setting"
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -47,7 +49,7 @@ export const checkProcess = (startTime: string, endTime: string) => {
     }
 }
 
-export const getAvatar = (id?: number, url?: string | null) => {
+export const getAvatar = (id?: number | null, url?: string | null) => {
     if (url) return url
 
     const defAvatars = [
@@ -272,6 +274,54 @@ export function isEventTimeSuitable(
 
     return  ''
 }
+
+export function displayTicketPrice(ticket: Solar.Ticket) {
+    if (ticket.payment_methods.length === 0) {
+        return 'Free'
+    }
+
+    const prices = ticket.payment_methods.map(item => {
+        const targetToken = paymentTokenList.find(chain => chain.id === item.chain)
+        const targetTokenDetail = targetToken?.tokenList.find(token => token.id === item.token_name)
+
+        return BigNumber(item.price).dividedBy(BigNumber(10).pow(targetTokenDetail?.decimals || 0)).toNumber()
+    })
+
+    const maxPrice = Math.max(...prices)
+    const minPrice = Math.min(...prices)
+
+    return maxPrice === minPrice ? `${minPrice} USD` : `${minPrice}-${maxPrice} USD`
+}
+
+export function getEventDetailPageTimeStr(event: Solar.Event) {
+    const startTime = dayjs.tz(new Date(event.start_time).getTime(), event.timezone)
+    const endTime = dayjs.tz(new Date(event.end_time!).getTime(), event.timezone)
+    const offset = startTime.utcOffset() / 60
+
+    const startDateStr = startTime.format('ddd, MMM MM,YYYY')
+    const endDateStr = endTime.format('ddd, MMM MM,YYYY')
+
+    let dateStr = ''
+    if (startDateStr !== endDateStr) {
+        dateStr = startTime.format('ddd, MMM MM') + ' - ' + endTime.format('ddd, MMM MM')
+    } else {
+        dateStr = startTime.format('ddd, MMM MM,YYYY')
+    }
+
+    return {
+        date: dateStr,
+        time: `${startTime.format('HH:mm')} - ${endTime.format('HH:mm')} GMT${offset >= 0 ? `+` + offset : offset}`
+    }
+}
+
+export function genGoogleMapLinkByEvent (event: Solar.Event) {
+    let url = `https://www.google.com/maps/search/?api=1&query=${event.geo_lat}%2C${event.geo_lng}`
+    if (event.location_data) {
+        url = url + `&query_place_id=${event.location_data}`
+    }
+    return url
+}
+
 
 
 

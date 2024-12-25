@@ -40,7 +40,10 @@ export const getEventDetail = async (event_id: number) => {
     }
 
     const data = await response.json()
-    return data as Solar.Event
+    return {
+        ...data,
+        venue_id: data.venue?.id
+    } as Solar.Event
 }
 
 export const uploadFile = async (file: Blob, auth_token: string) => {
@@ -196,12 +199,19 @@ export interface CreateEventProps extends EventDraftType {
 }
 
 export async function CreteEvent(props: CreateEventProps) {
+    const eventProps = {
+        ...props,
+        extra: props.event_roles?.filter(r => !r.item_id && !!r.email).map(r => r.email),
+        event_roles_attributes: props.event_roles
+    }
+
+
     const response = await fetch(`${api}/event/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(props)
+        body: JSON.stringify(eventProps)
     })
 
     if (!response.ok) {
@@ -211,3 +221,4 @@ export async function CreteEvent(props: CreateEventProps) {
     const data = await response.json()
     return data.evet as Solar.Event
 }
+
