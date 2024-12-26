@@ -7,8 +7,8 @@ import {
     IframeSchedulePageSearchParams
 } from "@/app/(iframe)/schedule/data"
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
-import ListViewEventItem from "@/app/(iframe)/schedule/list/[group]/ListViewEventItem"
-import ListPagination from "@/app/(iframe)/schedule/list/[group]/ListPagination"
+import ListViewEventItem from "@/app/(iframe)/schedule/list/[grouphandle]/ListViewEventItem"
+import ListPagination from "@/app/(iframe)/schedule/list/[grouphandle]/ListPagination"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import {cookies} from 'next/headers'
 import {selectLang} from "@/app/actions"

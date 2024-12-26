@@ -12,6 +12,8 @@ export const GroupEventListData = async function (handle: string, currUserHandle
                 end_time
                 timezone
                 tags
+                geo_lng
+                geo_lat
                 meeting_url
                 status
                 event_roles {

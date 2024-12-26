@@ -1,7 +1,7 @@
 import {gql, request} from 'graphql-request'
 import {cookies} from 'next/headers'
 
-export type SampleEvent = Pick<Solar.Event, 'id' | 'title' | 'location' | 'cover_url' | 'start_time' | 'end_time' | 'timezone' | 'tags' | 'meeting_url' | 'event_roles' | 'status' | 'owner'>
+export type SampleEvent = Pick<Solar.Event, 'id' | 'title' | 'location' | 'cover_url' | 'start_time' | 'end_time' | 'timezone' | 'tags' | 'meeting_url' | 'event_roles' | 'status' | 'owner' | 'geo_lng' | 'geo_lat'>
 export interface SampleEventWithCreatorAndJoinStatus extends SampleEvent {
     isCreator: boolean
     isJoined: boolean
@@ -50,6 +50,8 @@ export const ProfileEventListData = async function (handle: string, currUserHand
                 tags
                 meeting_url
                 status
+                geo_lng
+                geo_lat
                 event_roles {
                     id,
                     event_id,

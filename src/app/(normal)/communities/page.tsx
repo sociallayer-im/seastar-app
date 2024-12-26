@@ -1,5 +1,5 @@
 export default async function CommunitiesPage() {
-    return <div className="page-width min-h-[100svh] pt-0 sm:pt-6">
+    return <div className="page-width min-h-[100svh] pt-0 sm:pt-6 !pb-16">
         <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
             Communities
         </h2>

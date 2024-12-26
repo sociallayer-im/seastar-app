@@ -1,7 +1,7 @@
 import {calculateGridPosition} from "./data"
 import {redirect} from 'next/navigation'
-import WeeklyViewEventItem from "@/app/(iframe)/schedule/week/[group]/WeeklyViewEventItem"
-import WeeklyPagination from "@/app/(iframe)/schedule/week/[group]/WeeklyPagination"
+import WeeklyViewEventItem from "@/app/(iframe)/schedule/week/[grouphandle]/WeeklyViewEventItem"
+import WeeklyPagination from "@/app/(iframe)/schedule/week/[grouphandle]/WeeklyPagination"
 import FilterBtn from "@/app/(iframe)/schedule/FilterBtn"
 import {
     IframeSchedulePageData,

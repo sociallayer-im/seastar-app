@@ -3,8 +3,9 @@ import {getLabelColor} from "@/utils/label_color"
 import {checkProcess} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import Dayjs from "@/libs/dayjs"
+import {CSSProperties} from "react"
 
-export default function CardEvent({event, className}: {event: SampleEventWithCreatorAndJoinStatus, className?: string}) {
+export default function CardEvent({event, className, id, style}: {event: SampleEventWithCreatorAndJoinStatus, className?: string, id?: string, style?: CSSProperties}) {
     const eventProcess = checkProcess(event.start_time, event.end_time)
     const status = event.status
 
@@ -18,6 +19,8 @@ export default function CardEvent({event, className}: {event: SampleEventWithCre
         .format('ddd MMM DD, HH:mm z')
 
     return <a href={`/event/detail/${event.id}`}
+        id={id}
+        style={style}
         className={`shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-105 ${className}`}>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">

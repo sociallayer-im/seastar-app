@@ -15,7 +15,6 @@ import {Button} from "@/components/shadcn/Button"
 import {getChainIconById} from "@/utils/payment_setting"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import NoData from "@/components/NoData"
-import {Input} from "@/components/shadcn/Input"
 import {Textarea} from "@/components/shadcn/Textarea"
 
 export async function generateMetadata({params, searchParams}: {
@@ -40,7 +39,7 @@ export default async function EventDetail({params, searchParams}: {
     })
     const {lang} = await selectLang()
 
-    return <div className="page-width !pt-6 !pb-12">
+    return <div className="page-width !pt-6 !pb-12 !pb-16">
         <div className="flex flex-row items-center justify-between mb-8">
             <a href={`/event/${group.handle}`} className="flex-row-item-center">
                 <img className="w-6 h-6 rounded-full mr-1" src={getAvatar(group.id, group.image_url)}
@@ -293,7 +292,7 @@ export default async function EventDetail({params, searchParams}: {
 
                 {!tab || tab === "content" &&
                     <div>
-                        {!eventDetail.content && !!eventDetail.notes && <NoData/>}
+                        {!eventDetail.content && !eventDetail.notes && <NoData/>}
                         <div className="editor-wrapper display">
                             <RichTextDisplayer markdownStr={eventDetail.content || ''}/>
                         </div>
@@ -403,9 +402,6 @@ export default async function EventDetail({params, searchParams}: {
                                 </div>
                             })
                             }
-
-                            <Button variant={'secondary'} disabled
-                                className="mt-2 w-full">{lang['You have purchased the ticket']}</Button>
                         </div>
                     </div>
                 }

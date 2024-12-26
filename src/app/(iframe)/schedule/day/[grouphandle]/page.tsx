@@ -1,9 +1,9 @@
 import {calculateGridPosition} from "./data"
 import {redirect} from 'next/navigation'
-import {getHourLabel} from "@/app/(iframe)/schedule/day/[group]/data"
-import DailyViewEventItem from "@/app/(iframe)/schedule/day/[group]/DailyViewEventItem"
-import DailyPagination from "@/app/(iframe)/schedule/day/[group]/DailyPagination"
-import ScrollFirstEventIntoView from "@/app/(iframe)/schedule/day/[group]/ScrollFirstEventIntoView"
+import {getHourLabel} from "@/app/(iframe)/schedule/day/[grouphandle]/data"
+import DailyViewEventItem from "@/app/(iframe)/schedule/day/[grouphandle]/DailyViewEventItem"
+import DailyPagination from "@/app/(iframe)/schedule/day/[grouphandle]/DailyPagination"
+import ScrollFirstEventIntoView from "@/app/(iframe)/schedule/day/[grouphandle]/ScrollFirstEventIntoView"
 import FilterBtn from "@/app/(iframe)/schedule/FilterBtn"
 import {
     IframeSchedulePageData,
@@ -12,7 +12,7 @@ import {
 } from "@/app/(iframe)/schedule/data"
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
-import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[group]/DailyViewAllDayEventItem"
+import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[grouphandle]/DailyViewAllDayEventItem"
 import {cookies} from 'next/headers'
 import {selectLang} from "@/app/actions"
 

@@ -47,7 +47,7 @@ export default async function EventHome() {
                         size={'sm'}
                         className="mr-2 mt-1">
                         <div className="text-xs font-normal">
-                            <div className="font-semibold">All Tag</div>
+                            <div className="font-semibold">All Tags</div>
                         </div>
                     </Button>
                     {new Array(4).fill('').map((t, index) => {
@@ -114,8 +114,8 @@ export default async function EventHome() {
                 </div>
             </div>
 
-            <div className="md:w-[328px] ml-0 flex-col flex order-1 md:order-2 md:ml-6">
-                <a className="flex-row-item-center justify-between bg-background shadow p-3 rounded-lg mb-3"
+            <div className="md:w-[328px] ml-0 flex-col flex order-1 md:order-2 md:ml-6 mb-6">
+                <a className="flex-row-item-center justify-between bg-background shadow p-3 rounded-lg mb-3 block md:hidden"
                     href="/group/playground2?tab=members">
                     <div className="flex-row-item-center">
                         <img src="/images/default_avatar/avatar_1.png"
@@ -128,7 +128,7 @@ export default async function EventHome() {
                     <div className='text-xs'>123 members <i className="uil-arrow-right"/></div>
                 </a>
 
-                <a href="/event/playground2/schedule" className={`${buttonVariants({variant: "warm"})} w-full`}>
+                <a href="/event/playground2/schedule/list" className={`${buttonVariants({variant: "warm"})} w-full`}>
                     <i className="uil-calender text-lg"/>
                     <span>Event Schedule</span>
                 </a>
@@ -152,7 +152,7 @@ export default async function EventHome() {
                     >Setting</a>
                 </div>
 
-                <div className="mt-8">
+                <div className="mt-8 hidden md:block">
                     <a className="flex-row-item-center justify-between rounded-lg mb-3"
                         href="/group/playground2?tab=members">
                         <div className="flex-row-item-center">

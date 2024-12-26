@@ -15,7 +15,7 @@ export default async function GroupPage(props: GroupDataProps) {
     const {group, tab, currProfile, currUserIsManager, currUserIsIssuer, currUserIsMember, members} = await GroupPageData(props)
     const lang = (await selectLang()).lang
 
-    return <div className="bg-white min-h-[100svh] w-full">
+    return <div className="bg-white min-h-[100svh] w-full !pb-16">
         <div className="w-full mb-3 relative bg-[#f8f8f8]">
             <div className="h-[150px]" style={{background: 'url("/images/profile_bg.png")'}}>
                 <div className="page-width relative">

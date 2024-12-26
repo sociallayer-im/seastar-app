@@ -1,8 +1,8 @@
 export default async function DiscoverPage() {
-    return <div className="page-width min-h-[100svh] pt-0 sm:pt-6">
+    return <div className="page-width min-h-[100svh] pt-0 sm:pt-6 !pb-16">
         <div>
             <h2 className="text-2xl font-semibold mb-3">Featured</h2>
-            <a href={`/event/`}
+            <a href={`/event/playground2`}
                 className="min-h-[216px] rounded-lg shadow p-4 flex md:flex-row flex-col">
                 <div
                     className="h-[184px] md:w-[318px] w-[100%] mb-3 md:mb-0 flex-grow-0 flex-shrink-0 rounded overflow-hidden flex flex-row justify-center items-center mr-4">

@@ -29,7 +29,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
     const lang = (await selectLang()).lang
 
     return <div className="bg-[#f8f8f8] min-h-[100svh] w-full">
-        <div className="page-width bg-[#f8f8f8] min-h-[100svh] !pl-0 !pr-0 pb-12 pt-0 sm:pt-6">
+        <div className="page-width bg-[#f8f8f8] min-h-[100svh] !pl-0 !pr-0 pb-12 pt-0 sm:pt-6 !pb-16">
             <div className="flex flex-col items-start sm:flex-row">
                 <div className="bg-white w-full sm:w-[375px] mb-3 relative">
                     <img src="/images/profile_bg.png" className="w-full h-[140px]"/>
