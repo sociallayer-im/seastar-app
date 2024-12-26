@@ -4,7 +4,7 @@ import {checkProcess} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import Dayjs from "@/libs/dayjs"
 
-export default function CardEvent({event}: {event: SampleEventWithCreatorAndJoinStatus}) {
+export default function CardEvent({event, className}: {event: SampleEventWithCreatorAndJoinStatus, className?: string}) {
     const eventProcess = checkProcess(event.start_time, event.end_time)
     const status = event.status
 
@@ -12,13 +12,13 @@ export default function CardEvent({event}: {event: SampleEventWithCreatorAndJoin
     const cohosts = event.event_roles?.filter(r => r.role === 'co_host')
     const host = groupHost?.nickname || event.owner.nickname || event.owner.handle
 
-    console.log('event_roles', event.event_roles)
+    // console.log('event_roles', event.event_roles)
 
     const startTime = Dayjs.tz(new Date(event.start_time), event.timezone || 'Europe/London')
         .format('ddd MMM DD, HH:mm z')
 
     return <a href={`/event/detail/${event.id}`}
-        className="shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-105">
+        className={`shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-105 ${className}`}>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}

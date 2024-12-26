@@ -47,6 +47,18 @@ export default async function EventDetailPage({params, cookies, searchParams}: E
     const joinedEvent = eventDetail.participants?.find(p => p.profile_id === currProfile?.id)
     const groupHost = eventDetail.event_roles?.find(r => r.role === 'group_host')
 
+    let filteredParticipants:Solar.Participant[] = []
+    if (!eventDetail?.tickets?.length) {
+        filteredParticipants = eventDetail.participants || []
+    } else {
+        filteredParticipants = eventDetail.participants?.filter(participant => {
+            if (!participant.ticket_id) return true
+            const ticket = eventDetail.tickets?.find(t => t.id === participant.ticket_id)
+            if (ticket!.payment_methods.length === 0) {
+                return true
+            } else return participant.payment_status === 'succeeded'
+        }) || []
+    }
 
     return {
         currProfile,
@@ -62,7 +74,8 @@ export default async function EventDetailPage({params, cookies, searchParams}: E
         joinedEvent,
         owner: eventDetail.owner,
         groupHost,
-        tab: pickSearchParam(searchParams.tab) || ''
+        tab: pickSearchParam(searchParams.tab) || '',
+        participants: filteredParticipants
     }
 }
 
@@ -112,7 +125,7 @@ async function getEventDetailData(eventid: number) {
                     handle
                 }
             }
-            tickets {
+            tickets (order_by: {created_at: asc}) {
                 id
                 tracks_allowed
                 check_badge_class_id
@@ -140,7 +153,7 @@ async function getEventDetailData(eventid: number) {
                 status
                 title
             }
-            participants {
+            participants(where: {}, order_by: {created_at: asc}) {
                 id
                 event_id
                 profile_id
@@ -149,6 +162,16 @@ async function getEventDetailData(eventid: number) {
                 created_at
                 ticket_id
                 payment_status
+                ticket_item {
+                    sender_address
+                    status
+                }
+                profile {
+                    id
+                    handle
+                    nickname
+                    image_url
+                    }
                 ticket {
                     title
                 }

@@ -8,12 +8,15 @@ import {
     eventCoverTimeStr,
     genGoogleMapLinkByEvent,
     getAvatar,
-    getEventDetailPageTimeStr
+    getEventDetailPageTimeStr, shortWalletAddress
 } from "@/utils"
 import {selectLang} from "@/app/actions"
 import {Button} from "@/components/shadcn/Button"
 import {getChainIconById} from "@/utils/payment_setting"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
+import NoData from "@/components/NoData"
+import {Input} from "@/components/shadcn/Input"
+import {Textarea} from "@/components/shadcn/Textarea"
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -30,7 +33,7 @@ export default async function EventDetail({params, searchParams}: {
     params: EventDetailPageDataProps,
     searchParams: EventDetailPageSearchParams
 }) {
-    const {eventDetail, group, currProfile, groupHost, owner, tab} = await EventDetailPage({
+    const {eventDetail, group, currProfile, groupHost, owner, tab, isEventCreator, isGroupManager} = await EventDetailPage({
         params,
         searchParams,
         cookies: cookies()
@@ -102,7 +105,6 @@ export default async function EventDetail({params, searchParams}: {
                             <span>{lang['Add to Calendar']}</span>
                         </Button>
                         <Button variant={'secondary'} className="text-xs flex-1 ml-2">
-                            <i className="uil-calendar-alt text-base"></i>
                             <span>{lang['FeedBack']}</span>
                         </Button>
                     </div>
@@ -131,60 +133,7 @@ export default async function EventDetail({params, searchParams}: {
                         </Button>
                     </div>
                 </div>
-
-                <div className="mt-6 hidden sm:block">
-                    <div className="font-semibold mb-2">{lang['Tickets']}</div>
-                    <div className="border border-gray-200 p-4 rounded-lg">
-                        {eventDetail.tickets?.map(ticket => {
-
-                            return <div key={ticket.id} className="bg-gray-100 p-4 rounded-lg mb-3 cursor-pointer">
-                                <div className="font-semibold">{ticket.title}</div>
-                                <div className="text-xs my-2 break-words text-gray-500">
-                                    {ticket.content}
-                                </div>
-                                {!!ticket.check_badge_class &&
-                                    <div>
-                                        <div className="text-sm text-gray-500 mb-2">Need to have badge</div>
-                                        <div className="flex-row-item-center">
-                                            <img className="w-6 h-6 mr-2 rounded-full"
-                                                src={ticket.check_badge_class.image_url!} alt=""/>
-                                            <div>{ticket.check_badge_class.title}</div>
-                                        </div>
-                                    </div>
-                                }
-
-                                {ticket.payment_methods?.length === 0 ?
-                                    <div className="flex flex-row items-center justify-between mt-3">
-                                        <div className="font-semibold text-pink-500 text-xl">Free</div>
-                                    </div>
-                                    : <div className="flex flex-row items-center justify-between mt-3">
-                                        <div className="font-semibold text-pink-500 text-xl">
-                                            {displayTicketPrice(ticket)}
-                                        </div>
-                                        <div className="flex flex-row items-center">
-                                            {
-                                                ticket.payment_methods.map((method, index) => {
-                                                    return <img key={index}
-                                                        className="shadow min-w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                                        src={getChainIconById(method.chain)}
-                                                        alt="" width={20} height={20}/>
-                                                })
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        })
-                        }
-
-                        <Button variant={'special'} className="mt-2 w-full">RSVP</Button>
-
-                        <Button variant={'secondary'} disabled
-                            className="mt-2 w-full">{lang['You have purchased the ticket']}</Button>
-                    </div>
-                </div>
             </div>
-
 
             <div className="flex-1 sm:mr-9 order-2 sm:order-1">
                 <div className="text-4xl font-semibold w-full">{eventDetail.title}</div>
@@ -307,7 +256,7 @@ export default async function EventDetail({params, searchParams}: {
                     <a href={'?tab=content'}
                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 relative">
                         <span className="z-10">Content</span>
-                        { (tab === 'content' || tab === '') &&
+                        {(tab === 'content' || tab === '') &&
                             <img width={90} height={12}
                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
                                 src="/images/tab_bg.png" alt=""/>
@@ -316,7 +265,7 @@ export default async function EventDetail({params, searchParams}: {
                     <a href={'?tab=tickets'}
                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <span className="z-10">Tickets</span>
-                        { tab === 'tickets' &&
+                        {tab === 'tickets' &&
                             <img width={90} height={12}
                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
                                 src="/images/tab_bg.png" alt=""/>
@@ -325,7 +274,7 @@ export default async function EventDetail({params, searchParams}: {
                     <a href={'?tab=comments'}
                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <span className="z-10">Comments</span>
-                        { tab === 'comments' &&
+                        {tab === 'comments' &&
                             <img width={90} height={12}
                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
                                 src="/images/tab_bg.png" alt=""/>
@@ -334,7 +283,7 @@ export default async function EventDetail({params, searchParams}: {
                     <a href={'?tab=participants'}
                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <span className="z-10">Participants</span>
-                        { tab === 'participants' &&
+                        {tab === 'participants' &&
                             <img width={90} height={12}
                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
                                 src="/images/tab_bg.png" alt=""/>
@@ -344,6 +293,7 @@ export default async function EventDetail({params, searchParams}: {
 
                 {!tab || tab === "content" &&
                     <div>
+                        {!eventDetail.content && !!eventDetail.notes && <NoData/>}
                         <div className="editor-wrapper display">
                             <RichTextDisplayer markdownStr={eventDetail.content || ''}/>
                         </div>
@@ -361,160 +311,117 @@ export default async function EventDetail({params, searchParams}: {
 
                 {tab === 'participants' &&
                     <div>
-                        <div className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
-                            <i className="uil-download-alt text-lg mr-1"></i>
-                            <span>Download the list of all participants</span>
-                        </div>
+                        {!!eventDetail.participants && eventDetail.participants.length > 0 &&
+                            <div className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
+                                <i className="uil-download-alt text-lg mr-1"></i>
+                                <span>Download the list of all participants</span>
+                            </div>}
+
+                        {!eventDetail.participants || eventDetail.participants.length === 0 && <NoData/>}
 
                         <div>
-                            <div
-                                className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
-                                <div className="flex-row-item-center">
-                                    <img className="w-7 h-7 rounded-full mr-2"
-                                        src="https://ik.imagekit.io/soladata/kr4xhw63_b07ojmpkv"/>
-                                    <div className="text-xs">
-                                        <div>ppnnsspp</div>
-                                        <div className="text-gray-400">0xasd1...asda</div>
-                                    </div>
-                                </div>
+                            {
+                                eventDetail.participants?.map(participant => {
+                                    return <div key={participant.id}
+                                        className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
+                                        <div className="flex-row-item-center">
+                                            <img className="w-7 h-7 rounded-full mr-2"
+                                                src={getAvatar(participant.profile.id, participant.profile.image_url)}/>
+                                            <div className="text-xs">
+                                                <div>{participant.profile.nickname || participant.profile.handle}</div>
+                                                <div className="text-gray-400">{!!participant.ticket_item?.sender_address && shortWalletAddress(participant.ticket_item?.sender_address)}</div>
+                                            </div>
+                                        </div>
 
-                                <div className="flex-row-item-center">
-                                    <div className="text-xs">Free Ticket</div>
-                                    <div
-                                        className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-red-400">
-                                        Cancel
-                                    </div>
-                                    <div
-                                        className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
-                                        Check In
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
-                                <div className="flex-row-item-center">
-                                    <img className="w-7 h-7 rounded-full mr-2"
-                                        src="https://ik.imagekit.io/soladata/kr4xhw63_b07ojmpkv"/>
-                                    <div className="text-xs">
-                                        <div>ppnnsspp</div>
-                                        <div className="text-gray-400">0xasd1...asda</div>
-                                    </div>
-                                </div>
 
-                                <div className="flex-row-item-center">
-                                    <div className="text-xs">Free Ticket</div>
-                                    <div
-                                        className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-red-400">
-                                        Cancel
+                                        <div className="flex-row-item-center">
+                                            {!!participant.ticket &&
+                                                <div className="text-xs">{participant.ticket.title}</div>
+                                            }
+                                            {participant.profile.id === currProfile?.id &&
+                                                <div
+                                                    className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-red-400">
+                                                    Cancel
+                                                </div>
+                                            }
+                                            {isEventCreator || isGroupManager &&
+                                                <div
+                                                    className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
+                                                    Check In
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
-                                    <div
-                                        className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
-                                        Check In
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
-                                <div className="flex-row-item-center">
-                                    <img className="w-7 h-7 rounded-full mr-2"
-                                        src="https://ik.imagekit.io/soladata/kr4xhw63_b07ojmpkv"/>
-                                    <div className="text-xs">
-                                        <div>ppnnsspp</div>
-                                        <div className="text-gray-400">0xasd1...asda</div>
-                                    </div>
-                                </div>
-
-                                <div className="flex-row-item-center">
-                                    <div className="text-xs">Free Ticket</div>
-                                    <div
-                                        className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-red-400">
-                                        Cancel
-                                    </div>
-                                    <div
-                                        className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
-                                        Check In
-                                    </div>
-                                </div>
-                            </div>
+                                })
+                            }
                         </div>
                     </div>
                 }
 
                 {tab === 'tickets' &&
                     <div>
-                        <div className="p-4 rounded-lg">
-                            <div className="bg-gray-100 p-4 rounded-lg mb-3 cursor-pointer">
-                                <div className="font-semibold">Ticket Title</div>
-                                <div className="text-xs my-2 break-words text-gray-500">Entrypoint event_detail 381 KiB
-                                    (1.86 MiB) = event_detail/event_detail.css 105 KiB e
-                                </div>
-                                <div>
-                                    <div className="text-sm text-gray-500 mb-2">Need to have badge</div>
-                                    <div className="flex-row-item-center">
-                                        <img className="w-6 h-6 mr-2 rounded-full"
-                                            src="https://ik.imagekit.io/soladata/tr:n-ik_ml_thumbnail/cvs06g2n_kARAFJMkR"
-                                            alt=""/>
-                                        <div>Test Badge</div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-row items-center justify-between mt-3">
-                                    <div className="font-semibold text-pink-500 text-xl">100 USD</div>
-                                    <div className="flex flex-row items-center">
-                                        <img className="shadow w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                            src="https://www.sola.day/images/op.png" alt=""/>
-                                        <img className="shadow w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                            src="https://www.sola.day/images/polygon.svg" alt=""/>
-                                        <img className="shadow w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                            src="https://www.sola.day/images/ethereum-icon.webp" alt=""/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-gray-100 p-4 rounded-lg mb-3 cursor-pointer">
-                                <div className="font-semibold">Ticket Title</div>
-                                <div className="text-xs my-2 break-words text-gray-500">Entrypoint event_detail 381 KiB
-                                    (1.86 MiB) = event_detail/event_detail.css 105 KiB e
-                                </div>
-                                <div>
-                                    <div className="text-sm text-gray-500 mb-2">Need to have badge</div>
-                                    <div className="flex-row-item-center">
-                                        <img className="w-6 h-6 mr-2 rounded-full"
-                                            src="https://ik.imagekit.io/soladata/tr:n-ik_ml_thumbnail/cvs06g2n_kARAFJMkR"
-                                            alt=""/>
-                                        <div>Test Badge</div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-row items-center justify-between mt-3">
-                                    <div className="font-semibold text-pink-500 text-xl">100 USD</div>
-                                    <div className="flex flex-row items-center">
-                                        <img className="shadow w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                            src="https://www.sola.day/images/op.png" alt=""/>
-                                        <img className="shadow w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                            src="https://www.sola.day/images/polygon.svg" alt=""/>
-                                        <img className="shadow w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                            src="https://www.sola.day/images/ethereum-icon.webp" alt=""/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-gray-100 p-4 rounded-lg mb-3 cursor-pointer">
-                                <div className="font-semibold">Ticket Title</div>
+                        <div className="border-gray-200 p-4">
+                            {!!eventDetail.tickets && eventDetail.tickets.length === 0 && <NoData/>}
+                            {eventDetail.tickets?.map(ticket => {
 
-                                <div className="flex flex-row items-center justify-between mt-3">
-                                    <div className="font-semibold text-pink-500 text-xl">Free</div>
+                                return <div key={ticket.id} className="bg-gray-100 p-4 rounded-lg mb-3 cursor-pointer">
+                                    <div className="font-semibold">{ticket.title}</div>
+                                    <div className="text-xs my-2 break-words text-gray-500">
+                                        {ticket.content}
+                                    </div>
+                                    {!!ticket.check_badge_class &&
+                                        <div>
+                                            <div className="text-sm text-gray-500 mb-2">Need to have badge</div>
+                                            <div className="flex-row-item-center">
+                                                <img className="w-6 h-6 mr-2 rounded-full"
+                                                    src={ticket.check_badge_class.image_url!} alt=""/>
+                                                <div>{ticket.check_badge_class.title}</div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    {ticket.payment_methods?.length === 0 ?
+                                        <div className="flex flex-row items-center justify-between mt-3">
+                                            <div className="font-semibold text-pink-500 text-xl">Free</div>
+                                        </div>
+                                        : <div className="flex flex-row items-center justify-between mt-3">
+                                            <div className="font-semibold text-pink-500 text-xl">
+                                                {displayTicketPrice(ticket)}
+                                            </div>
+                                            <div className="flex flex-row items-center">
+                                                {
+                                                    ticket.payment_methods.map((method, index) => {
+                                                        return <img key={index}
+                                                            className="shadow min-w-5 h-5 rounded-full mr-[-6px] bg-white"
+                                                            src={getChainIconById(method.chain)}
+                                                            alt="" width={20} height={20}/>
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                            </div>
+                            })
+                            }
 
-                            <div
-                                className="flex-1 special-btn mt-2 h-12 cursor-pointer flex-row-item-center justify-center font-semibold bg-gray-200 rounded-lg px-2">
-                                <span>RSVP</span>
-                            </div>
-
-                            <div
-                                className="opacity-30 pointer-events-none flex-1 mt-2 h-12 cursor-pointer hover:bg-gray-300 flex-row-item-center justify-center font-semibold bg-gray-200 rounded-lg px-2">
-                                <span>You have purchased the ticket</span>
-                            </div>
+                            <Button variant={'secondary'} disabled
+                                className="mt-2 w-full">{lang['You have purchased the ticket']}</Button>
                         </div>
                     </div>
                 }
+
+                {tab === 'comments' && <div>
+                    <div className="py-4">
+                        {!!currProfile &&
+                            <div className="flex flex-row  w-full !items-start">
+                                <img className="w-9 h-9 rounded-full mr-2"
+                                    src={getAvatar(currProfile.id, currProfile.image_url)} alt=""/>
+                                <Textarea className="flex-1" placeholder={'Input comment'} />
+                            </div>
+                        }
+                        <NoData />
+                    </div>
+                </div>}
 
             </div>
         </div>

@@ -289,11 +289,15 @@ declare namespace Solar {
         role: string,
         status: string | null,
         created_at: string | null,
-        ticket_id: string | null,
+        ticket_id: number | null,
         payment_status: string | null,
         event: Event,
         profile: ProfileSample,
         ticket: Ticket | null
+        ticket_item?: {
+            status
+            sender_address
+        }
     }
 
     export interface Invite {

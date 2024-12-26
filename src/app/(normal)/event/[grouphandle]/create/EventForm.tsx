@@ -61,8 +61,8 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                 draft.timezone!,
                 draft.start_time!,
                 draft.end_time!,
-                data.isManager,
-                data.isMember,
+                data.isGroupManager,
+                data.isGroupMember,
                 venue
             )
             setTimeError(lang[errorMsg as keyof Dictionary])
@@ -237,8 +237,8 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                         <div className="font-semibold mb-1">{lang['Location']}</div>
                         <LocationInput
                             lang={lang}
-                            isManager={data.isManager}
-                            isMember={data.isMember}
+                            isManager={data.isGroupManager}
+                            isMember={data.isGroupMember}
                             venues={data.venues}
                             state={{event: draft, setEvent: setDraft}}/>
                     </div>

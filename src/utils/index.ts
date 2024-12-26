@@ -322,6 +322,10 @@ export function genGoogleMapLinkByEvent (event: Solar.Event) {
     return url
 }
 
+export function shortWalletAddress(address: string) {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
 
 
 
