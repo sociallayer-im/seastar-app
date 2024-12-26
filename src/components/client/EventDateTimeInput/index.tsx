@@ -111,13 +111,6 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
         return calculateDuration(new Date(event.start_time), newEndTime)
     }
 
-    const fromTimePickerFilterFn = (timeStr: string) => {
-        // const startDateStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD')
-        // const endDateStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('YYYY/MM/DD')
-        // return startDateStr !== endDateStr || timeStr < displayTime(event.end_time, event.timezone!)
-        return true
-    }
-
     const toDatePickerFilterFn = (dateStr: string) => {
         const startTimeStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('HH:mm')
         const endTimeStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('HH:mm')
@@ -186,7 +179,6 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
                 />
             </DatePicker>
             <TimePicker
-                filterFn={fromTimePickerFilterFn}
                 initTime={displayTime(event.start_time, event.timezone)}
                 onChange={(timeStr) => setStartTime(timeStr)}/>
 

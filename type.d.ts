@@ -189,8 +189,8 @@ declare namespace Solar {
         nickname: string | null
         image_url: string | null
         role: EventRoleType
-        profile: ProfileSample | null
-        group: GroupSample | null
+        profile?: ProfileSample
+        group?: GroupSample
         item_type: 'Profile' | 'Group',
         _destroy?: string
     }

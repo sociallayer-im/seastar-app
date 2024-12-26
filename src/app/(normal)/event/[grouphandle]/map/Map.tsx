@@ -24,13 +24,7 @@ export default function EventMap(props: {events: SampleEventWithCreatorAndJoinSt
         return acc
     }, {})
 
-    const [currEventId, setCurrEventId] = useState<number | null>(null)
     const [currGroupEventsKey, setcurrGroupEventsKey] = useState<keyof GroupedEvents | undefined>(Object.keys(groupedEvents)[0] as keyof SampleEventWithCreatorAndJoinStatus)
-
-    const handleSelectEvent = (id: number) => {
-        setCurrEventId(id)
-        document.querySelector(`#event_${id}`)?.scrollIntoView({behavior: 'smooth', inline: 'center'})
-    }
 
     return <GoogleMapProvider>
         <div className='w-full h-[calc(100svh-48px)] relative outline-none'>
@@ -77,7 +71,6 @@ export default function EventMap(props: {events: SampleEventWithCreatorAndJoinSt
                     !!currGroupEventsKey && groupedEvents[currGroupEventsKey].map((event, index) => {
                         return <CardEvent key={index}
                             id={`event_${event.id}`}
-                            style={{background: currEventId === event.id ? 'linear-gradient(276deg,#f7df3a -18.27%,#d2f8e8 59.84%)' : '#fff'}}
                             event={event}
                             className="mr-4 h-[190px] max-w-[630px] w-[95vw] flex-shrink-0 flex-grow-0"/>
                     })

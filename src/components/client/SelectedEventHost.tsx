@@ -27,7 +27,7 @@ export default function SelectedEventHost({
             item_id : host.id,
             nickname: host.nickname,
             image_url: host.image_url,
-            role: 'group_host',
+            role: 'group_host' as Solar.EventRoleType,
             item_type: 'Group',
         }
 
