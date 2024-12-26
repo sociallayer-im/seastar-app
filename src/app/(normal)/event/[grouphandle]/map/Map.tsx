@@ -7,11 +7,15 @@ import CardEvent from "@/components/CardEvent"
 import {SampleEventWithCreatorAndJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
 import {useState} from 'react'
 
+interface GroupedEvents {
+    [index: string]: SampleEventWithCreatorAndJoinStatus[]
+}
+
 export default function EventMap(props: {events: SampleEventWithCreatorAndJoinStatus[]}) {
     const eventsHasLocation = props.events.filter(event => event.geo_lat && event.geo_lng)
 
     // grouped event with same lat lng
-    const groupedEvents = eventsHasLocation.reduce((acc: {[index: string]: SampleEventWithCreatorAndJoinStatus[]}, event) => {
+    const groupedEvents = eventsHasLocation.reduce((acc: GroupedEvents, event) => {
         const key = `${event.geo_lat}_${event.geo_lng}`
         if (!acc[key]) {
             acc[key] = []
@@ -21,6 +25,7 @@ export default function EventMap(props: {events: SampleEventWithCreatorAndJoinSt
     }, {})
 
     const [currEventId, setCurrEventId] = useState<number | null>(null)
+    const [currGroupEventsKey, setcurrGroupEventsKey] = useState<keyof GroupedEvents | undefined>(Object.keys(groupedEvents)[0] as keyof SampleEventWithCreatorAndJoinStatus)
 
     const handleSelectEvent = (id: number) => {
         setCurrEventId(id)
@@ -37,24 +42,22 @@ export default function EventMap(props: {events: SampleEventWithCreatorAndJoinSt
                     Object.keys(groupedEvents).map((key: keyof typeof groupedEvents, index) => {
                         return <AdvancedMarker
                             clickable={true}
+                            onClick={() => setcurrGroupEventsKey(key)}
                             key={index}
                             position={{lat: Number(groupedEvents[key][0].geo_lat!),lng: Number(groupedEvents[key][0].geo_lng!)}}>
-
-                            <div className="grid grid-cols-3 gap-2  p-4 rounded-lg">
-                                {
-                                    groupedEvents[key].map((event, index) => {
-                                        return <Button
-                                            key={index}
-                                            className="text-sm shadow !bg-background"
-                                            onClick={() => handleSelectEvent(event.id)}
-                                            variant='secondary'
-                                            size="sm"
-                                        ><div className="max-w-[130px] overflow-ellipsis whitespace-nowrap overflow-hidden">
-                                                {event.title}</div>
-                                        </Button>
-                                    })
-                                }
-                            </div>
+                            <Button
+                                key={index}
+                                style={currGroupEventsKey === key ? {background: 'linear-gradient(276deg,#f7df3a -18.27%,#d2f8e8 59.84%)'} : undefined}
+                                className="text-sm shadow !bg-background"
+                                variant='secondary'
+                                size="sm"
+                            ><div className="overflow-ellipsis whitespace-nowrap overflow-hidden">
+                                    <span>{groupedEvents[key][0].title}</span>
+                                    {
+                                        groupedEvents[key].length > 1 && <span className="ml-2 font-normal text-xs">+{groupedEvents[key].length - 1} Events</span>
+                                    }
+                                </div>
+                            </Button>
                         </AdvancedMarker>
                     })
                 }
@@ -69,9 +72,9 @@ export default function EventMap(props: {events: SampleEventWithCreatorAndJoinSt
                     .map((_, i) => <Button key={i} variant={'secondary'} size="sm" className="bg-background mr-3 text-sm">Type {i}</Button>)}
             </div>
 
-            <div className="hide-scroll flex-row-item-center absolute bottom-0 py-7 w-[98vw] left-[50%] translate-x-[-50%] flex-nowrap overflow-auto">
+            <div className="hide-scroll flex-row-item-center absolute bottom-0 py-7 max-w-[98vw] left-[50%] translate-x-[-50%] flex-nowrap overflow-auto">
                 {
-                    eventsHasLocation.map((event, index) => {
+                    !!currGroupEventsKey && groupedEvents[currGroupEventsKey].map((event, index) => {
                         return <CardEvent key={index}
                             id={`event_${event.id}`}
                             style={{background: currEventId === event.id ? 'linear-gradient(276deg,#f7df3a -18.27%,#d2f8e8 59.84%)' : '#fff'}}
