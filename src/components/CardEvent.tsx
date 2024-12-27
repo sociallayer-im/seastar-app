@@ -21,7 +21,7 @@ export default function CardEvent({event, className, id, style}: {event: SampleE
     return <a href={`/event/detail/${event.id}`}
         id={id}
         style={style}
-        className={`shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-105 ${className}`}>
+        className={`shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className}`}>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
