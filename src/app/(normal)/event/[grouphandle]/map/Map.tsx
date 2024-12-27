@@ -30,7 +30,7 @@ export default function EventMap(props: {events: SampleEventWithCreatorAndJoinSt
         <div className='w-full h-[calc(100svh-48px)] relative outline-none'>
             <Map mapId="e2f9ddc0facd5a80"
                 defaultCenter={{ lat: Number(eventsHasLocation[0]!.geo_lat!),lng: Number(eventsHasLocation[0]!.geo_lng!)}}
-                defaultZoom={17}
+                defaultZoom={15}
                 disableDefaultUI>
                 {
                     Object.keys(groupedEvents).map((key: keyof typeof groupedEvents, index) => {
@@ -39,19 +39,22 @@ export default function EventMap(props: {events: SampleEventWithCreatorAndJoinSt
                             onClick={() => setcurrGroupEventsKey(key)}
                             key={index}
                             position={{lat: Number(groupedEvents[key][0].geo_lat!),lng: Number(groupedEvents[key][0].geo_lng!)}}>
-                            <Button
-                                key={index}
-                                style={currGroupEventsKey === key ? {background: 'linear-gradient(276deg,#f7df3a -18.27%,#d2f8e8 59.84%)'} : undefined}
-                                className="text-sm shadow !bg-background"
-                                variant='secondary'
-                                size="sm"
-                            ><div className="overflow-ellipsis whitespace-nowrap overflow-hidden">
-                                    <span>{groupedEvents[key][0].title}</span>
-                                    {
-                                        groupedEvents[key].length > 1 && <span className="ml-2 font-normal text-xs">+{groupedEvents[key].length - 1} Events</span>
-                                    }
-                                </div>
-                            </Button>
+                            <div className="flex flex-col items-center">
+                                <Button
+                                    key={index}
+                                    style={currGroupEventsKey === key ? {background: 'linear-gradient(276deg,#f7df3a -18.27%,#d2f8e8 59.84%)'} : undefined}
+                                    className="text-sm shadow !bg-background"
+                                    variant='secondary'
+                                    size="sm"
+                                ><div className="overflow-ellipsis whitespace-nowrap overflow-hidden">
+                                        <span>{groupedEvents[key][0].title}</span>
+                                        {
+                                            groupedEvents[key].length > 1 && <span className="ml-2 font-normal text-xs">+{groupedEvents[key].length - 1} Events</span>
+                                        }
+                                    </div>
+                                </Button>
+                                <img className="w-[18px] h-auto" src="/images/map_marker.png" alt=""/>
+                            </div>
                         </AdvancedMarker>
                     })
                 }
