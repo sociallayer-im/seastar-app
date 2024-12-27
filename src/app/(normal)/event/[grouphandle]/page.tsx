@@ -6,7 +6,7 @@ import {GroupEventListData} from "@/app/(normal)/group/[handle]/TabEvents/data"
 import {Badge} from "@/components/shadcn/Badge"
 
 export default async function EventHome() {
-    const events = await GroupEventListData('woochiangmai')
+    const events = await GroupEventListData('popupfest')
 
     return <div style={{background: '#fff url(/images/event_home_bg.png) top center repeat-x'}}>
         <div className="page-width min-h-[100svh] !pt-3 !sm:pt-6 flex-col flex md:flex-row">
