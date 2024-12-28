@@ -69,7 +69,7 @@ export default async function GroupEditPageData({params}: GroupEditDataProps) {
 
 export async function getGroupData(handle: string) {
     const doc = gql`query MyQuery {
-         groups: groups(where:{handle:{_eq: "${handle}"}}, order_by: {id: desc}) {
+         groups: groups(where:{handle:{_eq: "${handle}"}}) {
             handle
             id
             image_url
@@ -94,19 +94,9 @@ export async function getGroupData(handle: string) {
 
     // console.log('doc', doc)
 
-    // return await request<{
-    //     groups: Solar.Group[],
-    //     memberships: MemberShipSample[]
-    // }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc, {fetchPolicy: "no-cache"})
-
     return await request<{
         groups: Solar.Group[],
         memberships: MemberShipSample[]
-    }>({
-        url: process.env.NEXT_PUBLIC_GRAPH_URL!,
-        document: doc,
-        requestHeaders: {
-            fetchPolicy: "no-cache"
-        }
-    })
+    }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
 }
+

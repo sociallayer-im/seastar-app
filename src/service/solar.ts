@@ -82,7 +82,7 @@ export const updateProfile = async (profile: Solar.Profile, auth_token: string) 
     return data.profile as Solar.Profile
 }
 
-export const getOccupiedTimeEvent  = async (startTime: string, endTime: string, timezone: string, venueId: number | null, eventId?:number) => {
+export const getOccupiedTimeEvent = async (startTime: string, endTime: string, timezone: string, venueId: number | null, eventId?: number) => {
     if (!venueId) return null
 
     const doc = gql`query MyQuery {
@@ -94,7 +94,7 @@ export const getOccupiedTimeEvent  = async (startTime: string, endTime: string, 
         }
     }`
 
-    const {events} = await request<{events: Solar.Event[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    const {events} = await request<{ events: Solar.Event[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
 
     return events.find((e) => {
         const eventStartTime = new Date(e.start_time!).getTime()
@@ -121,7 +121,7 @@ export async function getBadgeClassDetailById(id: number) {
         }
     }`
 
-    const badgeClasses =  await request<{badge_classes: Solar.BadgeClass[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    const badgeClasses = await request<{ badge_classes: Solar.BadgeClass[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
     return badgeClasses.badge_classes[0]
 }
 
@@ -143,7 +143,7 @@ export async function getUserBadgeClasses(userHandle: string) {
         }
     }`
 
-    const badgeClasses =  await request<{badge_classes: Solar.BadgeClass[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    const badgeClasses = await request<{ badge_classes: Solar.BadgeClass[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
     return badgeClasses.badge_classes
 }
 
@@ -165,11 +165,11 @@ export async function getGroupBadgeClasses(groupId: number, limit = 20) {
         }
     }`
 
-    const badgeClasses =  await request<{badge_classes: Solar.BadgeClass[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    const badgeClasses = await request<{ badge_classes: Solar.BadgeClass[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
     return badgeClasses.badge_classes
 }
 
-export async function SearchProfile(keyword: string, limit=5) {
+export async function SearchProfile(keyword: string, limit = 5) {
     const doc = gql`query MyQuery {
           exact : profiles(where: {_or: [{handle: {_eq: "${keyword}"}}, { nickname:{_eq: "${keyword}"}}]}, limit: ${limit}){
             id
@@ -228,7 +228,11 @@ export const updateGroup = async (group: Solar.Group, auth_token: string) => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({...group, auth_token})
+        body: JSON.stringify({
+            ...group,
+            social_links: JSON.stringify(group.social_links),
+            auth_token
+        })
     })
 
     if (!response.ok) {

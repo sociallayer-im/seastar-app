@@ -50,7 +50,7 @@ export default function EditProfile({group, lang, isManager}: { group: Solar.Gro
 
             await updateGroup(newGroup, auth_token)
             toast({title: 'Group updated'})
-            // window.location.href = '/group/' + newGroup.handle
+            window.location.href = '/group/' + newGroup.handle
         } catch (e: unknown) {
             console.error('[EditGroup]: ', e)
             toast({title: e instanceof Error ? e.message : 'Failed to update Group', variant: 'destructive'})
