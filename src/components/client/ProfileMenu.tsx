@@ -21,7 +21,7 @@ export default function ProfileMenu(props: { profile: Solar.ProfileSample }) {
     const menus = [
         {label: 'Profile', href: `/profile/${props.profile.handle}`},
         {label: 'Settings', href: `/profile/${props.profile.handle}/edit`},
-        {label: 'Create Group', href: '/group/create'},
+        {label: 'Create Group', href: '/create-group'},
         {label: 'Notification', href: '/notification'},
         {label: 'Sign Out', action: handleSignOut},
     ] as Menu[]

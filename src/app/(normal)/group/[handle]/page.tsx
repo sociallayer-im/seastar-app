@@ -10,6 +10,10 @@ import TabEvents from './TabEvents/TabEvents'
 import TabBadges from "@/app/(normal)/group/[handle]/TabBadges/TabBadges"
 import TabMembers from "@/app/(normal)/group/[handle]/TabMembers/TabMembers"
 import TabVouchers from "@/app/(normal)/group/[handle]/TabVouchers/TabVouchers"
+import {Textarea} from "@/components/shadcn/Textarea"
+import NoData from "@/components/NoData"
+
+export const dynamic = 'force-dynamic'
 
 export default async function GroupPage(props: GroupDataProps) {
     const {group, tab, currProfile, currUserIsManager, currUserIsIssuer, currUserIsMember, members} = await GroupPageData(props)
@@ -138,6 +142,17 @@ export default async function GroupPage(props: GroupDataProps) {
                 {
                     tab === 'sending' && <div className="grid grid-cols-1 gap-3 w-full">
                         <TabVouchers  handle={group.handle} />
+                    </div>
+                }
+
+                {
+                    tab === 'chat' && <div className="py-4 w-full">
+                        <div className="flex flex-row  w-full !items-start">
+                            <img className="w-9 h-9 rounded-full mr-2"
+                                src='/images/default_avatar/avatar_1.png' alt=""/>
+                            <Textarea className="flex-1" placeholder={'Input comment'}/>
+                        </div>
+                        <NoData />
                     </div>
                 }
             </div>

@@ -9,12 +9,13 @@ import {Media_Meta, urlToUsername} from "@/utils/social_media_meta"
 import useUploadAvatar from "@/hooks/useUploadAvatar"
 import useModal from "@/components/client/Modal/useModal"
 import DialogEditSocialMedia from "@/components/client/DialogEditSocialMedia"
-import {updateProfile} from "@/service/solar"
+import {updateGroup} from "@/service/solar"
 import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
+import {Switch} from "@/components/shadcn/Switch"
 
-export default function EditProfile({profile, lang}: { profile: Solar.Profile, lang: Dictionary }) {
-    const [newProfile, setNewProfile] = useState<Solar.Profile>(profile)
+export default function EditProfile({group, lang, isManager}: { group: Solar.Group, lang: Dictionary, isManager: boolean }) {
+    const [newGroup, setNewGroup] = useState<Solar.Group>(group)
     const {uploadAvatar} = useUploadAvatar()
     const {openModal, showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -27,10 +28,10 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
                 close={close}
                 type={type}
                 onConfirm={(value) => {
-                    setNewProfile({
-                        ...newProfile,
+                    setNewGroup({
+                        ...newGroup,
                         social_links: {
-                            ...newProfile.social_links,
+                            ...newGroup.social_links,
                             [type]: value
                         }
                     })
@@ -47,12 +48,12 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
                 throw new Error('Please login first')
             }
 
-            await updateProfile(newProfile, auth_token)
-            toast({title: 'Profile updated'})
-            window.location.href = '/profile/' + newProfile.handle
+            await updateGroup(newGroup, auth_token)
+            toast({title: 'Group updated'})
+            // window.location.href = '/group/' + newGroup.handle
         } catch (e: unknown) {
-            console.error('[EditProfile]: ', e)
-            toast({title: e instanceof Error ? e.message : 'Failed to update profile', variant: 'destructive'})
+            console.error('[EditGroup]: ', e)
+            toast({title: e instanceof Error ? e.message : 'Failed to update Group', variant: 'destructive'})
         } finally {
             closeModal(loadingId)
         }
@@ -67,47 +68,61 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
                     <div className="font-semibold pb-2">{lang['Avatar']}</div>
                     <div className="bg-secondary rounded-lg h-[170px] flex-col flex justify-center items-center mb-4">
                         <img className="mb-3 w-[100px] h-[100px] rounded-full"
-                            src={newProfile.image_url || '/images/upload_default.png'} alt=""/>
+                            src={newGroup.image_url || '/images/upload_default.png'} alt=""/>
                         <Button size="sm"
                             onClick={() => uploadAvatar({
                                 onUploaded: (url) => {
-                                    setNewProfile({...newProfile, image_url: url})
+                                    setNewGroup({...newGroup, image_url: url})
                                 }
                             })}
                             className="text-xs bg-white !rounded-3xl !text-foreground">{lang['Upload Avatar']}</Button>
                     </div>
 
                     <div className="font-semibold pb-2">{lang['Nickname']}</div>
-                    <Input value={newProfile.nickname || ''}
+                    <Input value={newGroup.nickname || ''}
                         placeholder={lang['Nickname']}
                         onChange={e => {
-                            setNewProfile({...newProfile, nickname: e.target.value})
+                            setNewGroup({...newGroup, nickname: e.target.value})
                         }}
                         maxLength={30}
-                        endAdornment={<span>{newProfile.nickname?.length || 0}/30</span>}
+                        endAdornment={<span>{newGroup.nickname?.length || 0}/30</span>}
                         className="w-full mb-4"/>
 
                     <div className="font-semibold pb-2">{lang['Location']}</div>
-                    <Input value={newProfile.location || ''}
+                    <Input value={newGroup.location || ''}
                         placeholder={lang['Location']}
                         onChange={e => {
-                            setNewProfile({...newProfile, location: e.target.value})
+                            setNewGroup({...newGroup, location: e.target.value})
                         }}
                         className="w-full mb-4"/>
 
                     <div className="font-semibold pb-2">{lang['Bio']}</div>
-                    <Textarea value={newProfile.about || ''}
+                    <Textarea value={newGroup.about || ''}
                         placeholder={lang['Bio']}
                         onChange={e => {
-                            setNewProfile({...newProfile, about: e.target.value})
+                            setNewGroup({...newGroup, about: e.target.value})
                         }}
                         className="min-h-[120px]"
                     />
+
+                    <div className="flex-row-item-center justify-between mt-6">
+                        <div className="font-semibold">Enable Event</div>
+                        <Switch checked={newGroup.event_enabled}
+                            onClick={() => setNewGroup({...newGroup, event_enabled: !newGroup.event_enabled})}
+                        />
+                    </div>
+
+                    <div className="flex-row-item-center justify-between mt-6">
+                        <div className="font-semibold">Enable Map</div>
+                        <Switch checked={newGroup.map_enabled}
+                            onClick={() => setNewGroup({...newGroup, map_enabled: !newGroup.map_enabled})}
+                        />
+                    </div>
                 </div>
                 <div className="flex-1 mt-6">
                     <div className="font-semibold pb-2">{lang['Social Links']}</div>
                     {
-                        !!newProfile.social_links && Object.keys(Media_Meta).map((key, i) => {
+                        !!newGroup.social_links && Object.keys(Media_Meta).map((key, i) => {
                             return <div key={i}
                                 className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
@@ -118,13 +133,13 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
                                 </div>
                                 <div>
                                     {
-                                        !!newProfile.social_links?.[key as keyof typeof Media_Meta] &&
+                                        !!newGroup.social_links?.[key as keyof typeof Media_Meta] &&
                                         <span className="mr-2">
-                                            {urlToUsername(newProfile.social_links[key as keyof typeof Media_Meta]!, key as keyof typeof Media_Meta)}
+                                            {urlToUsername(newGroup.social_links[key as keyof typeof Media_Meta]!, key as keyof typeof Media_Meta)}
                                         </span>
                                     }
                                     <Button
-                                        onClick={() => showEditSocialMedia(key as keyof typeof Media_Meta, newProfile.social_links?.[key as keyof typeof Media_Meta] || '')}
+                                        onClick={() => showEditSocialMedia(key as keyof typeof Media_Meta, newGroup.social_links?.[key as keyof typeof Media_Meta] || '')}
                                         size={'xs'}
                                         variant={'normal'}
                                         className="text-sm">Edit</Button>
@@ -138,9 +153,12 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
                 <Button variant={'secondary'} className="flex-1 sm:flex-grow-0 sm:min-w-36 mr-4" onClick={() => {
                     history.go(-1)
                 }}>{lang['Cancel']}</Button>
-                <Button variant={'primary'} className="flex-1 sm:flex-grow-0 sm:min-w-36"
+                <Button variant={'primary'}
+                    disabled={!isManager}
+                    className="flex-1 sm:flex-grow-0 sm:min-w-36"
                     onClick={handleSave}>{lang['Save']}</Button>
             </div>
         </div>
     </div>
 }
+

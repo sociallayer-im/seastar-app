@@ -1,4 +1,4 @@
-import {AUTH_FIELD, pickSearchParam} from "@/utils"
+import {AUTH_FIELD} from "@/utils"
 import {gql, request} from "graphql-request"
 import {redirect} from "next/navigation"
 import {getProfileByToken} from "@/service/solar"
@@ -8,32 +8,25 @@ export interface GroupPageParams {
     handle: string
 }
 
-export interface GroupPageSearchParams {
-    tab?: 'events' | 'badges' | 'chat' | 'votes' | 'members' | string[]
-}
-
-export interface GroupDataProps {
+export interface GroupEditDataProps {
     params: GroupPageParams,
-    searchParams: GroupPageSearchParams,
 }
 
 export interface MemberShipSample { role: string, profile: Solar.ProfileSample }
 
-export type GroupDetail = Pick<Solar.Group, 'id' | 'handle' | 'image_url' | 'about' | 'social_links' | 'nickname' | 'location' | 'map_enabled' | 'event_enabled' | 'event_tags'>
 
 export interface GroupData {
-    group: GroupDetail,
+    group: Solar.Group,
     currProfile: Solar.Profile | null,
-    currUserIsManager: boolean,
-    currUserIsMember: boolean,
-    currUserIsIssuer: boolean,
+    isGroupManager: boolean,
+    isGroupMember: boolean,
+    isGroupIssuer: boolean,
+    isGroupOwner: boolean,
     members: {role: string, profile: Solar.ProfileSample}[],
-    tab: string,
 }
 
-export default async function GroupPageData({params, searchParams}: GroupDataProps) {
+export default async function GroupEditPageData({params}: GroupEditDataProps) {
     const handle = params.handle
-    const tab = pickSearchParam(searchParams.tab)
 
     const {groups, memberships} = await getGroupData(handle)
 
@@ -42,6 +35,9 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
     }
 
     const group = groups[0]
+
+    console.log('group name', group.nickname)
+    console.log('handle', handle)
 
     let currProfile: Solar.Profile | null = null
     const authToken = cookies().get(AUTH_FIELD)?.value
@@ -55,22 +51,23 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
     const issuers = memberships.filter(m => m.role === 'issuer')
     const members = memberships.filter(m => m.role === 'member')
 
-    const currUserIsManager = memberships.some(m => m.profile.handle === currProfile?.handle && (m.role === 'manager' || m.role === 'owner'))
-    const currUserIsMember = memberships.some(m => m.profile.handle === currProfile?.handle)
-    const currUserIsIssuer = memberships.some(m => m.profile.handle === currProfile?.handle && m.role === 'issuer')
+    const isGroupOwner = memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'owner'
+    const isGroupManager = isGroupOwner || memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'manager'
+    const isGroupMember = isGroupOwner || isGroupManager || memberships.some(m => m.profile.handle === currProfile?.handle)
+    const isGroupIssuer = memberships.some(m => m.profile.handle === currProfile?.handle && m.role === 'issuer')
 
     return {
         group: group,
         currProfile: currProfile,
-        currUserIsManager,
-        currUserIsMember,
-        currUserIsIssuer,
-        tab: tab || 'events',
+        isGroupOwner,
+        isGroupManager,
+        isGroupMember,
+        isGroupIssuer,
         members: [owner, ...managers, ...issuers, ...members]
     } as GroupData
 }
 
-async function getGroupData(handle: string) {
+export async function getGroupData(handle: string) {
     const doc = gql`query MyQuery {
          groups: groups(where:{handle:{_eq: "${handle}"}}, order_by: {id: desc}) {
             handle
@@ -97,8 +94,19 @@ async function getGroupData(handle: string) {
 
     // console.log('doc', doc)
 
+    // return await request<{
+    //     groups: Solar.Group[],
+    //     memberships: MemberShipSample[]
+    // }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc, {fetchPolicy: "no-cache"})
+
     return await request<{
-        groups: GroupDetail[],
+        groups: Solar.Group[],
         memberships: MemberShipSample[]
-    }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    }>({
+        url: process.env.NEXT_PUBLIC_GRAPH_URL!,
+        document: doc,
+        requestHeaders: {
+            fetchPolicy: "no-cache"
+        }
+    })
 }

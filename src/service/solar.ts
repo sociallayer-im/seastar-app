@@ -222,3 +222,20 @@ export async function CreteEvent(props: CreateEventProps) {
     return data.evet as Solar.Event
 }
 
+export const updateGroup = async (group: Solar.Group, auth_token: string) => {
+    const response = await fetch(`${api}/group/update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({...group, auth_token})
+    })
+
+    if (!response.ok) {
+        throw new Error('Update failed')
+    }
+
+    const data = await response.json()
+    return data.group as Solar.Group
+}
+

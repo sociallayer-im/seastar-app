@@ -143,4 +143,5 @@ export const zh: Dictionary = {
     'Check-In And Send POAP': '签到并发送 POAP',
     'Tickets': '门票',
     'You have purchased the ticket': '您已购买门票',
+    'Set a unique group name': '设置一个独特的群组名称',
 }

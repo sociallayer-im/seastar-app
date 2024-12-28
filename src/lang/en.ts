@@ -140,7 +140,8 @@ export const en = {
     'Check-In For Participants': 'Check-In For Participants',
     'Check-In And Send POAP': 'Check-In And Send POAP',
     'Tickets': 'Tickets',
-    'You have purchased the ticket': 'You have purchased the ticket'
+    'You have purchased the ticket': 'You have purchased the ticket',
+    'Set a unique group name': 'Set a unique group name',
 }
 
 export type Dictionary = typeof en
