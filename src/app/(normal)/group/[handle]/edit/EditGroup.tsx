@@ -118,6 +118,7 @@ export default function EditProfile({group, lang, isManager}: { group: Solar.Gro
                             onClick={() => setNewGroup({...newGroup, map_enabled: !newGroup.map_enabled})}
                         />
                     </div>
+                    <div></div>
                 </div>
                 <div className="flex-1 mt-6">
                     <div className="font-semibold pb-2">{lang['Social Links']}</div>
