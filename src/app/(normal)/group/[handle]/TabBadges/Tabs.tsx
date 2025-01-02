@@ -67,7 +67,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                         const title = badgeClass.badge_type === 'private' && !isManager ? '🔒' : badgeClass.title
                         const cover = badgeClass.badge_type === 'private' && !isManager ? '/images/badge_private.png' : badgeClass.image_url
 
-                        return <a key={i} href={`/badge_class/${badgeClass.id}`}
+                        return <a key={i} href={`/badge-class/${badgeClass.id}`}
                             className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
                             <div
                                 className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">

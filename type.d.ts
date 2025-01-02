@@ -252,6 +252,7 @@ declare namespace Solar {
         display: string | null,
         can_send_badge: string,
         creator: ProfileSample,
+        counter:number
     }
 
     export interface Badge {
