@@ -1,4 +1,6 @@
-import BadgeClassPageData, {BadgeClassPageParams} from "@/app/(normal)/badge-class/[badgeclassid]/data"
+import BadgeClassPageData, {
+    BadgeClassPageDataProps
+} from "@/app/(normal)/badge-class/[badgeclassid]/data"
 import {getAvatar} from "@/utils"
 import dynamic from "next/dynamic"
 
@@ -7,7 +9,7 @@ const DynamicShowTime = dynamic(
     {ssr: false}
 )
 
-export default async function BadgeClassPage(props: {params: BadgeClassPageParams}) {
+export default async function BadgeClassPage(props: BadgeClassPageDataProps) {
     const {badgeClass, badges} = await BadgeClassPageData(props)
 
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">

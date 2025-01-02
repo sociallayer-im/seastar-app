@@ -157,4 +157,12 @@ export const zh: Dictionary = {
     'Remove Member':'移除成员',
     'Remove selected members': '移除选定的成员',
     'Select a recipient from the members': '从成员中选择接收者',
+    'Create Badge': '创建徽章',
+    'Sand Again': '再次发送',
+    'Reason (Optional)': '原因（可选）',
+    'Next': '下一步',
+    'Send Badge': '发送徽章',
+    'Create Successfully': '创建成功',
+    'Your badge have been created': '您的徽章已创建',
+    'Leave empty to set the quantity as unlimited': '留空以将数量设置为无限',
 }

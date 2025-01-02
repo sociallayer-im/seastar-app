@@ -5,11 +5,11 @@ export interface BadgeClassPageParams {
     badgeclassid: string
 }
 
-export interface BadgeClassPageData {
+export interface BadgeClassPageDataProps {
     params: BadgeClassPageParams
 }
 
-export default async function BadgeClassPageData({params}: BadgeClassPageData) {
+export default async function BadgeClassPageData({params}: BadgeClassPageDataProps) {
     const {badge_classes, badges} = await getBadgeClassData(parseInt(params.badgeclassid))
 
     if (!badge_classes.length) {

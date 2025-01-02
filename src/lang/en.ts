@@ -155,6 +155,14 @@ export const en = {
     'Remove Member':'Remove Member',
     'Remove selected members':'Remove selected members',
     'Select a recipient from the members': 'Select a recipient from the members',
+    'Create Badge': 'Create Badge',
+    'Sand Again': 'Sand Again',
+    'Reason (Optional)': 'Reason (Optional)',
+    'Next': 'Next',
+    'Send Badge': 'Send Badge',
+    'Create Successfully': 'Create Successfully',
+    'Your badge have been created': 'Your badge have been created',
+    'Leave empty to set the quantity as unlimited': 'Leave empty to set the quantity as unlimited'
 }
 
 export type Dictionary = typeof en
