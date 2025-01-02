@@ -22,7 +22,7 @@ export default function ProfileMenu(props: { profile: Solar.ProfileSample }) {
         {label: 'Profile', href: `/profile/${props.profile.handle}`},
         {label: 'Settings', href: `/profile/${props.profile.handle}/edit`},
         {label: 'Create Group', href: '/create-group'},
-        {label: 'Notification', href: '/notification'},
+        {label: 'Notification', href: '/notifications'},
         {label: 'Sign Out', action: handleSignOut},
     ] as Menu[]
 

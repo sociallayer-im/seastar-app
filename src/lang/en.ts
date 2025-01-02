@@ -142,6 +142,19 @@ export const en = {
     'Tickets': 'Tickets',
     'You have purchased the ticket': 'You have purchased the ticket',
     'Set a unique group name': 'Set a unique group name',
+    'My Events': 'My Events',
+    'Discover': 'Discover',
+    'Notifications': 'Notifications',
+    'Registered': 'Registered',
+    'Star': 'Star',
+    'Pending Requests': 'Pending Requests',
+    'Co-hosting': 'Co-hosting',
+    'Member Management': 'Member Management',
+    'Manager Management': 'Manager Management',
+    'Transfer Owner': 'Transfer Owner',
+    'Remove Member':'Remove Member',
+    'Remove selected members':'Remove selected members',
+    'Select a recipient from the members': 'Select a recipient from the members',
 }
 
 export type Dictionary = typeof en

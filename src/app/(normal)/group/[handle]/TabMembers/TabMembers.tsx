@@ -8,6 +8,7 @@ import type {Dictionary} from "@/lang"
 import {Badge} from "@/components/shadcn/Badge"
 import {useMemo, useState} from "react"
 import {Input} from "@/components/shadcn/Input"
+import DropdownMenu from "@/components/client/DropdownMenu"
 
 export interface TabMembersProps {
     members: MemberShipSample[]
@@ -18,8 +19,16 @@ export interface TabMembersProps {
     currUserHandle?: string
 }
 
-export default function TabMembers({members, isManager, isMember , currUserHandle, lang}: TabMembersProps) {
+
+
+export default function TabMembers({members, isManager, isMember , currUserHandle, lang, handle}: TabMembersProps) {
     const [searchKeyword, setSearchKeyword] = useState('')
+
+    const ManagementOptions = [
+        {label: lang['Member Management'], url: `/group/${handle}/management/member`},
+        {label: lang['Manager Management'], url: `/group/${handle}/management/manager`},
+        {label: lang['Transfer Owner'], url: `/group/${handle}/management/transfer-owner`}
+    ]
 
     const memberList = useMemo(() => {
         const keyword = searchKeyword.toLowerCase().trim()
@@ -32,12 +41,12 @@ export default function TabMembers({members, isManager, isMember , currUserHandl
 
     return <div className="py-4">
         <div className="flex sm:flex-row flex-col items-center sm:justify-between justify-end">
-            <div className="flex-1 flex-row-item-center sm:mr-4">
-                <div className="text-sm mr-2">
-                    <strong className="text-lg">{members.length}</strong> {lang['Members']}
+            <div className="w-full sm:flex-1 flex-row-item-center sm:mr-4 ">
+                <div className="text-xs mr-2">
+                    <strong className="text-sm">{members.length}</strong> {lang['Members']}
                 </div>
                 <Input value={searchKeyword}
-                    className="flex-1 !h-9 text-sm"
+                    className="flex-1 !h-9 text-sm sm:max-w-[200px]"
                     placeholder={lang['Search members...']}
                     startAdornment={<i className="uil-search"/>}
                     onChange={e => {
@@ -45,18 +54,27 @@ export default function TabMembers({members, isManager, isMember , currUserHandl
                     }}/>
             </div>
 
-            <div className="flex-row-item-center w-full sm:w-auto justify-end">
+            <div className="smflex-row-item-center w-full sm:w-auto sm:justify-end grid grid-cols-2 pap-2">
                 {isMember &&
                     <Button className={`text-xs sm:text-sm sm:h-9 mt-3 sm:mt-0`} variant={'warm'} size={'sm'} >
                         {lang['Leave Group']}
                     </Button>
                 }
 
-                {isManager &&
-                    <Button variant={'secondary'} size={'sm'} className="ml-2 text-xs sm:text-sm sm:h-9 mt-3 sm:mt-0">
-                        {lang['Management']}
-                    </Button>
-                }
+                <div className="ml-2 mt-3 sm:mt-0">
+                    {isManager &&
+                        <DropdownMenu
+                            options={ManagementOptions}
+                            valueKey={'url'}
+                            renderOption={option => option.label}
+                            onSelect={opt => {location.href = opt[0].url}}
+                        >
+                            <Button variant={'secondary'} size={'sm'} className="w-full text-xs sm:text-sm sm:h-9">
+                                {lang['Management']}
+                            </Button>
+                        </DropdownMenu>
+                    }
+                </div>
             </div>
         </div>
 
