@@ -9,7 +9,7 @@ import {Textarea} from "@/components/shadcn/Textarea"
 
 export default function CreateBadgeForm({lang}: {lang:Dictionary}) {
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width min-h-[calc(100svh-48px)] px-3 pb-12 pt-0">
+        <div className="page-width min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Create Badge']}</div>
 
             <div className="flex flex-col max-w-[500px] mx-auto">
@@ -38,7 +38,7 @@ export default function CreateBadgeForm({lang}: {lang:Dictionary}) {
                             className={`${buttonVariants({variant: 'secondary'})} w-full !justify-between items-center cursor-pointer`}>
                             <div className="overflow-hidden whitespace-nowrap overflow-ellipsis font-normal flex-row-item-center">
                                 <img className="w-6 h-6 rounded-full mr-2"
-                                     src={getAvatar(1, undefined)} alt=""/>
+                                    src={getAvatar(1, undefined)} alt=""/>
                                 {123123}
                             </div>
 

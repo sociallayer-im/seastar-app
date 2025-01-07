@@ -162,7 +162,10 @@ export const en = {
     'Send Badge': 'Send Badge',
     'Create Successfully': 'Create Successfully',
     'Your badge have been created': 'Your badge have been created',
-    'Leave empty to set the quantity as unlimited': 'Leave empty to set the quantity as unlimited'
+    'Leave empty to set the quantity as unlimited': 'Leave empty to set the quantity as unlimited',
+    'send you a badge': 'send you a badge',
+    'Scan the QR Code': 'Scan the QR Code',
+    'has sent you a badge: []. Go and get it!': 'has sent you a badge: []. Go and get it!',
 }
 
 export type Dictionary = typeof en

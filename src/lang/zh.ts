@@ -165,4 +165,7 @@ export const zh: Dictionary = {
     'Create Successfully': '创建成功',
     'Your badge have been created': '您的徽章已创建',
     'Leave empty to set the quantity as unlimited': '留空以将数量设置为无限',
+    'send you a badge': '发送给您一个徽章',
+    'Scan the QR Code': '扫描二维码',
+    'has sent you a badge: []. Go and get it!': '已向您发送了一个徽章：[]. 去获取吧！',
 }
