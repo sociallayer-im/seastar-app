@@ -147,7 +147,7 @@ export default async function EventHome() {
                         className={`${buttonVariants({variant: "secondary"})} flex-1`}
                     >Send a Badge</a>
 
-                    <a href="/create-badge?group=playground2"
+                    <a href="/event/playground2/setting"
                         className={`${buttonVariants({variant: "secondary"})} flex-1 ml-3`}
                     >Setting</a>
                 </div>

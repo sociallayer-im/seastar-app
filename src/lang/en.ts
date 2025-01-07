@@ -166,6 +166,17 @@ export const en = {
     'send you a badge': 'send you a badge',
     'Scan the QR Code': 'Scan the QR Code',
     'has sent you a badge: []. Go and get it!': 'has sent you a badge: []. Go and get it!',
+    'Group Event Setting': 'Group Event Setting',
+    'Timezone': 'Timezone',
+    'Banner': 'Banner',
+    'Event Permission': 'Event Permission',
+    'venues are the default locations that creators can choose for their events.': 'venues are the default locations that creators can choose for their events.',
+    'Create a Venue': 'Create a Venue',
+    'Create a Track': 'Create a Track',
+    'Event Tags': 'Event Tags',
+    'Event tags that creators can choose for their events.': 'Event tags that creators can choose for their events.',
+    'Create a Tag': 'Create a Tag',
+    'Default time zone for group event, but you can still change it when creating the event. If keep it blank, the default time zone will follow the operating system.':'Default time zone for group event, but you can still change it when creating the event. If keep it blank, the default time zone will follow the operating system.',
 }
 
 export type Dictionary = typeof en

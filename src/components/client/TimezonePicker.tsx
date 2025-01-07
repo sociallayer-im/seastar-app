@@ -616,6 +616,7 @@ export default function TimezonePicker(props: {
     children?: ReactElement,
     value: string,
     onChange?: (value: string) => void
+    className?: string
 }) {
     const [searchValue, setSearchValue] = useState('')
     const [open, setOpen] = useState(false)
@@ -635,7 +636,6 @@ export default function TimezonePicker(props: {
         if (open) {
             const interval = setInterval(() => {
                 const content = listRef.current
-                console.log('1')
                 const selected = content?.querySelector('.selected')
                 if (selected) {
                     const itemHeight = selected.clientHeight
@@ -649,13 +649,13 @@ export default function TimezonePicker(props: {
     }, [open])
 
     return <Popover open={open}>
-        <PopoverTrigger onClick={() => {setOpen(true)}}>
+        <PopoverTrigger onClick={() => {setOpen(true)}} className={props.className}>
             {props.children}
         </PopoverTrigger>
         <PopoverContent align="start" className="bg-background" onInteractOutside={() => {
             setOpen(false)
         }}>
-            <div className="w-[360px] !max-w-[95vw]">
+            <div className="w-[360px] !max-w-[calc(100vw-42px)]">
                 <Input placeholder={'Search...'}
                     startAdornment={<i className="uil-search text-lg"/>}
                     className="w-full mb-1"

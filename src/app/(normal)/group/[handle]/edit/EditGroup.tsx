@@ -1,7 +1,7 @@
 'use client'
 
 import {Dictionary} from "@/lang"
-import {Button} from "@/components/shadcn/Button"
+import {Button, buttonVariants} from "@/components/shadcn/Button"
 import {Input} from "@/components/shadcn/Input"
 import {Textarea} from "@/components/shadcn/Textarea"
 import {useState} from "react"
@@ -14,11 +14,21 @@ import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {Switch} from "@/components/shadcn/Switch"
 
-export default function EditProfile({group, lang, isManager}: { group: Solar.Group, lang: Dictionary, isManager: boolean }) {
+export interface EditProfileProps {
+    group: Solar.Group
+    lang: Dictionary
+    isManager: boolean
+    members: {role: string, profile: Solar.ProfileSample}[]
+}
+
+export default function EditProfile({group, lang, isManager, members}: EditProfileProps) {
     const [newGroup, setNewGroup] = useState<Solar.Group>(group)
     const {uploadAvatar} = useUploadAvatar()
     const {openModal, showLoading, closeModal} = useModal()
     const {toast} = useToast()
+
+    const memberCount = members.filter(m => m.role !== 'owner').length
+    const managerCount = members.filter(m => m.role === 'manager').length
 
     const showEditSocialMedia = (type: keyof Solar.SocialMedia, value?: string) => {
         openModal({
@@ -60,11 +70,11 @@ export default function EditProfile({group, lang, isManager}: { group: Solar.Gro
     }
 
     return <div className="min-h-[100svh] w-full">
-        <div className="page-width min-h-[100svh] px-3 pb-12 pt-0">
+        <div className="page-width min-h-[100svh] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Edit Profile']}</div>
 
             <div className="flex flex-col max-w-[800px] mx-auto">
-                <div className="flex-1 sm:mr-4 mr-0 sm:mb-0 mb-4">
+                <div className="flex-1 mb-4">
                     <div className="font-semibold pb-2">{lang['Avatar']}</div>
                     <div className="bg-secondary rounded-lg h-[170px] flex-col flex justify-center items-center mb-4">
                         <img className="mb-3 w-[100px] h-[100px] rounded-full"
@@ -105,6 +115,30 @@ export default function EditProfile({group, lang, isManager}: { group: Solar.Gro
                         className="min-h-[120px]"
                     />
 
+                    <div className="mt-6">
+                        <div className="font-semibold pb-2">Group member Setting</div>
+                        <a href={`/group/${group.handle}/management/member`}
+                            className={`${buttonVariants({variant: 'secondary'})} w-full mb-3`}>
+                            <div className="flex-row-item-center w-full justify-between">
+                                <div>Members</div>
+                                <div className="font-normal flex-row-item-center">
+                                    <div>{memberCount}</div>
+                                    <i className="uil-arrow-right text-2xl"/>
+                                </div>
+                            </div>
+                        </a>
+                        <a href={`/group/${group.handle}/management/manager`}
+                            className={`${buttonVariants({variant: 'secondary'})} w-full`}>
+                            <div className="flex-row-item-center w-full justify-between">
+                                <div>Managers</div>
+                                <div className="font-normal flex-row-item-center">
+                                    <div>{managerCount}</div>
+                                    <i className="uil-arrow-right text-2xl"/>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
                     <div className="flex-row-item-center justify-between mt-6">
                         <div className="font-semibold">Enable Event</div>
                         <Switch checked={newGroup.event_enabled}
@@ -118,8 +152,8 @@ export default function EditProfile({group, lang, isManager}: { group: Solar.Gro
                             onClick={() => setNewGroup({...newGroup, map_enabled: !newGroup.map_enabled})}
                         />
                     </div>
-                    <div></div>
                 </div>
+
                 <div className="flex-1 mt-6">
                     <div className="font-semibold pb-2">{lang['Social Links']}</div>
                     {
