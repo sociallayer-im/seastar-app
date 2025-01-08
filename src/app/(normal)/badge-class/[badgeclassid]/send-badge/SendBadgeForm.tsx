@@ -24,22 +24,6 @@ export default function SendBadgeForm({badgeClass, lang}: SendBadgeFormProps) {
         console.log('receivers', receivers)
     }, [receivers])
 
-
-    useEffect(() => {
-        // prevent wheel event for input which type equals number
-        const preventWheel = (e: WheelEvent) => {
-            if (e.target instanceof HTMLInputElement && e.target.type === 'number') {
-                e.preventDefault()
-            }
-        }
-
-        window.addEventListener('wheel', preventWheel, {passive: false})
-
-        return () => {
-            window.removeEventListener('wheel', preventWheel)
-        }
-    }, [])
-
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Send Badge']}</div>
@@ -73,6 +57,7 @@ export default function SendBadgeForm({badgeClass, lang}: SendBadgeFormProps) {
                         <Input
                             placeholder={'Unlimited'}
                             type="number"
+                            onWheel={(e) => e.currentTarget.blur()}
                             className="w-full"
                             value={counter}
                             onChange={e => setCounter(e.target.value)}

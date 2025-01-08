@@ -26,8 +26,8 @@ export default async function GroupTracksPage() {
             </div>
 
             <div className="mt-6 flex-row-item-center justify-center">
-                <Button variant={'secondary'} className="mr-3">{lang['Cancel']}</Button>
-                <Button variant={'primary'} className="mr-3">{lang['Save']}</Button>
+                <Button variant={'secondary'} className="mr-3 flex-1">{lang['Cancel']}</Button>
+                <Button variant={'primary'} className="flex-1">{lang['Save']}</Button>
             </div>
         </div>
     </div>

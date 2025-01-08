@@ -191,6 +191,21 @@ export const en = {
     'Venue Capacity (Optional)': 'Venue Capacity (Optional)',
     'Require Approval (Optional)': 'Require Approval (Optional)',
     'Opening Hours': 'Opening Hours',
+    'Add dates when your availability changes from your daily hours.':'Add dates when your availability changes from your daily hours.',
+    'Edit Track':'Edit Track',
+    'Name of track':'Name of track',
+    'Icon (optional)':'Icon (optional)',
+    'Display on the schedule page':'Display on the schedule page',
+    'Manager Setting':'Manager Setting',
+    'Generate Promo Code':'Generate Promo Code',
+    'Valid date':'Valid date',
+    'Generate':'Generate',
+    'Can be used':'Can be used',
+    'Times':'Times',
+    'Promo Code':'Promo Code',
+    'You have generated a promo code':'You have generated a promo code',
+    'Code':'Code',
+    'Remaining uses':'Remaining uses',
 }
 
 export type Dictionary = typeof en

@@ -1,6 +1,6 @@
 import {selectLang} from "@/app/actions"
 import {Input} from "@/components/shadcn/Input"
-import {Button} from "@/components/shadcn/Button"
+import {Button, buttonVariants} from "@/components/shadcn/Button"
 import {Switch} from "@/components/shadcn/Switch"
 
 export default async function EditVenuePage() {
@@ -75,8 +75,8 @@ export default async function EditVenuePage() {
                 <div
                     className="flex-row-item-center justify-between w-full border border-gray-200 rounded-lg  px-3 py-2 mb-2">
                     <div>
-                        <div className="text-sm font-semibold mb-1">Opening Hours 7/24</div>
-                        <div className="text-xs text-gray-500">Open all the time</div>
+                        <div className="text-sm font-semibold mb-1">7/24 Hours</div>
+                        <div className="text-xs text-gray-500">Opening all the time</div>
                     </div>
                     <i className="uil-check-circle text-green-500 text-2xl"/>
                 </div>
@@ -98,7 +98,7 @@ export default async function EditVenuePage() {
                                     <div className="font-semibold">Monday</div>
                                     <div className="flex-row-item-center">
                                         <div className="mr-2">Closed</div>
-                                        <Switch />
+                                        <Switch/>
                                     </div>
                                 </div>
                                 {
@@ -124,7 +124,7 @@ export default async function EditVenuePage() {
                                                 </div>
                                             </div>
 
-                                            <i className="uil-minus-circle text-gray-300 text-3xl mt-3 "/>
+                                            <i className="uil-minus-circle text-gray-500 text-3xl mt-3 "/>
                                         </div>
                                     })
                                 }
@@ -136,7 +136,32 @@ export default async function EditVenuePage() {
 
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Overrides']}</div>
-                <Input className="w-full"/>
+                <div className="text-sm text-gray-500 mb-2">
+                    {lang['Add dates when your availability changes from your daily hours.']}
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                    {
+                        new Array(3).fill('').map((_, index) => {
+                            return <div key={index} className="flex-row-item-center w-full">
+                                <div
+                                    className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 justify-between`}>
+                                    <div className="font-normal">venue {index}</div>
+                                    <i className="uil-edit-alt"/>
+                                </div>
+                                <i className="uil-minus-circle text-3xl text-gray-500 cursor-pointer"/>
+                            </div>
+                        })
+                    }
+                </div>
+                <Button variant={'secondary'} className='mt-3'>
+                    <i className="uil-plus-circle text-xl"/>
+                    Add new Override
+                </Button>
+            </div>
+
+            <div className="mt-6 flex-row-item-center justify-center">
+                <Button variant={'secondary'} className="mr-3 flex-1">{lang['Cancel']}</Button>
+                <Button variant={'primary'} className="mr-3 flex-1">{lang['Save']}</Button>
             </div>
         </div>
     </div>

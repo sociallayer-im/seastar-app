@@ -11,7 +11,7 @@ export default async function GroupTracksPage() {
                 {
                     new Array(10).fill('').map((_, index) => {
                         return <div key={index} className="flex-row-item-center w-full">
-                            <a href={`/track/edit/${123}`}
+                            <a href={`/event/${'playground2'}/tracks/edit/${123}`}
                                 className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 justify-between`}>
                                 <div className="font-normal">track {index}</div>
                                 <i className="uil-edit-alt"/>
