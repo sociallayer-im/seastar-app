@@ -79,6 +79,14 @@ body {
   box-sizing: border-box;
 }
 
+.page-width-md {
+  min-width: 375px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
 .hide-scroll {
   -ms-overflow-style: none;
   scrollbar-width: none;

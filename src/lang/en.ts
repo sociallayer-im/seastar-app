@@ -177,6 +177,20 @@ export const en = {
     'Event tags that creators can choose for their events.': 'Event tags that creators can choose for their events.',
     'Create a Tag': 'Create a Tag',
     'Default time zone for group event, but you can still change it when creating the event. If keep it blank, the default time zone will follow the operating system.':'Default time zone for group event, but you can still change it when creating the event. If keep it blank, the default time zone will follow the operating system.',
+    'Image': 'Image',
+    'Who can create events': 'Who can create events',
+    'Who can join events': 'Who can join events',
+    'Who can view events': 'Who can view events',
+    'Edit Venue': 'Edit Venue',
+    'Name of venue': 'Name of venue',
+    'Default location': 'Default location',
+    'Description (Optional)': 'Description (Optional)',
+    'Link (Optional)': 'Link (Optional)',
+    'Available Date (Optional)': 'Available Date (Optional)',
+    'Visibility': 'Visibility',
+    'Venue Capacity (Optional)': 'Venue Capacity (Optional)',
+    'Require Approval (Optional)': 'Require Approval (Optional)',
+    'Opening Hours': 'Opening Hours',
 }
 
 export type Dictionary = typeof en

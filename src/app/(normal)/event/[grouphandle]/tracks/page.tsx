@@ -5,7 +5,7 @@ export default async function GroupTracksPage() {
     const {lang} = await selectLang()
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Tracks']}</div>
             <div className="grid grid-cols-1 gap-3">
                 {
