@@ -206,6 +206,7 @@ export const en = {
     'You have generated a promo code':'You have generated a promo code',
     'Code':'Code',
     'Remaining uses':'Remaining uses',
+    'Ticket Setting': 'Ticket Setting'
 }
 
 export type Dictionary = typeof en

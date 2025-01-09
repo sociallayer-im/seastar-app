@@ -208,4 +208,5 @@ export const zh: Dictionary = {
     'You have generated a promo code':'您已生成一个优惠码',
     'Code':'代码',
     'Remaining uses':'剩余使用次数',
+    'Ticket Setting': '门票设置',
 }
