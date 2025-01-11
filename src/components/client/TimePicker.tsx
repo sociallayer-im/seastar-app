@@ -106,7 +106,7 @@ export default function TimePicker(props: TimePickerProps) {
         }
     }, [open])
 
-    return <>
+    return <div className="flex-row-item-center">
         <Popover open={open}>
             <PopoverTrigger>
                 <div className="h-12"></div>
@@ -128,5 +128,5 @@ export default function TimePicker(props: TimePickerProps) {
                 !!props.onChange && props.onChange(e.target.value)
             }}
         />
-    </>
+    </div>
 }

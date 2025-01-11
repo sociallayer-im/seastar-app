@@ -96,7 +96,7 @@ export default function DropdownMenu<T>(props: {
             style={positionStyle}
             className={`${show ? 'opacity-1 visible' : 'opacity-0 invisible'} dropdown-content max-h-[200px] overflow-auto fixed bg-background shadow rounded-lg p-2 z-[9999] decoration-2`}>
             {props.options.map((option, index) => <div
-                className={`mb-1 py-2 px-3 cursor-pointer rounded-lg hover:bg-[#F1F1F1] ${props.value?.find(v => v[props.valueKey] === option[props.valueKey]) ? 'bg-[#F1F1F1]' : ''}`}
+                className={`mb-1 last:mb-0 py-2 px-3 cursor-pointer rounded-lg hover:bg-[#F1F1F1] ${props.value?.find(v => v[props.valueKey] === option[props.valueKey]) ? 'bg-[#F1F1F1]' : ''}`}
                 key={index}
                 onClick={() => handleSelect(option)}>
                 {props.renderOption(option, index)}</div>)

@@ -2,7 +2,7 @@
 
 import type {Dictionary} from "@/lang"
 import {CreateEventPageDataType, EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
-import {useEffect, useState} from "react"
+import {useEffect, useRef, useState} from "react"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import useUploadImage from "@/hooks/useUploadImage"
 import {Input} from "@/components/shadcn/Input"
@@ -20,6 +20,7 @@ import SelectedEventBadge from "@/components/client/SelectedEventBadge"
 import EventRoleInput from "@/components/client/EventRoleInput"
 import Cookies from 'js-cookie'
 import {useToast} from "@/components/shadcn/Toast/use-toast"
+import TicketForm, {Checker} from "@/app/(normal)/event/[grouphandle]/create/TicketForm"
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -34,6 +35,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
     const {uploadImage} = useUploadImage()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
+    const ticketCheckerRef = useRef<Checker>({check: undefined})
 
     // ui
     const [enableNote, setEnableNote] = useState(!!draft.notes)
@@ -102,7 +104,10 @@ export default function EventForm({lang, event, data}: EventFormProps) {
             setTitleError('')
         }
 
-        if (!!timeError || !!tagError || !!occupiedEvent) {
+        if (!!timeError
+            || !!tagError
+            || !!occupiedEvent
+            || (ticketCheckerRef.current.check && !ticketCheckerRef.current.check())) {
             setTimeout(() => {
                 document.querySelector('.err-msg')?.scrollIntoView({behavior: 'smooth', block: 'center'})
             }, 200)
@@ -118,20 +123,20 @@ export default function EventForm({lang, event, data}: EventFormProps) {
             return
         }
 
-        const loading = showLoading()
-        try {
-            const event = CreteEvent({...draft, auth_token: authToken})
-            console.log('event', event)
-        } catch (e: unknown) {
-            console.error(e)
-            toast({
-                title: 'Failed to create event',
-                description: e instanceof Error ? e.message : 'Unknown error',
-                variant: 'destructive'
-            })
-        } finally {
-            closeModal(loading)
-        }
+        // const loading = showLoading()
+        // try {
+        //     const event = CreteEvent({...draft, auth_token: authToken})
+        //     console.log('event', event)
+        // } catch (e: unknown) {
+        //     console.error(e)
+        //     toast({
+        //         title: 'Failed to create event',
+        //         description: e instanceof Error ? e.message : 'Unknown error',
+        //         variant: 'destructive'
+        //     })
+        // } finally {
+        //     closeModal(loading)
+        // }
     }
 
     return <div className="min-h-[100svh] w-full">
@@ -315,171 +320,13 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                         </div>
 
                         { enableTicket && <>
-                            <div>
-                                <div className="border border-gray-200 p-3 rounded-lg mb-3">
-                                    <div className="font-semibold flex-row-item-center justify-between">
-                                        <div className="flex-row-item-center">
-                                            <i className="uil-ticket text-2xl mr-2"/>
-                                            <div>Ticket 1</div>
-                                        </div>
-                                        <i className="uil-times-circle text-2xl"/>
-                                    </div>
-                                    <div className="my-3">
-                                        <div className="text-sm mb-1">Name of Tickets <span
-                                            className="text-red-500">*</span></div>
-                                        <Input type="text" className="w-full"/>
-                                    </div>
-                                    <div className="my-3">
-                                        <div className="text-sm mb-1">Ticket description</div>
-                                        <Input type="text" className="w-full"/>
-                                    </div>
-                                    <div className="my-3">
-                                        <div className="text-sm mb-1">Event Track</div>
-                                        <div className="flex-row flex flex-wrap items-center mb-4">
-                                            {data.tracks.map(t => {
-                                                const color = getLabelColor(t.title)
-                                                const themeStyle = t.id === draft.track_id ? {
-                                                    color: color,
-                                                    borderColor: color
-                                                } : {borderColor: '#ededed'}
-                                                return <Button
-                                                    variant="outline"
-                                                    className="mr-2"
-                                                    style={themeStyle}
-                                                    key={t.id}>
-                                                    <div className="text-xs font-normal">
-                                                        <div className="font-semibold">{t.title}</div>
-                                                        <div>{t.kind}</div>
-                                                    </div>
-                                                </Button>
-                                            })}
-                                        </div>
-                                    </div>
-                                    <div className="my-3">
-                                        <div className="flex-row-item-center">
-                                            <div className="text-sm mr-6">Price</div>
-                                            <div className="flex-row-item-center text-sm font-semibold">
-                                                <div className="flex-row-item-center">
-                                                    <div>Free</div>
-                                                    <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
-                                                </div>
-                                                <div className="flex-row-item-center ml-3">
-                                                    <div>Payment</div>
-                                                    <i className="uil-circle ml-2 text-2xl text-gray-500"/>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="border border-gray-200 p-3 rounded-lg mb-3">
-                                            <div className="mb-2 text-sm font-semibold">Payment 1</div>
-                                            <div
-                                                className="flex-row-item-center">
-                                                <div className="mr-3">
-                                                    <div className="flex-row-item-center flex-1 text-sm mb-3">
-                                                        <div>Price</div>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                    </div>
-                                                    <div className="flex-row-item-center flex-1 text-sm">
-                                                        <div>Receiving wallet</div>
-                                                        <Input type="text" inputSize={'md'} className="ml-2 flex-1"/>
-                                                    </div>
-                                                </div>
-                                                <i className="uil-minus-circle text-2xl text-gray-500"/>
-                                            </div>
-                                        </div>
-                                        <div className="border border-gray-200 p-3 rounded-lg mb-3">
-                                            <div className="mb-2 text-sm font-semibold">Payment 1</div>
-                                            <div
-                                                className="flex-row-item-center">
-                                                <div className="mr-3">
-                                                    <div className="flex-row-item-center flex-1 text-sm mb-3">
-                                                        <div>Price</div>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                    </div>
-                                                    <div className="flex-row-item-center flex-1 text-sm">
-                                                        <div>Receiving wallet</div>
-                                                        <Input type="text" inputSize={'md'} className="ml-2 flex-1"/>
-                                                    </div>
-                                                </div>
-                                                <i className="uil-minus-circle text-2xl text-gray-500"/>
-                                            </div>
-                                        </div>
-                                        <div className="border border-gray-200 p-3 rounded-lg mb-3">
-                                            <div className="mb-2 text-sm font-semibold">Payment 3</div>
-                                            <div
-                                                className="flex-row-item-center">
-                                                <div className="mr-3">
-                                                    <div className="flex-row-item-center flex-1 text-sm mb-3">
-                                                        <div>Price</div>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                        <Input type="text" inputSize={'md'} className="ml-2"/>
-                                                    </div>
-                                                    <div className="flex-row-item-center flex-1 text-sm">
-                                                        <div>Receiving wallet</div>
-                                                        <Input type="text" inputSize={'md'}
-                                                            className="ml-2 flex-1"/>
-                                                    </div>
-                                                </div>
-                                                <i className="uil-minus-circle text-2xl text-gray-500"/>
-                                                <i className="uil-plus-circle text-2xl text-green-500 ml-2"/>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div className="my-3">
-                                        <div className="flex-row-item-center">
-                                            <div className="text-sm mr-6">Ticket amount</div>
-                                            <div className="flex-row-item-center text-sm font-semibold">
-                                                <div className="flex-row-item-center">
-                                                    <div>No limit</div>
-                                                    <i className="uil-circle ml-2 text-2xl text-gray-500"/>
-                                                </div>
-                                                <div className="flex-row-item-center ml-3">
-                                                    <div>Limit</div>
-                                                    <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <Input type="text" className="w-full"/>
-                                    </div>
-
-                                    <div className="my-3">
-                                        <div className="flex-row-item-center">
-                                            <div className="text-sm mr-6">Ticket sales end time</div>
-                                            <div className="flex-row-item-center text-sm font-semibold">
-                                                <div className="flex-row-item-center">
-                                                    <div>No limit</div>
-                                                    <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
-                                                </div>
-                                                <div className="flex-row-item-center ml-3">
-                                                    <div>Limit</div>
-                                                    <i className="uil-circle ml-2 text-2xl text-gray-500"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <Input type="date" className="w-full"
-                                                startAdornment={<i className="uil-calender text-lg"/>}/>
-                                            <Input type="time" className="w-full"
-                                                startAdornment={<i className="uil-clock text-lg"/>}/>
-                                        </div>
-                                    </div>
-                                    <div className="my-3">
-                                        <div className="text-sm mr-6">Qualification</div>
-                                        <div className="text-xs text-gray-500 mb-3">
-                                                People possessing the badge you select have the privilege to make
-                                                payments at this price.
-                                        </div>
-                                        <Button variant={'secondary'} className="text-sm">Select a Badge</Button>
-                                    </div>
-                                </div>
-                            </div>
+                            <TicketForm
+                                profileBadgeClasses={data.badgeClasses}
+                                lang={lang}
+                                state={{event: draft, setEvent: setDraft}}
+                                tracks={data.tracks}
+                                checker={ticketCheckerRef.current}
+                            />
                         </>
                         }
                     </div>
@@ -641,3 +488,4 @@ export default function EventForm({lang, event, data}: EventFormProps) {
         </div>
     </div>
 }
+

@@ -4,8 +4,9 @@ import {getProfileByToken} from "@/service/solar"
 import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import {redirect} from "next/navigation"
 
-export interface EventDraftType extends Pick<Solar.Event, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location'| 'start_time' | 'end_time' | 'meeting_url' | 'event_roles' | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'group_id'> {
+export interface EventDraftType extends Pick<Solar.Event, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location'| 'start_time' | 'end_time' | 'meeting_url' | 'event_roles' | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'group_id' | 'tickets'> {
     timezone: string | null
+    ticket_attributes?: TicketDraftType[]
 }
 
 export interface CreateEventPageDataProps {
@@ -170,7 +171,40 @@ export const emptyEvent: EventDraftType = {
     display: 'normal',
     pinned: false,
     status: 'open',
-    badge_class_id: null
+    badge_class_id: null,
+    tickets: [],
+    ticket_attributes: []
+}
+
+export interface TicketDraftType extends Pick<Solar.Ticket, 'id' | 'title' | 'content' | 'check_badge_class_id' | `quantity` | 'end_time' | 'payment_methods' | 'tracks_allowed'| 'ticket_type'> {
+    _destroy?: string
+}
+
+export const emptyTicket: TicketDraftType = {
+    id: 0,
+    title: '',
+    content: '',
+    check_badge_class_id: null,
+    quantity: null,
+    end_time: null,
+    payment_methods: [],
+    tracks_allowed: [],
+    ticket_type: 'event'
+}
+
+export interface PaymentMethodDraftType extends Pick<Solar.PaymentMethod, 'id' | 'item_type' | 'chain' | 'token_name' | `token_address` | 'receiver_address' | 'price' | 'protocol'> {
+    _destroy?: string
+}
+
+export const emptyPaymentMethod: PaymentMethodDraftType = {
+    id: 0,
+    item_type: 'Ticket',
+    chain: '',
+    token_name: null,
+    token_address: null,
+    receiver_address: '',
+    price: 1,
+    protocol: ''
 }
 
 

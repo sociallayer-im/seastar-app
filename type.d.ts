@@ -83,6 +83,7 @@ declare namespace Solar {
         token_address:  null | string
         receiver_address: null | string
         price: number
+        protocol: string
         _destroy?: string
     }
 
