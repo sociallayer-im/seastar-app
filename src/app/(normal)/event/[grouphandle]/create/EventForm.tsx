@@ -21,6 +21,7 @@ import EventRoleInput from "@/components/client/EventRoleInput"
 import Cookies from 'js-cookie'
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import TicketForm, {Checker} from "@/app/(normal)/event/[grouphandle]/create/TicketForm"
+import RepeatForm, {RepeatFormType} from "@/app/(normal)/event/[grouphandle]/create/RepeatForm"
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -29,6 +30,8 @@ export interface EventFormProps {
     event: EventDraftType
     data: CreateEventPageDataType,
 }
+
+
 
 export default function EventForm({lang, event, data}: EventFormProps) {
     const [draft, setDraft] = useState<EventDraftType>(event)
@@ -42,6 +45,12 @@ export default function EventForm({lang, event, data}: EventFormProps) {
     const [enableMoreSetting, setEnableMoreSetting] = useState(false)
     const [enableTicket, setEnableTicket] = useState(false)
 
+    // repeat form
+    const [repeatForm, setRepeatForm] = useState<RepeatFormType>({
+        interval: null,
+        event_count: 1
+    })
+
     // errors
     const [timeError, setTimeError] = useState('')
     const [occupiedEvent, setOccupiedEvent] = useState<Solar.Event | null>(null)
@@ -54,7 +63,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
     }
 
     useEffect(() => {
-        console.log(draft)
+        console.log('draft', draft)
     }, [draft])
 
     useEffect(() => {
@@ -255,6 +264,12 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                             lang={lang}
                             venues={data.venues}
                             state={{event: draft, setEvent: setDraft}}
+                        />
+                        <RepeatForm
+                            lang={lang}
+                            event={event}
+                            repeatForm={repeatForm}
+                            onChange={repeatForm => setRepeatForm(repeatForm)}
                         />
                         {!!timeError && <div className="text-red-400 mt-2 text-xs err-msg">{timeError}</div>}
                         {!!occupiedEvent &&

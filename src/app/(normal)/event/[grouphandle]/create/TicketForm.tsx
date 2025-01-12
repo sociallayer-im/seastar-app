@@ -88,6 +88,11 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, p
                         allTicketValid = false
                         errMsg.receiver_address = 'Receiving wallet is required'
                     }
+
+                    if (!!p.receiver_address && !p.receiver_address.startsWith('0x') && p.receiver_address.length !== 42) {
+                        allTicketValid = false
+                        errMsg.receiver_address = 'Invalid receiving wallet address'
+                    }
                     return errMsg
                 })
             }
@@ -127,7 +132,7 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, p
         <Button variant={'secondary'} 
             onClick={handleAddTicket}>
             <i className="uil-plus-circle text-lg" />
-            Add a Ticket Type
+            {lang['Add a Ticket Type']}
         </Button>
     </div>
 }
@@ -205,14 +210,14 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
         <div className="font-semibold flex-row-item-center justify-between">
             <div className="flex-row-item-center">
                 <i className="uil-ticket text-2xl mr-2"/>
-                <div>Ticket {index}</div>
+                <div>{lang['Ticket']} {index}</div>
             </div>
             <i className="uil-times-circle text-2xl cursor-pointer"
                 onClick={handleRemoveTicket}
             />
         </div>
         <div className="my-3">
-            <div className="text-sm mb-1">Name of Tickets <span
+            <div className="text-sm mb-1">{lang['Name of Tickets']} <span
                 className="text-red-500">*</span></div>
             <Input type="text" 
                 className="w-full" 
@@ -222,7 +227,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
             <div className="err-msg text-red-400 mt-2 text-xs">{errors?.title}</div>
         </div>
         <div className="my-3">
-            <div className="text-sm mb-1">Ticket description</div>
+            <div className="text-sm mb-1">{lang['Ticket description']}</div>
             <Input type="text" 
                 className="w-full" 
                 value={ticket.content || ''}
@@ -230,7 +235,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
             />
         </div>
         <div className="my-3">
-            <div className="text-sm mb-1">Event Track</div>
+            <div className="text-sm mb-1">{lang['Event Track']}</div>
             <div className="flex-row flex flex-wrap items-center mb-4">
                 {tracks.map(t => {
                     const color = getLabelColor(t.title)
@@ -261,11 +266,11 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
         </div>
         <div className="my-3">
             <div className="flex-row-item-center">
-                <div className="text-sm mr-6">Price</div>
+                <div className="text-sm mr-6">{lang['Price']}</div>
                 <div className="flex-row-item-center text-sm font-semibold">
                     <div className="flex-row-item-center cursor-pointer" 
                         onClick={() => {setEnablePayment(false)}}>
-                        <div>Free</div>
+                        <div>{lang['Free']}</div>
                         {
                             !enablePayment
                                 ? <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
@@ -274,7 +279,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
                     </div>
                     <div className="flex-row-item-center ml-3 cursor-pointer"
                         onClick={() => {setEnablePayment(true)}}>
-                        <div>Payment</div>
+                        <div>{lang['Payment']}</div>
                         {
                             enablePayment
                                 ? <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
@@ -297,14 +302,14 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
 
         <div className="my-3">
             <div className="flex-row-item-center">
-                <div className="text-sm mr-6">Ticket amount</div>
+                <div className="text-sm mr-6">{lang['Ticket amount']}</div>
                 <div className="flex-row-item-center text-sm font-semibold">
                     <div className="flex-row-item-center cursor-pointer"
                         onClick={() => {
                             setEnableQuantity(false)
                             setTicketDraft({...ticketDraft, quantity: null})
                         }}>
-                        <div>No limit</div>
+                        <div>{lang['No limit']}</div>
                         {
                             !enableQuantity
                                 ? <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
@@ -315,7 +320,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
                         onClick={() => {
                             setEnableQuantity(true)
                         }}>
-                        <div>Limit</div>
+                        <div>{lang['Limit']}</div>
                         {
                             enableQuantity
                                 ? <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
@@ -340,7 +345,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
 
         <div className="my-3">
             <div className="flex-row-item-center">
-                <div className="text-sm mr-6">Ticket sales end time</div>
+                <div className="text-sm mr-6">{lang['Ticket sales end time']}</div>
                 <div className="flex-row-item-center text-sm font-semibold">
                     <div className="flex-row-item-center cursor-pointer"
                         onClick={() => {
@@ -400,10 +405,9 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
             }
         </div>
         <div className="my-3">
-            <div className="text-sm mr-6">Qualification</div>
+            <div className="text-sm mr-6">{lang['Qualification']}</div>
             <div className="text-xs text-gray-500 mb-3">
-                People possessing the badge you select have the privilege to make
-                payments at this price.
+                {lang['People possessing the badge you select have the privilege to make payments at this price.']}
             </div>
             {!!badgeClass &&
                 <div className="mb-3 relative w-[114px] h-[114px] rounded-lg bg-[#ecf2ee] flex flex-col justify-center items-center">
@@ -420,7 +424,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
             <Button
                 onClick={handleSelectBadge}
                 variant={'secondary'}
-                className="text-sm">Select a Badge</Button>
+                className="text-sm">{lang['Select a Badge']}</Button>
         </div>
     </div>
 }
@@ -434,7 +438,7 @@ export interface PaymentMethodForm {
 }
 
 
-function PaymentMethodForm(props: PaymentMethodForm) {
+function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethodDraftType[]>(props.paymentMethods)
     const {toast} = useToast()
 
@@ -551,12 +555,12 @@ function PaymentMethodForm(props: PaymentMethodForm) {
                 .filter(p => !p._destroy)
                 .map((p, index) => {
                     return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
-                        <div className="mb-2 text-sm font-semibold">Payment {index + 1}</div>
+                        <div className="mb-2 text-sm font-semibold">{lang['Payment']} {index + 1}</div>
                         <div
                             className="flex-row-item-center">
-                            <div className="mr-3">
-                                <div className="flex-row-item-center flex-1 text-sm mb-3">
-                                    <div>Price</div>
+                            <div className="mr-1">
+                                <div className="flex-row-item-center flex-1 text-sm mb-3 whitespace-nowrap">
+                                    <div>{lang['Price']}</div>
                                     <div className="ml-2">
                                         <DropdownMenu
                                             options={getAvailablePaymentProtocalList(p)}
@@ -647,7 +651,7 @@ function PaymentMethodForm(props: PaymentMethodForm) {
                                 <div className="err-msg text-red-400 mb-2 text-xs">{props.errors?.[index]?.price}</div>
 
                                 <div className="flex-row-item-center flex-1 text-sm">
-                                    <div>Receiving wallet</div>
+                                    <div className="whitespace-nowrap">{lang['Receiving wallet']}</div>
                                     <Input
                                         value={p.receiver_address || ''}
                                         onChange={e => setPaymentMethods(paymentMethods.map((p, i) => i === index ? {
@@ -656,6 +660,10 @@ function PaymentMethodForm(props: PaymentMethodForm) {
                                         } : p))}
                                         type="text"
                                         inputSize={'md'}
+                                        startAdornment={<img src={Payments
+                                            .find(c => c.chain === p.chain && p.protocol === c.protocol)?.chainIcon}
+                                        className="w-5 h-5 rounded-full"
+                                        alt=""/>}
                                         className="ml-2 flex-1"/>
                                 </div>
                                 <div

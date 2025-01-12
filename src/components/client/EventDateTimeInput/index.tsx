@@ -140,6 +140,12 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
         })
     }
 
+    const isAllDayEvent = useMemo(() => {
+        const start = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!)
+        const end = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!)
+        return start.isSame(start.startOf('day')) && end.isSame(end.endOf('day'))
+    },[event.end_time, event.start_time, event.timezone])
+
     const setTimezone = (tz: string) => {
         const startDateTimeStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD HH:mm')
         const endDateTimeStr = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!).format('YYYY/MM/DD HH:mm')
@@ -210,7 +216,7 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
 
         <div className="mt-2 flex-row-item-center select-none">
             <div
-                className="flex-shrink-0 cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center font-semibold active:brightness-90"
+                className={`${isAllDayEvent? 'text-green-500 ' : ''}flex-shrink-0 cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center font-semibold active:brightness-90`}
                 onClick={setToAllDayEvent}>
                 <i className="uil-clock-three text-lg mr-0.5"/>
                 {lang['All Day Event']}

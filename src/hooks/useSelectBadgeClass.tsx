@@ -37,10 +37,10 @@ export interface DialogSelectedBadgeProps {
     close?: () => void
 }
 
-export function DialogSelectedBadge(props: DialogSelectedBadgeProps) {
-    return <div className="w-[360px] rounded-lg shadow p-4 bg-[#f8f9f8]">
-        <div className="mb-2 bg-[rgba(236,238,250,.2)] border-white border-2 rounded-lg p-3">
-            <div className="font-semibold mb-1">{props.lang['Choose a badge from you created']}</div>
+export function DialogSelectedBadge({lang, ...props}: DialogSelectedBadgeProps) {
+    return <div className="w-[360px] rounded-lg shadow p-4" style={{background: '#f8f9f8'}}>
+        <div className="mb-2  border-white border-2 rounded-lg p-3" style={{background: 'rgba(236,238,250,.2)'}}>
+            <div className="font-semibold mb-2">{lang['Choose a badge from you created']}</div>
             <div className="flex-row-item-center overflow-y-hidden overflow-x-scroll">
                 {props.profileBadgeClasses.map(b => {
                     return <div onClick={() => {{props.onSelect?.(b);props.close?.()}}}
@@ -53,8 +53,10 @@ export function DialogSelectedBadge(props: DialogSelectedBadgeProps) {
         </div>
 
         { !!props.groupBadgeClasses.length &&
-            <div className="mb-2 bg-[rgba(236,238,250,.2)] border-white border-2 rounded-lg p-3">
-                <div className="font-semibold mb-1">{props.lang['Choose a badge from group']}</div>
+            <div className="mb-2 bg-[rgba(236,238,250,.2)] border-white border-2 rounded-lg p-3"
+                style={{background: 'rgba(236,238,250,.2)'}}
+            >
+                <div className="font-semibold mb-2">{lang['Choose a badge from group']}</div>
                 <div className="flex-row-item-center overflow-y-hidden overflow-x-scroll">
                     {props.groupBadgeClasses.map(b => {
                         return <div onClick={() => {props.onSelect?.(b);props.close?.()}}
@@ -67,9 +69,10 @@ export function DialogSelectedBadge(props: DialogSelectedBadgeProps) {
             </div>
         }
 
-        <div className="select-none cursor-pointer hover:opacity-80 active:brightness-95 h-[70px] border-white border-2 rounded-lg bg-[rgba(236,238,250,.2)] mt-4 flex-row-item-center justify-center">
+        <div style={{background: 'rgba(236,238,250,.2)', height: '70px'}}
+            className="select-none cursor-pointer hover:opacity-80 active:brightness-95 border-white border-2 rounded-lg  mt-4 flex-row-item-center justify-center">
             <img className="w-[32px] h-[32px] mr-2" src="/images/create_badge_icon.png" alt=""/>
-            <div className="text-lg font-semibold">Create a new badge</div>
+            <div className="text-lg font-semibold">{lang['Create a new badge']}</div>
         </div>
 
         <div className="flex-row-item-center justify-center mt-2">
