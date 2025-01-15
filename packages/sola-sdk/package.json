@@ -1,0 +1,15 @@
+{
+  "name": "@sola/sdk",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@apollo/client": "^3.12.5",
+    "graphql": "^16.10.0"
+  }
+}
