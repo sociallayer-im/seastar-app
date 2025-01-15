@@ -12,6 +12,7 @@ import TabBadges from "@/app/(normal)/profile/[handle]/TabBadges/TabBadges"
 import TabVouchers from "@/app/(normal)/profile/[handle]/TabVouchers/TabVouchers"
 import {Media_Meta} from "@/utils/social_media_meta"
 import CopyText from "@/components/client/CopyText"
+import {SocialMedia} from '@sola/sdk'
 
 export async function generateMetadata({params, searchParams}: { params: ProfilePageParams, searchParams: ProfilePageSearchParams }) {
     const data = await ProfileData({params, searchParams, cookies: cookies()})
@@ -25,7 +26,7 @@ export async function generateMetadata({params, searchParams}: { params: Profile
 }
 
 export default async function Profile({params, searchParams}: { params: ProfilePageParams, searchParams: ProfilePageSearchParams }) {
-    const {profile, currProfile, isSelf, tab, followings, followers} = await ProfileData({params, searchParams, cookies: cookies()})
+    const {profile, currProfile, isSelf, tab} = await ProfileData({params, searchParams, cookies: cookies()})
     const lang = (await selectLang()).lang
 
     return <div className="bg-[#f8f8f8] min-h-[100svh] w-full">
@@ -42,7 +43,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
 
                     <div className="px-3 mt-[-40px]">
                         <img src={getAvatar(profile.id, profile.image_url)}
-                            className="w-[60px] h-[60px] rounded-full" alt=""/>
+                             className="w-[60px] h-[60px] rounded-full" alt=""/>
                         <div className="flex-row-item-center my-2">
                             <div className="font-semibold text-5">{profile.nickname || profile.handle}</div>
                             {isSelf &&
@@ -71,25 +72,27 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                             </BtnProfileQrcode>
                         </div>
                         <div className="flex-row-item-center my-2 text-sm">
-                            <div className="mr-4"><strong>{followers}</strong> {lang['Followers']}</div>
-                            <div className="mr-4"><strong>{followings}</strong> {lang['Following']}</div>
+                            <div className="mr-4"><strong>{profile.follower_count}</strong> {lang['Followers']}</div>
+                            <div className="mr-4"><strong>{profile.following_count}</strong> {lang['Following']}</div>
                         </div>
                         {!!profile.social_links &&
                             <div tabIndex={0}
-                                className="inline-block max-h-7 hover:max-h-[200px] transition-all duration-1000 overflow-hidden mb-3 cursor-pointer group">
+                                 className="inline-block max-h-7 hover:max-h-[200px] transition-all duration-300 overflow-hidden mb-3 cursor-pointer group">
                                 <div className="flex flex-row justify-start text-xs group-hover:flex-col">
-                                    {Object.keys(profile.social_links).map(key => {
+                                    {(Object.keys(profile.social_links) as Array<keyof SocialMedia>).map((key) => {
                                         return <div key={key}
-                                            className="flex-row-item-center grow-0 shrink-0">
-                                            <i className={`${Media_Meta[key as keyof Solar.SocialMedia].icon} text-lg mr-1`}/>
-                                            {Media_Meta[key as keyof Solar.SocialMedia].valueType === 'url' ?
-                                                <a href={profile.social_links[key as keyof Solar.SocialMedia]!}
-                                                    className="group-hover:inline hidden hover:underline"
-                                                    target="_blank">{profile.social_links[key as keyof Solar.SocialMedia]}</a>
+                                                    className="flex-row-item-center grow-0 shrink-0">
+                                            <div className="w-8 text-center">
+                                                <i className={`${Media_Meta[key].icon} text-lg mr-1`}/>
+                                            </div>
+                                            {Media_Meta[key].valueType === 'url' ?
+                                                <a href={profile.social_links[key]!}
+                                                   className="group-hover:inline hidden hover:underline"
+                                                   target="_blank">{profile.social_links[key]}</a>
                                                 : <a className="group-hover:inline hidden hover:underline">
                                                     <CopyText
-                                                        value={profile.social_links[key as keyof Solar.SocialMedia]}>
-                                                        {profile.social_links[key as keyof Solar.SocialMedia]}
+                                                        value={profile.social_links[key]}>
+                                                        {profile.social_links[key]}
                                                     </CopyText>
                                                 </a>
                                             }
@@ -102,7 +105,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
 
                         {!!profile.location &&
                             <div className="text-xs mb-3 flex-row-item-center">
-                                <i className="uil-location-point text-base mr-1" />
+                                <i className="uil-location-point text-base mr-1"/>
                                 <span>{profile.location}</span>
                             </div>
                         }
@@ -114,7 +117,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                         }
 
                         <a href="/send-badge"
-                            className={`${buttonVariants({variant: 'special'})} w-full my-4`}>
+                           className={`${buttonVariants({variant: 'special'})} w-full my-4`}>
                             <i className="uil-message mr-1 text-xl"/>
                             <span>{lang['Send a badge']}</span>
                         </a>
@@ -124,20 +127,20 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                 <div className="flex-1 sm:ml-6 px-3 max-w-full">
                     <div className="tab-titles flex-row-item-center overflow-auto">
                         <a className={buttonVariants({variant: tab === 'groups' ? 'normal' : 'ghost'})}
-                            href={`/profile/${profile.handle}?tab=groups`}>
+                           href={`/profile/${profile.handle}?tab=groups`}>
                             <span className="font-normal">{lang['Groups']}</span>
                         </a>
                         <a className={buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})}
-                            href={`/profile/${profile.handle}?tab=events`}>
+                           href={`/profile/${profile.handle}?tab=events`}>
                             <span className="font-normal"> {lang['Events']}</span>
                         </a>
                         <a className={buttonVariants({variant: tab === 'badges' ? 'normal' : 'ghost'})}
-                            href={`/profile/${profile.handle}?tab=badges`}>
+                           href={`/profile/${profile.handle}?tab=badges`}>
                             <span className="font-normal">{lang['Badges']}</span>
                         </a>
                         {isSelf &&
                             <a className={buttonVariants({variant: tab === 'sending' ? 'normal' : 'ghost'})}
-                                href={`/profile/${profile.handle}?tab=sending`}>
+                               href={`/profile/${profile.handle}?tab=sending`}>
                                 <span className="font-normal"> {lang['Sending']}</span>
                             </a>
                         }
@@ -149,10 +152,10 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                         {tab === 'events' && <TabEvents handle={profile.handle} currUserHandle={currProfile?.handle}/>}
 
                         {tab === 'badges' && <TabBadges handle={profile.handle}
-                            isSelf={isSelf} />
+                                                        isSelf={isSelf}/>
                         }
 
-                        {tab === 'sending' && <TabVouchers handle={profile.handle} />}
+                        {tab === 'sending' && <TabVouchers handle={profile.handle}/>}
                     </div>
                 </div>
             </div>

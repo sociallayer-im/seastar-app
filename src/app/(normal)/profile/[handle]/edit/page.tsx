@@ -2,6 +2,8 @@ import EditProfileData, {EditProfileDataProps} from "@/app/(normal)/profile/[han
 import EditProfile from "./EditProfile"
 import {selectLang} from "@/app/actions"
 
+export const fetchCache = 'force-no-store'
+
 export async function generateMetadata(props: EditProfileDataProps) {
     const profile = await EditProfileData(props)
     return {

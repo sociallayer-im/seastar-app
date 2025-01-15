@@ -9,12 +9,12 @@ import {Media_Meta, urlToUsername} from "@/utils/social_media_meta"
 import useUploadAvatar from "@/hooks/useUploadAvatar"
 import useModal from "@/components/client/Modal/useModal"
 import DialogEditSocialMedia from "@/components/client/DialogEditSocialMedia"
-import {updateProfile} from "@/service/solar"
 import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
+import {ProfileDetail, updateProfile} from '@sola/sdk'
 
-export default function EditProfile({profile, lang}: { profile: Solar.Profile, lang: Dictionary }) {
-    const [newProfile, setNewProfile] = useState<Solar.Profile>(profile)
+export default function EditProfile({profile, lang}: { profile: ProfileDetail, lang: Dictionary }) {
+    const [newProfile, setNewProfile] = useState<ProfileDetail>(profile)
     const {uploadAvatar} = useUploadAvatar()
     const {openModal, showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -42,12 +42,12 @@ export default function EditProfile({profile, lang}: { profile: Solar.Profile, l
     const handleSave = async () => {
         const loadingId = showLoading()
         try {
-            const auth_token = Cookies.get(process.env.NEXT_PUBLIC_AUTH_FIELD!)
-            if (!auth_token) {
+            const authToken = Cookies.get(process.env.NEXT_PUBLIC_AUTH_FIELD!)
+            if (!authToken) {
                 throw new Error('Please login first')
             }
 
-            await updateProfile(newProfile, auth_token)
+            await updateProfile(newProfile, authToken)
             toast({title: 'Profile updated'})
             window.location.href = '/profile/' + newProfile.handle
         } catch (e: unknown) {

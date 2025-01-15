@@ -1,10 +1,8 @@
 import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
-import {getProfileByToken} from "@/service/solar"
 import {AUTH_FIELD} from "@/utils"
 import {redirect} from "next/navigation"
 import {pickSearchParam} from "@/utils"
-import {gql, request} from 'graphql-request'
-import process from "node:process"
+import {type ProfileDetail, getProfileDetailByHandle, getProfileDetailByAuth} from '@sola/sdk'
 
 export interface ProfilePageParams {
     handle: string
@@ -20,33 +18,29 @@ export interface ProfileDataProps {
     cookies: ReadonlyRequestCookies
 }
 
-export type ProfileDetail = Pick<Solar.Profile, 'id' | 'handle' | 'image_url' | 'about' | 'social_links' | 'nickname' | 'location'>
-
 export interface ProfileData {
     profile: ProfileDetail,
-    currProfile: Solar.Profile | null,
+    currProfile: ProfileDetail | null,
     isSelf: boolean,
     tab: string,
-    followers: number,
-    followings: number
 }
 
 export async function ProfileData(props: ProfileDataProps): Promise<ProfileData> {
     const handle = props.params.handle
     const tab = pickSearchParam(props.searchParams.tab)
-    const {profiles, followings, followers} = await getProfileData(handle)
+    const profileDetail = await getProfileDetailByHandle(handle)
 
 
-    if (!profiles || !profiles.length) {
+    if (!profileDetail) {
         redirect('/error')
     }
 
-    const profile = profiles[0]
+    const profile = profileDetail
 
-    let currProfile: Solar.Profile | null = null
+    let currProfile: ProfileDetail | null = null
     const authToken = props.cookies.get(AUTH_FIELD)?.value
     if (!!authToken) {
-        currProfile = await getProfileByToken(authToken)
+        currProfile = await getProfileDetailByAuth(authToken)
     }
 
     const isSelf = currProfile?.id === profile?.id
@@ -56,28 +50,5 @@ export async function ProfileData(props: ProfileDataProps): Promise<ProfileData>
         currProfile: currProfile,
         isSelf,
         tab: tab || 'groups',
-        followings: followings.length,
-        followers: followers.length
     }
 }
-
-const getProfileData = async (handle: string) => {
-    const doc = gql`query MyQuery {
-         profiles: profiles(where:{handle:{_eq: "${handle}"}}) {
-            handle
-            id
-            image_url
-            nickname
-            social_links
-            about
-            location
-         }
-         followers: followings(where:{target:{handle: {_eq:"${handle}"}}}){id} 
-         followings: followings(where:{source:{handle: {_eq:"${handle}"}}}){id} 
-    }`
-
-    // console.log('doc', doc)
-
-    return await request<{ profiles: ProfileDetail[], followers: Pick<Solar.ProfileSample, 'id'>[], followings: Pick<Solar.ProfileSample, 'id'>[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
-}
-

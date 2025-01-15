@@ -1,3 +1,5 @@
+import {SocialMedia} from "@sola/sdk"
+
 export interface Media_Meta_Type {
     label: string
     icon: string,
@@ -5,13 +7,13 @@ export interface Media_Meta_Type {
     eg: string
 }
 
-export const Media_Meta: { [index in keyof Solar.SocialMedia]: Media_Meta_Type } = {
-    website: {
-        label: 'Website',
-        icon: 'media-web',
-        valueType: 'url',
-        eg: 'eg. https://xxxx.com'
-    },
+export const Media_Meta: { [index in keyof SocialMedia]: Media_Meta_Type } = {
+    // website: {
+    //     label: 'Website',
+    //     icon: 'media-web',
+    //     valueType: 'url',
+    //     eg: 'eg. https://xxxx.com'
+    // },
     twitter: {
         label: 'X',
         icon: 'media-x',
@@ -48,12 +50,12 @@ export const Media_Meta: { [index in keyof Solar.SocialMedia]: Media_Meta_Type }
         valueType: 'username',
         eg: 'eg. username "xxxx" without "@"'
     },
-    farcaster: {
-        label: 'Farcaster',
-        icon: 'media-farcaster',
-        valueType: 'url',
-        eg: 'eg. https://farcaster.app/xxxx \nor username "xxxx" without "@"'
-    },
+    // farcaster: {
+    //     label: 'Farcaster',
+    //     icon: 'media-farcaster',
+    //     valueType: 'url',
+    //     eg: 'eg. https://farcaster.app/xxxx \nor username "xxxx" without "@"'
+    // },
     telegram: {
         label: 'Telegram',
         icon: 'media-telegram',
@@ -62,11 +64,11 @@ export const Media_Meta: { [index in keyof Solar.SocialMedia]: Media_Meta_Type }
     },
 }
 
-export const getMeta = (key: keyof Solar.SocialMedia) => {
+export const getMeta = (key: keyof SocialMedia) => {
     return Media_Meta[key]
 }
 
-export const urlToUsername = (url: string, type: keyof Solar.SocialMedia) => {
+export const urlToUsername = (url: string, type: keyof SocialMedia) => {
     if (type === 'twitter') {
         const match = url.match(/https:\/\/x\.com\/([^\/]+)/)
         if (match && match[1]) {
@@ -108,18 +110,6 @@ export const urlToUsername = (url: string, type: keyof Solar.SocialMedia) => {
         return url
     }
 
-    if (type === 'website') {
-        return url
-    }
-
-    if (type === 'farcaster') {
-        const match = url.match(/https:\/\/farcaster\.app\/([^\/]+)/)
-        if (match && match[1]) {
-            return match[1]
-        }
-        return url
-    }
-
     if (type === 'telegram') {
         const match = url.match(/https:\/\/t\.me\/([^\/]+)/)
         if (match && match[1]) {
@@ -133,25 +123,25 @@ export const urlToUsername = (url: string, type: keyof Solar.SocialMedia) => {
 
 export const usernameToUrl = (username: string, type: keyof Solar.SocialMedia) => {
     switch (type) {
-    case "twitter":
-        return `https://x.com/${username}`
-    case "github":
-        return `https://github.com/${username}`
-    case "discord":
-        return username
-    case "ens":
-        return `https://app.ens.domains/${username}`
-    case "lens":
-        return `https://hay.xyz/u/${username}`
-    case "nostr":
-        return username
-    case "website":
-        return username
-    case "farcaster":
-        return `https://farcaster.app/${username}`
-    case "telegram":
-        return `https://t.me/${username}`
-    default:
-        return username
+        case "twitter":
+            return `https://x.com/${username}`
+        case "github":
+            return `https://github.com/${username}`
+        case "discord":
+            return username
+        case "ens":
+            return `https://app.ens.domains/${username}`
+        case "lens":
+            return `https://hay.xyz/u/${username}`
+        case "nostr":
+            return username
+        case "website":
+            return username
+        case "farcaster":
+            return `https://farcaster.app/${username}`
+        case "telegram":
+            return `https://t.me/${username}`
+        default:
+            return username
     }
 }

@@ -4,6 +4,7 @@ import {cookies, headers} from 'next/headers'
 import {getLang, getLangType} from '@/lang'
 import {AUTH_FIELD} from '@/utils'
 import {getProfileByToken} from '@/service/solar'
+import {getProfileDetailByAuth} from '@sola/sdk'
 
 export const selectLang = async function () {
     const acceptLanguage = headers().get('accept-language')
@@ -22,5 +23,5 @@ export const getCurrProfile = async function () {
         return null
     }
 
-    return await getProfileByToken(authToken)
+    return await getProfileDetailByAuth(authToken)
 }
