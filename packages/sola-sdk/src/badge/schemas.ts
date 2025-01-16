@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
+import {GROUP_FRAGMENT} from '../group'
 
 export const BADGE_CLASS_FRAGMENT = gql`
     fragment BadgeClassFragment on badge_classes {
@@ -78,11 +79,11 @@ export const BADGE_DETAIL_FRAGMENT = gql`
         owner {
             ...ProfileFragment
         }
-}
+    }
 
-${BADGE_FRAGMENT}
-${PROFILE_FRAGMENT}
-${BADGE_CLASS_FRAGMENT}
+    ${BADGE_FRAGMENT}
+    ${PROFILE_FRAGMENT}
+    ${BADGE_CLASS_FRAGMENT}
 `
 
 export const GET_BADGE_DETAIL_BY_BADGE_ID = gql`
@@ -112,6 +113,57 @@ export const GET_BADGE_AND_BADGE_CLASS_BY_OWNER_HANDLE = gql`
         }
         badge_classes(where: {creator: {handle: {_eq: $handle}}}, order_by: {id: desc}) {
             ...BadgeClassFragment
+        }
+    }
+`
+
+export const INVITE_FRAGMENT = gql`
+    ${GROUP_FRAGMENT}
+    fragment InviteFragment on group_invites {
+        id
+        sender_id
+        receiver_id
+        group_id
+        expires_at
+        badge_class_id
+        badge_id
+        role
+        status
+        accepted
+        group {
+            ...GroupFragment
+        }
+    }
+`
+
+export const INVITE_DETAIL_FRAGMENT = gql`
+    ${INVITE_FRAGMENT}  
+    ${PROFILE_FRAGMENT}  
+    fragment InviteDetailFragment on group_invites {
+        ...InviteFragment
+        receiver_address_type
+        receiver_address
+        receiver {
+            ...ProfileFragment
+        }
+        sender {
+            ...ProfileFragment
+        }
+    }
+`
+
+export const GET_BADGE_CLASS_AND_INVITE_BY_HANDLE = gql`
+    ${BADGE_CLASS_FRAGMENT}
+    ${INVITE_FRAGMENT}
+    query GetBadgeClassAndInviteByHandle($handle: String!, $now: timestamp!) {
+        badge_classes(where: {group: {handle: {_eq: $handle}}}) {
+            ...BadgeClassFragment
+        }
+        group_invites(where: {
+            status: {_eq: "sending"}, 
+            expires_at: {_gt: $now}, 
+            group: {handle: {_eq: $handle}}} order_by: {id: desc}) {
+            ...InviteFragment
         }
     }
 `

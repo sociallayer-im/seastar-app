@@ -13,6 +13,7 @@ import TabVouchers from "@/app/(normal)/profile/[handle]/TabVouchers/TabVouchers
 import {Media_Meta} from "@/utils/social_media_meta"
 import CopyText from "@/components/client/CopyText"
 import {SocialMedia} from '@sola/sdk'
+import Avatar from '@/components/Avatar'
 
 export async function generateMetadata({params, searchParams}: { params: ProfilePageParams, searchParams: ProfilePageSearchParams }) {
     const data = await ProfileData({params, searchParams, cookies: cookies()})
@@ -42,8 +43,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                     </div>
 
                     <div className="px-3 mt-[-40px]">
-                        <img src={getAvatar(profile.id, profile.image_url)}
-                             className="w-[60px] h-[60px] rounded-full" alt=""/>
+                        <Avatar profile={profile} size={60} />
                         <div className="flex-row-item-center my-2">
                             <div className="font-semibold text-5">{profile.nickname || profile.handle}</div>
                             {isSelf &&

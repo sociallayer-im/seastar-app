@@ -107,20 +107,20 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                 <div className="flex-1 mt-6">
                     <div className="font-semibold pb-2">{lang['Social Links']}</div>
                     {
-                        !!newProfile.social_links && Object.keys(Media_Meta).map((key, i) => {
+                        (Object.keys(Media_Meta) as Array<keyof typeof Media_Meta>).map((key, i) => {
                             return <div key={i}
                                 className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
                                     <div className="w-9 flex flex-row justify-center">
-                                        <i className={`${Media_Meta[key as keyof typeof Media_Meta].icon} !text-lg`}/>
+                                        <i className={`${Media_Meta[key].icon} !text-lg`}/>
                                     </div>
-                                    <span>{Media_Meta[key as keyof typeof Media_Meta].label}</span>
+                                    <span>{Media_Meta[key].label}</span>
                                 </div>
                                 <div>
                                     {
-                                        !!newProfile.social_links?.[key as keyof typeof Media_Meta] &&
+                                        !!newProfile.social_links?.[key] &&
                                         <span className="mr-2">
-                                            {urlToUsername(newProfile.social_links[key as keyof typeof Media_Meta]!, key as keyof typeof Media_Meta)}
+                                            {urlToUsername(newProfile.social_links[key]!, key)}
                                         </span>
                                     }
                                     <Button

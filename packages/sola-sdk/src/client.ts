@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache} from '@apollo/client'
+import { ApolloClient, InMemoryCache, ApolloLink, HttpLink} from '@apollo/client'
 import {PROD_NETWORK_CONFIG, DEV_NETWORK_CONFIG} from './constants'
 
 
@@ -25,8 +25,23 @@ export const getSdkConfig = () => {
 
 export const getGqlClient = () => {
     const config = getSdkConfig()
-    return new ApolloClient({
+    const httpLink = new HttpLink({
         uri: config.graphql,
+        fetch: function (uri, options) {
+            return fetch(uri, {
+                ...options ?? {},
+                headers: {
+                    ...options?.headers ?? {},
+                },
+                next: {
+                    revalidate: 0
+                }
+            })
+        }
+    })
+
+    return new ApolloClient({
+        link: ApolloLink.from([httpLink]),
         cache: new InMemoryCache(),
         defaultOptions: {
             watchQuery: {

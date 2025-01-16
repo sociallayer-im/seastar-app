@@ -4,6 +4,7 @@ import {Button} from "@/components/shadcn/Button"
 import {useState} from "react"
 import {type Badge, type BadgeClass} from "@sola/sdk"
 import NoData from "@/components/NoData"
+import Image from 'next/image'
 
 export default function Tabs({labels, created, owned, isSelf}: {
     owned: Badge[],
@@ -48,8 +49,8 @@ export default function Tabs({labels, created, owned, isSelf}: {
                                     Top
                                 </div>
                             }
-                            <img className="w-[90px] h-[90px] rounded-full"
-                                src={cover!} alt=""/>
+                            <Image className="w-[90px] h-[90px] rounded-full" width={90} height={90}
+                                   src={cover!} alt=""/>
                         </div>
                         <div
                             className="font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">
@@ -74,7 +75,7 @@ export default function Tabs({labels, created, owned, isSelf}: {
                                 className="bg-[#ffdc62] rounded-br-lg px-3 py-1 font-semibold absolute left-0 top-0">Top
                             </div>
                             }
-                            <img className="w-[90px] h-[90px] rounded-full"
+                            <Image className="w-[90px] h-[90px] rounded-full" width={90} height={90}
                                 src={cover!} alt=""/>
                         </div>
                         <div

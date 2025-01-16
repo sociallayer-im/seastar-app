@@ -61,24 +61,17 @@ export const GROUP_DETAIL_FRAGMENT = gql`
         start_date
         end_date
         memberships{
-            id
-            role
-            profile {
-                id
-                handle
-                image_url
-                nickname
-            }
-            status
+           ...MembershipFragment
         }
     }
     ${GROUP_FRAGMENT}
+    ${MEMBERSHIP_FRAGMENT}
 `
 
 export const GET_GROUP_DETAIL_BY_HANDLE = gql`
     ${GROUP_DETAIL_FRAGMENT}
     query GetGroupByHandle($handle: String!) {
-        groups(where: {handle: {_eq: $handle}}) {
+        groups(where: {handle: {_eq: $handle}}, limit: 1) {
             ...GroupDetailFragment
         }
     }

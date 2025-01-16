@@ -4,13 +4,14 @@ import {useState} from "react"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import type {Dictionary} from "@/lang"
 import NoData from "@/components/NoData"
-import {SampleInvite} from "@/app/(normal)/group/[handle]/TabBadges/data"
 import {getAvatar} from "@/utils"
+import {Invite, BadgeClass} from '@sola/sdk'
+import Image from 'next/image'
 
 export interface TabBadgesProps {
     groupHandle: string
-    created: any[]
-    inviting: SampleInvite[]
+    created: BadgeClass[]
+    inviting: Invite[]
     lang: Dictionary
     isManager: boolean
     isIssuer: boolean
@@ -74,8 +75,10 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                                     className="bg-[#ffdc62] rounded-br-lg px-3 py-1 font-semibold absolute left-0 top-0">Top
                                 </div>
                                 }
-                                <img className="w-[90px] h-[90px] rounded-full"
-                                    src={cover!} alt=""/>
+                                <Image width={90} height={90}
+                                       src={cover!}
+                                       alt=""
+                                       className="-[90px] h-[90px] rounded-full" />
                             </div>
                             <div
                                 className="font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">
@@ -95,8 +98,10 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                             className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
                             <div
                                 className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
-                                <img className="w-[90px] h-[90px] rounded-full"
-                                    src={getAvatar(invite.group.id, invite.group.image_url)} alt=""/>
+                                <Image width={90} height={90}
+                                       src={getAvatar(invite.group.id, invite.group.image_url)}
+                                       alt=""
+                                       className="-[90px] h-[90px] rounded-full" />
                             </div>
                             <div
                                 className="capitalize font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">

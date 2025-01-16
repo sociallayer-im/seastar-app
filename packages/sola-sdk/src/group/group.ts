@@ -1,4 +1,4 @@
-import { getGqlClient } from "../client"
+import { getGqlClient, getSdkConfig } from "../client"
 import {GET_GROUP_DETAIL_BY_HANDLE, GET_PROFILE_GROUP, GET_PROFILE_MEMBERSHIPS} from "./schemas"
 import {Group, GroupDetail, GroupWithOwner, MembershipDetail} from "./types"
 
@@ -46,4 +46,30 @@ export const getProfileGroup = async (profileHandle: string) => {
             owner: group.memberships[0]!.profile
         }
     }) as GroupWithOwner[]
+}
+
+/**
+ * Update group
+ * @param group
+ * @param auth_token
+ */
+
+export const updateGroup = async (group: GroupDetail, auth_token: string) => {
+    const response = await fetch(`${getSdkConfig().api}/group/update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            ...group,
+            auth_token
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Update failed')
+    }
+
+    const data = await response.json()
+    return data.group as Group
 }

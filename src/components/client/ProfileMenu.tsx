@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 import {getAvatar} from "@/utils"
 import DropdownMenu from "@/components/client/DropdownMenu"
 import Image from "next/image"
+import Avatar from '@/components/Avatar'
 
 export default function ProfileMenu(props: { profile: Solar.ProfileSample }) {
     const handleSignOut = () => {
@@ -40,12 +41,7 @@ export default function ProfileMenu(props: { profile: Solar.ProfileSample }) {
         valueKey="href"
         onSelect={(opts) => handleSelect(opts[0])}>
         <div className="flex-row-item-center cursor-pointer">
-            <Image
-                src={getAvatar(props.profile.id, props.profile.image_url)}
-                width={16}
-                height={16}
-                className="rounded-full mr-1"
-                alt=""/>
+            <Avatar profile={props.profile} size={16} className="mr-1" />
             <div className="max-w-[50px] overflow-hidden whitespace-nowrap overflow-ellipsis">
                 {props.profile.nickname || props.profile.handle}
             </div>

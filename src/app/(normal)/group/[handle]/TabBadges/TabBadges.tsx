@@ -10,15 +10,17 @@ interface TabBadgesProps {
 }
 
 export default async function TabBadges ({handle, isManager, isIssuer, isMember}: TabBadgesProps) {
-    const {created, invites} = await GroupBadgeData(handle)
+    const {badgeClasses, groupInvites} = await GroupBadgeData(handle)
     const {lang} = await selectLang()
+
+    console.log('groupInvites', groupInvites)
 
     return <Tabs
         groupHandle={handle}
         isManager={isManager}
         isIssuer={isIssuer}
         isMember={isMember}
-        created={created}
-        inviting={invites}
+        created={badgeClasses}
+        inviting={groupInvites}
         lang={lang} />
 }

@@ -9,20 +9,20 @@ import {Media_Meta, urlToUsername} from "@/utils/social_media_meta"
 import useUploadAvatar from "@/hooks/useUploadAvatar"
 import useModal from "@/components/client/Modal/useModal"
 import DialogEditSocialMedia from "@/components/client/DialogEditSocialMedia"
-import {updateGroup} from "@/service/solar"
 import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {Switch} from "@/components/shadcn/Switch"
+import {GroupDetail, updateGroup, Membership} from '@sola/sdk'
 
 export interface EditProfileProps {
-    group: Solar.Group
+    group: GroupDetail
     lang: Dictionary
     isManager: boolean
-    members: {role: string, profile: Solar.ProfileSample}[]
+    members: Membership[]
 }
 
 export default function EditProfile({group, lang, isManager, members}: EditProfileProps) {
-    const [newGroup, setNewGroup] = useState<Solar.Group>(group)
+    const [newGroup, setNewGroup] = useState<GroupDetail>(group)
     const {uploadAvatar} = useUploadAvatar()
     const {openModal, showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -122,7 +122,7 @@ export default function EditProfile({group, lang, isManager, members}: EditProfi
                             <div className="flex-row-item-center w-full justify-between">
                                 <div>Members</div>
                                 <div className="font-normal flex-row-item-center">
-                                    <div>{memberCount}</div>
+                                    <div>{memberCount + managerCount}</div>
                                     <i className="uil-arrow-right text-2xl"/>
                                 </div>
                             </div>
@@ -157,24 +157,24 @@ export default function EditProfile({group, lang, isManager, members}: EditProfi
                 <div className="flex-1 mt-6">
                     <div className="font-semibold pb-2">{lang['Social Links']}</div>
                     {
-                        !!newGroup.social_links && Object.keys(Media_Meta).map((key, i) => {
+                        (Object.keys(Media_Meta) as Array<keyof typeof Media_Meta>).map((key, i) => {
                             return <div key={i}
                                 className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
                                     <div className="w-9 flex flex-row justify-center">
-                                        <i className={`${Media_Meta[key as keyof typeof Media_Meta].icon} !text-lg`}/>
+                                        <i className={`${Media_Meta[key].icon} !text-lg`}/>
                                     </div>
-                                    <span>{Media_Meta[key as keyof typeof Media_Meta].label}</span>
+                                    <span>{Media_Meta[key].label}</span>
                                 </div>
                                 <div>
                                     {
-                                        !!newGroup.social_links?.[key as keyof typeof Media_Meta] &&
+                                        !!newGroup.social_links?.[key] &&
                                         <span className="mr-2">
-                                            {urlToUsername(newGroup.social_links[key as keyof typeof Media_Meta]!, key as keyof typeof Media_Meta)}
+                                            {urlToUsername(newGroup.social_links[key], key)}
                                         </span>
                                     }
                                     <Button
-                                        onClick={() => showEditSocialMedia(key as keyof typeof Media_Meta, newGroup.social_links?.[key as keyof typeof Media_Meta] || '')}
+                                        onClick={() => showEditSocialMedia(key, newGroup.social_links?.[key] || '')}
                                         size={'xs'}
                                         variant={'normal'}
                                         className="text-sm">Edit</Button>

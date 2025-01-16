@@ -3,9 +3,9 @@ import {
     GET_BADGE_BY_OWNER_HANDLE,
     GET_BADGE_CLASS_BY_OWNER_HANDLE,
     GET_BADGE_AND_BADGE_CLASS_BY_OWNER_HANDLE,
-    GET_BADGE_CLASS_DETAIL_BY_BADGE_CLASS_ID, GET_BADGE_DETAIL_BY_BADGE_ID
+    GET_BADGE_CLASS_DETAIL_BY_BADGE_CLASS_ID, GET_BADGE_DETAIL_BY_BADGE_ID, GET_BADGE_CLASS_AND_INVITE_BY_HANDLE
 } from "./schemas"
-import { BadgeDetail, BadgeClassDetail } from "./types"
+import {BadgeDetail, BadgeClassDetail, Invite} from "./types"
 
 /**
  * Get badge detail by owner handle
@@ -96,4 +96,17 @@ export const getBadgeDetailByBadgeId = async (badgeId: number) => {
     }
 
     return response.data.badges[0] as BadgeDetail
+}
+
+export const getBadgeClassAndInviteByHandle = async (groupHandle: string) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_BADGE_CLASS_AND_INVITE_BY_HANDLE,
+        variables: { handle: groupHandle, now: new Date().toISOString() }
+    })
+
+    return {
+        badgeClasses: response.data.badge_classes as BadgeClassDetail[],
+        groupInvites: response.data.group_invites as Invite[]
+    }
 }

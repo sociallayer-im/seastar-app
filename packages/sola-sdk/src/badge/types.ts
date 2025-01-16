@@ -1,4 +1,5 @@
 import {Profile} from '../profile'
+import {Group} from '../group'
 
 export interface BadgeClass {
     id: number,
@@ -39,4 +40,26 @@ export interface BadgeDetail extends Badge {
     badge_class: BadgeClass,
     creator: Profile,
     owner: Profile,
+}
+
+export interface Invite {
+    id: number,
+    sender_id: number
+    receiver_id: number | null,
+    group_id: number,
+    expires_at: string,
+    badge_class_id: number | null,
+    badge_id: number | null,
+    role: string,
+    status: string,
+    accepted: boolean
+    group: Group
+}
+
+export interface InviteDetail extends Invite {
+    receiver_address_type: string | null,
+    receiver_address: string | null,
+    receiver: Profile | null,
+    sender: Profile,
+
 }

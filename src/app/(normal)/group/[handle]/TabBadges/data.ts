@@ -1,30 +1,10 @@
-import {gql, request} from "graphql-request"
+import {getBadgeClassAndInviteByHandle, setSdkConfig, ClientMode} from '@sola/sdk'
+import * as process from 'node:process'
 
 export type SampleInvite = Pick<Solar.Invite, 'id' | 'role' | 'group' >
 
-export default async function GroupBadgeData(handle: string) {
-    const doc = gql`query MyQuery {
-        created: badge_classes(where: {group: {handle: {_eq: "${handle}"}}}) {
-            id
-            image_url
-            title
-            creator_id
-            content,
-            display,
-            metadata,
-            badge_type
-        }
-        invites: group_invites(where: {status: {_eq: "sending"} group: {handle: {_eq: "${handle}"}}}) {
-            id
-            role
-            group {
-                image_url
-                nickname
-                handle
-                id
-            }
-        }
-    }`
+setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
-    return await request<{created: any[], invites: SampleInvite[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+export default async function GroupBadgeData(handle: string) {
+    return await getBadgeClassAndInviteByHandle(handle)
 }
