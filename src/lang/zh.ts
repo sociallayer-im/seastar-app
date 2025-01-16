@@ -36,7 +36,7 @@ export const zh: Dictionary = {
     'Close': '关闭',
     'Copy': '复制',
     'Send a badge': '发送徽章',
-    'Followers': '粉丝',
+    'Followers': '被关注',
     'Following': '关注',
     'Groups': '群组',
     'Events': '事件',

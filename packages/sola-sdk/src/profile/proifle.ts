@@ -1,13 +1,15 @@
-import {gqlClient, getConfig} from "../client"
-import {GET_PROFILE_BY_HANDLE} from "./schemas"
+import {getGqlClient, getSdkConfig} from "../client"
+import {GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE, GET_PROFILE_BY_HANDLE} from "./schemas"
 import {ProfileDetail} from "./types"
+import Profile = Solar.Profile
 
 /**
  * Get profile detail by handle
  * @param handle - profile handle
  */
 export const getProfileDetailByHandle = async (handle: string) => {
-    const response = await gqlClient.query({
+    const client = getGqlClient()
+    const response = await client.query({
         query: GET_PROFILE_BY_HANDLE,
         variables: {handle}
     })
@@ -27,14 +29,12 @@ export const getProfileDetailByHandle = async (handle: string) => {
  * Get profile detail by auth token
  * @param authToken - auth token
  */
-
 export const getProfileDetailByAuth = async (authToken: string) => {
     if (!authToken) {
         throw new Error('No auth token provided')
     }
 
-    const url = `${getConfig().api}/profile/me?auth_token=${authToken}`
-    // console.log(url)
+    const url = `${getSdkConfig().api}/profile/me?auth_token=${authToken}`
     const response = await fetch(url)
 
     if (!response.ok) {
@@ -50,9 +50,8 @@ export const getProfileDetailByAuth = async (authToken: string) => {
  * @param profile - profile detail
  * @param authToken - auth token
  */
-
 export const updateProfile = async (profile: ProfileDetail, authToken: string) => {
-    const response = await fetch(`${getConfig().api}/profile/update`, {
+    const response = await fetch(`${getSdkConfig().api}/profile/update`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -66,4 +65,19 @@ export const updateProfile = async (profile: ProfileDetail, authToken: string) =
 
     const data = await response.json()
     return data.profile as ProfileDetail
+}
+
+
+export const getProfileFollowerAndFollowing = async (handle: string) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE,
+        variables: {handle}
+    })
+
+    return {
+        profile: response.data.profile[0] as Profile || null,
+        followers: response.data.followers.map((f: any) => f.source) as Profile[],
+        followings: response.data.followings.map((f: any) => f.target) as Profile[]
+    }
 }

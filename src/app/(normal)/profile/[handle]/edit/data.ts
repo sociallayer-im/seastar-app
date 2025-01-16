@@ -1,6 +1,7 @@
-import {getProfileByHandle} from "@/service/solar"
 import {redirect} from "next/navigation"
-import {getProfileDetailByHandle} from '@sola/sdk'
+import {getProfileDetailByHandle, setSdkConfig, ClientMode} from '@sola/sdk'
+
+setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
 export interface ProfilePageParams {
     handle: string

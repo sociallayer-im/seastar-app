@@ -2,7 +2,9 @@ import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/a
 import {AUTH_FIELD} from "@/utils"
 import {redirect} from "next/navigation"
 import {pickSearchParam} from "@/utils"
-import {type ProfileDetail, getProfileDetailByHandle, getProfileDetailByAuth} from '@sola/sdk'
+import {type ProfileDetail, type ClientMode, getProfileDetailByHandle, getProfileDetailByAuth, setSdkConfig} from '@sola/sdk'
+
+setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
 export interface ProfilePageParams {
     handle: string
@@ -29,7 +31,6 @@ export async function ProfileData(props: ProfileDataProps): Promise<ProfileData>
     const handle = props.params.handle
     const tab = pickSearchParam(props.searchParams.tab)
     const profileDetail = await getProfileDetailByHandle(handle)
-
 
     if (!profileDetail) {
         redirect('/error')

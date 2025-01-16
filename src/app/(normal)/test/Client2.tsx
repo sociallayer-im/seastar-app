@@ -8,13 +8,15 @@ export default function TextClient() {
 
     useEffect(() => {
         ;(async () => {
-            console.log(setSdkConfig({clientMode: 'dev'}))
+            setSdkConfig({clientMode: 'prod'})
+            console.log(getSdkConfig())
             const profile = await getProfileDetailByHandle('zfd')
             setData(profile)
         })()
     }, [])
 
     return <div>
-        <div>1</div>
-        {data ? JSON.stringify(data) : ''}</div>
+        <div>2</div>
+        {data ? JSON.stringify(data) : ''}
+    </div>
 }

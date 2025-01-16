@@ -42,3 +42,22 @@ export const GET_PROFILE_BY_HANDLE = gql`
         }
     }
 `
+
+export const GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE = gql`
+    ${PROFILE_FRAGMENT} 
+    query GetFollowingAndFollowerByHandle($handle: String!) {
+        profile: profiles(where: {handle: {_eq: $handle}}) {
+            ...ProfileFragment
+        }
+        followings: followings(where: {source: {handle: {_eq: $handle}}}) {
+          target {
+            ...ProfileFragment
+          }
+        }
+        followers: followings(where: {target: {handle: {_eq: $handle}}}) {
+          source {
+           ...ProfileFragment
+          }
+        }
+    }
+`

@@ -4,6 +4,7 @@ import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
 import {paymentTokenList} from "@/utils/payment_setting"
+import {Profile} from '@sola/sdk'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -325,6 +326,11 @@ export function genGoogleMapLinkByEvent (event: Solar.Event) {
 export function shortWalletAddress(address: string) {
     return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
+
+export function displayProfileName(profile: Profile) {
+    return profile.nickname || profile.handle
+}
+
 
 
 

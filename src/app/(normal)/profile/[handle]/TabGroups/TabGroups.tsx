@@ -1,8 +1,9 @@
 import CardGroup from "@/components/CardGroup"
 import {UserGroupListData} from "@/app/(normal)/profile/[handle]/TabGroups/data"
 import {selectLang} from "@/app/actions"
+import {Profile} from '@sola/sdk'
 
-export default async function TabGroups(props: { profile: Solar.ProfileSample}) {
+export default async function TabGroups(props: { profile: Profile}) {
     const groups = await UserGroupListData(props.profile.handle)
     const lang = (await selectLang()).lang
 

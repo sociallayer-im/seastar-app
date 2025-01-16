@@ -1,6 +1,7 @@
 import {getAvatar} from "@/utils"
+import {GroupWithOwner} from '@sola/sdk'
 
-export default function CardGroup({group, currProfileHandle}: {group: Solar.SampleGroupWithOwner, currProfileHandle?: string}) {
+export default function CardGroup({group, currProfileHandle}: {group: GroupWithOwner, currProfileHandle?: string}) {
     return <a href={`/group/${group.handle}`}
         className="h-[210px] shadow bg-white rounded-2xl shadow-badge p-4 cursor-pointer flex flex-col items-center duration-200 hover:translate-y-[-6px]">
         <img className="w-[64px] h-[64px] rounded-lg  mt-4 mb-2"

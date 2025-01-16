@@ -71,10 +71,13 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                                 <i className="uil-qrcode-scan h-5 px-2 bg-gray-100 rounded-lg flex-row-item-center ml-2 cursor-pointer hover:bg-gray-200"/>
                             </BtnProfileQrcode>
                         </div>
-                        <div className="flex-row-item-center my-2 text-sm">
-                            <div className="mr-4"><strong>{profile.follower_count}</strong> {lang['Followers']}</div>
-                            <div className="mr-4"><strong>{profile.following_count}</strong> {lang['Following']}</div>
-                        </div>
+                        <a className="flex-row-item-center my-2 text-sm hover:text-primary"
+                           href={`/profile/${profile.handle}/follower`}>
+                            <div className="mr-4"><strong>{profile.follower_count}</strong> {lang['Followers']}
+                            </div>
+                            <div className="mr-4"><strong>{profile.following_count}</strong> {lang['Following']}
+                            </div>
+                        </a>
                         {!!profile.social_links &&
                             <div tabIndex={0}
                                  className="inline-block max-h-7 hover:max-h-[200px] transition-all duration-300 overflow-hidden mb-3 cursor-pointer group">

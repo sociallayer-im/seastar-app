@@ -2,7 +2,7 @@ import {ProfileVoucherData} from "@/app/(normal)/profile/[handle]/TabVouchers/da
 import NoData from "@/components/NoData"
 
 export default async function TabVouchers(props: {handle: string}) {
-    const {vouchers} = await ProfileVoucherData(props.handle)
+    const vouchers = await ProfileVoucherData(props.handle)
 
     return <div className="py-4">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 py-4">

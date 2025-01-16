@@ -2,12 +2,12 @@
 
 import {Button} from "@/components/shadcn/Button"
 import {useState} from "react"
-import {SampleBadge, SampleBadgeClass} from "@/app/(normal)/profile/[handle]/TabBadges/data"
+import {type Badge, type BadgeClass} from "@sola/sdk"
 import NoData from "@/components/NoData"
 
 export default function Tabs({labels, created, owned, isSelf}: {
-    owned: SampleBadge[],
-    created: SampleBadgeClass[],
+    owned: Badge[],
+    created: BadgeClass[],
     handle: string,
     isSelf: boolean,
     labels?: { created?: string, collected?: string }
