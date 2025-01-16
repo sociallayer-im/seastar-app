@@ -15,5 +15,5 @@ export default async function IssueBadgePage (props: IssueBadgePageDataParams) {
     return <IssueBadgeForm
         lang={lang}
         badgeClass={badgeClass}
-        reason={reason} />
+         />
 }

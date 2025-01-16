@@ -1,5 +1,4 @@
 import {gql, request} from "graphql-request"
-import {SampleBadgeClass} from "@/app/(normal)/profile/[handle]/TabBadges/data"
 
 export type SampleInvite = Pick<Solar.Invite, 'id' | 'role' | 'group' >
 
@@ -27,5 +26,5 @@ export default async function GroupBadgeData(handle: string) {
         }
     }`
 
-    return await request<{created: SampleBadgeClass[], invites: SampleInvite[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+    return await request<{created: any[], invites: SampleInvite[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
 }

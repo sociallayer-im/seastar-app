@@ -1,5 +1,4 @@
 import {gql, request} from 'graphql-request'
-import {SampleEvent, SampleEventWithCreatorAndJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
 
 export const GroupEventListData = async function (handle: string, currUserHandle?: string) {
     const doc = gql`query MyQuery {
@@ -37,7 +36,7 @@ export const GroupEventListData = async function (handle: string, currUserHandle
     }`
 
     type Response = {
-        events: SampleEvent[],
+        events: any[],
         currUserJoined?: {event: {id: number}}[],
     }
 
@@ -50,7 +49,7 @@ export const GroupEventListData = async function (handle: string, currUserHandle
             ...e,
             isCreator,
             isJoined
-        } as SampleEventWithCreatorAndJoinStatus
+        } as any
     })
 
 }

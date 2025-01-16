@@ -4,7 +4,7 @@ import {getProfileEventByHandle, setSdkConfig, Event, ClientMode, getStaredEvent
 
 setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
-export interface SampleEventWithCreatorAndJoinStatus extends Event {
+export interface EventWithJoinStatus extends Event {
     isCreator: boolean
     isJoined: boolean
 }
@@ -32,7 +32,7 @@ export const ProfileEventListData = async function (handle: string, currUserHand
             ...e,
             isCreator,
             isJoined
-        } as SampleEventWithCreatorAndJoinStatus
+        } as EventWithJoinStatus
     })
 
     const attends = profileEvents.attends.map(e => {
@@ -42,7 +42,7 @@ export const ProfileEventListData = async function (handle: string, currUserHand
             ...e,
             isCreator,
             isJoined
-        } as SampleEventWithCreatorAndJoinStatus
+        } as EventWithJoinStatus
     })
 
     const stared = staredEvents.map(e => {
@@ -52,7 +52,7 @@ export const ProfileEventListData = async function (handle: string, currUserHand
             ...e,
             isCreator,
             isJoined
-        } as SampleEventWithCreatorAndJoinStatus
+        } as EventWithJoinStatus
     })
 
     return {

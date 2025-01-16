@@ -25,13 +25,13 @@ export default function DialogEditSocialMedia({close, value, type, lang, onConfi
         }
 
         close && close()
-        onConfirm && onConfirm(usernameToUrl(urlToUsername(newValue.trim(), type), type))
+        onConfirm && onConfirm(usernameToUrl(urlToUsername(newValue.trim(), type as any), type))
     }
 
     return <div
         className="shadow rounded-lg bg-white p-4 w-80">
-        <div className="font-semibold mb-3">{lang['Edit']} {Media_Meta[type].label}</div>
-        <div className="text-[#999] mb-3 text-sm">{Media_Meta[type].eg}</div>
+        <div className="font-semibold mb-3">{lang['Edit']} {(Media_Meta as any)[type].label}</div>
+        <div className="text-[#999] mb-3 text-sm">{(Media_Meta as any)[type].eg}</div>
         <Input value={newValue}
             className="w-full"
             onChange={e => {

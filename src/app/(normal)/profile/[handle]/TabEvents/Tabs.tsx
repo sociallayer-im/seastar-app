@@ -1,15 +1,16 @@
 'use client'
 
-import {SampleEventWithCreatorAndJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
+import {EventWithJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
 import {useState} from "react"
 import {Button} from "@/components/shadcn/Button"
 import CardEvent from "@/components/CardEvent"
 import NoData from "@/components/NoData"
 
+
 export interface EventTabProps {
-    attends: SampleEventWithCreatorAndJoinStatus[]
-    hosting: SampleEventWithCreatorAndJoinStatus[]
-    stared: SampleEventWithCreatorAndJoinStatus[]
+    attends: EventWithJoinStatus[]
+    hosting: EventWithJoinStatus[]
+    stared: EventWithJoinStatus[]
     labels?: {attended?: string, created?: string, star?: string}
 }
 

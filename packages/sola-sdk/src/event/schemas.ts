@@ -9,6 +9,7 @@ export const EVENT_ROLE_FRAGMENT = gql`
         item_id
         item_type
         nickname
+        role
     }`
 
 

@@ -1,6 +1,5 @@
 'use client'
 
-import {SampleBadgeClass} from "@/app/(normal)/profile/[handle]/TabBadges/data"
 import {useState} from "react"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import type {Dictionary} from "@/lang"
@@ -10,7 +9,7 @@ import {getAvatar} from "@/utils"
 
 export interface TabBadgesProps {
     groupHandle: string
-    created: SampleBadgeClass[]
+    created: any[]
     inviting: SampleInvite[]
     lang: Dictionary
     isManager: boolean

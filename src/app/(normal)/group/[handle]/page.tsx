@@ -12,6 +12,7 @@ import TabMembers from "@/app/(normal)/group/[handle]/TabMembers/TabMembers"
 import TabVouchers from "@/app/(normal)/group/[handle]/TabVouchers/TabVouchers"
 import {Textarea} from "@/components/shadcn/Textarea"
 import NoData from "@/components/NoData"
+import {SocialMedia} from '@sola/sdk'
 
 export const dynamic = 'force-dynamic'
 
@@ -54,12 +55,12 @@ export default async function GroupPage(props: GroupDataProps) {
                         <div tabIndex={0}
                             className="inline-block max-h-7 hover:max-h-[200px] transition-all duration-1000 overflow-hidden mb-3 cursor-pointer group">
                             <div className="flex flex-row justify-start text-xs group-hover:flex-col">
-                                {Object.keys(group.social_links).map(key => {
+                                {(Object.keys(group.social_links) as Array<keyof SocialMedia>).map((key) => {
                                     return <div key={key}
                                         className="flex-row-item-center grow-0 shrink-0">
-                                        <i className={`${Media_Meta[key as keyof Solar.SocialMedia].icon} text-lg mr-1`}/>
-                                        {Media_Meta[key as keyof Solar.SocialMedia].valueType === 'url' ?
-                                            <a href={group.social_links[key as keyof Solar.SocialMedia]!}
+                                        <i className={`${Media_Meta[key].icon} text-lg mr-1`}/>
+                                        {Media_Meta[key].valueType === 'url' ?
+                                            <a href={group.social_links[key]!}
                                                 className="group-hover:inline hidden hover:underline"
                                                 target="_blank">{group.social_links[key as keyof Solar.SocialMedia]}</a>
                                             : <a className="group-hover:inline hidden hover:underline">

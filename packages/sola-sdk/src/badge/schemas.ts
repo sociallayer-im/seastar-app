@@ -12,7 +12,7 @@ export const BADGE_CLASS_FRAGMENT = gql`
     }`
 
 export const BADGE_CLASS_DETAIL_FRAGMENT = gql`
-    fragment ProfileDetailFragment on badge_classes {
+    fragment BadgeClassDetailFragment on badge_classes {
         ...BadgeClassFragment
         metadata
         content

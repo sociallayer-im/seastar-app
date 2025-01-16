@@ -110,12 +110,12 @@ export interface EventRole {
     item_id: number | null
     item_type: 'Profile' | 'Group',
     nickname: string | null
+    role: EventRoleType
 }
 
 export interface EventRoleDetail extends EventRole {
     email?: string | null
     image_url: string | null
-    role: EventRoleType
     profile?: Profile
     group?: Group
     _destroy?: string

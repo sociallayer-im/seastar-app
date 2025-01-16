@@ -4,14 +4,13 @@ import GoogleMapProvider from "@/providers/GoogleMapProvider"
 import {Map, AdvancedMarker} from '@vis.gl/react-google-maps'
 import {Button} from '@/components/shadcn/Button'
 import CardEvent from "@/components/CardEvent"
-import {SampleEventWithCreatorAndJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
 import {useEffect, useState, useRef} from 'react'
 
 interface GroupedEvents {
-    [index: string]: SampleEventWithCreatorAndJoinStatus[]
+    [index: string]: any[]
 }
 
-export default function EventMap(props: {events: SampleEventWithCreatorAndJoinStatus[]}) {
+export default function EventMap(props: {events: any[]}) {
     const eventsHasLocation = props.events.filter(event => event.geo_lat && event.geo_lng)
 
     // grouped event with same lat lng
@@ -44,7 +43,7 @@ export default function EventMap(props: {events: SampleEventWithCreatorAndJoinSt
         }
     }, [])
 
-    const [currGroupEventsKey, setcurrGroupEventsKey] = useState<keyof GroupedEvents | undefined>(Object.keys(groupedEvents)[0] as keyof SampleEventWithCreatorAndJoinStatus)
+    const [currGroupEventsKey, setcurrGroupEventsKey] = useState<keyof GroupedEvents | undefined>(Object.keys(groupedEvents)[0] as any)
 
     return <div className='w-full h-[calc(100svh-48px)] relative outline-none'>
         <GoogleMapProvider>

@@ -1,11 +1,11 @@
-import {SampleEventWithCreatorAndJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
+import {EventWithJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
 import {getLabelColor} from "@/utils/label_color"
 import {checkProcess} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import Dayjs from "@/libs/dayjs"
 import {CSSProperties} from "react"
 
-export default function CardEvent({event, className, id, style}: {event: SampleEventWithCreatorAndJoinStatus, className?: string, id?: string, style?: CSSProperties}) {
+export default function CardEvent({event, className, id, style}: {event: EventWithJoinStatus, className?: string, id?: string, style?: CSSProperties}) {
     const eventProcess = checkProcess(event.start_time, event.end_time)
     const status = event.status
 
