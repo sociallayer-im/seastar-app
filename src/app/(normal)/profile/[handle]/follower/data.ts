@@ -1,5 +1,7 @@
-import {getProfileFollowerAndFollowing} from '@sola/sdk'
+import {type ClientMode, getProfileFollowerAndFollowing, setSdkConfig} from '@sola/sdk'
 import {redirect} from 'next/navigation'
+
+setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
 export interface FollowerPageDataProps {
     params: {
