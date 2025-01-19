@@ -264,7 +264,12 @@ export const en = {
     "Group Invite": "Group Invite",
     'The invitation has been sent!': 'The invitation has been sent!',
     'Copy Link': 'Copy Link',
-    'Back to Group': 'Back to Group'
+    'Back to Group': 'Back to Group',
+    'Invite Detail': 'Invite Detail',
+    'Invite Message': 'Invite Message',
+    'Time': 'Time',
+    'Reject': 'Reject',
+    'Accept': 'Accept'
 
 }
 

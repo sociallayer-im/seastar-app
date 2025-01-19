@@ -47,6 +47,7 @@ export interface Invite {
     sender_id: number
     receiver_id: number | null,
     group_id: number,
+    created_at: string,
     expires_at: string,
     badge_class_id: number | null,
     badge_id: number | null,

@@ -84,5 +84,8 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
     "yarn": "^1.22.22"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

@@ -126,6 +126,7 @@ export const INVITE_FRAGMENT = gql`
         group_id
         expires_at
         badge_class_id
+        created_at
         badge_id
         role
         status

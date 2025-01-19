@@ -267,4 +267,9 @@ export const zh: Dictionary = {
     'The invitation has been sent!':'邀请已发送！',
     'Copy Link': '复制链接',
     'Back to Group': '返回群组',
+    'Invite Detail': '邀请详情',
+    'Invite Message': '邀请消息',
+    'Time': '时间',
+    'Reject': '拒绝',
+    'Accept': '接受',
 }

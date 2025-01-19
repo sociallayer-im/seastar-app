@@ -74,6 +74,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                 <div className="ml-2 mt-3 sm:mt-0">
                     {isManager &&
                         <DropdownMenu
+                            align={'right'}
                             options={ManagementOptions}
                             valueKey={'url'}
                             renderOption={option => option.label}
@@ -91,18 +92,20 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
         {memberList.length === 0 && <NoData />}
 
         <div className="grid grid-cols-1 gap-3 py-4">
-            <a
-               className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
-               href={`/group/${group.handle}/management/invite`}>
-                <i className="uil-plus-circle mr-2 text-2xl" />
-                <div>{lang['Invite Member']}</div>
-            </a>
+            {isManager &&
+                <a
+                    className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
+                    href={`/group/${group.handle}/management/invite`}>
+                    <i className="uil-plus-circle mr-2 text-2xl"/>
+                    <div>{lang['Invite Member']}</div>
+                </a>
+            }
             {
                 memberList.map((member, i) => {
                     return <a key={i}
                               className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
                               href={`/profile/${member.profile.handle}`}>
-                        <div className="relative mr-2">
+                    <div className="relative mr-2">
                             <img
                                 className="w-7 h-7 rounded-full"
                                 src={getAvatar(member.profile.id, member.profile.image_url)} alt=""/>

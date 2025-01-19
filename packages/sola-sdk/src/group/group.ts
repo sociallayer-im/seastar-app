@@ -268,3 +268,37 @@ export const sendInvite = async (
     }
 }
 
+export const acceptInvite = async (inviteId: number, auth_token: string) => {
+    const response = await fetch(`${getSdkConfig().api}/group/accept_invite`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            group_invite_id: inviteId,
+            auth_token
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error(`Accept invite failed code: ${response.status}`)
+    }
+}
+
+export const rejectInvite = async (inviteId: number, auth_token: string) => {
+    const response = await fetch(`${getSdkConfig().api}/group/cancel_invite`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            group_invite_id: inviteId,
+            auth_token
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error(`Reject invite failed code: ${response.status}`)
+    }
+}
+
