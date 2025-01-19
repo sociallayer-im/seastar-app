@@ -12,12 +12,13 @@ export async function generateMetadata(props: GroupDataProps) {
 }
 
 export default async function EditGroupPage(props: GroupDataProps) {
-    const {group, currUserIsManager, members} = await GroupPageData(props)
+    const {group, currUserIsManager, members, currUserIsOwner} = await GroupPageData(props)
     const lang = (await selectLang()).lang
 
     return <EditGroup
         members={members}
         lang={lang}
+        isOwner={currUserIsOwner}
         isManager={currUserIsManager}
         group={group}/>
 

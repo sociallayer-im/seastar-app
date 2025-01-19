@@ -1,28 +1,28 @@
 'use client'
 
-import {Membership, Group, removeMember} from "@sola/sdk"
-import {Dictionary} from "@/lang"
-import {displayProfileName, getAuth, getAvatar} from "@/utils"
-import {useState} from "react"
-import {Button} from "@/components/shadcn/Button"
-import useModal from '@/components/client/Modal/useModal'
-import {useToast} from '@/components/shadcn/Toast/use-toast'
-import useConfirmDialog from '@/hooks/useConfirmDialog'
-import NoData from '@/components/NoData'
 import Avatar from '@/components/Avatar'
+import {displayProfileName, getAuth} from '@/utils'
+import {useState} from 'react'
+import {Membership, Group, addManager} from '@sola/sdk'
+import {Dictionary} from '@/lang'
+import NoData from '@/components/NoData'
+import {Button} from '@/components/shadcn/Button'
+import useConfirmDialog from '@/hooks/useConfirmDialog'
+import {useToast} from '@/components/shadcn/Toast/use-toast'
+import useModal from '@/components/client/Modal/useModal'
 
-export interface MemberManagementFormProps {
-    members: Membership[],
-    group: Group,
+interface AddManagerFormProps {
     lang: Dictionary
+    members: Membership[]
+    group: Group
 }
 
-export default function MemberManagementForm({members, lang, group}: MemberManagementFormProps) {
-    const memberList = members.filter(m => m.role !== 'owner')
+export default function AddManagerForm({lang, members, group}: AddManagerFormProps) {
     const [selected, setSelected] = useState<Membership[]>([])
-    const {openModal, closeModal, showLoading} = useModal()
+
     const {showConfirmDialog} = useConfirmDialog()
     const {toast} = useToast()
+    const {showLoading, closeModal} = useModal()
 
     const handleSelect = (member: Membership) => {
         if (selected.includes(member)) {
@@ -32,40 +32,37 @@ export default function MemberManagementForm({members, lang, group}: MemberManag
         }
     }
 
-    const handleRemove = async () => {
-        if (!selected.length) return
-
+    const handleConfirm = async () => {
         const loading = showLoading()
         try {
-            const auth_token = getAuth()
-            if (!auth_token) {
-                toast({title: 'Please login first', variant: 'destructive'})
+            const authToken = getAuth()
+            if (!authToken) {
+                closeModal(loading)
+                toast({
+                    description: 'You are not logged in',
+                    variant: 'destructive'
+                })
                 return
             }
-            await removeMember(selected[0]!.profile.id, group.id, auth_token)
-            window.location.reload()
-        } catch (e) {
+
+            await addManager(selected[0]!.profile.id, group.id, authToken)
+            history.go(-1)
+        } catch (e: unknown) {
+            console.error(e)
             closeModal(loading)
-            toast({title: 'Failed to remove member', variant: 'destructive'})
+            toast({
+                description: e instanceof Error ? e.message : 'An error occurred',
+                variant: 'destructive'
+            })
         }
     }
 
-    const handleConfirm = () => {
-        showConfirmDialog({
-            lang,
-            title: lang['Remove Member'],
-            content: `${lang['Are you sure you want to remove the selected member?']} <div style="text-align: center;font-size: 18px"><b>${displayProfileName(selected[0]!.profile)}</b></div>`,
-            onConfig: handleRemove,
-        })
-    }
-
-
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width h-[calc(100svh-48px)] px-3 pb-12 pt-0 flex flex-col">
-            <div className="py-6 font-semibold text-center text-xl">{lang['Member Management']}</div>
-            <div className="w-full max-w-[800px] mx-auto mb-3">{lang['Remove selected members']}</div>
+            <div className="py-6 font-semibold text-center text-xl">{lang['Add a manager']}</div>
+            <div className="w-full max-w-[800px] mx-auto mb-3">{lang['Selected a member in group']}</div>
             <div className="w-full max-w-[800px] mx-auto">
-                {memberList.map((member, i) => {
+                {members.map((member, i) => {
                     return <div key={i}
                                 onClick={() => {
                                     handleSelect(member)
@@ -75,7 +72,7 @@ export default function MemberManagementForm({members, lang, group}: MemberManag
                             <Avatar
                                 size={28}
                                 profile={member.profile}
-                                className="rounded-full mr-2" />
+                                className="rounded-full mr-2"/>
                             <div>{displayProfileName(member.profile)}</div>
                         </div>
                         {
@@ -87,16 +84,16 @@ export default function MemberManagementForm({members, lang, group}: MemberManag
                 }
             </div>
 
-            {!memberList.length && <NoData/>}
+            {!members.length && <NoData/>}
 
             <div className="w-full max-w-[800px] mx-auto grid grid-cols-2 gap-3 py-4 sticky bottom-0">
                 <Button variant={'secondary'} onClick={() => {
                     history.go(-1)
                 }}>{lang['Cancel']}</Button>
-                <Button variant={'destructive'}
+                <Button variant={'primary'}
                         disabled={!selected.length}
                         onClick={handleConfirm}
-                >{lang['Remove Member']}</Button>
+                >{lang['Add']}</Button>
             </div>
         </div>
     </div>

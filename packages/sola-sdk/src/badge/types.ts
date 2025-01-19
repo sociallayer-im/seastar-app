@@ -53,6 +53,7 @@ export interface Invite {
     role: string,
     status: string,
     accepted: boolean
+    message: string | null
     group: Group
 }
 
@@ -61,5 +62,4 @@ export interface InviteDetail extends Invite {
     receiver_address: string | null,
     receiver: Profile | null,
     sender: Profile,
-
 }

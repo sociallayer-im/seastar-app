@@ -1,5 +1,9 @@
 import {getGqlClient, getSdkConfig} from "../client"
-import {GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE, GET_PROFILE_BY_HANDLE} from "./schemas"
+import {
+    GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE,
+    GET_PROFILE_BY_HANDLE,
+    GET_PROFILE_BY_HANDLES_OR_ADDRESSES
+} from "./schemas"
 import {ProfileDetail} from "./types"
 import Profile = Solar.Profile
 
@@ -79,5 +83,18 @@ export const getProfileFollowerAndFollowing = async (handle: string) => {
         profile: response.data.profile[0] as Profile || null,
         followers: response.data.followers.map((f: any) => f.source) as Profile[],
         followings: response.data.followings.map((f: any) => f.target) as Profile[]
+    }
+}
+
+export const getProfileByHandlesOrAddresses  = async (handlesOrAddresses: string[]) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_PROFILE_BY_HANDLES_OR_ADDRESSES,
+        variables: {handles: handlesOrAddresses}
+    })
+
+    return {
+        handleResult: response.data.handleResult as Profile[],
+        addressResult: response.data.addressResult as Profile[]
     }
 }

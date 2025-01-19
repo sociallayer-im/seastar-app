@@ -25,6 +25,7 @@ export default async function GroupPage(props: GroupDataProps) {
         currUserIsManager,
         currUserIsIssuer,
         currUserIsMember,
+        currUserIsOwner,
         members
     } = await GroupPageData(props)
     const lang = (await selectLang()).lang
@@ -146,10 +147,11 @@ export default async function GroupPage(props: GroupDataProps) {
 
                 {tab === 'members' && <div className="grid grid-cols-1 gap-3 w-full">
                     <TabMembers
-                        handle={group.handle}
-                        currUserHandle={currProfile?.handle}
+                        group={group}
+                        currProfile={currProfile}
                         lang={lang}
                         members={members}
+                        isOwner={currUserIsOwner}
                         isMember={currUserIsMember}
                         isManager={currUserIsManager}/>
                 </div>

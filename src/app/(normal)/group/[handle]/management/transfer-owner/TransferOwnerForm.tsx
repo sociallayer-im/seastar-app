@@ -1,27 +1,63 @@
 'use client'
 
-import {MemberShipSample} from "@/app/(normal)/group/[handle]/edit/data"
 import {Dictionary} from "@/lang"
-import {getAvatar} from "@/utils"
+import {getAuth, getAvatar} from "@/utils"
 import {useState} from "react"
 import {Button} from "@/components/shadcn/Button"
+import {Membership, Group, transferGroup} from '@sola/sdk'
+import NoData from '@/components/NoData'
+import useConfirmDialog from '@/hooks/useConfirmDialog'
+import useModal from '@/components/client/Modal/useModal'
+import {useToast} from '@/components/shadcn/Toast/use-toast'
 
 export interface MemberManagementFormProps {
-    members: MemberShipSample[],
-    group: Solar.Group,
+    members: Membership[],
+    group: Group,
     lang: Dictionary
 }
 
-export default function TransferOwnerForm({members, lang}: MemberManagementFormProps) {
+export default function TransferOwnerForm({members, lang, group}: MemberManagementFormProps) {
     const memberList = members.filter(m => m.role !== 'owner')
-    const [selected, setSelected] = useState<MemberShipSample | null>(null)
+    const [selected, setSelected] = useState<Membership | null>(null)
+    const {showConfirmDialog} = useConfirmDialog()
+    const {showLoading, closeModal} = useModal()
+    const {toast} = useToast()
 
-    const handleSelect = (member: MemberShipSample) => {
+    const handleSelect = (member: Membership) => {
         if (selected === member) {
             setSelected(null)
         } else {
             setSelected(member)
         }
+    }
+
+    const handleTransferOwner = async () => {
+        const loading = showLoading()
+        try {
+            const authToken = getAuth()
+            if (!authToken) {
+                closeModal(loading)
+                toast({title: 'Please log in first' , variant: 'destructive'})
+                return
+            }
+
+            await transferGroup(group.id, selected!.profile.handle, authToken)
+            window.location.href = `/group/${group.handle}`
+        } catch (e: unknown) {
+            console.error(e)
+            closeModal(loading)
+            toast({description: e instanceof Error ? e.message : 'An error occurred',
+                variant: 'destructive'})
+        }
+    }
+
+    const showConfirm = () => {
+        showConfirmDialog({
+            lang,
+            title: lang['Transfer Owner'],
+            content: lang['Are you sure you want to transfer the ownership of this group to this member?'],
+            onConfig: handleTransferOwner
+        })
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
@@ -48,11 +84,16 @@ export default function TransferOwnerForm({members, lang}: MemberManagementFormP
                 }
             </div>
 
+            {!memberList.length && <NoData/>}
+
             <div className="w-full max-w-[800px] mx-auto grid grid-cols-2 gap-3 py-4 sticky bottom-0">
                 <Button variant={'secondary'} onClick={() => {
                     history.go(-1)
                 }}>{lang['Cancel']}</Button>
-                <Button variant={'destructive'}>{lang['Transfer Owner']}</Button>
+                <Button variant={'destructive'}
+                        onClick={showConfirm}>
+                    {lang['Transfer Owner']}
+                </Button>
             </div>
         </div>
     </div>

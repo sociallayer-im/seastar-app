@@ -50,3 +50,16 @@ export const GET_VOUCHER_DETAIL_BY_ID = gql`
     }
 `
 
+export const GET_GROUP_VOUCHER_BY_HANDLE = gql`
+    ${VOUCHER_FRAGMENT}
+    query GetGroupVoucherByHandle($handle: String!, $now: timestamp!) {
+        vouchers(where: {
+            expires_at: {_gt: $now}, 
+            counter: {_neq: 0}, 
+            badge_class: {group: {handle: {_eq: $handle}}}
+        }, order_by: {id: desc}) {
+            ...VoucherFragment
+        }
+    }
+`
+

@@ -12,6 +12,8 @@ function QrCode(props: QRcodeProps) {
     const [dataUrl, setDataUrl] = useState('')
 
     useEffect(() => {
+        if (! props.text) return
+
         QRCode.toDataURL(
             props.text,
             {
@@ -23,8 +25,12 @@ function QrCode(props: QRcodeProps) {
                 }
             },
             (error: unknown, url: string) => {
-                if (error) console.error('[app-qrcode]:' + JSON.stringify(error))
-                setDataUrl(url)
+                if (error) {
+                    console.error(error)
+                    if (error) console.error('[app-qrcode]:' + JSON.stringify(error))
+                } else {
+                    setDataUrl(url)
+                }
             })
     }, [props.text])
 

@@ -6,6 +6,7 @@ export const PROFILE_FRAGMENT = gql`
         handle
         image_url
         nickname
+        address
     }`
 
 export const PROFILE_DETAIL_FRAGMENT = gql`
@@ -58,6 +59,18 @@ export const GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE = gql`
           source {
            ...ProfileFragment
           }
+        }
+    }
+`
+
+export const GET_PROFILE_BY_HANDLES_OR_ADDRESSES = gql`
+    ${PROFILE_FRAGMENT}
+    query GetProfileByHandles($handles: [String!]!) {
+        handleResult: profiles(where: {handle: {_in: $handles}}) {
+            ...ProfileFragment
+        }
+        addressResult: profiles(where: {address: {_in: $handles}}) {
+            ...ProfileFragment
         }
     }
 `

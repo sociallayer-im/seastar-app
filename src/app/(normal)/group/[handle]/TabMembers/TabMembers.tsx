@@ -1,6 +1,5 @@
 'use client'
 
-import {MemberShipSample} from "@/app/(normal)/group/[handle]/data"
 import {Button} from "@/components/shadcn/Button"
 import NoData from "@/components/NoData"
 import {getAvatar} from "@/utils"
@@ -9,26 +8,35 @@ import {Badge} from "@/components/shadcn/Badge"
 import {useMemo, useState} from "react"
 import {Input} from "@/components/shadcn/Input"
 import DropdownMenu from "@/components/client/DropdownMenu"
+import {Group, Membership, Profile} from '@sola/sdk'
+import LeaveGroupBtn from '@/app/(normal)/group/[handle]/TabMembers/LeaveGroupBtn'
 
 export interface TabMembersProps {
-    members: MemberShipSample[]
+    members: Membership[]
     isManager: boolean
     isMember: boolean
-    handle: string,
+    isOwner:boolean
+    group: Group,
     lang: Dictionary,
-    currUserHandle?: string
+    currProfile?: Profile | null
 }
 
 
 
-export default function TabMembers({members, isManager, isMember , currUserHandle, lang, handle}: TabMembersProps) {
+export default function TabMembers({members, isManager, isMember, currProfile, isOwner, lang, group}: TabMembersProps) {
     const [searchKeyword, setSearchKeyword] = useState('')
 
-    const ManagementOptions = [
-        {label: lang['Member Management'], url: `/group/${handle}/management/member`},
-        {label: lang['Manager Management'], url: `/group/${handle}/management/manager`},
-        {label: lang['Transfer Owner'], url: `/group/${handle}/management/transfer-owner`}
+    let ManagementOptions = [
+        {label: lang['Member Management'], url: `/group/${group.handle}/management/member`},
     ]
+
+    if (isOwner) {
+        ManagementOptions = [
+            ...ManagementOptions,
+            {label: lang['Manager Management'], url: `/group/${group.handle}/management/manager`},
+            {label: lang['Transfer Owner'], url: `/group/${group.handle}/management/transfer-owner`}
+        ]
+    }
 
     const memberList = useMemo(() => {
         const keyword = searchKeyword.toLowerCase().trim()
@@ -54,11 +62,13 @@ export default function TabMembers({members, isManager, isMember , currUserHandl
                     }}/>
             </div>
 
-            <div className="smflex-row-item-center w-full sm:w-auto sm:justify-end grid grid-cols-2 pap-2">
-                {isMember &&
-                    <Button className={`text-xs sm:text-sm sm:h-9 mt-3 sm:mt-0`} variant={'warm'} size={'sm'} >
-                        {lang['Leave Group']}
-                    </Button>
+            <div className="flex-row-item-center sm:w-auto w-full justify-end">
+                {isMember && !isOwner &&
+                    <LeaveGroupBtn
+                        lang={lang}
+                        group={group}
+                        profile={currProfile!}
+                    />
                 }
 
                 <div className="ml-2 mt-3 sm:mt-0">
@@ -81,11 +91,17 @@ export default function TabMembers({members, isManager, isMember , currUserHandl
         {memberList.length === 0 && <NoData />}
 
         <div className="grid grid-cols-1 gap-3 py-4">
+            <a
+               className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
+               href={`/group/${group.handle}/management/invite`}>
+                <i className="uil-plus-circle mr-2 text-2xl" />
+                <div>{lang['Invite Member']}</div>
+            </a>
             {
                 memberList.map((member, i) => {
                     return <a key={i}
-                        className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
-                        href={`/profile/${member.profile.handle}`}>
+                              className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
+                              href={`/profile/${member.profile.handle}`}>
                         <div className="relative mr-2">
                             <img
                                 className="w-7 h-7 rounded-full"
@@ -93,15 +109,15 @@ export default function TabMembers({members, isManager, isMember , currUserHandl
                             {
                                 member.role === 'owner' &&
                                 <img src="/images/icon_owner.png"
-                                    className="w-5 h-5 rounded-full absolute right-0 bottom-0 mr-[-4px] mb-[-4px]"
-                                    alt=""/>
+                                     className="w-5 h-5 rounded-full absolute right-0 bottom-0 mr-[-4px] mb-[-4px]"
+                                     alt=""/>
                             }
                         </div>
                         <div>{member.profile.nickname || member.profile.handle}</div>
                         {member.role !== 'member' &&
                             <Badge variant={"past"} className="ml-2 capitalize">{member.role}</Badge>
                         }
-                        {currUserHandle === member.profile.handle &&
+                        {currProfile?.handle === member.profile.handle &&
                             <Badge variant={"upcoming"} className="ml-2 capitalize">You</Badge>
                         }
                     </a>

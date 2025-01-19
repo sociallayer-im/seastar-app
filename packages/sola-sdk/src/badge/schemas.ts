@@ -130,6 +130,7 @@ export const INVITE_FRAGMENT = gql`
         role
         status
         accepted
+        message
         group {
             ...GroupFragment
         }
@@ -164,6 +165,15 @@ export const GET_BADGE_CLASS_AND_INVITE_BY_HANDLE = gql`
             expires_at: {_gt: $now}, 
             group: {handle: {_eq: $handle}}} order_by: {id: desc}) {
             ...InviteFragment
+        }
+    }
+`
+
+export const GET_INVITE_DETAIL_BY_ID = gql`
+    ${INVITE_DETAIL_FRAGMENT}
+    query GetInviteDetailById($id: bigint!) {
+        group_invites(where: {id: {_eq: $id}}) {
+            ...InviteDetailFragment
         }
     }
 `

@@ -1,6 +1,6 @@
 import {Event} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
-import {GET_PROFILE_EVENTS_BY_HANDLE} from './schemas'
+import {GET_GROUP_EVENT_BY_HANDLE, GET_PROFILE_EVENTS_BY_HANDLE} from './schemas'
 
 export const getStaredEvent = async (authToken: string) => {
     if (!authToken) {
@@ -33,4 +33,14 @@ export const getProfileEventByHandle = async (handle: string) => {
         attends: response.data.attends.map((a: {event: Event}) => a.event) as Event[],
         hosting: response.data.hosting as Event[],
     }
+}
+
+export const getGroupEventByHandle = async (handle: string) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_GROUP_EVENT_BY_HANDLE,
+        variables: { handle }
+    })
+
+    return response.data.events as Event[]
 }

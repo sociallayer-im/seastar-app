@@ -1,14 +1,12 @@
-import {MemberShipSample} from "@/app/(normal)/group/[handle]/edit/data"
 import {Dictionary} from "@/lang"
 import {getAvatar} from "@/utils"
+import {Membership, Group} from '@sola/sdk'
 
 export interface ManagerManagementFormProps {
-    members: MemberShipSample[],
-    group: Solar.Group,
+    members: Membership[],
+    group: Group,
     lang: Dictionary
 }
-
-
 
 export default function ManagerManagementForm({lang, members}: ManagerManagementFormProps) {
     const managers = members.filter(member => member.role === 'manager')
@@ -18,14 +16,14 @@ export default function ManagerManagementForm({lang, members}: ManagerManagement
             <div className="py-6 font-semibold text-center text-xl">{lang['Manager Management']}</div>
 
             <div
-                className="flex flex-row w-full max-w-[800px] mx-auto mb-3 rounded-lg bg-amber-50 p-2 text-sm text-amber-400">
+                className="flex flex-row items-center w-full max-w-[800px] mx-auto mb-3 rounded-lg bg-amber-50 p-2 text-sm text-amber-400">
                 <i className="uil-info-circle mr-2 text-3xl"/>
                 <div>
-                    <div className="font-semibold">The group manager has the following permissions:</div>
-                    <div>1. Send the created badge to others</div>
-                    <div>2. Manage the badge of group</div>
-                    <div>3. Edit the group profile</div>
-                    <div>4. Remove group member</div>
+                    <div className="font-semibold">{lang['The group manager has the following permissions:']}</div>
+                    <div className="text-xs">{lang['1. Send the created badge to others']}</div>
+                    <div className="text-xs">{lang['2. Manage the badge of group']}</div>
+                    <div className="text-xs">{lang['3. Edit the group profile']}</div>
+                    <div className="text-xs">{lang['4. Remove group member']}</div>
                 </div>
             </div>
 
@@ -34,7 +32,7 @@ export default function ManagerManagementForm({lang, members}: ManagerManagement
                     className="mb-3 justify-between cursor-pointer flex-row-item-center shadow rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
                     <div className="flex-row-item-center">
                         <i className="uil-plus-circle text-3xl mr-2 text-green-500" />
-                        <div className="font-semibold">Add a manager</div>
+                        <div className="font-semibold">{lang['Add a manager']}</div>
                     </div>
                 </div>
                 {managers.map((member, i) => {

@@ -1,5 +1,5 @@
 import { getGqlClient } from "../client"
-import { GET_VOUCHER_DETAIL_BY_ID, GET_VOUCHER_DETAIL_BY_HANDLE } from "./schemas"
+import {GET_VOUCHER_DETAIL_BY_ID, GET_VOUCHER_DETAIL_BY_HANDLE, GET_GROUP_VOUCHER_BY_HANDLE} from "./schemas"
 import {type Voucher, VoucherDetail,} from "./types"
 
 /**
@@ -30,5 +30,17 @@ export const getVoucherDetailById = async (id: number) => {
     })
 
     return response.data.vouchers[0] as VoucherDetail || null
+}
+
+
+export const getGroupVoucherByHandle = async (groupHandle: string) => {
+    const client = getGqlClient()
+    const expiresAt = new Date().toISOString()
+    const response = await client.query({
+        query: GET_GROUP_VOUCHER_BY_HANDLE,
+        variables: { handle: groupHandle, now: expiresAt }
+    })
+
+    return response.data.vouchers as Voucher[] || null
 }
 

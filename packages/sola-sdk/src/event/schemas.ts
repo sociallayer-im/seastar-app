@@ -77,3 +77,15 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
         }
     }
 `
+export const GET_GROUP_EVENT_BY_HANDLE = gql`
+    ${EVENT_FRAGMENT}
+    query GetGroupEventsByHandle($handle: String!) {
+        events(where: {
+            display: {_neq: "private"}
+            group: {handle: {_eq: $handle}}, 
+            status: {_neq: "cancel"}
+            }, order_by: {id: desc}) {
+                ...EventFragment
+        }
+    }
+`

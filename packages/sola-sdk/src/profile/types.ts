@@ -3,6 +3,7 @@ export interface Profile {
     handle: string,
     image_url: string | null,
     nickname: string | null,
+    address?: string | null,
 }
 
 export interface ProfileDetail extends Profile {

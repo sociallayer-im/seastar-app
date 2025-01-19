@@ -32,6 +32,7 @@ export interface GroupData {
     currUserIsManager: boolean,
     currUserIsMember: boolean,
     currUserIsIssuer: boolean,
+    currUserIsOwner: boolean,
     members: Membership[],
     tab: string,
 }
@@ -64,6 +65,7 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
     const currUserIsManager = groupsDetail.memberships.some(m => m.profile.handle === currProfile?.handle && (m.role === 'manager' || m.role === 'owner'))
     const currUserIsMember = groupsDetail.memberships.some(m => m.profile.handle === currProfile?.handle)
     const currUserIsIssuer = groupsDetail.memberships.some(m => m.profile.handle === currProfile?.handle && m.role === 'issuer')
+    const currUserIsOwner = owner?.profile.handle === currProfile?.handle
 
     return {
         group: group,
@@ -71,6 +73,7 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
         currUserIsManager,
         currUserIsMember,
         currUserIsIssuer,
+        currUserIsOwner,
         tab: tab || 'events',
         members: [owner, ...managers, ...issuers, ...members]
     } as GroupData

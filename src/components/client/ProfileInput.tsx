@@ -26,6 +26,10 @@ const getEmptyRole = () => {
 export default function ProfileInput({lang, value, onChange}: ProfileInputProps) {
     const [list, setList] = useState<Solar.ProfileSample[]>(value)
 
+    useEffect(() => {
+        setList(value)
+    }, [value])
+
     const updateList = (profiles: Solar.ProfileSample[]) => {
         const _list = profiles.filter(r => !!r.nickname || !!r.id)
         !!onChange && onChange(_list)

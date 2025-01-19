@@ -108,3 +108,14 @@ export const GET_PROFILE_GROUP = gql`
       }
     }
 `
+
+export const GET_MEMBERSHIP_BY_GROUP_ID = gql`
+    ${MEMBERSHIP_FRAGMENT}
+    query GetMembershipByGroupHandle($id: bigint!) {
+        memberships(where: {
+            group: {id: {_eq: $id}},
+        }) {
+            ...MembershipFragment
+        }
+    }
+`
