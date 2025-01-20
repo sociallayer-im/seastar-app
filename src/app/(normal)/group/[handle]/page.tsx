@@ -103,7 +103,7 @@ export default async function GroupPage(props: GroupDataProps) {
                        href={`/group/${group.handle}?tab=badges`}>
                         <span className="font-normal"> {lang['Badges']}</span>
                     </a>
-                    {currUserIsManager &&
+                    {(currUserIsManager || currUserIsIssuer) &&
                         <a className={`${buttonVariants({variant: tab === 'sending' ? 'normal' : 'ghost'})} flex-1`}
                            href={`/group/${group.handle}?tab=sending`}>
                             <span className="font-normal">{lang['Sending']}</span>

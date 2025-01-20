@@ -8,7 +8,7 @@ export default function InviteQrcode() {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-          setlink(window.location.origin)
+          setlink(window.location.href)
         }
     }, [])
 

@@ -8,14 +8,14 @@ export default function InviteSuccessAction({groupHandle, lang}: {groupHandle: s
     const {toast} = useToast()
 
     const handleCopyLink = () => {
-        const url = new URL(window.location.origin)
+        const url = new URL(window.location.href)
         navigator.clipboard.writeText(url.toString())
         toast({
             title: 'Link Copied'
         })
     }
     
-    const toProfile = () => {
+    const toGroup = () => {
         window.location.href = `/group/${groupHandle}`
     }
     
@@ -28,7 +28,7 @@ export default function InviteSuccessAction({groupHandle, lang}: {groupHandle: s
         </Button>
         <Button  variant={'primary'}
             className="mt-4"
-            onClick={toProfile}>
+            onClick={toGroup}>
             {lang['Back to Group']}
         </Button>
     </div>

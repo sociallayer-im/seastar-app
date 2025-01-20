@@ -13,7 +13,6 @@ export default async function TabBadges ({handle, isManager, isIssuer, isMember}
     const {badgeClasses, groupInvites} = await GroupBadgeData(handle)
     const {lang} = await selectLang()
 
-    console.log('groupInvites', groupInvites)
 
     return <Tabs
         groupHandle={handle}
