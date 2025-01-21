@@ -13,6 +13,7 @@ export const BADGE_CLASS_FRAGMENT = gql`
     }`
 
 export const BADGE_CLASS_DETAIL_FRAGMENT = gql`
+    ${PROFILE_FRAGMENT}
     fragment BadgeClassDetailFragment on badge_classes {
         ...BadgeClassFragment
         metadata
@@ -21,9 +22,21 @@ export const BADGE_CLASS_DETAIL_FRAGMENT = gql`
         transferable
         permissions
         created_at
-        can_send_badge
         creator {
           ...ProfileFragment
+        }
+        badges {
+            id
+            image_url
+            title
+            owner_id
+            creator_id
+            created_at
+            content
+            display
+            owner {
+                ...ProfileFragment
+            }
         }
     }
      ${BADGE_CLASS_FRAGMENT}
@@ -32,7 +45,7 @@ export const BADGE_CLASS_DETAIL_FRAGMENT = gql`
 
 export const GET_BADGE_CLASS_DETAIL_BY_BADGE_CLASS_ID = gql`
     ${BADGE_CLASS_DETAIL_FRAGMENT}
-    query GetBadgeClassDetailByBadgeClassId($id: Int!) {
+    query GetBadgeClassDetailByBadgeClassId($id: bigint!) {
         badge_classes(where: {id: {_eq: $id}}) {
             ...BadgeClassDetailFragment
         }
@@ -50,15 +63,22 @@ export const GET_BADGE_CLASS_BY_OWNER_HANDLE = gql`
 
 export const BADGE_FRAGMENT = gql`
     ${BADGE_CLASS_FRAGMENT}
+    ${PROFILE_FRAGMENT}
     fragment BadgeFragment on badges {
         id
         image_url
         title
         owner_id
         creator_id
+        created_at
         display
+        voucher_id
+        content
         badge_class {
             ...BadgeClassFragment
+        }
+        owner {
+            ...ProfileFragment
         }
     }`
 
@@ -67,16 +87,11 @@ export const BADGE_DETAIL_FRAGMENT = gql`
     fragment BadgeDetailFragment on badges {
         ...BadgeFragment
         metadata
-        content
         value
-        created_at
         badge_class {
             ...BadgeClassFragment
         }
         creator {
-            ...ProfileFragment
-        }
-        owner {
             ...ProfileFragment
         }
     }
@@ -108,7 +123,7 @@ export const GET_BADGE_AND_BADGE_CLASS_BY_OWNER_HANDLE = gql`
     ${BADGE_FRAGMENT}
     ${BADGE_CLASS_FRAGMENT}
     query GetBadgeAndBadgeClassByOwnerHandle($handle: String!) {
-        badges(where: {owner: {handle: {_eq: $handle}}, status: {_eq: "accepted"}}, order_by: {id: desc}) {
+        badges(where: {owner: {handle: {_eq: $handle}}, status: {_in: ["accepted", "minted"]}}, order_by: {id: desc}) {
             ...BadgeFragment
         }
         badge_classes(where: {creator: {handle: {_eq: $handle}}}, order_by: {id: desc}) {

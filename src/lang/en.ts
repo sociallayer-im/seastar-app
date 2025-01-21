@@ -269,7 +269,19 @@ export const en = {
     'Invite Message': 'Invite Message',
     'Time': 'Time',
     'Reject': 'Reject',
-    'Accept': 'Accept'
+    'Accept': 'Accept',
+    'Send': 'Send',
+    'Later': 'Later',
+    'Select receivers': 'Select receivers',
+    'Badge amount': 'Badge amount',
+    'Reason': 'Reason',
+    'Create Time': 'Create Time',
+    'Receiver': 'Receiver',
+    'Creator': 'Creator',
+    'Only the creator and the recipient of the badge can view the details': 'Only the creator and the recipient of the badge can view the details',
+    'Voucher Detail': 'Voucher Detail',
+    'You have accepted': 'You have accepted',
+    'Input username or email': 'Input username or email'
 
 }
 

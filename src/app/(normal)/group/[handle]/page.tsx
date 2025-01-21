@@ -1,5 +1,5 @@
 import GroupPageData, {GroupDataProps} from "@/app/(normal)/group/[handle]/data"
-import {getAvatar} from "@/utils"
+import {displayProfileName, getAvatar} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import BtnGroupQrcode from "@/app/(normal)/group/[handle]/BtnGroupQrcode"
 import {Media_Meta} from "@/utils/social_media_meta"
@@ -16,6 +16,13 @@ import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 
 export const dynamic = 'force-dynamic'
+
+export async function generateMetadata(props: GroupDataProps) {
+    const {group} = await GroupPageData(props)
+    const lang = (await selectLang()).lang
+
+    return {title: `${displayProfileName(group)} - ${lang['Group']} | Social Layer`}
+}
 
 export default async function GroupPage(props: GroupDataProps) {
     const {

@@ -5,7 +5,7 @@ import {Button} from "@/components/shadcn/Button"
 import {useEffect, useState} from "react"
 import ProfileInput from "@/components/client/ProfileInput"
 import {Textarea} from "@/components/shadcn/Textarea"
-import {Group, Invite, Profile, sendInvite} from '@sola/sdk'
+import {Group, Profile, sendInvite} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import {displayProfileName, getAuth} from '@/utils'
 import DropdownMenu from '@/components/client/DropdownMenu'

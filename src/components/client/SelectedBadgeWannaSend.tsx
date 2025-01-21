@@ -1,0 +1,60 @@
+'use client'
+
+import {Dictionary} from "@/lang"
+import useModal from "@/components/client/Modal/useModal"
+import {ReactNode} from "react"
+import useSelectBadgeClass from "@/hooks/useSelectBadgeClass"
+import {
+    BadgeClass,
+    getBadgeAndBadgeClassByOwnerHandle, getBadgeClassAndInviteByHandle,
+    Group,
+    ProfileDetail
+} from '@sola/sdk'
+
+export interface SelectedBadgeWannaSendProps {
+    children?: ReactNode
+    lang: Dictionary
+    toProfileHandle?: string
+    profileDetail?: ProfileDetail
+    group?: Group
+}
+
+export default function SelectedBadgeWannaSend({lang, profileDetail, group, children, toProfileHandle}: SelectedBadgeWannaSendProps) {
+
+    const {showLoading, closeModal} = useModal()
+    const {selectBadgeClass} = useSelectBadgeClass()
+
+    const handleSelectedBadge = async () => {
+        const loading = showLoading()
+        try {
+            let profileBadgeClasses: BadgeClass[] = []
+            let groupBadgeClasses: BadgeClass[] = []
+            if (profileDetail) {
+                profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle(profileDetail.handle)).badgeClasses
+            }
+
+            if (group) {
+                profileBadgeClasses = (await getBadgeClassAndInviteByHandle(group.handle)).badgeClasses
+            }
+
+
+            selectBadgeClass(lang, profileBadgeClasses, groupBadgeClasses, (b) => {
+                let sendBadgeUrl = `/badge-class/${b.id}/send-badge`
+                if (toProfileHandle) {
+                    sendBadgeUrl = sendBadgeUrl + `?to=${toProfileHandle}`
+                }
+
+                window.location.href = sendBadgeUrl
+            })
+        } catch (e: unknown) {
+            console.error(e)
+        } finally {
+            closeModal(loading)
+        }
+    }
+
+
+    return <div onClick={handleSelectedBadge}>
+        {children}
+    </div>
+}

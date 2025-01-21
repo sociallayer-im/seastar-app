@@ -8,7 +8,7 @@ export const ProfileBadgeListData = async (handle: string) => {
 
     // move to top if display equals to 'top'
     const owned = badgeData.badges.sort((a, b) => a.display === 'top' ? -1 : b.display === 'top' ? 1 : 0)
-    const created = badgeData.badge_classes.sort((a, b) => a.display === 'top' ? -1 : b.display === 'top' ? 1 : 0)
+    const created = badgeData.badgeClasses.sort((a, b) => a.display === 'top' ? -1 : b.display === 'top' ? 1 : 0)
 
     return {
         created,

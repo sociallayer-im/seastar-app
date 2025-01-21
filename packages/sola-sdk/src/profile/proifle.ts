@@ -2,7 +2,7 @@ import {getGqlClient, getSdkConfig} from "../client"
 import {
     GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE,
     GET_PROFILE_BY_HANDLE,
-    GET_PROFILE_BY_HANDLES_OR_ADDRESSES
+    GET_PROFILE_BY_HANDLES_OR_ADDRESSES, GET_PROFILE_BY_ID
 } from "./schemas"
 import {ProfileDetail} from "./types"
 import Profile = Solar.Profile
@@ -27,6 +27,25 @@ export const getProfileDetailByHandle = async (handle: string) => {
         follower_count: response.data.follower_count.aggregate.count,
         following_count: response.data.following_count.aggregate.count
     } as ProfileDetail
+}
+
+/**
+ * Get profile detail by id
+ * @param id
+ */
+
+export const getProfileDetailById = async (id: number) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_PROFILE_BY_ID,
+        variables: {id}
+    })
+
+    if (!response.data.profiles || !response.data.profiles.length) {
+        return null
+    }
+
+    return response.data.profiles[0] as ProfileDetail
 }
 
 /**

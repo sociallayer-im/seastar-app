@@ -7,22 +7,76 @@ import {useEffect, useState} from "react"
 import ProfileInput from "@/components/client/ProfileInput"
 import {Input} from "@/components/shadcn/Input"
 import {Textarea} from "@/components/shadcn/Textarea"
+import {BadgeClassDetail, Profile, sendAccountVoucher, sendCodeVoucher} from '@sola/sdk'
+import {getAuth} from '@/utils'
+import useModal from '@/components/client/Modal/useModal'
 
 
 export interface SendBadgeFormProps {
-    badgeClass: Solar.BadgeClass
+    badgeClass: BadgeClassDetail
     lang: Dictionary
 }
 
 export default function SendBadgeForm({badgeClass, lang}: SendBadgeFormProps) {
-    const [isVoucher, setIsVoucher] = useState(true)
-    const [receivers, setReceivers] = useState<Solar.ProfileSample[]>([])
+    const {showLoading, closeModal} = useModal()
+
+    const [isCodeVoucher, setIsCodeVoucher] = useState(true)
+    const [receivers, setReceivers] = useState<Profile[]>([])
     const [counter, setCounter] = useState('')
-    const [reason, setReason] = useState('')
+    const [reason, setReason] = useState(badgeClass.content || '')
+    const [error, setError] = useState('')
 
     useEffect(() => {
-        console.log('receivers', receivers)
-    }, [receivers])
+        setError('')
+    }, [isCodeVoucher])
+
+    const handleSendCodeVoucher = async () => {
+        if (!!counter && Number(counter) <= 0) {
+            setError('Please enter a valid amount')
+            return
+        }
+
+        const authToken = getAuth()
+        const voucher = await sendCodeVoucher({
+            authToken: authToken!,
+            amount: counter ? Number(counter) : undefined,
+            badgeClassId: badgeClass.id,
+            message: reason
+        })
+        location.href = `/voucher/${voucher.id}/share`
+    }
+
+    const handleSendAccountVoucher = async () => {
+        if (!receivers.length) {
+            setError('Please enter receivers')
+            return
+        }
+
+        const authToken = getAuth()
+        const vouchers  = await sendAccountVoucher({
+            authToken: authToken!,
+            badgeClassId: badgeClass.id,
+            message: reason,
+            receivers: receivers.map(item => item.handle || item.nickname) as string[]
+        })
+        location.href = `/voucher/${vouchers[0].id}/share`
+    }
+
+    const handleSend = async () => {
+        const loading = showLoading()
+        try {
+            if (isCodeVoucher) {
+                await handleSendCodeVoucher()
+            } else {
+                await handleSendAccountVoucher()
+            }
+        } catch (e: unknown) {
+            console.error('[handleSend]: ', e)
+            setError((e as Error).message || 'Send fail')
+        } finally {
+            closeModal(loading)
+        }
+    }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
@@ -45,15 +99,15 @@ export default function SendBadgeForm({badgeClass, lang}: SendBadgeFormProps) {
 
 
             <div className="flex flex-col max-w-[500px] mx-auto rounded-lg">
-                <div className={`${isVoucher ? 'border' : ''} p-3 rounded-lg`}>
+                <div className={`${isCodeVoucher ? 'border' : ''} p-3 rounded-lg`}>
                     <div className="flex-row-item-center justify-between">
-                        <div className="font-semibold">Badge amount</div>
-                        <Checkbox checked={isVoucher}
-                            className="mr-1"
-                            onClick={() => setIsVoucher(!isVoucher)}/>
+                        <div className="font-semibold">{lang['Badge amount']}</div>
+                        <Checkbox checked={isCodeVoucher}
+                                  className="mr-1"
+                                  onClick={() => setIsCodeVoucher(!isCodeVoucher)}/>
                     </div>
                     <div className="max-h-0 overflow-auto mt-3"
-                        style={isVoucher ? {maxHeight: 'initial'} : undefined}>
+                         style={isCodeVoucher ? {maxHeight: 'initial'} : undefined}>
                         <Input
                             placeholder={'Unlimited'}
                             type="number"
@@ -68,16 +122,17 @@ export default function SendBadgeForm({badgeClass, lang}: SendBadgeFormProps) {
                 </div>
 
 
-                <div className={`${!isVoucher ? 'border' : ''} p-3 rounded-lg`}>
+                <div className={`${!isCodeVoucher ? 'border' : ''} p-3 rounded-lg`}>
                     <div className="flex-row-item-center justify-between">
-                        <div className="font-semibold">Select receivers</div>
-                        <Checkbox checked={!isVoucher}
-                            className="mr-1"
-                            onClick={() => setIsVoucher(!isVoucher)}/>
+                        <div className="font-semibold">{lang['Select receivers']}</div>
+                        <Checkbox checked={!isCodeVoucher}
+                                  className="mr-1"
+                                  onClick={() => setIsCodeVoucher(!isCodeVoucher)}/>
                     </div>
                     <div className="max-h-0 overflow-auto mt-3"
-                        style={!isVoucher ? {maxHeight: 'initial'} : undefined}>
+                         style={!isCodeVoucher ? {maxHeight: 'initial'} : undefined}>
                         <ProfileInput
+                            placeholder={lang['Input username or email']}
                             lang={lang}
                             value={receivers}
                             onChange={setReceivers}
@@ -85,12 +140,18 @@ export default function SendBadgeForm({badgeClass, lang}: SendBadgeFormProps) {
                     </div>
                 </div>
 
-
+                <div className="text-red-500 text-sm my-2">{error}</div>
             </div>
 
+
             <div className="grid grid-cols-1 gap-2 mt-4 max-w-[500px] mx-auto rounded-lg">
-                <Button variant="special">Send</Button>
-                <Button variant="secondary">later</Button>
+                <Button variant="special"
+                        onClick={handleSend}
+                >{lang['Send']}</Button>
+                <Button variant="secondary"
+                        onClick={() => {window.location.href = `/badge-class/${badgeClass.id}`}}>
+                    {lang['Later']}
+                </Button>
             </div>
         </div>
     </div>

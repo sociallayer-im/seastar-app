@@ -1,7 +1,6 @@
 import {ProfileData, ProfilePageParams, ProfilePageSearchParams} from "@/app/(normal)/profile/[handle]/data"
 import {cookies} from 'next/headers'
 import {redirect} from "next/navigation"
-import {getAvatar} from "@/utils"
 import BtnShowAddress from "@/app/(normal)/profile/[handle]/BtnShowAddress"
 import {selectLang} from "@/app/actions"
 import BtnProfileQrcode from "@/app/(normal)/profile/[handle]/BtnProfileQrcode"
@@ -14,6 +13,9 @@ import {Media_Meta} from "@/utils/social_media_meta"
 import CopyText from "@/components/client/CopyText"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
+import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
+
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({params, searchParams}: { params: ProfilePageParams, searchParams: ProfilePageSearchParams }) {
     const data = await ProfileData({params, searchParams, cookies: cookies()})
@@ -119,11 +121,17 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                             </div>
                         }
 
-                        <a href="/send-badge"
-                           className={`${buttonVariants({variant: 'special'})} w-full my-4`}>
-                            <i className="uil-message mr-1 text-xl"/>
-                            <span>{lang['Send a badge']}</span>
-                        </a>
+                        {!!currProfile && <SelectedBadgeWannaSend
+                                lang={lang}
+                                toProfileHandle={profile.handle !== currProfile.handle ? profile.handle : undefined}
+                                profileDetail={currProfile}>
+                                <div
+                                    className={`${buttonVariants({variant: 'special'})} w-full my-4 cursor-pointer`}>
+                                    <i className="uil-message mr-1 text-xl"/>
+                                    <span>{lang['Send a badge']}</span>
+                                </div>
+                            </SelectedBadgeWannaSend>
+                        }
                     </div>
                 </div>
 

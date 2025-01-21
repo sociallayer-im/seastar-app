@@ -6,8 +6,7 @@ import {
     GET_PROFILE_MEMBERSHIPS
 } from "./schemas"
 import {Group, GroupDetail, GroupWithOwner, MembershipDetail} from "./types"
-import {Invite} from '../badge'
-import {getProfileByHandlesOrAddresses} from '../profile'
+import {checkAndGetProfileByHandlesOrAddresses} from '../uitls'
 
 /**
  * Get group detail by handle
@@ -226,17 +225,7 @@ export const sendInvite = async (
     auth_token: string,
 ) => {
     const handlesOrAddresses = receivers.filter(item => !item.includes('@'))
-    const {handleResult, addressResult} = await getProfileByHandlesOrAddresses(handlesOrAddresses)
-
-    handlesOrAddresses.forEach((item, index) => {
-        const hasHandleProfile = handleResult.some(h => h.handle === item)
-        if (!hasHandleProfile) {
-            const hasAddressProfile = addressResult.some(a => a.address === item)
-            if (!hasAddressProfile) {
-                throw new Error(`Profile [${item}] not found`)
-            }
-        }
-    })
+    const {handleResult, addressResult} = await checkAndGetProfileByHandlesOrAddresses(handlesOrAddresses)
 
     const memberShips = await getMembershipByGroupId(groupId)
     const handleHasJoined = memberShips.find(h => handleResult.some(m => m.handle === h.profile.handle))

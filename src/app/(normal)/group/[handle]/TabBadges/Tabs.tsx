@@ -61,7 +61,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
         {((tab === 'created' && !created.length) || tab === 'inviting' && !inviting.length) && <NoData/>}
 
         {tab === 'created' &&
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 py-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-4">
                 {
                     created.map((badgeClass, i) => {
                         const title = badgeClass.badge_type === 'private' && !isManager ? '🔒' : badgeClass.title
@@ -91,7 +91,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
         }
 
         {tab === 'inviting' &&
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 py-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-4">
                 {
                     inviting.map((invite, i) => {
                         return <div key={i}

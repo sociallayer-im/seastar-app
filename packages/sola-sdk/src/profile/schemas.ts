@@ -74,3 +74,22 @@ export const GET_PROFILE_BY_HANDLES_OR_ADDRESSES = gql`
         }
     }
 `
+
+export const GET_PROFILE_BY_ID = gql`
+    ${PROFILE_DETAIL_FRAGMENT}
+    query GetProfileByHandle($id: bigint!) {
+        profiles(where: {id: {_eq: $id}}) {
+            ...ProfileDetailFragment
+        }
+        following_count: followings_aggregate(where: {source: {id: {_eq: $id}}}) {
+          aggregate {
+            count
+          }
+        }
+        follower_count: followings_aggregate(where: {target: {id: {_eq: $id}}}) {
+          aggregate {
+            count
+          }
+        }
+    }
+`

@@ -17,6 +17,10 @@ export const selectLang = async function () {
     }
 }
 
+export const getServerSideAuth = async () => {
+    return cookies().get(AUTH_FIELD)?.value
+}
+
 export const getCurrProfile = async function () {
     const authToken = cookies().get(AUTH_FIELD)?.value
     if (!authToken) {

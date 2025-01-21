@@ -331,6 +331,10 @@ export function displayProfileName(profile: Profile) {
     return profile.nickname || profile.handle
 }
 
+export function clientToSignIn () {
+    window.location.href = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${window.location.href}`
+}
+
 
 
 

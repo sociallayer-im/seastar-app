@@ -1,13 +1,14 @@
 import {Dictionary} from "@/lang"
 import useModal from "@/components/client/Modal/useModal"
+import Image from 'next/image'
 
 export default function useSelectBadgeClass() {
     const {openModal} = useModal()
 
     const selectBadgeClass = (
         lang: Dictionary, 
-        profileBadgeClasses: Solar.BadgeClass[], 
-        groupBadgeClasses: Solar.BadgeClass[],
+        profileBadgeClasses: any[],
+        groupBadgeClasses: any[],
         onSelect?: (badgeClass: Solar.BadgeClass) => void
     ) => {
         openModal({
@@ -39,30 +40,40 @@ export interface DialogSelectedBadgeProps {
 
 export function DialogSelectedBadge({lang, ...props}: DialogSelectedBadgeProps) {
     return <div className="w-[360px] rounded-lg shadow p-4" style={{background: '#f8f9f8'}}>
-        <div className="mb-2  border-white border-2 rounded-lg p-3" style={{background: 'rgba(236,238,250,.2)'}}>
-            <div className="font-semibold mb-2">{lang['Choose a badge from you created']}</div>
-            <div className="flex-row-item-center overflow-y-hidden overflow-x-scroll">
-                {props.profileBadgeClasses.map(b => {
-                    return <div onClick={() => {{props.onSelect?.(b);props.close?.()}}}
-                        className="flex-shrink-0 flex-grow-0 mr-2 cursor-pointer w-16 h-16 rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"
-                        key={b.id}>
-                        <img className="w-[50px] h-[50px] rounded-full" src={b.image_url!} alt=""/>
-                    </div>
-                })}
+        {!!props.profileBadgeClasses.length &&
+            <div className="mb-2  border-white border-2 rounded-lg p-3" style={{background: 'rgba(236,238,250,.2)'}}>
+                <div className="font-semibold mb-2">{lang['Choose a badge from you created']}</div>
+                <div className="flex-row-item-center overflow-y-hidden overflow-x-scroll py-2">
+                    {props.profileBadgeClasses.map(b => {
+                        return <div onClick={() => {
+                            {
+                                props.onSelect?.(b);
+                                props.close?.()
+                            }
+                        }}
+                                    className="flex-shrink-0 flex-grow-0 mr-2 cursor-pointer w-16 h-16 rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"
+                                    key={b.id}>
+                            <Image src={b.image_url!} width={50} height={50} alt="" className="rounded-full" />
+                        </div>
+                    })}
+                </div>
             </div>
-        </div>
+        }
 
-        { !!props.groupBadgeClasses.length &&
+        {!!props.groupBadgeClasses.length &&
             <div className="mb-2 bg-[rgba(236,238,250,.2)] border-white border-2 rounded-lg p-3"
-                style={{background: 'rgba(236,238,250,.2)'}}
+                 style={{background: 'rgba(236,238,250,.2)'}}
             >
                 <div className="font-semibold mb-2">{lang['Choose a badge from group']}</div>
                 <div className="flex-row-item-center overflow-y-hidden overflow-x-scroll">
                     {props.groupBadgeClasses.map(b => {
-                        return <div onClick={() => {props.onSelect?.(b);props.close?.()}}
-                            className="flex-shrink-0 flex-grow-0 mr-2 cursor-pointer w-16 h-16 rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"
-                            key={b.id}>
-                            <img className="w-[50px] h-[50px] rounded-full" src={b.image_url!} alt=""/>
+                        return <div onClick={() => {
+                            props.onSelect?.(b);
+                            props.close?.()
+                        }}
+                                    className="flex-shrink-0 flex-grow-0 mr-2 cursor-pointer w-16 h-16 rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"
+                                    key={b.id}>
+                            <Image src={b.image_url!} width={50} height={50} alt="" className="rounded-full" />
                         </div>
                     })}
                 </div>

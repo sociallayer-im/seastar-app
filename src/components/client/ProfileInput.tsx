@@ -9,6 +9,7 @@ import {debounce} from 'lodash'
 interface ProfileInputProps {
     value: Array<Solar.ProfileSample>
     lang: Dictionary
+    placeholder?: string
     onChange?: (value: Array<Solar.ProfileSample>) => void
 }
 
@@ -23,7 +24,7 @@ const getEmptyRole = () => {
     } as Solar.ProfileSample
 }
 
-export default function ProfileInput({lang, value, onChange}: ProfileInputProps) {
+export default function ProfileInput({lang, value, onChange, placeholder}: ProfileInputProps) {
     const [list, setList] = useState<Solar.ProfileSample[]>(value)
 
     useEffect(() => {
@@ -63,6 +64,7 @@ export default function ProfileInput({lang, value, onChange}: ProfileInputProps)
             list.map((item, i) => <RoleOption
                 item={item}
                 key={i}
+                placeholder={placeholder}
                 lang={lang}
                 showAddBtn={i === list.length - 1}
                 onAdd={handleAddNewRole}
@@ -82,9 +84,10 @@ export interface RoleOptionProps {
     onAdd?: () => void
     onRemove?: () => void
     showAddBtn?: boolean
+    placeholder?: string
 }
 
-function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange}: RoleOptionProps) {
+function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placeholder}: RoleOptionProps) {
     const [searchResult, setSearchResult] = useState<Solar.ProfileSample[]>([])
     const {current: dropDownTrigger} = useRef<DropdownTrigger>({trigger: null})
 
@@ -138,7 +141,7 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange}: RoleOpt
                         </div>}
                         value={item.nickname || item.handle}
                         className="w-full"
-                        placeholder={lang['Input name']}/>
+                        placeholder={placeholder || lang['Input name']}/>
                 </DropdownMenu>
             </div>
         </div>

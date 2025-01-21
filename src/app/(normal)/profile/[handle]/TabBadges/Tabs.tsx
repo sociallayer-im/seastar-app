@@ -33,7 +33,7 @@ export default function Tabs({labels, created, owned, isSelf}: {
         {(tab=== 'collected' && !owned.length) || (tab === 'created' && !created.length) && <NoData />}
 
         {tab === 'collected' &&
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 py-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-4">
                 {owned.map((badge, i) => {
                     const title = badge.badge_class.badge_type === 'private' && !isSelf ? '🔒' : badge.badge_class.title
                     const cover = badge.badge_class.badge_type === 'private' && !isSelf ? '/images/badge_private.png' : badge.badge_class.image_url
@@ -62,7 +62,7 @@ export default function Tabs({labels, created, owned, isSelf}: {
         }
 
         { tab === 'created' &&
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 py-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-4">
                 {created.map((badgeClass, i) => {
                     const title = badgeClass.badge_type === 'private' && !isSelf ? '🔒' : badgeClass.title
                     const cover = badgeClass.badge_type === 'private' && !isSelf ? '/images/badge_private.png' : badgeClass.image_url

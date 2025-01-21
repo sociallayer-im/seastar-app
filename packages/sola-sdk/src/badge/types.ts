@@ -20,6 +20,7 @@ export interface BadgeClassDetail extends BadgeClass {
     can_send_badge: string,
     creator: Profile,
     counter:number
+    badges: Badge[]
 }
 
 export interface Badge {
@@ -30,16 +31,17 @@ export interface Badge {
     creator_id: number
     display: string | null,
     badge_class: BadgeClass,
+    owner: Profile,
+    created_at: string
+    content: string | null,
+    voucher_id: number | null
 }
 
 export interface BadgeDetail extends Badge {
     metadata: string | null,
-    content: string | null,
     value: string | null,
-    created_at: string,
     badge_class: BadgeClass,
     creator: Profile,
-    owner: Profile,
 }
 
 export interface Invite {

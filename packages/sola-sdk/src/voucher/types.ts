@@ -1,4 +1,4 @@
-import {Badge, BadgeClass, Profile} from '@sola/sdk'
+import {BadgeDetail, BadgeClass, Profile} from '@sola/sdk'
 
 
 export interface Voucher {
@@ -9,9 +9,13 @@ export interface Voucher {
     expires_at: string | null
     created_at: string,
     badge_class: BadgeClass,
+    code?: string
+    message: string | null
+    strategy: 'account' | 'code' | 'event' | 'address' | 'email'
+    receiver_id: number | null
 }
 
 export interface VoucherDetail extends Voucher {
     sender: Profile
-    badges: Badge[]
+    badges: BadgeDetail[]
 }

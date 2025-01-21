@@ -6,7 +6,7 @@ export default async function TabVouchers(props: {handle: string}) {
     const vouchers = await GroupVouchersData(props.handle)
 
     return <div className="py-4">
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 py-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-4">
             {vouchers.map((voucher, i) => {
                 return <a key={i} href={`/voucher/${voucher.id}`}
                     className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">

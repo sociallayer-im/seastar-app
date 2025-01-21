@@ -4,7 +4,7 @@ import VoucherQRCode from "@/app/(normal)/voucher/[voucherid]/share/VoucherQRCod
 import ShareVoucherAction from "@/app/(normal)/voucher/[voucherid]/share/ShareVoucherAction"
 
 export default async function ShareVoucherPage(props: ShareVoucherPageDataProps) {
-    const {voucher} = await ShareVoucherPageData(props)
+    const {voucher, voucherCode} = await ShareVoucherPageData(props)
     const {lang} = await selectLang()
 
     return <div className="min-h-[calc(100svh-48px)] w-full overflow-auto bg-[#f8f8f8]">
@@ -26,14 +26,14 @@ export default async function ShareVoucherPage(props: ShareVoucherPageDataProps)
                 </div>
                 <div className="font-semibold text-xl mt-6">{lang['Scan the QR Code']}</div>
                 <div className="p-4 bg-white my-3 mx-0">
-                    <VoucherQRCode voucherId={voucher.id} code={''} />
+                    <VoucherQRCode voucherId={voucher.id} code={voucherCode} />
                 </div>
             </div>
 
             <ShareVoucherAction
                 lang={lang}
                 voucherId={voucher.id}
-                code={''}
+                code={voucherCode}
                 badgeName={voucher.badge_class.title}
                 profileHandle={voucher.sender.handle}
             />
