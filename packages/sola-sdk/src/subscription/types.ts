@@ -1,5 +1,10 @@
-import {InviteDetail} from '@sola/sdk'
+import {InviteDetail} from '../badge'
+import {Voucher} from '../voucher'
 
-export interface SubscriptionResponse {
+export interface SubscriptionInviteResponse {
     invites: InviteDetail[]
+}
+
+export interface SubscriptionVoucherResponse {
+    vouchers: Voucher[]
 }
