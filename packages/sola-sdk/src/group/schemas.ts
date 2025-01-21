@@ -119,3 +119,18 @@ export const GET_MEMBERSHIP_BY_GROUP_ID = gql`
         }
     }
 `
+
+export const GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS = gql`
+    ${GROUP_FRAGMENT}
+    query GetAvailableBadgeClassCreatorGroups($handle: String!) {
+        groups(where: {
+            status: {_neq: "freezed"}, 
+            memberships: {
+                role: {_in: ["owner", "manager", "issuer"]}, 
+                profile: {handle: {_eq: $handle}}
+            }
+        }) {
+            ...GroupFragment
+        }
+    }
+`

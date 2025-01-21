@@ -1,5 +1,6 @@
 import {getGqlClient, getSdkConfig} from "../client"
 import {
+    GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS,
     GET_GROUP_DETAIL_BY_HANDLE,
     GET_MEMBERSHIP_BY_GROUP_ID,
     GET_PROFILE_GROUP,
@@ -289,5 +290,15 @@ export const rejectInvite = async (inviteId: number, auth_token: string) => {
     if (!response.ok) {
         throw new Error(`Reject invite failed code: ${response.status}`)
     }
+}
+
+export const getAvailableBadgeClassCreatorGroups = async (profileHandle: string) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS,
+        variables: {handle: profileHandle}
+    })
+
+    return response.data.groups as Group[]
 }
 

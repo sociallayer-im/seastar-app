@@ -281,7 +281,16 @@ export const en = {
     'Only the creator and the recipient of the badge can view the details': 'Only the creator and the recipient of the badge can view the details',
     'Voucher Detail': 'Voucher Detail',
     'You have accepted': 'You have accepted',
-    'Input username or email': 'Input username or email'
+    'Input username or email': 'Input username or email',
+    'Basic Badge': 'Basic Badge',
+    'Basic badge, evaluation of others': 'Basic badge, evaluation of others',
+    'Privacy Badge': 'Privacy Badge',
+    'Only receivers can see the badge detail': 'Only receivers can see the badge detail',
+    'Badge Image': 'Badge Image',
+    'Badge Name': 'Badge Name',
+    'Naming your badge': 'Naming your badge',
+    'Input reason': 'Input reason',
+    'Person': 'Person',
 
 }
 

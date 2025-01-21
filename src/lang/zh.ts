@@ -284,4 +284,13 @@ export const zh: Dictionary = {
     'Voucher Detail': '凭证详情',
     'You have accepted': '您已接收',
     'Input username or email':'输入用户名或邮箱',
+    'Basic Badge': '基础徽章',
+    'Basic badge, evaluation of others': '基础徽章，评价他人',
+    'Privacy Badge': '隐私徽章',
+    'Only receivers can see the badge detail': '只有接收者可以看到徽章详情',
+    'Badge Image': '徽章图片',
+    'Badge Name': '徽章名称',
+    'Naming your badge': '为您的徽章命名',
+    'Input reason': '输入原因',
+    'Person': '个人',
 }
