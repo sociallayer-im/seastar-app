@@ -22,7 +22,7 @@ export default async function BadgePage(props: BadgePageDataProps) {
 }
 
 
-export async function PublicBadge ({badge, isOwner, groupCreator}: Awaited<ReturnType<typeof BadgePageData>>) {
+async function PublicBadge ({badge, isOwner, groupCreator}: Awaited<ReturnType<typeof BadgePageData>>) {
     const {lang} = await selectLang()
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
         <div className="w-full flex flex-col justify-start items-start">
@@ -108,7 +108,7 @@ export async function PublicBadge ({badge, isOwner, groupCreator}: Awaited<Retur
     </div>
 }
 
-export async function PrivateBadge({groupCreator, badge}: Awaited<ReturnType<typeof BadgePageData>>) {
+async function PrivateBadge({groupCreator, badge}: Awaited<ReturnType<typeof BadgePageData>>) {
     const {lang} = await selectLang()
 
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">

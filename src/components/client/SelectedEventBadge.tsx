@@ -46,10 +46,10 @@ export default function SelectedEventBadge({
                 groupBadgeClasses = await getGroupBadgeClasses(groupHost.item_id!, 20)
             }
 
-            selectBadgeClass(lang, profileBadgeClasses, groupBadgeClasses, (b) => {
+           /* selectBadgeClass(lang, profileBadgeClasses, groupBadgeClasses, (b) => {
                 setEvent({...event, badge_class_id: b.id})
                 setBadgeClass(b)
-            })
+            })*/
         } catch (e: unknown) {
             console.error(e)
         } finally {

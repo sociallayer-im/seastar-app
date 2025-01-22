@@ -195,10 +195,10 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
                 groupBadgeClasses = await getGroupBadgeClasses(groupHost.item_id!, 20)
             }
             closeModal(loading)
-            selectBadgeClass(lang, profileBadgeClasses, groupBadgeClasses, (badgeClass) => {
+           /* selectBadgeClass(lang, profileBadgeClasses, groupBadgeClasses, (badgeClass) => {
                 setTicketDraft({...ticketDraft, check_badge_class_id: badgeClass.id})
                 closeModal()
-            })
+            })*/
         } catch (e: unknown) {
             closeModal(loading)
             console.error(e)
