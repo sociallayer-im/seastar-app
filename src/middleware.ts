@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import {getGroupSubdomain} from '@/utils'
 
 export function middleware(request: NextRequest) {
     const headers = new Headers(request.headers)
+    const groupHandle = getGroupSubdomain(request.headers.get('Host'))
     headers.set("x-current-path", request.url)
+    !!groupHandle && headers.set("x-event-home", groupHandle)
+
     const response = NextResponse.next({ headers })
 
     const url = new URL(request.url)
@@ -18,3 +22,8 @@ export function middleware(request: NextRequest) {
 export const config = {
     matcher: ['/((?!api|/images|/fonts|favicon.ico|sitemap.xml|robots.txt).*)'],
 }
+
+
+
+
+

@@ -335,6 +335,21 @@ export function clientToSignIn () {
     window.location.href = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${window.location.href}`
 }
 
+export function getGroupSubdomain(url?: string | null) {
+    if (!url) return null
+    console.log('url', url)
+    try {
+        const parts = url.split('.')
+        if (parts.length > 2 && !['app', 'www'].includes(parts[0])) {
+            return parts[0]
+        }
+        return null
+    } catch (e) {
+        console.error("Invalid URL:", e);
+        return null;
+    }
+}
+
 
 
 
