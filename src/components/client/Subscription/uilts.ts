@@ -15,6 +15,9 @@ export const newInviteDisplayed = (inviteId: number) => {
 }
 
 export const newVoucherDisplayed = (voucherId: number) => {
+    // if current page is send-badge, do not display voucher
+    if (window.location.href.includes('send-badge')) return true
+
     const history = sessionStorage.getItem('subscription_display_history')
     if (!history) {
         return false
