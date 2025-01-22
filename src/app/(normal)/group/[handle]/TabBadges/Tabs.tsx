@@ -5,20 +5,22 @@ import {Button, buttonVariants} from "@/components/shadcn/Button"
 import type {Dictionary} from "@/lang"
 import NoData from "@/components/NoData"
 import {getAvatar} from "@/utils"
-import {Invite, BadgeClass} from '@sola/sdk'
+import {Invite, BadgeClass, ProfileDetail, Group} from '@sola/sdk'
 import Image from 'next/image'
+import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 
 export interface TabBadgesProps {
-    groupHandle: string
+    group: Group
     created: BadgeClass[]
     inviting: Invite[]
     lang: Dictionary
     isManager: boolean
     isIssuer: boolean
     isMember: boolean
+    currProfile?: ProfileDetail
 }
 
-export default function Tabs({created, lang, isManager, inviting, isIssuer, groupHandle, isMember}: TabBadgesProps) {
+export default function Tabs({created, lang, isManager, inviting, isIssuer, group, isMember, currProfile}: TabBadgesProps) {
     const [tab, setTab] = useState<'created' | 'inviting'>('created')
 
     return <div className="py-4">
@@ -27,18 +29,22 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                 {created.length === 100 ? '99+' : created.length}</strong> {lang['Badges']}</div>
             <div className="flex-row-item-center">
                 {(isManager || isIssuer) &&
-                    <a className={`${buttonVariants({variant: 'special', size: 'sm'})} text-xs sm:text-sm sm:h-9`}
-                        href={`/badge/create?group=${groupHandle}`}>
-                        <i className="uil-message text-base"/>
-                        {lang['Send a badge']}
-                    </a>
+                    <SelectedBadgeWannaSend
+                        group={group}
+                        lang={lang}
+                        profileDetail={currProfile}>
+                        <div className={`${buttonVariants({variant: 'special', size: 'sm'})} cursor-pointer text-xs sm:text-sm sm:h-9`}>
+                            <i className="uil-message text-base"/>
+                            {lang['Send a badge']}
+                        </div>
+                    </SelectedBadgeWannaSend>
                 }
 
-                {isMember && !isIssuer && !isManager &&
+                {isMember && !isIssuer && !isManager && false &&
                     <Button className={`text-xs sm:text-sm sm:h-9`} size={'sm'} onClick={() => {
                         alert('Request to be Issuer')
                     }}>
-                        {lang['Request to be Issuer']}
+                    {lang['Request to be Issuer']}
                     </Button>
                 }
             </div>

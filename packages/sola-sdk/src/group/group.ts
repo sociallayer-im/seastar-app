@@ -1,7 +1,7 @@
 import {getGqlClient, getSdkConfig} from "../client"
 import {
     GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS,
-    GET_GROUP_DETAIL_BY_HANDLE,
+    GET_GROUP_DETAIL_BY_HANDLE, GET_GROUP_DETAIL_BY_ID,
     GET_MEMBERSHIP_BY_GROUP_ID,
     GET_PROFILE_GROUP,
     GET_PROFILE_MEMBERSHIPS
@@ -18,6 +18,20 @@ export const getGroupDetailByHandle = async (groupHandle: string) => {
     const response = await client.query({
         query: GET_GROUP_DETAIL_BY_HANDLE,
         variables: {handle: groupHandle}
+    })
+
+    if (!response.data.groups || !response.data.groups.length) {
+        return null
+    }
+
+    return response.data.groups[0] as GroupDetail
+}
+
+export const getGroupDetailById = async (groupId: number) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_GROUP_DETAIL_BY_ID,
+        variables: {id: groupId}
     })
 
     if (!response.data.groups || !response.data.groups.length) {

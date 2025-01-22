@@ -4,7 +4,7 @@ import IssueBadgeForm from "@/app/(normal)/badge-class/[badgeclassid]/send-badge
 import {redirect} from 'next/navigation'
 
 export default async function IssueBadgePage (props: BadgeClassPageDataProps) {
-    const {badgeClass} = await BadgeClassPageData(props)
+    const {badgeClass, toProfile, isPrivate} = await BadgeClassPageData(props)
     const {lang} = await selectLang()
     const currProfile = await getCurrProfile()
 
@@ -13,6 +13,8 @@ export default async function IssueBadgePage (props: BadgeClassPageDataProps) {
     }
 
     return <IssueBadgeForm
+        isPrivate={isPrivate}
+        toProfile={toProfile}
         lang={lang}
         badgeClass={badgeClass}/>
 }

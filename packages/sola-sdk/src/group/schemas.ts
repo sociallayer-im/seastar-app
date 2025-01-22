@@ -77,6 +77,15 @@ export const GET_GROUP_DETAIL_BY_HANDLE = gql`
     }
 `
 
+export const GET_GROUP_DETAIL_BY_ID = gql`
+    ${GROUP_DETAIL_FRAGMENT}
+    query GetGroupByHandle($id: bigint!) {
+        groups(where: {id: {_eq: $id}}, limit: 1) {
+            ...GroupDetailFragment
+        }
+    }
+`
+
 export const GET_PROFILE_MEMBERSHIPS = gql`
     ${MEMBERSHIP_DETAIL_FRAGMENT}
     query GetProfileMemberships($handle: String!) {

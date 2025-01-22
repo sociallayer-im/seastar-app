@@ -293,4 +293,5 @@ export const zh: Dictionary = {
     'Naming your badge': '为您的徽章命名',
     'Input reason': '输入原因',
     'Person': '个人',
+    'Send a badge to [1]': '给[1]发送徽章',
 }

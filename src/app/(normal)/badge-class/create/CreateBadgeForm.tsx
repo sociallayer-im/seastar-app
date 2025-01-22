@@ -25,7 +25,6 @@ export interface CreatorOpt extends Profile {
 
 export interface BadgeClassDraft extends BadgeClass {
     content: string
-    group_id: number | unknown
 }
 
 export default function CreateBadgeForm({
@@ -33,7 +32,6 @@ export default function CreateBadgeForm({
                                             badgeType,
                                             returnPage,
                                             groupSenderId,
-                                            receiverHandle,
                                             currProfile,
                                             availableGroupCreator
                                         }: CreateBadgeFormProps) {
@@ -50,7 +48,7 @@ export default function CreateBadgeForm({
         display: null,
         badge_type: badgeType,
         content: '',
-        group_id: groupSenderId
+        group_id: groupSenderId || null
     })
 
     const [imgError, setImgError] = useState('')
@@ -124,7 +122,7 @@ export default function CreateBadgeForm({
                 if (returnPage) {
                     window.location.href=returnPage
                 } else {
-                    window.location.href = `/badge-class/${badgeClass.id}/send-badge`
+                    window.location.href = `/badge-class/${badgeClass.id}/send-badge${window.location.search}`
                 }
             }, 2000)
         } catch (e: unknown) {
@@ -139,6 +137,13 @@ export default function CreateBadgeForm({
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Create Badge']}</div>
+
+            {badgeType === 'private' &&
+                <div className="max-w-[500px] text-sm mx-auto p-2 bg-amber-50 text-amber-500 mb-2">
+                    <i className="uil-info-circle text-lg mr-2"/>
+                    <b>{lang['Privacy Badge']}</b>: {lang['Only receivers can see the badge detail']}
+                </div>
+            }
 
             <div className="flex flex-col max-w-[500px] mx-auto">
                 <div className="mb-4">
@@ -210,6 +215,7 @@ export default function CreateBadgeForm({
                 <div className="text-red-400 text-sm my-3">{createError}</div>
 
                 <Button variant={"primary"}
+                        disabled={loading}
                         onClick={handleCreateBadge}
                 >{lang['Next']}</Button>
             </div>

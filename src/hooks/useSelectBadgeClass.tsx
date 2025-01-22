@@ -1,21 +1,32 @@
 import {Dictionary} from "@/lang"
 import useModal from "@/components/client/Modal/useModal"
 import Image from 'next/image'
+import {BadgeClass, Group} from '@sola/sdk'
+
+export interface DialogSelectedBadgeProps {
+    groupBadgeClasses: BadgeClass[]
+    profileBadgeClasses: BadgeClass[]
+    lang: Dictionary,
+    toProfileHandle?: string
+    onSelect?: (badgeClass: BadgeClass) => void
+    close?: () => void
+    returnPage?: string
+    group?: Group
+}
 
 export default function useSelectBadgeClass() {
     const {openModal} = useModal()
 
     const selectBadgeClass = (
-        lang: Dictionary,
-        profileBadgeClasses: any[],
-        groupBadgeClasses: any[],
-        onSelect?: (badgeClass: Solar.BadgeClass) => void
+        {lang, profileBadgeClasses, groupBadgeClasses, onSelect, toProfileHandle, group}: DialogSelectedBadgeProps
     ) => {
         openModal({
             content: (close) => <DialogSelectedBadge
                 lang={lang}
                 close={close}
+                toProfileHandle={toProfileHandle}
                 profileBadgeClasses={profileBadgeClasses}
+                group={group}
                 groupBadgeClasses={groupBadgeClasses}
                 onSelect={(b) => {
                     !!onSelect && onSelect(b)
@@ -31,22 +42,26 @@ export default function useSelectBadgeClass() {
 
 
 export interface DialogSelectedBadgeProps {
-    groupBadgeClasses: Solar.BadgeClass[]
-    profileBadgeClasses: Solar.BadgeClass[]
-    onSelect?: (badgeClass: Solar.BadgeClass) => void
+    groupBadgeClasses: BadgeClass[]
+    profileBadgeClasses:BadgeClass[]
     lang: Dictionary,
+    toProfileHandle?: string
+    onSelect?: (badgeClass: BadgeClass) => void
     close?: () => void
     returnPage?: string
+    group?: Group
 }
 
-export function DialogSelectedBadge({lang, close, ...props}: DialogSelectedBadgeProps) {
+export function DialogSelectedBadge({lang, close, toProfileHandle, group, ...props}: DialogSelectedBadgeProps) {
     const {openModal} = useModal()
 
     const handleShowBadgeType = () => {
         openModal({
             content: (close) => <SelectedBadgeType
                 lang={lang}
+                group={group}
                 close={close}
+                toProfileHandle={toProfileHandle}
                 returnPage={props.returnPage}/>
         })
         close?.()
@@ -107,13 +122,21 @@ export function DialogSelectedBadge({lang, close, ...props}: DialogSelectedBadge
     </div>
 }
 
-function SelectedBadgeType({lang, returnPage, close}: {
+function SelectedBadgeType({lang, returnPage, toProfileHandle, close, group}: {
     lang: Dictionary,
     permissions?: string[],
+    toProfileHandle?: string,
     returnPage?: string,
+    group?: Group,
     close?: () => void
 }) {
-    const searchParams = returnPage ? `&return=${returnPage}` : ''
+    let searchParams = returnPage ? `&return=${returnPage}` : ''
+    if (toProfileHandle) {
+        searchParams += `&to=${toProfileHandle}`
+    }
+    if (group) {
+        searchParams += `&group=${group.id}`
+    }
     const createBaseBadgePage = `/badge-class/create?badge_type=badge${searchParams}`
     const createPrivacyBadgePage = `/badge-class/create?badge_type=private${searchParams}`
 

@@ -10,18 +10,22 @@ export const BADGE_CLASS_FRAGMENT = gql`
         image_url
         display
         badge_type
+        group_id
     }`
 
 export const BADGE_CLASS_DETAIL_FRAGMENT = gql`
     ${PROFILE_FRAGMENT}
+    ${GROUP_FRAGMENT}
     fragment BadgeClassDetailFragment on badge_classes {
         ...BadgeClassFragment
         metadata
         content
-        group_id
         transferable
         permissions
         created_at
+        group {
+            ...GroupFragment
+        }
         creator {
           ...ProfileFragment
         }
@@ -89,7 +93,7 @@ export const BADGE_DETAIL_FRAGMENT = gql`
         metadata
         value
         badge_class {
-            ...BadgeClassFragment
+            ...BadgeClassDetailFragment
         }
         creator {
             ...ProfileFragment
@@ -98,12 +102,12 @@ export const BADGE_DETAIL_FRAGMENT = gql`
 
     ${BADGE_FRAGMENT}
     ${PROFILE_FRAGMENT}
-    ${BADGE_CLASS_FRAGMENT}
+    ${BADGE_CLASS_DETAIL_FRAGMENT}
 `
 
 export const GET_BADGE_DETAIL_BY_BADGE_ID = gql`
     ${BADGE_DETAIL_FRAGMENT}
-    query GetBadgeDetailByBadgeId($id: Int!) {
+    query GetBadgeDetailByBadgeId($id: bigint!) {
         badges(where: {id: {_eq: $id}}) {
             ...BadgeDetailFragment
         }

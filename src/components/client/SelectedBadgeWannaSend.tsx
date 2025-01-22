@@ -16,10 +16,11 @@ export interface SelectedBadgeWannaSendProps {
     lang: Dictionary
     toProfileHandle?: string
     profileDetail?: ProfileDetail
+    returnPage?: string
     group?: Group
 }
 
-export default function SelectedBadgeWannaSend({lang, profileDetail, group, children, toProfileHandle}: SelectedBadgeWannaSendProps) {
+export default function SelectedBadgeWannaSend({lang, profileDetail, group, children, toProfileHandle, returnPage}: SelectedBadgeWannaSendProps) {
 
     const {showLoading, closeModal} = useModal()
     const {selectBadgeClass} = useSelectBadgeClass()
@@ -38,13 +39,21 @@ export default function SelectedBadgeWannaSend({lang, profileDetail, group, chil
             }
 
 
-            selectBadgeClass(lang, profileBadgeClasses, groupBadgeClasses, (b) => {
-                let sendBadgeUrl = `/badge-class/${b.id}/send-badge`
-                if (toProfileHandle) {
-                    sendBadgeUrl = sendBadgeUrl + `?to=${toProfileHandle}`
-                }
+            selectBadgeClass({
+                lang,
+                profileBadgeClasses,
+                groupBadgeClasses,
+                toProfileHandle,
+                returnPage,
+                group,
+                onSelect: (b) => {
+                    let sendBadgeUrl = `/badge-class/${b.id}/send-badge`
+                    if (toProfileHandle) {
+                        sendBadgeUrl = sendBadgeUrl + `?to=${toProfileHandle}`
+                    }
 
-                window.location.href = sendBadgeUrl
+                    window.location.href = sendBadgeUrl
+                }
             })
         } catch (e: unknown) {
             console.error(e)

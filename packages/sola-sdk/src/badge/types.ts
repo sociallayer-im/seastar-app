@@ -8,12 +8,12 @@ export interface BadgeClass {
     image_url: string | null,
     display: string | null,
     badge_type: string | null,
+    group_id: number | null,
 }
 
 export interface BadgeClassDetail extends BadgeClass {
     metadata: string | null,
     content: string | null,
-    group_id: number | null,
     transferable: null | boolean,
     permissions: string[] | null
     created_at: string,
@@ -21,6 +21,7 @@ export interface BadgeClassDetail extends BadgeClass {
     creator: Profile,
     counter:number
     badges: Badge[]
+    group: Group | null
 }
 
 export interface Badge {
@@ -40,7 +41,7 @@ export interface Badge {
 export interface BadgeDetail extends Badge {
     metadata: string | null,
     value: string | null,
-    badge_class: BadgeClass,
+    badge_class: BadgeClassDetail,
     creator: Profile,
 }
 

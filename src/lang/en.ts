@@ -291,6 +291,7 @@ export const en = {
     'Naming your badge': 'Naming your badge',
     'Input reason': 'Input reason',
     'Person': 'Person',
+    'Send a badge to [1]': 'Send a badge to [1]'
 
 }
 

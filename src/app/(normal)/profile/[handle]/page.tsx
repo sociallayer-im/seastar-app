@@ -14,6 +14,7 @@ import CopyText from "@/components/client/CopyText"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
+import {displayProfileName} from '@/utils'
 
 export const dynamic = 'force-dynamic'
 
@@ -128,7 +129,12 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                                 <div
                                     className={`${buttonVariants({variant: 'special'})} w-full my-4 cursor-pointer`}>
                                     <i className="uil-message mr-1 text-xl"/>
-                                    <span>{lang['Send a badge']}</span>
+                                    <span>
+                                        {currProfile.handle === profile.handle
+                                            ? lang['Send a badge']
+                                            : lang['Send a badge to [1]'].replace('[1]', displayProfileName(profile))
+                                        }
+                                    </span>
                                 </div>
                             </SelectedBadgeWannaSend>
                         }

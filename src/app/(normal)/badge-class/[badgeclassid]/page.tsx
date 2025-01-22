@@ -31,7 +31,7 @@ export default async function BadgeClassPage(props: BadgeClassPageDataProps) {
 }
 
 
-async function PublicBadgeClassPage({badgeClass, badges, isOwner, isPrivate}: Awaited<ReturnType<typeof BadgeClassPageData>>) {
+async function PublicBadgeClassPage({badgeClass, badges, isOwner, groupCreator}: Awaited<ReturnType<typeof BadgeClassPageData>>) {
     const {lang} = await selectLang()
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
         <div className="w-full flex flex-col sm:flex-row justify-start items-start">
@@ -43,12 +43,20 @@ async function PublicBadgeClassPage({badgeClass, badges, isOwner, isPrivate}: Aw
                 <div className="font-semibold text-2xl text-center">{badgeClass.title}</div>
 
                 <div className="grid grid-cols-1 gap-3 text-sm">
-                    <a href={`/profile/${badgeClass.creator.handle}`}
-                       className="w-full whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full p-2">
-                        <div className="font-semibold">{lang['Creator']}</div>
-                        <Avatar profile={badgeClass.creator} size={24} className="mx-2"/>
-                        <div>{displayProfileName(badgeClass.creator)}</div>
-                    </a>
+                    {!!groupCreator
+                        ? <a href={`/group/${groupCreator.handle}`}
+                             className="w-full whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full p-2">
+                            <div className="font-semibold">{lang['Creator']}</div>
+                            <Avatar profile={groupCreator} size={24} className="mx-2"/>
+                            <div>{displayProfileName(groupCreator)}</div>
+                        </a>
+                        : <a href={`/profile/${badgeClass.creator.handle}`}
+                             className="w-full whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full p-2">
+                            <div className="font-semibold">{lang['Creator']}</div>
+                            <Avatar profile={badgeClass.creator} size={24} className="mx-2"/>
+                            <div>{displayProfileName(badgeClass.creator)}</div>
+                        </a>
+                    }
                 </div>
 
                 {isOwner &&
@@ -131,8 +139,8 @@ async function PrivateBadgeClassPage({badgeClass}: Awaited<ReturnType<typeof Bad
 
             <div className="flex-1 sm:ml-8">
                 <div className="mb-3 text-yellow-500 flex-row-item-center p-2 bg-amber-50 rounded-lg">
-                    <i className="uil-info-circle text-lg" />
-                    {lang['Only the creator and the recipient of the badge can view the details']}
+                    <i className="uil-info-circle text-2xl mr-2"/>
+                    <div><b>{lang["Privacy Badge"]}</b>: {lang['Only the creator and the recipient of the badge can view the details']}</div>
                 </div>
                 <div className="p-8 bg-secondary rounded-lg mb-3 text-sm">
                     <NoData/>

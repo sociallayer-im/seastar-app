@@ -18,7 +18,6 @@ export default async function CreateBadgePageData({searchParams} : CreateBadgePa
     const badgeType = pickSearchParam(searchParams.badge_type) || 'badge'
     const returnPage = pickSearchParam(searchParams.return)
     const groupSenderId = pickSearchParam(searchParams.group)
-    const receiverHandle = pickSearchParam(searchParams.to)
 
     const currProfile = await getCurrProfile()
     if (!currProfile) {
@@ -36,7 +35,6 @@ export default async function CreateBadgePageData({searchParams} : CreateBadgePa
         badgeType,
         returnPage,
         groupSenderId: groupSenderId ? parseInt(groupSenderId) : undefined,
-        receiverHandle,
         currProfile,
         availableGroupCreator
     }
