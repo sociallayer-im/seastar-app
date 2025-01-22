@@ -340,7 +340,7 @@ export function getGroupSubdomain(url?: string | null) {
     console.log('url', url)
     try {
         const parts = url.split('.')
-        if (parts.length > 2 && !['app', 'www'].includes(parts[0])) {
+        if (parts.length > 2 && !['app', 'www', 'seastar-dev', 'auth'].includes(parts[0])) {
             return parts[0]
         }
         return null
