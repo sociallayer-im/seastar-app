@@ -4,6 +4,8 @@ import DialogCropper from "@/hooks/useUploadAvatar/DialogCropper"
 import {uploadFile} from "@/service/solar"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import Cookies from "js-cookie"
+import DialogPresetAvatar from '@/components/client/DialogPresetAvatar'
+import {Dictionary} from '@/lang'
 
 export default function useUploadAvatar() {
     const {openModal, closeModal, showLoading} = useModal()
@@ -53,5 +55,14 @@ export default function useUploadAvatar() {
         }
     }
 
-    return {uploadAvatar}
+    const showPresetAvatar = ({lang, onSelect}: {lang: Dictionary, onSelect?:(img: string)=> void}) => {
+        openModal({
+            content: (close) => <DialogPresetAvatar
+                onSelect={onSelect}
+                lang={lang}
+                close={close!}/>
+        })
+    }
+
+    return {uploadAvatar, showPresetAvatar}
 }

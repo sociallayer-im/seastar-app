@@ -141,7 +141,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                     </div>
                 </div>
 
-                <div className="flex-1 sm:ml-6 px-3 max-w-full">
+                <div className="flex-1 sm:ml-6 px-3 w-full">
                     <div className="tab-titles flex-row-item-center overflow-auto">
                         <a className={buttonVariants({variant: tab === 'groups' ? 'normal' : 'ghost'})}
                            href={`/profile/${profile.handle}?tab=groups`}>

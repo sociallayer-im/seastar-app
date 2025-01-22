@@ -36,7 +36,7 @@ export default function CreateBadgeForm({
                                             availableGroupCreator
                                         }: CreateBadgeFormProps) {
 
-    const {uploadAvatar} = useUploadAvatar()
+    const {showPresetAvatar} = useUploadAvatar()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
@@ -120,7 +120,7 @@ export default function CreateBadgeForm({
 
             window.setTimeout(() => {
                 if (returnPage) {
-                    window.location.href=returnPage
+                    window.location.href = returnPage
                 } else {
                     window.location.href = `/badge-class/${badgeClass.id}/send-badge${window.location.search}`
                 }
@@ -148,11 +148,9 @@ export default function CreateBadgeForm({
             <div className="flex flex-col max-w-[500px] mx-auto">
                 <div className="mb-4">
                     <div className="font-semibold pb-2">{lang['Badge Image']}</div>
-                    <div onClick={() => uploadAvatar({
-                        onUploaded: (img) => setBadgeClassDraft({
-                            ...badgeClassDraft,
-                            image_url: img
-                        })
+                    <div onClick={() => showPresetAvatar({
+                        lang,
+                        onSelect: url => setBadgeClassDraft({...badgeClassDraft, image_url: url})
                     })}
                          className="cursor-pointer bg-secondary rounded-lg h-[170px] flex-col flex justify-center items-center">
                         <img className="w-[100px] h-[100px] rounded-full"
