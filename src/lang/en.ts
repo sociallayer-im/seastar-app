@@ -294,7 +294,15 @@ export const en = {
     'Send a badge to [1]': 'Send a badge to [1]',
     'Choose a image for badge': 'Choose a image for badge',
     'Upload Image': 'Upload Image',
-    'Public': 'Public'
+    'Public': 'Public',
+    'Go to': 'Go to',
+    'Pop-up Cities': 'Pop-up Cities',
+    'See all Pop-up Cities events': 'See all Pop-up Cities events',
+    'View events': 'View events',
+    'See all Communities': 'See all Communities',
+    'Attended': 'Attended',
+    'Hosting': 'Hosting',
+    'Stared': 'Stared'
 
 }
 

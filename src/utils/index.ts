@@ -337,7 +337,6 @@ export function clientToSignIn () {
 
 export function getGroupSubdomain(url?: string | null) {
     if (!url) return null
-    console.log('url', url)
     try {
         const parts = url.split('.')
         if (parts.length > 2 && !['app', 'www', 'seastar-dev', 'auth'].includes(parts[0])) {

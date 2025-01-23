@@ -119,5 +119,6 @@ export interface EventRoleDetail extends EventRole {
     profile?: Profile
     group?: Group
     _destroy?: string
+    event: Event
 }
 

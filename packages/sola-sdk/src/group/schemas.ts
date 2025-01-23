@@ -143,3 +143,13 @@ export const GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS = gql`
         }
     }
 `
+
+export const GET_EVENT_GROUPS = gql`
+    ${GROUP_FRAGMENT}
+    query GetEventGroups {
+        groups(where: {group_tags:{_contains: [":top"]}, status: {_neq: "freezed"}} order_by: {id: desc})  {
+            ...GroupFragment
+            events_count
+        }
+    }
+`

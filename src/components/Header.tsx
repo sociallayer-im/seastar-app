@@ -24,7 +24,7 @@ export default async function Header() {
                    className={`ml-3 text-xs font-semibold ${currentPath?.includes('discover') ? 'text-primary' : ''}`}>
                     {lang['Discover']}
                 </a>
-                {!!profile && <a href="/my-events/registered"
+                {!!profile && <a href="/my-events/attended"
                                  className={`ml-3 text-xs font-semibold ${currentPath?.includes('/my-events/') ? 'text-primary' : ''}`}>
                     {lang['My Events']}
                 </a>}

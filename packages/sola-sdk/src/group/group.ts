@@ -1,6 +1,6 @@
 import {getGqlClient, getSdkConfig} from "../client"
 import {
-    GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS,
+    GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS, GET_EVENT_GROUPS,
     GET_GROUP_DETAIL_BY_HANDLE, GET_GROUP_DETAIL_BY_ID,
     GET_MEMBERSHIP_BY_GROUP_ID,
     GET_PROFILE_GROUP,
@@ -311,6 +311,15 @@ export const getAvailableBadgeClassCreatorGroups = async (profileHandle: string)
     const response = await client.query({
         query: GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS,
         variables: {handle: profileHandle}
+    })
+
+    return response.data.groups as Group[]
+}
+
+export const getEventGroups = async () => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_EVENT_GROUPS,
     })
 
     return response.data.groups as Group[]

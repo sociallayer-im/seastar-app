@@ -1,4 +1,3 @@
-import {gql, request} from 'graphql-request'
 import {cookies} from 'next/headers'
 import {getProfileEventByHandle, setSdkConfig, Event, ClientMode, getStaredEvent} from '@sola/sdk'
 
@@ -55,10 +54,21 @@ export const ProfileEventListData = async function (handle: string, currUserHand
         } as EventWithJoinStatus
     })
 
+    const coHosting = profileEvents.coHosting.map(e => {
+        const isCreator = e.owner.handle === currUserHandle
+        const isJoined = !!currUserAttended.find(h => h.id === e.id)
+        return {
+            ...e,
+            isCreator,
+            isJoined
+        } as EventWithJoinStatus
+    })
+
     return {
         hosting,
         attends,
-        stared
+        stared,
+        coHosting
     }
 }
 

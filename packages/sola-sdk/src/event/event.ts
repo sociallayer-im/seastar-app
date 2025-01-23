@@ -32,6 +32,7 @@ export const getProfileEventByHandle = async (handle: string) => {
     return {
         attends: response.data.attends.map((a: {event: Event}) => a.event) as Event[],
         hosting: response.data.hosting as Event[],
+        coHosting: response.data.coHosting.map((a: {event: Event}) => a.event) as Event[]
     }
 }
 

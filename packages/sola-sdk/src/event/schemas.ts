@@ -1,6 +1,7 @@
-import { gql } from '@apollo/client'
+import {gql} from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
 import {GROUP_FRAGMENT} from '../group'
+import {EventRoleDetail} from './types'
 
 export const EVENT_ROLE_FRAGMENT = gql`
     fragment EventRoleFragment on event_roles {
@@ -56,8 +57,20 @@ export const EVENT_FRAGMENT = gql`
         pinned
     }`
 
+
+export const EVENT_ROLE_DETAIL_FRAGMENT = gql`
+    ${EVENT_ROLE_FRAGMENT}
+    ${EVENT_FRAGMENT}
+    fragment EventRoleDetailFragment on event_roles {
+      ...EventRole
+      event {
+        ...EventFragment
+      }
+    }`
+
 export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
     ${EVENT_FRAGMENT}
+    ${EVENT_ROLE_DETAIL_FRAGMENT}
     query GetProfileEventsByHandle($handle: String!) {
         attends: participants(where: {
             status: {_neq: "cancel"}, 
@@ -74,6 +87,14 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
             status: {_neq: "cancel"}
             }, order_by: {id: desc}) {
                 ...EventFragment
+        }
+        coHosting: event_roles(where: {
+            role: {_eq: "co_host"},
+            profile: {handle: {_eq: $handle}}
+        }, order_by: {id: desc}) {
+            event {
+                ...EventFragment
+             }
         }
     }
 `
