@@ -4,7 +4,7 @@ import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
 import {paymentTokenList} from "@/utils/payment_setting"
-import {Profile} from '@sola/sdk'
+import {Profile, Event, GroupDetail} from '@sola/sdk'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -273,7 +273,7 @@ export function isEventTimeSuitable(
         }
     }
 
-    return  ''
+    return ''
 }
 
 export function displayTicketPrice(ticket: Solar.Ticket) {
@@ -315,7 +315,7 @@ export function getEventDetailPageTimeStr(event: Solar.Event) {
     }
 }
 
-export function genGoogleMapLinkByEvent (event: Solar.Event) {
+export function genGoogleMapLinkByEvent(event: Solar.Event) {
     let url = `https://www.google.com/maps/search/?api=1&query=${event.geo_lat}%2C${event.geo_lng}`
     if (event.location_data) {
         url = url + `&query_place_id=${event.location_data}`
@@ -331,8 +331,10 @@ export function displayProfileName(profile: Profile) {
     return profile.nickname || profile.handle
 }
 
-export function clientToSignIn () {
-    window.location.href = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${window.location.href}`
+export function clientToSignIn() {
+    const signInUrl = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${window.encodeURIComponent(window.location.href)}`
+    alert(signInUrl)
+    window.location.href = signInUrl
 }
 
 export function getGroupSubdomain(url?: string | null) {
@@ -348,6 +350,87 @@ export function getGroupSubdomain(url?: string | null) {
         return null;
     }
 }
+
+export interface EventWithJoinStatus extends Event {
+    isCreator: boolean
+    isJoined: boolean
+}
+
+export type SetEventAttendedStatusParams = {
+    events: Event[]
+    currProfileAttends: Event[]
+    currProfile?: Profile | null
+}
+
+export const setEventAttendedStatus = ({events, currProfileAttends, currProfile}: SetEventAttendedStatusParams) => {
+    return events.map(e => {
+        const isCreator = e.owner.handle === currProfile?.handle
+        const isJoined = !!currProfileAttends.find(h => h.id === e.id)
+        return {
+            ...e,
+            isCreator,
+            isJoined
+        } as EventWithJoinStatus
+    })
+}
+
+export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail:GroupDetail, profile?: Profile | null) => {
+    const owner = groupDetail.memberships.find(m => m.role === 'owner')!
+    const managers = groupDetail.memberships.filter(m => m.role === 'manager')
+    const issuers = groupDetail.memberships.filter(m => m.role === 'issuer')
+    const members = groupDetail.memberships.filter(m => m.role === 'member')
+
+    const isManager = groupDetail.memberships.some(m => m.profile.handle === profile?.handle && (m.role === 'manager' || m.role === 'owner'))
+    const isMember = groupDetail.memberships.some(m => m.profile.handle === profile?.handle)
+    const isIssuer = groupDetail.memberships.some(m => m.profile.handle === profile?.handle && m.role === 'issuer')
+    const isOwner = owner?.profile.handle === profile?.handle
+
+    return {
+        owner,
+        managers,
+        issuers,
+        members,
+        isManager,
+        isMember,
+        isIssuer,
+        isOwner
+    }
+}
+
+export const getTimePropsFromRange = (range?: string) => {
+    if (range === 'today') {
+        return {
+            start_date: dayjs().format('YYYY-MM-DD'),
+            end_date: dayjs().format('YYYY-MM-DD'),
+        }
+    } else if (range === 'week') {
+        return {
+            start_date: dayjs().format('YYYY-MM-DD'),
+            end_date: dayjs().endOf('week').format('YYYY-MM-DD'),
+        }
+    } else if (range === 'month') {
+        return {
+            start_date: dayjs().format('YYYY-MM-DD'),
+            end_date: dayjs().endOf('month').format('YYYY-MM-DD'),
+        }
+    } else {
+        return {
+            start_date: undefined,
+            end_date: undefined,
+        }
+    }
+}
+
+export const getRangeFromTimeProps = (start_date?: string, end_date?: string) => {
+    if (!start_date || !end_date) return 'all_time'
+    if (start_date === end_date) return 'today'
+
+    const start = dayjs(start_date)
+    if (start.endOf('week').format('YYYY-MM-DD') === end_date) return 'week'
+    if (start.endOf('month').format('YYYY-MM-DD') === end_date) return 'month'
+}
+
+
 
 
 

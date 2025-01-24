@@ -18,9 +18,18 @@ export interface SelectedBadgeWannaSendProps {
     profileDetail?: ProfileDetail
     returnPage?: string
     group?: Group
+    className?: string
 }
 
-export default function SelectedBadgeWannaSend({lang, profileDetail, group, children, toProfileHandle, returnPage}: SelectedBadgeWannaSendProps) {
+export default function SelectedBadgeWannaSend({
+                                                   lang,
+                                                   profileDetail,
+                                                   group,
+                                                   children,
+                                                   toProfileHandle,
+                                                   returnPage,
+                                                   className
+                                               }: SelectedBadgeWannaSendProps) {
 
     const {showLoading, closeModal} = useModal()
     const {selectBadgeClass} = useSelectBadgeClass()
@@ -29,15 +38,14 @@ export default function SelectedBadgeWannaSend({lang, profileDetail, group, chil
         const loading = showLoading()
         try {
             let profileBadgeClasses: BadgeClass[] = []
-            let groupBadgeClasses: BadgeClass[] = []
             if (profileDetail) {
                 profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle(profileDetail.handle)).badgeClasses
             }
 
+            let groupBadgeClasses: BadgeClass[] = []
             if (group) {
-                profileBadgeClasses = (await getBadgeClassAndInviteByHandle(group.handle)).badgeClasses
+                groupBadgeClasses = (await getBadgeClassAndInviteByHandle(group.handle)).badgeClasses
             }
-
 
             selectBadgeClass({
                 lang,
@@ -63,7 +71,7 @@ export default function SelectedBadgeWannaSend({lang, profileDetail, group, chil
     }
 
 
-    return <div onClick={handleSelectedBadge}>
+    return <div onClick={handleSelectedBadge} className={className}>
         {children}
     </div>
 }

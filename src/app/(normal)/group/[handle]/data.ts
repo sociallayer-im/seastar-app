@@ -1,4 +1,8 @@
-import {AUTH_FIELD, pickSearchParam} from "@/utils"
+import {
+    analyzeGroupMembershipAndCheckProfilePermissions,
+    AUTH_FIELD,
+    pickSearchParam
+} from "@/utils"
 import {redirect} from "next/navigation"
 import {cookies} from 'next/headers'
 import {
@@ -43,7 +47,7 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
 
     const groupsDetail = await getGroupDetailByHandle(handle)
 
-    console.log('groupsDetail',groupsDetail?.handle)
+    console.log('groupsDetail', groupsDetail?.handle)
 
     if (!groupsDetail) {
         redirect('/error')
@@ -51,29 +55,30 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
 
     const group = groupsDetail
 
-    let currProfile: ProfileDetail| null = null
+    let currProfile: ProfileDetail | null = null
     const authToken = cookies().get(AUTH_FIELD)?.value
     if (!!authToken) {
         currProfile = await getProfileDetailByAuth(authToken)
     }
 
-    const owner = groupsDetail.memberships.find(m => m.role === 'owner')
-    const managers = groupsDetail.memberships.filter(m => m.role === 'manager')
-    const issuers = groupsDetail.memberships.filter(m => m.role === 'issuer')
-    const members = groupsDetail.memberships.filter(m => m.role === 'member')
-
-    const currUserIsManager = groupsDetail.memberships.some(m => m.profile.handle === currProfile?.handle && (m.role === 'manager' || m.role === 'owner'))
-    const currUserIsMember = groupsDetail.memberships.some(m => m.profile.handle === currProfile?.handle)
-    const currUserIsIssuer = groupsDetail.memberships.some(m => m.profile.handle === currProfile?.handle && m.role === 'issuer')
-    const currUserIsOwner = owner?.profile.handle === currProfile?.handle
+    const {
+        owner,
+        managers,
+        issuers,
+        members,
+        isManager,
+        isOwner,
+        isMember,
+        isIssuer
+    } = analyzeGroupMembershipAndCheckProfilePermissions(groupsDetail, currProfile)
 
     return {
         group: group,
         currProfile: currProfile,
-        currUserIsManager,
-        currUserIsMember,
-        currUserIsIssuer,
-        currUserIsOwner,
+        currUserIsManager: isManager,
+        currUserIsMember: isMember,
+        currUserIsIssuer: isIssuer,
+        currUserIsOwner: isOwner,
         tab: tab || 'events',
         members: [owner, ...managers, ...issuers, ...members]
     } as GroupData

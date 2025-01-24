@@ -1,4 +1,5 @@
-import {Profile, SocialMedia} from '@sola/sdk'
+import {Profile, SocialMedia} from '../profile'
+import {Track, Venue} from '../event'
 
 export interface Group {
     id: number,
@@ -31,6 +32,8 @@ export interface GroupDetail extends Group {
     start_date: string | null,
     end_date: string | null,
     memberships: Membership[],
+    tracks: Track[]
+    venues: Venue[]
 }
 
 export interface Membership {

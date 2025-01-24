@@ -3,9 +3,10 @@ import NoData from "@/components/NoData"
 import CardEvent from "@/components/CardEvent"
 import {selectLang} from "@/app/actions"
 import {buttonVariants} from "@/components/shadcn/Button"
+import {Profile} from '@sola/sdk'
 
-export default async function GroupEvents({handle, currUserHandle}: { handle: string, currUserHandle?: string }) {
-    const events = await GroupEventListData(handle, currUserHandle)
+export default async function GroupEvents({handle, currProfile}: { handle: string, currProfile?: Profile | null }) {
+    const events = await GroupEventListData(handle, currProfile)
     const {lang} = await selectLang()
 
     return <div className="py-4">

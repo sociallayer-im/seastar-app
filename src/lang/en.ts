@@ -302,7 +302,21 @@ export const en = {
     'See all Communities': 'See all Communities',
     'Attended': 'Attended',
     'Hosting': 'Hosting',
-    'Stared': 'Stared'
+    'Stared': 'Stared',
+    'Send a Badge': 'Send a Badge',
+    'Setting': 'Setting',
+    'Sign in to participate in a fun event': 'Sign in to participate in a fun event',
+    'Add iCal Subscription': 'Add iCal Subscription',
+    'Add events to your calendar to stay updated.': 'Add events to your calendar to stay updated.',
+    'System Calendar': 'System Calendar',
+    'Upcoming': 'Upcoming',
+    'Past': 'Past',
+    'Private': 'Private',
+    'Reset':'Reset',
+    'All Time':'All Time',
+    'Today':'Today',
+    'Week':'Week',
+    'Month':'Month',
 
 }
 

@@ -110,3 +110,46 @@ export const GET_GROUP_EVENT_BY_HANDLE = gql`
         }
     }
 `
+
+export const TRACK_FRAGMENT = gql`
+    fragment TrackFragment on tracks {
+        id
+        title
+        kind
+        about
+        group_id
+        start_date
+        end_date
+        manager_ids
+    }`
+
+export const VENUE_FRAGMENT = gql`
+    fragment VenueFragment on venues {
+        id
+        title
+        visibility
+    }`
+
+export const VENUE_DETAIL_FRAGMENT = gql`
+    ${VENUE_FRAGMENT}
+    fragment VenueDetailFragment on venues {
+        ...VenueFragment
+        location_data
+        location
+        about
+        group_id
+        owner_id
+        created_at
+        formatted_address
+        geo_lat
+        geo_lng
+        start_date
+        end_date
+        timeslots
+        link
+        capacity
+        overrides
+        require_approval
+        venue_timeslots
+        venue_overrides
+    }`

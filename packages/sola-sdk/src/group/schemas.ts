@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
-
-
+import {TRACK_FRAGMENT, VENUE_FRAGMENT} from '../event'
 
 export const GROUP_FRAGMENT = gql`
     fragment GroupFragment on groups {
@@ -63,9 +62,17 @@ export const GROUP_DETAIL_FRAGMENT = gql`
         memberships{
            ...MembershipFragment
         }
+        tracks{
+            ...TrackFragment
+        }
+        venues{
+            ...VenueFragment
+        }
     }
     ${GROUP_FRAGMENT}
+    ${VENUE_FRAGMENT}
     ${MEMBERSHIP_FRAGMENT}
+    ${TRACK_FRAGMENT}
 `
 
 export const GET_GROUP_DETAIL_BY_HANDLE = gql`

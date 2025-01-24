@@ -9,7 +9,7 @@ export default async function MyEventsPageData() {
         redirect('/404')
     }
 
-    const {hosting, attends ,stared, coHosting} = await ProfileEventListData(currProfile.handle, currProfile.handle)
+    const {hosting, attends ,stared, coHosting} = await ProfileEventListData(currProfile.handle, currProfile)
 
     return {
         currProfile,

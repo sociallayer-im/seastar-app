@@ -138,7 +138,7 @@ export default async function GroupPage(props: GroupDataProps) {
                 {
                     tab === 'events' && <div className="grid grid-cols-1 gap-3 w-full">
                         <TabEvents handle={group.handle}
-                                   currUserHandle={currProfile?.handle}/>
+                                   currProfile={currProfile}/>
                     </div>
                 }
 

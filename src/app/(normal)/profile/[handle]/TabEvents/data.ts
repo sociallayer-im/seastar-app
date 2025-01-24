@@ -1,67 +1,47 @@
 import {cookies} from 'next/headers'
-import {getProfileEventByHandle, setSdkConfig, Event, ClientMode, getStaredEvent} from '@sola/sdk'
+import {getProfileEventByHandle, setSdkConfig, Event, ClientMode, getStaredEvent, Profile} from '@sola/sdk'
+import {EventWithJoinStatus, setEventAttendedStatus} from '@/utils'
 
 setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
-export interface EventWithJoinStatus extends Event {
-    isCreator: boolean
-    isJoined: boolean
-}
-
-export const ProfileEventListData = async function (handle: string, currUserHandle?: string) {
+export const ProfileEventListData = async function (handle: string, currProfile?: Profile | null) {
     const profileEvents = await getProfileEventByHandle(handle)
 
-    let currUserAttended: Event[] = []
-    if (currUserHandle) {
-        currUserAttended = await (await getProfileEventByHandle(handle)).attends
+    let currProfileAttends: Event[] = []
+    if (!!currProfile) {
+        currProfileAttends = (await getProfileEventByHandle(currProfile.handle)).attends
     }
 
     let staredEvents: Event[] = []
-    if (currUserHandle === handle) {
+    if (currProfile?.handle === handle) {
         const auth_token = cookies().get(process.env.NEXT_PUBLIC_AUTH_FIELD!)?.value
         if (auth_token) {
             staredEvents = await getStaredEvent(auth_token)
         }
     }
 
-    const hosting = profileEvents.hosting.map(e => {
-        const isCreator = e.owner.handle === currUserHandle
-        const isJoined = !!currUserAttended.find(h => h.id === e.id)
-        return {
-            ...e,
-            isCreator,
-            isJoined
-        } as EventWithJoinStatus
+    const hosting = setEventAttendedStatus({
+        events: profileEvents.hosting,
+        currProfileAttends,
+        currProfile
     })
 
-    const attends = profileEvents.attends.map(e => {
-        const isCreator = e.owner.handle === currUserHandle
-        const isJoined = !!currUserAttended.find(h => h.id === e.id)
-        return {
-            ...e,
-            isCreator,
-            isJoined
-        } as EventWithJoinStatus
+    const attends = setEventAttendedStatus({
+        events: profileEvents.attends,
+        currProfileAttends,
+        currProfile
     })
 
-    const stared = staredEvents.map(e => {
-        const isCreator = e.owner.handle === currUserHandle
-        const isJoined = !!currUserAttended.find(h => h.id === e.id)
-        return {
-            ...e,
-            isCreator,
-            isJoined
-        } as EventWithJoinStatus
+    const stared = setEventAttendedStatus({
+        events: staredEvents,
+        currProfileAttends,
+        currProfile
     })
 
-    const coHosting = profileEvents.coHosting.map(e => {
-        const isCreator = e.owner.handle === currUserHandle
-        const isJoined = !!currUserAttended.find(h => h.id === e.id)
-        return {
-            ...e,
-            isCreator,
-            isJoined
-        } as EventWithJoinStatus
+    const coHosting = setEventAttendedStatus({
+        events: profileEvents.coHosting,
+        currProfileAttends,
+        currProfile
     })
 
     return {
