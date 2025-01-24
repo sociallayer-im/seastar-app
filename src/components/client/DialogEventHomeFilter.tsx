@@ -64,11 +64,10 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
 
         for (const key in omitOpts) {
             const _key = key as keyof typeof omitOpts
-            if (opts[_key]) {
-                searchParams.append(key, opts[_key])
+            if (omitOpts[_key]) {
+                searchParams.append(key, omitOpts[_key])
             }
         }
-
         window.location.href = `?${searchParams.toString()}`
     }
 
@@ -78,8 +77,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             <div className="font-semibold text-2xl">{lang['Filter']}</div>
             <Button onClick={handleReset}
                     variant="ghost" size={'sm'} className="!font-normal text-sm text-blue-500">
-                <i className="uil-repeat text-lg"/>
-                {lang['Reset']}
+                <i className="uil-repeat text-lg"/>{lang['Reset']}
             </Button>
         </div>
 

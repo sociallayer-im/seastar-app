@@ -19,7 +19,7 @@ export interface EventHomeFilterProps {
 }
 
 export default function EventHomeFilter({filterOpts, groupDetail, lang, isManager}: EventHomeFilterProps) {
-    const [search, setSearch] = useState(filterOpts.search_title)
+    const [search, setSearch] = useState(filterOpts.search_title || '')
     const {openModal} = useModal()
 
     const showFilterDialog = () => {
@@ -84,9 +84,9 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                         const keyword = e.currentTarget.value.trim()
                         const url = new URL(window.location.href)
                         if (keyword) {
-                            url.searchParams.set('search', keyword)
+                            url.searchParams.set('search_title', keyword)
                         } else {
-                            url.searchParams.delete('search')
+                            url.searchParams.delete('search_title')
                         }
                         window.location.href = url.toString()
                     }

@@ -1,6 +1,5 @@
-import {EventWithJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
 import {getLabelColor} from "@/utils/label_color"
-import {checkProcess} from "@/utils"
+import {checkProcess, EventWithJoinStatus, formatEventTime} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import Dayjs from "@/libs/dayjs"
 import {CSSProperties} from "react"
@@ -13,10 +12,7 @@ export default function CardEvent({event, className, id, style}: {event: EventWi
     const cohosts = event.event_roles?.filter(r => r.role === 'co_host')
     const host = groupHost?.nickname || event.owner.nickname || event.owner.handle
 
-    // console.log('event_roles', event.event_roles)
-
-    const startTime = Dayjs.tz(new Date(event.start_time), event.timezone || 'Europe/London')
-        .format('ddd MMM DD, HH:mm z')
+    const startTime = formatEventTime(event.start_time, event.timezone)
 
     return <a href={`/event/detail/${event.id}`}
         id={id}
@@ -37,7 +33,7 @@ export default function CardEvent({event, className, id, style}: {event: EventWi
 
             </div>
             <div className="my-1 flex-row-item-center font-semibold text-sm sm:text-base">
-                {event.title}
+                {event.title} {event.timezone}
             </div>
             <div className="flex-row-item-center !flex-wrap text-xs mt-1 mb-3">
                 {

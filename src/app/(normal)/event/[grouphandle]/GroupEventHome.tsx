@@ -1,5 +1,4 @@
 import {Button, buttonVariants} from "@/components/shadcn/Button"
-import CardEvent from "@/components/CardEvent"
 import {Badge} from "@/components/shadcn/Badge"
 import GroupEventHomeData, {GroupEventHomeDataProps} from '@/app/(normal)/event/[grouphandle]/data'
 import {selectLang} from '@/app/actions'
@@ -8,6 +7,7 @@ import Avatar from '@/components/Avatar'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import SignInPanel from '@/components/SignInPanel'
 import EventHomeFilter from '@/components/client/EventHomeFilter'
+import EventListGroupedByDate from '@/components/EventListGroupedByDate'
 
 export default async function GroupEventHome(props: GroupEventHomeDataProps) {
     const {
@@ -28,16 +28,7 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
                                  groupDetail={groupDetail} isManager={isManager} lang={lang}/>
 
                 <div className="my-3">
-                    <div className="pl-4 mb-5 relative">
-                        <i className="block w-4 h-4 border-4 z-10 absolute rounded-full left-0 top-1.5 bg-background translate-x-[-7px]"/>
-                        <i className="block w-[1px] h-[calc(100%-12px)] absolute left-0 top-3 border-l-2 border-dashed"/>
-                        <div className="text-lg font-semibold mb-2">1 November, Sun</div>
-                        {
-                            events.map((event, index) => {
-                                return <CardEvent className="mb-3" key={index} event={event}/>
-                            })
-                        }
-                    </div>
+                    <EventListGroupedByDate events={events} group={groupDetail}/>
                 </div>
             </div>
 

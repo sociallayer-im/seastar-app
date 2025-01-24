@@ -5,6 +5,7 @@ import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
 import {paymentTokenList} from "@/utils/payment_setting"
 import {Profile, Event, GroupDetail} from '@sola/sdk'
+import Dayjs from '@/libs/dayjs'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -374,7 +375,7 @@ export const setEventAttendedStatus = ({events, currProfileAttends, currProfile}
     })
 }
 
-export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail:GroupDetail, profile?: Profile | null) => {
+export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: GroupDetail, profile?: Profile | null) => {
     const owner = groupDetail.memberships.find(m => m.role === 'owner')!
     const managers = groupDetail.memberships.filter(m => m.role === 'manager')
     const issuers = groupDetail.memberships.filter(m => m.role === 'issuer')
@@ -428,6 +429,24 @@ export const getRangeFromTimeProps = (start_date?: string, end_date?: string) =>
     const start = dayjs(start_date)
     if (start.endOf('week').format('YYYY-MM-DD') === end_date) return 'week'
     if (start.endOf('month').format('YYYY-MM-DD') === end_date) return 'month'
+}
+
+export const formatEventTime = (dateTimeStr: string, timezone?: string) => {
+    const tz = timezone || dayjs.tz.guess()
+    const date = dayjs.tz(new Date(dateTimeStr).getTime(), tz)
+    const utcOffset = date.utcOffset() / 60
+    const GMT = utcOffset >= 0 ? `GMT+${utcOffset}` : `GMT${utcOffset}`
+    const now = dayjs.tz(new Date(), tz)
+
+    return date
+        .calendar(now, {
+            sameDay: '[Today] HH:mm',
+            nextDay: '[Tomorrow] HH:mm',
+            nextWeek: 'ddd MMM DD, HH:mm',
+            lastDay: 'ddd MMM DD, HH:mm',
+            lastWeek: 'ddd MMM DD, HH:mm',
+            sameElse: 'ddd MMM DD, HH:mm'
+        }) + ` ${GMT}`
 }
 
 

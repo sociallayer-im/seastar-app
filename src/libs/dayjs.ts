@@ -7,8 +7,10 @@ import utc from 'dayjs/plugin/utc'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import isBetween from 'dayjs/plugin/isBetween'
+import calendar from 'dayjs/plugin/calendar'
 
 
+dayjs.extend(calendar)
 dayjs.extend(updateLocale)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
