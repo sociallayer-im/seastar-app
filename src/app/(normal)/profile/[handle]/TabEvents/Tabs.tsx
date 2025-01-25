@@ -1,10 +1,10 @@
 'use client'
 
-import {EventWithJoinStatus} from "@/app/(normal)/profile/[handle]/TabEvents/data"
 import {useState} from "react"
 import {Button} from "@/components/shadcn/Button"
 import CardEvent from "@/components/CardEvent"
 import NoData from "@/components/NoData"
+import {EventWithJoinStatus} from '@/utils'
 
 
 export interface EventTabProps {

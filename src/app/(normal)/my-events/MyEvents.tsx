@@ -1,12 +1,9 @@
-import { buttonVariants } from "@/components/shadcn/Button"
+import {buttonVariants} from "@/components/shadcn/Button"
 import CardEvent from "@/components/CardEvent"
-import { GroupEventListData } from "@/app/(normal)/group/[handle]/TabEvents/data"
 import {selectLang} from "@/app/actions"
-import MyEventsPageData from '@/app/(normal)/my-events/data'
-import {EventWithJoinStatus} from '@/app/(normal)/profile/[handle]/TabEvents/data'
+import {EventWithJoinStatus} from '@/utils'
 
-
-export default async function MyEvents({events, tab}: {events: EventWithJoinStatus[], tab: string}) {
+export default async function MyEvents({events, tab}: { events: EventWithJoinStatus[], tab: string }) {
     const {lang} = await selectLang()
 
     return (
@@ -16,27 +13,30 @@ export default async function MyEvents({events, tab}: {events: EventWithJoinStat
 
                 <div className="flex gap-2 mb-6">
                     <a
-                        className={`${buttonVariants({ size: 'sm', variant: tab=== 'attended' ? 'normal': 'ghost'})}`}
+                        className={`${buttonVariants({size: 'sm', variant: tab === 'attended' ? 'normal' : 'ghost'})}`}
                         href="/my-events/attended">
                         {lang['Attended']}
                     </a>
                     <a
-                        className={`${buttonVariants({ size: 'sm',  variant: tab=== 'hosting' ? 'normal': 'ghost'})}`}
+                        className={`${buttonVariants({size: 'sm', variant: tab === 'hosting' ? 'normal' : 'ghost'})}`}
                         href="/my-events/hosting">
                         {lang['Hosting']}
                     </a>
                     <a
-                        className={`${buttonVariants({ size: 'sm',  variant: tab=== 'stared' ? 'normal': 'ghost'})}`}
+                        className={`${buttonVariants({size: 'sm', variant: tab === 'stared' ? 'normal' : 'ghost'})}`}
                         href="/my-events/stared">
                         {lang['Stared']}
                     </a>
                     <a
-                        className={`${buttonVariants({ size: 'sm', variant: tab=== 'pending' ? 'normal': 'ghost'})}`}
+                        className={`${buttonVariants({size: 'sm', variant: tab === 'pending' ? 'normal' : 'ghost'})}`}
                         href="/my-events/pending-requests">
                         {lang['Pending Requests']}
                     </a>
                     <a
-                        className={`${buttonVariants({ size: 'sm', variant: tab=== 'co-hosting' ? 'normal': 'ghost'})}`}
+                        className={`${buttonVariants({
+                            size: 'sm',
+                            variant: tab === 'co-hosting' ? 'normal' : 'ghost'
+                        })}`}
                         href="/my-events/co-hosting">
                         {lang['Co-hosting']}
                     </a>

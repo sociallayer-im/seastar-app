@@ -19,10 +19,14 @@ export type GroupEventHomeSearchParams = Omit<EventListFilterProps, 'group_id' |
 export type GroupEventHomeDataProps = {
     params: GroupEventHomeParams
     searchParams: GroupEventHomeSearchParams
+}
+
+export interface GroupEventHomeDataWithHandleProps extends GroupEventHomeDataProps {
     groupHandle?: string
 }
 
-export default async function GroupEventHomeData({params, searchParams, groupHandle}: GroupEventHomeDataProps) {
+
+export default async function GroupEventHomeData({params, searchParams, groupHandle}: GroupEventHomeDataWithHandleProps) {
     const handle = groupHandle || params.grouphandle
     if (!handle) {
         redirect('/404')
