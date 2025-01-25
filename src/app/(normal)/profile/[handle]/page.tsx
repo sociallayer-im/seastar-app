@@ -15,6 +15,7 @@ import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import {displayProfileName} from '@/utils'
+import ClickToCopy from '@/components/client/ClickToCopy'
 
 export const dynamic = 'force-dynamic'
 
@@ -39,10 +40,19 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                 <div className="bg-white w-full sm:w-[375px] mb-3 relative">
                     <img src="/images/profile_bg.png" className="w-full h-[140px]"/>
                     <div className="absolute right-3 top-3">
-                        <a href={`/profile/${profile.handle}/edit`} className='flex-row-item-center'>
-                            <div className="text-xs">{profile.nickname || profile.handle}</div>
-                            <i className="uil-cog text-lg ml-1"/>
-                        </a>
+                        {isSelf
+                            ? <a className="flex-row-item-center hover:text-blue-500 cursor-pointer"
+                                 href={`/profile/${profile.handle}/edit`}>
+                                <div className='text-xs'>{profile.handle}</div>
+                                <i className="cursor-pointer uil-cog text-lg ml-1"/>
+                            </a>
+                            : <ClickToCopy text={profile.handle}>
+                                <div className="flex-row-item-center hover:text-blue-500 cursor-pointer">
+                                    <div className='text-xs'>{profile.handle}</div>
+                                    <i className="uil-copy-alt ml-1"/>
+                                </div>
+                            </ClickToCopy>
+                        }
                     </div>
 
                     <div className="px-3 mt-[-40px]">
@@ -166,7 +176,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                     <div className="tab-contents">
                         {tab === 'groups' && <TabGroups profile={profile}/>}
 
-                        {tab === 'events' && <TabEvents handle={profile.handle} currUserHandle={currProfile?.handle}/>}
+                        {tab === 'events' && <TabEvents handle={profile.handle} currProfile={currProfile}/>}
 
                         {tab === 'badges' && <TabBadges handle={profile.handle}
                                                         isSelf={isSelf}/>

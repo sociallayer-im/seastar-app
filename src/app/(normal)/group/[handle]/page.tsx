@@ -14,6 +14,7 @@ import {Textarea} from "@/components/shadcn/Textarea"
 import NoData from "@/components/NoData"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
+import ClickToCopy from '@/components/client/ClickToCopy'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,10 +43,18 @@ export default async function GroupPage(props: GroupDataProps) {
             <div className="h-[150px]" style={{background: 'url("/images/profile_bg.png")'}}>
                 <div className="page-width relative">
                     <div className="absolute right-3 top-3">
-                        <a href={`/group/${group.handle}/edit`} className="flex-row-item-center">
-                            <div className="text-xs">{group.nickname || group.handle}</div>
-                            <i className="uil-cog text-lg ml-1"/>
-                        </a>
+                        {currUserIsOwner
+                            ? <a className="flex-row-item-center hover:text-blue-500 cursor-pointer" href={`/group/${group.handle}/edit`}>
+                                <div className='text-xs'>{group.handle}</div>
+                                <i className="cursor-pointer uil-cog text-lg ml-1"/>
+                            </a>
+                            : <ClickToCopy text={group.handle}>
+                                <div className="flex-row-item-center hover:text-blue-500 cursor-pointer">
+                                    <div className='text-xs'>{group.handle}</div>
+                                    <i className="uil-copy-alt ml-1"/>
+                                </div>
+                            </ClickToCopy>
+                        }
                     </div>
                 </div>
             </div>
@@ -116,13 +125,13 @@ export default async function GroupPage(props: GroupDataProps) {
                             <span className="font-normal">{lang['Sending']}</span>
                         </a>
                     }
-                    { false &&
+                    {false &&
                         <a className={`${buttonVariants({variant: tab === 'chat' ? 'normal' : 'ghost'})} flex-1`}
                            href={`/group/${group.handle}?tab=chat`}>
                             <span className="font-normal">{lang['Chat']}</span>
                         </a>
                     }
-                    { false &&
+                    {false &&
                         <a className={`${buttonVariants({variant: tab === 'votes' ? 'normal' : 'ghost'})} flex-1`}
                            href={`/group/${group.handle}?tab=votes`}>
                             <span className="font-normal">{lang['Votes']}</span>
