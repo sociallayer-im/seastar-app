@@ -1,7 +1,12 @@
 import {gql} from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
-import {GROUP_FRAGMENT} from '../group'
-import {EventRoleDetail} from './types'
+import {BADGE_CLASS_FRAGMENT} from '../badge'
+import {TRACK_FRAGMENT, VENUE_FRAGMENT, GROUP_FRAGMENT} from '../group'
+
+console.log('PROFILE_FRAGMENT', !!PROFILE_FRAGMENT)
+console.log('GROUP_FRAGMENT', !!GROUP_FRAGMENT)
+console.log('BADGE_CLASS_FRAGMENT', !!BADGE_CLASS_FRAGMENT)
+
 
 export const EVENT_ROLE_FRAGMENT = gql`
     fragment EventRoleFragment on event_roles {
@@ -12,7 +17,6 @@ export const EVENT_ROLE_FRAGMENT = gql`
         nickname
         role
     }`
-
 
 export const PARTICIPANT_FRAGMENT = gql`
     ${PROFILE_FRAGMENT}
@@ -29,7 +33,6 @@ export const PARTICIPANT_FRAGMENT = gql`
             ...ProfileFragment
         }
     }`
-
 
 export const EVENT_FRAGMENT = gql`
     ${PROFILE_FRAGMENT}
@@ -57,14 +60,21 @@ export const EVENT_FRAGMENT = gql`
         pinned
     }`
 
-
 export const EVENT_ROLE_DETAIL_FRAGMENT = gql`
     ${EVENT_ROLE_FRAGMENT}
     ${EVENT_FRAGMENT}
+    ${GROUP_FRAGMENT}
+    ${PROFILE_FRAGMENT}
     fragment EventRoleDetailFragment on event_roles {
-      ...EventRole
+      ...EventRoleFragment 
       event {
         ...EventFragment
+      }
+      group {
+        ...GroupFragment
+      }
+      profile {
+        ...ProfileFragment
       }
     }`
 
@@ -98,6 +108,7 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
         }
     }
 `
+
 export const GET_GROUP_EVENT_BY_HANDLE = gql`
     ${EVENT_FRAGMENT}
     query GetGroupEventsByHandle($handle: String!) {
@@ -111,24 +122,7 @@ export const GET_GROUP_EVENT_BY_HANDLE = gql`
     }
 `
 
-export const TRACK_FRAGMENT = gql`
-    fragment TrackFragment on tracks {
-        id
-        title
-        kind
-        about
-        group_id
-        start_date
-        end_date
-        manager_ids
-    }`
 
-export const VENUE_FRAGMENT = gql`
-    fragment VenueFragment on venues {
-        id
-        title
-        visibility
-    }`
 
 export const VENUE_DETAIL_FRAGMENT = gql`
     ${VENUE_FRAGMENT}
@@ -153,3 +147,70 @@ export const VENUE_DETAIL_FRAGMENT = gql`
         venue_timeslots
         venue_overrides
     }`
+
+export const EVENT_DETAIL_FRAGMENT = gql`
+    ${EVENT_FRAGMENT}
+    ${PARTICIPANT_FRAGMENT}
+    ${TRACK_FRAGMENT}
+    ${EVENT_ROLE_DETAIL_FRAGMENT}
+    ${GROUP_FRAGMENT}
+    ${BADGE_CLASS_FRAGMENT}
+    fragment EventDetailFragment on events {
+        ...EventFragment
+        formatted_address
+        geo_lat
+        geo_lng
+        content
+        max_participant
+        min_participant
+        participants_count
+        badge_class_id
+        external_url
+        notes
+        extra
+        operators
+        group {
+            ...GroupFragment
+        }
+        tickets {
+            id
+            tracks_allowed
+            check_badge_class_id
+            check_badge_class {
+                ...BadgeClassFragment
+            }
+            content
+            created_at
+            end_time
+            event_id
+            need_approval
+            payment_chain
+            payment_target_address
+            payment_token_address
+            payment_token_price
+            payment_token_name
+            quantity
+        }
+        location_data
+        venue_id
+        display
+        participants {
+            ...ParticipantFragment
+        }
+        track{
+            ...TrackFragment
+        }
+        event_roles {
+            ...EventRoleDetailFragment
+        }
+    }`
+
+export const GET_EVENT_DETAIL_BY_ID = gql`
+    ${EVENT_DETAIL_FRAGMENT}
+    query GetEventDetailById($id: bigint!) {
+        events(where: {id: {_eq: $id}}) {
+            ...EventDetailFragment
+        }
+    }
+`
+

@@ -4,7 +4,7 @@ import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
 import {paymentTokenList} from "@/utils/payment_setting"
-import {Profile, Event, GroupDetail} from '@sola/sdk'
+import {Profile, Event, GroupDetail, EventDetail, Ticket} from '@sola/sdk'
 import Dayjs from '@/libs/dayjs'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
@@ -277,7 +277,7 @@ export function isEventTimeSuitable(
     return ''
 }
 
-export function displayTicketPrice(ticket: Solar.Ticket) {
+export function displayTicketPrice(ticket: Ticket) {
     if (ticket.payment_methods.length === 0) {
         return 'Free'
     }
@@ -295,7 +295,7 @@ export function displayTicketPrice(ticket: Solar.Ticket) {
     return maxPrice === minPrice ? `${minPrice} USD` : `${minPrice}-${maxPrice} USD`
 }
 
-export function getEventDetailPageTimeStr(event: Solar.Event) {
+export function getEventDetailPageTimeStr(event: Event) {
     const startTime = dayjs.tz(new Date(event.start_time).getTime(), event.timezone)
     const endTime = dayjs.tz(new Date(event.end_time!).getTime(), event.timezone)
     const offset = startTime.utcOffset() / 60
@@ -316,7 +316,7 @@ export function getEventDetailPageTimeStr(event: Solar.Event) {
     }
 }
 
-export function genGoogleMapLinkByEvent(event: Solar.Event) {
+export function genGoogleMapLinkByEvent(event: EventDetail) {
     let url = `https://www.google.com/maps/search/?api=1&query=${event.geo_lat}%2C${event.geo_lng}`
     if (event.location_data) {
         url = url + `&query_place_id=${event.location_data}`

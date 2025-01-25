@@ -1,6 +1,24 @@
 import { gql } from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
-import {TRACK_FRAGMENT, VENUE_FRAGMENT} from '../event'
+
+export const VENUE_FRAGMENT = gql`
+    fragment VenueFragment on venues {
+        id
+        title
+        visibility
+    }`
+
+export const TRACK_FRAGMENT = gql`
+    fragment TrackFragment on tracks {
+        id
+        title
+        kind
+        about
+        group_id
+        start_date
+        end_date
+        manager_ids
+    }`
 
 export const GROUP_FRAGMENT = gql`
     fragment GroupFragment on groups {

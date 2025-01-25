@@ -1,9 +1,8 @@
-import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
-import {AUTH_FIELD, pickSearchParam} from "@/utils"
-import {getProfileByToken} from "@/service/solar"
+import {analyzeGroupMembershipAndCheckProfilePermissions, pickSearchParam} from "@/utils"
 import {redirect} from "next/navigation"
-import {gql, request} from 'graphql-request'
 import {getGroupData} from "@/app/(normal)/event/[grouphandle]/create/data"
+import {getCurrProfile} from '@/app/actions'
+import {getEventDetailById, getGroupDetailByHandle, Participant} from '@sola/sdk'
 
 export interface EventDetailPageDataProps {
     eventid: string
@@ -16,38 +15,34 @@ export interface EventDetailPageSearchParams {
 
 export interface EventDetailDataProps {
     params: EventDetailPageDataProps
-    cookies: ReadonlyRequestCookies,
     searchParams: EventDetailPageSearchParams
 }
 
-export default async function EventDetailPage({params, cookies, searchParams}: EventDetailDataProps) {
-    const authToken = cookies.get(AUTH_FIELD)?.value
-    let currProfile: Solar.Profile | null = null
-    if (!!authToken) {
-        currProfile = await getProfileByToken(authToken)
-    } else {
-        redirect('/')
-    }
+export default async function EventDetailPage({params, searchParams}: EventDetailDataProps) {
+    const currProfile = await getCurrProfile()
 
-    const eventDetail = await getEventDetailData(parseInt(params.eventid))
+    const eventDetail = await getEventDetailById(parseInt(params.eventid))
     if (!eventDetail) {
         redirect('/404')
     }
 
-    const {groups, memberships, userGroups, tracks, venues} = await getGroupData(eventDetail.group.handle, currProfile?.handle)
-    const group = groups[0]
-    const isGroupOwner = memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'owner'
-    const isGroupManager = isGroupOwner || memberships.find(m => m.profile.handle === currProfile?.handle)?.role === 'manager'
-    const isGroupMember = isGroupOwner || isGroupManager || memberships.some(m => m.profile.handle === currProfile?.handle)
-    const availableHost: Array<Solar.ProfileSample | Solar.GroupSample> = currProfile
-        ? [currProfile, ...(userGroups || [])]
-        : []
+    const groupDetail = await getGroupDetailByHandle(eventDetail.group.handle)
+    if (!groupDetail) {
+        redirect('/404')
+    }
 
-    const isEventCreator = eventDetail.owner.handle === currProfile?.handle
-    const joinedEvent = eventDetail.participants?.find(p => p.profile_id === currProfile?.id)
+    const {
+        isManager: isGroupManager,
+        isMember: isGroupMember,
+        isIssuer: isGroupIssuer,
+        isOwner: isGroupOwner,
+    } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
+
+
     const groupHost = eventDetail.event_roles?.find(r => r.role === 'group_host')
 
-    let filteredParticipants:Solar.Participant[] = []
+    const showParticipants = !eventDetail?.tickets?.length
+    let filteredParticipants: Participant[]
     if (!eventDetail?.tickets?.length) {
         filteredParticipants = eventDetail.participants || []
     } else {
@@ -60,130 +55,43 @@ export default async function EventDetailPage({params, cookies, searchParams}: E
         }) || []
     }
 
+    const currProfileAttended = eventDetail.participants?.find((item: Participant) => {
+        const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
+        return (!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked')) // no tickets needed
+            || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && item.payment_status?.includes('succe')) // paid ticket
+            || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && ticket.payment_methods.length === 0) // free ticket
+    })
+
+    // check if the current user is an operator of the event, operator can edit the event
+    const isEventOperator = !!currProfile
+        && (eventDetail.owner.id === currProfile.id
+            || eventDetail.extra?.includes(currProfile.id)
+            || eventDetail.operators?.includes(currProfile.id)
+            || isGroupManager)
+
+    // check if the current user can access the event
+    const canAccess = isEventOperator
+        || (groupDetail.can_join_event === 'member' && isGroupMember)
+        || groupDetail.can_join_event === 'everyone'
+
     return {
         currProfile,
         eventDetail,
-        group,
+        groupDetail,
         isGroupOwner,
         isGroupManager,
         isGroupMember,
-        availableHost,
-        isEventCreator,
-        venues,
-        tracks,
-        joinedEvent,
+        isGroupIssuer,
+        isEventOperator,
+        isEventCreator: eventDetail?.owner.id === currProfile?.id,
+        currProfileAttended,
         owner: eventDetail.owner,
         groupHost,
-        tab: pickSearchParam(searchParams.tab) || '',
-        participants: filteredParticipants
+        tab: pickSearchParam(searchParams.tab) || 'content',
+        participants: filteredParticipants,
+        showParticipants,
+        canAccess
     }
 }
 
-async function getEventDetailData(eventid: number) {
-    const doc = gql`query MyQuery {
-        events(where: {id: {_eq: ${eventid}}}) {
-            id
-            title
-            content
-            start_time
-            end_time
-            timezone
-            meeting_url
-            location
-            formatted_address
-            geo_lat
-            geo_lng
-            cover_url
-            tags
-            max_participant
-            badge_class_id
-            notes
-            group_id
-            group {
-                 id
-                handle
-                nickname
-                image_url
-            }
-            owner {
-                id
-                handle
-                nickname
-                image_url
-            }
-            event_roles {
-                id
-                role
-                item_id
-                image_url
-                nickname
-                item_type
-                group {
-                    handle
-                }
-                profile {
-                    handle
-                }
-            }
-            tickets (order_by: {created_at: asc}) {
-                id
-                tracks_allowed
-                check_badge_class_id
-                check_badge_class {
-                    id
-                    title
-                    image_url
-                }
-                content
-                created_at
-                end_time
-                event_id
-                need_approval
-                payment_methods {
-                    id
-                    item_type
-                    item_id
-                    chain
-                    token_name
-                    token_address
-                    receiver_address
-                    price
-                }
-                ticket_type
-                status
-                title
-            }
-            participants(where: {}, order_by: {created_at: asc}) {
-                id
-                event_id
-                profile_id
-                role
-                status
-                created_at
-                ticket_id
-                payment_status
-                ticket_item {
-                    sender_address
-                    status
-                }
-                profile {
-                    id
-                    handle
-                    nickname
-                    image_url
-                    }
-                ticket {
-                    title
-                }
-            }
-        }
-    }`
-
-    // console.log(doc)
-    const {events} = await request<{events: Solar.Event[]}>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
-    if (!events.length) {
-        return null
-    }
-    return  events[0]
-}
 

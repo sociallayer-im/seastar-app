@@ -1,6 +1,6 @@
-import {Event} from './types'
+import {Event, EventDetail} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
-import {GET_GROUP_EVENT_BY_HANDLE, GET_PROFILE_EVENTS_BY_HANDLE} from './schemas'
+import {GET_EVENT_DETAIL_BY_ID, GET_GROUP_EVENT_BY_HANDLE, GET_PROFILE_EVENTS_BY_HANDLE} from './schemas'
 
 export const getStaredEvent = async (authToken: string) => {
     if (!authToken) {
@@ -120,5 +120,18 @@ export const getEvents = async (filters: EventListFilterProps, authToken?: strin
     const data = await res.json()
 
     return data.events as Event[]
+}
 
+export const getEventDetailById = async (eventId: number) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_EVENT_DETAIL_BY_ID,
+        variables: {id: eventId}
+    })
+
+    if (response.data.events.length === 0) {
+        return null
+    }
+
+    return response.data.events[0] as EventDetail
 }
