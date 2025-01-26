@@ -11,7 +11,7 @@ export interface TracksFilterProps {
 }
 
 export default function TracksFilter({tracks, value, onSelect}: TracksFilterProps) {
-    
+
     return <div className="flex-row-item-center !flex-wrap">
         <Button
             onClick={() => onSelect?.()}
