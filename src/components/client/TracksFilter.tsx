@@ -2,11 +2,6 @@
 
 import {Button} from '@/components/shadcn/Button'
 import {getLabelColor} from '@/utils/label_color'
-import {Swiper, SwiperSlide} from 'swiper/react'
-import {FreeMode} from 'swiper/modules';
-
-import 'swiper/css'
-import 'swiper/css/free-mode'
 import {Track} from '@sola/sdk'
 
 export interface TracksFilterProps {
@@ -16,10 +11,7 @@ export interface TracksFilterProps {
 }
 
 export default function TracksFilter({tracks, value, onSelect}: TracksFilterProps) {
-    const activeSlideIndex = !!value
-        ? tracks.findIndex(t => t.id === value) + 1
-        : 0
-
+    
     return <div className="flex-row-item-center !flex-wrap">
         <Button
             onClick={() => onSelect?.()}
