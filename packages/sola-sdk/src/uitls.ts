@@ -14,3 +14,19 @@ export const checkAndGetProfileByHandlesOrAddresses = async (handlesOrAddresses:
 
     return {handleResult, addressResult}
 }
+
+const NeedToFixFields = ['created_at', 'start_time', 'end_time', 'start_at', ''] as const
+type FieldsToFix = typeof NeedToFixFields[number]
+export type NeedToFixObject = Partial<Record<FieldsToFix, string>>
+
+
+export function fixDate(target: NeedToFixObject):NeedToFixObject{
+    NeedToFixFields.forEach((field) => {
+        if (field in target && typeof target[field] === 'string' && !target[field].endsWith('Z')) {
+            target[field] = target[field] + 'Z'
+        }
+    })
+
+    return target
+
+}

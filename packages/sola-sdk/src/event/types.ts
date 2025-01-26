@@ -39,6 +39,7 @@ export interface EventDetail extends Event {
     venue_id: number | null,
     display: string | null,
     participants: Participant[] | null
+    requirement_tags: string[] | null
     track: Track | null
     extra: number[] | null,
     operators: number[] | null

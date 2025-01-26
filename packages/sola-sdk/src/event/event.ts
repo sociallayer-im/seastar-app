@@ -1,6 +1,7 @@
 import {Event, EventDetail} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
 import {GET_EVENT_DETAIL_BY_ID, GET_GROUP_EVENT_BY_HANDLE, GET_PROFILE_EVENTS_BY_HANDLE} from './schemas'
+import {fixDate} from '../uitls'
 
 export const getStaredEvent = async (authToken: string) => {
     if (!authToken) {
@@ -30,9 +31,9 @@ export const getProfileEventByHandle = async (handle: string) => {
     })
 
     return {
-        attends: response.data.attends.map((a: { event: Event }) => a.event) as Event[],
-        hosting: response.data.hosting as Event[],
-        coHosting: response.data.coHosting.map((a: { event: Event }) => a.event) as Event[]
+        attends: response.data.attends.map((a: { event: Event }) => fixDate(a.event)) as Event[],
+        hosting: response.data.hosting.map((e:Event) => fixDate(e)) as Event[],
+        coHosting: response.data.coHosting.map((a: { event: Event }) =>  fixDate(a.event)) as Event[]
     }
 }
 
@@ -43,7 +44,7 @@ export const getGroupEventByHandle = async (handle: string) => {
         variables: {handle}
     })
 
-    return response.data.events as Event[]
+    return response.data.events.map((e:Event) => fixDate(e)) as Event[]
 }
 
 export const getEventIcsUrl = (groupHandle: string) => {
@@ -110,7 +111,7 @@ export const getEvents = async (filters: EventListFilterProps, authToken?: strin
     !!authToken && searchParams.append("auth_token", authToken)
 
     const url = `${getSdkConfig().api}/event/list?${searchParams.toString()}`
-    console.log(url)
+    // console.log(url)
     const res = await fetch(url)
 
     if (!res.ok) {
@@ -133,5 +134,47 @@ export const getEventDetailById = async (eventId: number) => {
         return null
     }
 
-    return response.data.events[0] as EventDetail
+    return fixDate(response.data.events[0]) as EventDetail
+}
+
+export const sendEventFeedback = async (props: { eventId: number, feedback: string, authToken: string }) => {
+    const res = await fetch(`${getSdkConfig().api}/comment/create`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            auth_token: props.authToken,
+            comment_type: 'feedback',
+            item_type: 'Event',
+            item_id: props.eventId,
+            content: props.feedback
+        })
+    })
+
+    if (!res.ok) {
+        throw new Error('Failed to send feedback')
+    }
+}
+
+export const attendEventWithoutTicket = async (eventId: number, authToken: string) => {
+    const res = await fetch(`${getSdkConfig().api}/event/join`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: eventId,
+            auth_token: authToken
+        })
+    })
+
+    if (!res.ok) {
+        const data = await res.json()
+        if (data.message) {
+            throw new Error(data.message)
+        } else {
+            throw new Error('Failed to attend event')
+        }
+    }
 }

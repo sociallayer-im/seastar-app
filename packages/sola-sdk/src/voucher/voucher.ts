@@ -2,7 +2,7 @@ import {getGqlClient, getSdkConfig} from "../client"
 import {GET_VOUCHER_DETAIL_BY_ID, GET_VOUCHER_DETAIL_BY_HANDLE, GET_GROUP_VOUCHER_BY_HANDLE} from "./schemas"
 import {type Voucher, VoucherDetail,} from "./types"
 import {Badge} from '../badge'
-import {checkAndGetProfileByHandlesOrAddresses} from '../uitls'
+import {checkAndGetProfileByHandlesOrAddresses, fixDate} from '../uitls'
 
 /**
  * Get voucher by handle
@@ -17,7 +17,7 @@ export const getVoucherByHandle = async (handle: string) => {
         variables: { handle, expires_at: expiresAt }
     })
 
-    return response.data.vouchers as Voucher[]
+    return response.data.vouchers.map((v:Voucher) => fixDate(v)) as Voucher[]
 }
 
 /**
@@ -31,7 +31,7 @@ export const getVoucherDetailById = async (id: number) => {
         variables: {id}
     })
 
-    return response.data.vouchers[0] as VoucherDetail || null
+    return response.data.vouchers[0] ? fixDate(response.data.vouchers[0]) as VoucherDetail : null
 }
 
 
@@ -43,7 +43,7 @@ export const getGroupVoucherByHandle = async (groupHandle: string) => {
         variables: { handle: groupHandle, now: expiresAt }
     })
 
-    return response.data.vouchers as Voucher[] || null
+    return response.data.vouchers.map((v:Voucher) => fixDate(v)) as Voucher[]
 }
 
 

@@ -122,8 +122,6 @@ export const GET_GROUP_EVENT_BY_HANDLE = gql`
     }
 `
 
-
-
 export const VENUE_DETAIL_FRAGMENT = gql`
     ${VENUE_FRAGMENT}
     fragment VenueDetailFragment on venues {
@@ -148,6 +146,50 @@ export const VENUE_DETAIL_FRAGMENT = gql`
         venue_overrides
     }`
 
+export const PAYMENT_METHOD_FRAGMENT = gql`
+    fragment PaymentMethodFragment on payment_methods {
+        id
+        item_type
+        item_id
+        chain
+        token_name
+        token_address
+        receiver_address
+        price
+        protocol
+    }`
+
+export const TICKET_FRAGMENT = gql`
+    ${TRACK_FRAGMENT}
+    ${BADGE_CLASS_FRAGMENT}
+    ${PAYMENT_METHOD_FRAGMENT}
+    fragment TicketFragment on tickets {
+        id
+        tracks_allowed
+        check_badge_class_id
+        check_badge_class {
+            ...BadgeClassFragment
+        }
+        content
+        created_at
+        end_time
+        event_id
+        need_approval
+        payment_chain
+        payment_target_address
+        payment_token_address
+        payment_token_price
+        payment_token_name
+        quantity
+        status
+        title
+        ticket_type
+        payment_metadata,
+        payment_methods {
+            ...PaymentMethodFragment
+        }
+    }`
+
 export const EVENT_DETAIL_FRAGMENT = gql`
     ${EVENT_FRAGMENT}
     ${PARTICIPANT_FRAGMENT}
@@ -155,6 +197,7 @@ export const EVENT_DETAIL_FRAGMENT = gql`
     ${EVENT_ROLE_DETAIL_FRAGMENT}
     ${GROUP_FRAGMENT}
     ${BADGE_CLASS_FRAGMENT}
+    ${TICKET_FRAGMENT}
     fragment EventDetailFragment on events {
         ...EventFragment
         formatted_address
@@ -166,6 +209,7 @@ export const EVENT_DETAIL_FRAGMENT = gql`
         participants_count
         badge_class_id
         external_url
+        requirement_tags
         notes
         extra
         operators
@@ -173,23 +217,7 @@ export const EVENT_DETAIL_FRAGMENT = gql`
             ...GroupFragment
         }
         tickets {
-            id
-            tracks_allowed
-            check_badge_class_id
-            check_badge_class {
-                ...BadgeClassFragment
-            }
-            content
-            created_at
-            end_time
-            event_id
-            need_approval
-            payment_chain
-            payment_target_address
-            payment_token_address
-            payment_token_price
-            payment_token_name
-            quantity
+            ...TicketFragment
         }
         location_data
         venue_id

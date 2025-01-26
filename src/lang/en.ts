@@ -134,7 +134,7 @@ export const en = {
     'You have registered for the event.': 'You have registered for the event.',
     'Welcome! To join the event, please register below.': 'Welcome! To join the event, please register below.',
     'Add to Calendar': 'Add to Calendar',
-    'FeedBack': 'FeedBack',
+    'Feedback': 'Feedback',
     'Join Event': 'Join Event',
     'Check-In': 'Check-In',
     'Check-In For Participants': 'Check-In For Participants',
@@ -317,6 +317,7 @@ export const en = {
     'Today':'Today',
     'Week':'Week',
     'Month':'Month',
+    'Attend event to view notes':'Attend event to view notes',
 
 }
 

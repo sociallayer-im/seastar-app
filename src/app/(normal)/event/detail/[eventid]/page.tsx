@@ -2,7 +2,6 @@ import EventDetailPage, {
     EventDetailPageDataProps,
     EventDetailPageSearchParams
 } from "@/app/(normal)/event/detail/[eventid]/data"
-import {cookies} from "next/headers"
 import {
     displayProfileName,
     displayTicketPrice,
@@ -18,6 +17,12 @@ import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import NoData from "@/components/NoData"
 import {Textarea} from "@/components/shadcn/Textarea"
 import Avatar from '@/components/Avatar'
+import AddSingleEventToCalendarApp from '@/components/client/AddSingleEventToCalendarAppBtn'
+import EventFeedbackBtn from '@/components/EventFeedbackBtn'
+import AttendEventBtn from '@/components/client/AttendEventBtn'
+import {Badge} from '@/components/shadcn/Badge'
+import SignInPanel from '@/components/SignInPanel'
+import {SeatingStyle} from '@/app/configForSpecifyGroup'
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -45,15 +50,21 @@ export default async function EventDetail({params, searchParams}: {
         isGroupManager,
         isEventOperator,
         canAccess,
-        currProfileAttended
+        currProfileAttended,
+        isTicketEvent,
+        eventProcess,
+        isEventClosed,
+        showParticipants,
+        avNeeds,
+        seatingStyle
     } = await EventDetailPage({
         params,
         searchParams
     })
     const {lang} = await selectLang()
 
-    return <div className="page-width !pt-6 !pb-16">
-        <div className="flex flex-row items-center justify-between mb-8">
+    return <div className="page-width !pt-4 !pb-12">
+        <div className="flex flex-row items-center justify-between sm:mb-8 mb-4">
             <a href={`/event/${groupDetail.handle}`} className="flex-row-item-center">
                 <Avatar size={24} profile={groupDetail} className="mr-1"/>
                 <span
@@ -78,7 +89,7 @@ export default async function EventDetail({params, searchParams}: {
         </div>
 
         <div className="flex flex-col sm:flex-row">
-            <div className="min-w-[324px] sm:max-w-[324px] max-mb-8 order-1 sm:order-2 sm:mb-0">
+            <div className="min-w-[324px] sm:max-w-[324px] mb-8 order-1 sm:order-2 sm:mb-0">
                 {
                     !!eventDetail.cover_url
                         ? <img className="max-w-[450px] w-full mx-auto"
@@ -106,57 +117,81 @@ export default async function EventDetail({params, searchParams}: {
 
 
                 {canAccess &&
-                    <div className="border-gray-200 border rounded-lg p-4 mt-6">
-                        <div className="flex-row-item-center text-xs">
-                            <Avatar profile={currProfile!} size={24} className="mr-1"/>
-                            <span>{displayProfileName(currProfile!)}</span>
-                        </div>
-
-                        {currProfileAttended
-                            ? <div className="my-2">{lang['You have registered for the event.']}</div>
-                            : <div className="my-2">{lang['Welcome! To join the event, please register below.']}</div>
-                        }
-
-                        <div className="flex-row-item-center">
-                            <Button variant={'secondary'} className="text-xs flex-1">
-                                <i className="uil-calendar-alt text-base"></i>
-                                <span>{lang['Add to Calendar']}</span>
-                            </Button>
-                            <Button variant={'secondary'} className="text-xs flex-1 ml-2">
-                                <span>{lang['FeedBack']}</span>
-                            </Button>
-                        </div>
-
-                        <div className="flex-row-item-center mt-2">
-                            <Button variant={'special'} className="text-xs flex-1">
-                                <span>{lang['Join Event']}</span>
-                            </Button>
-                        </div>
-
-                        {isEventOperator ?
-                            eventDetail.badge_class_id
-                                ? <div className="flex-row-item-center mt-2">
-                                    <Button variant={'secondary'} className="text-xs flex-1">
-                                        <span>{lang['Check-In And Send POAP']}</span>
-                                    </Button>
+                    <>
+                        {currProfile ?
+                            <div className="border-gray-200 border rounded-lg p-4 mt-6">
+                                <div className="flex-row-item-center text-xs">
+                                    <Avatar profile={currProfile!} size={24} className="mr-1"/>
+                                    <span>{displayProfileName(currProfile!)}</span>
                                 </div>
-                                : <div className="flex-row-item-center mt-2">
-                                    <Button variant={'secondary'} className="text-xs flex-1">
-                                        <span>{lang['Check-In For Participants']}</span>
-                                    </Button>
+
+                                {currProfileAttended
+                                    ? <div className="my-2">{lang['You have registered for the event.']}</div>
+                                    :
+                                    <div
+                                        className="my-2">{lang['Welcome! To join the event, please register below.']}</div>
+                                }
+
+                                <div className="flex-row-item-center">
+                                    <AddSingleEventToCalendarApp
+                                        event={eventDetail}
+                                        lang={lang}
+                                        className="text-xs flex-1"/>
+                                    <EventFeedbackBtn eventId={eventDetail.id}
+                                                      lang={lang}
+                                                      className="text-xs flex-1 ml-2"/>
                                 </div>
-                            : <div className="flex-row-item-center mt-2">
-                                <Button variant={'secondary'} className="text-xs flex-1">
-                                    <span>{lang['Check-In']}</span>
-                                </Button>
+
+                                {!isTicketEvent && !currProfileAttended &&
+                                    <div className="flex-row-item-center mt-2">
+                                        <AttendEventBtn eventId={eventDetail.id} lang={lang}
+                                                        className="text-xs flex-1"/>
+                                    </div>
+                                }
+
+                                {isEventOperator ?
+                                    eventDetail.badge_class_id
+                                        ? <div className="flex-row-item-center mt-2">
+                                            <Button variant={'secondary'} className="text-xs flex-1">
+                                                <span>{lang['Check-In And Send POAP']}</span>
+                                            </Button>
+                                        </div>
+                                        : <div className="flex-row-item-center mt-2">
+                                            <Button variant={'secondary'} className="text-xs flex-1">
+                                                <span>{lang['Check-In For Participants']}</span>
+                                            </Button>
+                                        </div>
+                                    : currProfileAttended ? <div className="flex-row-item-center mt-2">
+                                        <Button variant={'secondary'} className="text-xs flex-1">
+                                            <span>{lang['Check-In']}</span>
+                                        </Button>
+                                    </div> : null
+                                }
                             </div>
+                            : <SignInPanel lang={lang}/>
                         }
-                    </div>
+                    </>
                 }
             </div>
 
             <div className="flex-1 sm:mr-9 order-2 sm:order-1">
-                <div className="text-4xl font-semibold w-full">{eventDetail.title}</div>
+                <div className="text-4xl font-semibold w-full">
+                    {eventDetail.title}
+                </div>
+
+                <div className="flex-row-item-center my-3">
+                    {eventDetail.status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
+                    {eventDetail.status === 'cancel' && <Badge variant='cancel' className="mr-1">Canceled</Badge>}
+                    {isEventClosed && <Badge variant='cancel' className="mr-1">Closed</Badge>}
+
+                    {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">Ongoing</Badge>}
+                    {eventProcess === 'past' && <Badge variant='past' className="mr-1">Past</Badge>}
+                    {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">Upcoming</Badge>}
+
+
+                    {isEventCreator && <Badge variant='hosting' className="mr-1">Hosting</Badge>}
+                    {currProfileAttended && <Badge variant='joining' className="mr-1">Joining</Badge>}
+                </div>
 
                 <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">
                     <div className="hide-scroll whitespace-nowrap overflow-auto">
@@ -280,8 +315,8 @@ export default async function EventDetail({params, searchParams}: {
                                  src="/images/tab_bg.png" alt=""/>
                         }
                     </a>
-                    <a href={'?tab=tickets'}
-                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
+                    {isTicketEvent && <a href={'?tab=tickets'}
+                                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <span className="z-10">Tickets</span>
                         {tab === 'tickets' &&
                             <img width={90} height={12}
@@ -289,17 +324,18 @@ export default async function EventDetail({params, searchParams}: {
                                  src="/images/tab_bg.png" alt=""/>
                         }
                     </a>
-                    <a href={'?tab=comments'}
-                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
-                        <span className="z-10">Comments</span>
-                        {tab === 'comments' &&
-                            <img width={90} height={12}
-                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
-                                 src="/images/tab_bg.png" alt=""/>
-                        }
-                    </a>
-                    <a href={'?tab=participants'}
-                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
+                    }
+                    {/*<a href={'?tab=comments'}*/}
+                    {/*   className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">*/}
+                    {/*    <span className="z-10">Comments</span>*/}
+                    {/*    {tab === 'comments' &&*/}
+                    {/*        <img width={90} height={12}*/}
+                    {/*             className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"*/}
+                    {/*             src="/images/tab_bg.png" alt=""/>*/}
+                    {/*    }*/}
+                    {/*</a>*/}
+                    {showParticipants && <a href={'?tab=participants'}
+                                            className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <span className="z-10">Participants</span>
                         {tab === 'participants' &&
                             <img width={90} height={12}
@@ -307,22 +343,47 @@ export default async function EventDetail({params, searchParams}: {
                                  src="/images/tab_bg.png" alt=""/>
                         }
                     </a>
+                    }
                 </div>
 
                 {!tab || tab === "content" &&
                     <div>
+                        {!!seatingStyle?.length && isEventOperator &&
+                            <div className="my-3 text-sm">
+                                <div className="font-semibold">
+                                    Seating arrangement style
+                                </div>
+                                <div>{seatingStyle.join(', ')}</div>
+                            </div>
+                        }
+                        {!!avNeeds?.length && isEventOperator &&
+                            <div className="my-3 text-sm">
+                                <div className="font-semibold">
+                                    AV needed
+                                </div>
+                                <div>{avNeeds.join(', ')}</div>
+                            </div>
+                        }
+
                         {!eventDetail.content && !eventDetail.notes && <NoData/>}
-                        <div className="editor-wrapper display">
+                        <div className="editor-wrapper display py-3">
                             <RichTextDisplayer markdownStr={eventDetail.content || ''}/>
                         </div>
 
-                        {!!eventDetail.notes &&
-                            <>
-                                <div className="mt-8 font-semibold">Event Note</div>
-                                <div className="editor-wrapper display">
-                                    <RichTextDisplayer markdownStr={eventDetail.notes || ''}/>
+                        {!!eventDetail.notes ?
+                            currProfileAttended ?
+                                <div className="bg-secondary border-dashed border-2 rounded-lg p-3 mt-8 ">
+                                    <div className="font-semibold mb-2">{lang['Event Note']}</div>
+                                    <div className="editor-wrapper display">
+                                        <RichTextDisplayer markdownStr={eventDetail.notes || ''}/>
+                                    </div>
                                 </div>
-                            </>
+                                : <div className="bg-secondary border-dashed border-2 rounded-lg p-3 mt-8 ">
+                                    <div className="font-semibold mb-2">{lang['Attend event to view notes']}</div>
+                                    <div className="bg-gray-300 w-full h-4 rounded-lg mb-2" />
+                                    <div className="bg-gray-300 w-80 h-4 rounded-lg" />
+                                </div>
+                            : null
                         }
                     </div>
                 }

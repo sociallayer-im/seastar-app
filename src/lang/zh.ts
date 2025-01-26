@@ -136,7 +136,7 @@ export const zh: Dictionary = {
     'You have registered for the event.': '您已注册该事件。',
     'Welcome! To join the event, please register below.': '欢迎！要加入事件，请在下方注册。',
     'Add to Calendar': '添加到日历',
-    'FeedBack': '反馈',
+    'Feedback': '反馈',
     'Join Event': '加入事件',
     'Check-In': '签到',
     'Check-In For Participants': '给参与者签到',
@@ -319,4 +319,5 @@ export const zh: Dictionary = {
     'Today':'今天',
     'Week':'本周',
     'Month':'本月',
+    'Attend event to view notes':'参加事件以查看笔记',
 }

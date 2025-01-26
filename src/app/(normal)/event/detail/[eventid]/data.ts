@@ -1,8 +1,9 @@
-import {analyzeGroupMembershipAndCheckProfilePermissions, pickSearchParam} from "@/utils"
+import {analyzeGroupMembershipAndCheckProfilePermissions, checkProcess, pickSearchParam} from "@/utils"
 import {redirect} from "next/navigation"
 import {getGroupData} from "@/app/(normal)/event/[grouphandle]/create/data"
 import {getCurrProfile} from '@/app/actions'
 import {getEventDetailById, getGroupDetailByHandle, Participant} from '@sola/sdk'
+import {AVNeeds, SeatingStyle} from '@/app/configForSpecifyGroup'
 
 export interface EventDetailPageDataProps {
     eventid: string
@@ -62,17 +63,23 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
             || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && ticket.payment_methods.length === 0) // free ticket
     })
 
+    const isEventCreator = eventDetail.owner.id === currProfile?.id
+
     // check if the current user is an operator of the event, operator can edit the event
     const isEventOperator = !!currProfile
-        && (eventDetail.owner.id === currProfile.id
-            || eventDetail.extra?.includes(currProfile.id)
-            || eventDetail.operators?.includes(currProfile.id)
-            || isGroupManager)
+        && (isGroupManager
+            || isEventCreator
+            || eventDetail.event_roles?.some(role => role.role === 'co_host' && role.item_id === currProfile.id)
+            || eventDetail.event_roles?.some(role => role.role === 'speaker' && role.item_id === currProfile.id)
+            )
 
     // check if the current user can access the event
     const canAccess = isEventOperator
         || (groupDetail.can_join_event === 'member' && isGroupMember)
         || groupDetail.can_join_event === 'everyone'
+
+    const seatingStyle = eventDetail.requirement_tags?.filter(tag => SeatingStyle.includes(tag))
+    const avNeeds = eventDetail.requirement_tags?.filter(tag => AVNeeds.includes(tag))
 
     return {
         currProfile,
@@ -83,14 +90,21 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         isGroupMember,
         isGroupIssuer,
         isEventOperator,
-        isEventCreator: eventDetail?.owner.id === currProfile?.id,
+        isEventCreator,
+        isEventClosed: eventDetail.status === 'closed',
+        eventProcess: checkProcess(eventDetail.start_time, eventDetail.end_time),
+        isTicketEvent: !!eventDetail.tickets?.length,
         currProfileAttended,
+        isOwner: eventDetail.owner.id === currProfile?.id,
         owner: eventDetail.owner,
         groupHost,
         tab: pickSearchParam(searchParams.tab) || 'content',
         participants: filteredParticipants,
         showParticipants,
-        canAccess
+        canAccess,
+
+        seatingStyle,
+        avNeeds
     }
 }
 
