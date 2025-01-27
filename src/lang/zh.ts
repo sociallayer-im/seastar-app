@@ -320,4 +320,6 @@ export const zh: Dictionary = {
     'Week':'本周',
     'Month':'本月',
     'Attend event to view notes':'参加事件以查看笔记',
+    'All Tags':'所有标签',
+    'All Tracks': '所有 Track',
 }

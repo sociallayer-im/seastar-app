@@ -181,11 +181,14 @@ export default function EventForm({lang, data}: EventFormProps) {
                     {!!data.tracks.length && <>
                         <div className="font-semibold mb-1">{lang['Event Track']}</div>
                         <div className="mb-8">
-                            <TracksFilter tracks={data.tracks}
-                                          value={draft.track_id}
-                                          onSelect={(trackId) => {
-                                              setDraft({...draft, track_id: trackId || null})
-                                          }}
+                            <TracksFilter
+                                lang={lang}
+                                allowResetBtn={false}
+                                tracks={data.tracks}
+                                values={draft.track_id ? [draft.track_id] : undefined}
+                                onSelect={(trackIds) => {
+                                    setDraft({...draft, track_id: trackIds?.[0] || null})
+                                }}
                             />
                         </div>
                     </>}

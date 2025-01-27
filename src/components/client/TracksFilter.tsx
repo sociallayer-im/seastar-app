@@ -3,28 +3,43 @@
 import {Button} from '@/components/shadcn/Button'
 import {getLabelColor} from '@/utils/label_color'
 import {Track} from '@sola/sdk'
+import {Dictionary} from '@/lang'
 
 export interface TracksFilterProps {
+    lang: Dictionary
+    allowResetBtn?: boolean
     tracks: Track[]
-    value?: number | null
-    onSelect?: (trackId?: number) => void
+    multiple?: boolean
+    values?: number[] | null
+    onSelect?: (trackIds?: number[]) => void
 }
 
-export default function TracksFilter({tracks, value, onSelect}: TracksFilterProps) {
+export default function TracksFilter({tracks, values, onSelect, multiple, lang, allowResetBtn=true}: TracksFilterProps) {
+
+    const handleSelect = (trackId: number) => {
+        if (values?.includes(trackId)) {
+            const newValues = values.filter(v => v !== trackId)
+            onSelect?.(newValues.length ? newValues : undefined)
+        } else {
+            multiple ? onSelect?.([...values!, trackId]) : onSelect?.([trackId])
+        }
+    }
 
     return <div className="flex-row-item-center !flex-wrap">
-        <Button
-            onClick={() => onSelect?.()}
-            variant={!!value ? 'outline' : 'normal'}
-            className="!h-11 select-none hover:brightness-95 mb-1 mr-1"
-            size={'sm'}>
-            <div className="text-xs font-normal">
-                <div className="font-semibold">All Tracks</div>
-            </div>
-        </Button>
+        {allowResetBtn &&
+            <Button
+                onClick={() => onSelect?.()}
+                variant={!!values && values.length ? 'outline' : 'normal'}
+                className="!h-11 select-none hover:brightness-95 mb-1 mr-1 border-foreground border"
+                size={'sm'}>
+                <div className="text-xs font-normal">
+                    <div className="font-semibold">{lang['All Tracks']}</div>
+                </div>
+            </Button>
+        }
         {tracks.map((t, index) => {
             const color = getLabelColor(t.title)
-            const selected = value === t.id
+            const selected = values?.includes(t.id)
             const themeStyle = selected
                 ? {
                     color: '#fff',
@@ -38,7 +53,8 @@ export default function TracksFilter({tracks, value, onSelect}: TracksFilterProp
                     height: '44px',
                 }
             return <Button
-                onClick={() => onSelect?.(t.id)}
+                key={index}
+                onClick={() => handleSelect(t.id)}
                 variant="outline"
                 size={'sm'}
                 style={themeStyle}
@@ -49,7 +65,5 @@ export default function TracksFilter({tracks, value, onSelect}: TracksFilterProp
                 </div>
             </Button>
         })}
-
-
     </div>
 }

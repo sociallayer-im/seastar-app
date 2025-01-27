@@ -318,6 +318,8 @@ export const en = {
     'Week':'Week',
     'Month':'Month',
     'Attend event to view notes':'Attend event to view notes',
+    'All Tags': 'All Tags',
+    'All Tracks':'All Tracks'
 
 }
 

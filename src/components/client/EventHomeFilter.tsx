@@ -112,10 +112,11 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
             !!groupDetail.event_tags?.length &&
             <div className="my-2">
                 <TagsFilter
-                    onSelected={(tag) => {
+                    lang={lang}
+                    onSelected={(tags) => {
                         const url = new URL(window.location.href)
-                        if (tag) {
-                            url.searchParams.set('tags', tag)
+                        if (tags && tags[0]) {
+                            url.searchParams.set('tags', tags[0])
                         } else {
                             url.searchParams.delete('tags')
                         }
@@ -129,16 +130,17 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
             !!groupDetail.tracks.length &&
             <div className="my-2">
                 <TracksFilter
-                    onSelect={(trackId) => {
+                    lang={lang}
+                    onSelect={(trackIds) => {
                         const url = new URL(window.location.href)
-                        if (trackId) {
-                            url.searchParams.set('track_id', trackId.toString())
+                        if (trackIds && trackIds[0]) {
+                            url.searchParams.set('track_id', trackIds[0].toString())
                         } else {
                             url.searchParams.delete('track_id')
                         }
                         window.location.href = url.toString()
                     }}
-                    value={filterOpts.track_id ? parseInt(filterOpts.track_id) : undefined}
+                    values={filterOpts.track_id ? [parseInt(filterOpts.track_id)] : undefined}
                     tracks={groupDetail.tracks}/>
             </div>
         }
