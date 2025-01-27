@@ -6,7 +6,7 @@ import {Track} from '@sola/sdk'
 
 export interface TracksFilterProps {
     tracks: Track[]
-    value?: number
+    value?: number | null
     onSelect?: (trackId?: number) => void
 }
 

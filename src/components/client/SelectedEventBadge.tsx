@@ -1,14 +1,14 @@
 import {Dictionary} from "@/lang"
 import {Button} from "@/components/shadcn/Button"
-import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 import useModal from "@/components/client/Modal/useModal"
 import {useEffect, useState} from "react"
 import {getBadgeClassDetailById, getGroupBadgeClasses} from "@/service/solar"
 import useSelectBadgeClass from "@/hooks/useSelectBadgeClass"
+import {EventDraftType, BadgeClass} from '@sola/sdk'
 
 export interface SelectedEventBadgeProps {
     lang: Dictionary
-    profileBadgeClasses: Solar.BadgeClass[]
+    profileBadgeClasses: BadgeClass[]
     state: {
         event: EventDraftType
         setEvent: (event: EventDraftType) => void

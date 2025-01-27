@@ -3,9 +3,6 @@
 import {
     emptyPaymentMethod,
     emptyTicket,
-    EventDraftType,
-    PaymentMethodDraftType,
-    TicketDraftType
 } from "@/app/(normal)/event/[grouphandle]/create/data"
 import {Input} from "@/components/shadcn/Input"
 import {getLabelColor} from "@/utils/label_color"
@@ -21,11 +18,12 @@ import {getBadgeClassDetailById, getGroupBadgeClasses} from "@/service/solar"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {Payments, PaymentSettingToken, PaymentsType} from "@/utils/payment_setting"
 import DropdownMenu from "@/components/client/DropdownMenu"
+import {Track, BadgeClass, EventDraftType, TicketDraft, PaymentMethod, EventRole} from '@sola/sdk'
 
 export interface TicketFormProps {
     state: {event: EventDraftType, setEvent: (event: EventDraftType) => void}
-    tracks: Solar.Track[]
-    profileBadgeClasses: Solar.BadgeClass[]
+    tracks: Track[]
+    profileBadgeClasses: BadgeClass[]
     lang: Dictionary
     checker?: Checker,
 }
@@ -44,7 +42,7 @@ export interface Checker {
 }
 
 export default function TicketForm({state: {event, setEvent}, tracks, checker, profileBadgeClasses, lang} : TicketFormProps) {
-    const [tickets, setTickets] = useState<TicketDraftType[]>(event.tickets || [])
+    const [tickets, setTickets] = useState<TicketDraft[]>(event.tickets || [])
     const [ticketErrors, setTicketErrors] = useState<TicketErrMsg[]>([])
 
     useEffect(() => {
@@ -140,12 +138,12 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, p
 export interface TicketItemProps {
     index: number
     lang: Dictionary
-    ticket: TicketDraftType
-    onChange: (ticket: TicketDraftType) => void,
+    ticket: TicketDraft
+    onChange: (ticket: TicketDraft) => void,
     onRemove: () => void,
-    tracks: Solar.Track[],
-    profileBadgeClasses: Solar.BadgeClass[],
-    eventRoles: Solar.EventRole[],
+    tracks: Track[],
+    profileBadgeClasses: BadgeClass[],
+    eventRoles: EventRole[],
     itemChecker?: {check: () => boolean}
     errors?: TicketErrMsg
 }
@@ -155,7 +153,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const [ticketDraft, setTicketDraft] = useState<TicketDraftType>(ticket)
+    const [ticketDraft, setTicketDraft] = useState<TicketDraft>(ticket)
     const [enablePayment, setEnablePayment] = useState(!!ticket.payment_methods?.length)
     const [enableQuantity, setEnableQuantity] = useState(!!ticket.quantity)
     const [enableEndTime, setEnableEndTime] = useState(!!ticket.end_time)
@@ -430,16 +428,16 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
 }
 
 export interface PaymentMethodForm {
-    paymentMethods: PaymentMethodDraftType[]
+    paymentMethods: PaymentMethod[]
     lang: Dictionary
-    onChange: (paymentMethods: PaymentMethodDraftType[]) => void
+    onChange: (paymentMethods: PaymentMethod[]) => void
     checker?: {check: undefined | null | (() => boolean)}
     errors?: {price?: string, receiver_address?: string}[]
 }
 
 
 function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
-    const [paymentMethods, setPaymentMethods] = useState<PaymentMethodDraftType[]>(props.paymentMethods)
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(props.paymentMethods)
     const {toast} = useToast()
 
     useEffect(() => {
@@ -467,7 +465,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         }
     }
 
-    const getAvailablePaymentProtocalList = (currOpt: PaymentMethodDraftType) => {
+    const getAvailablePaymentProtocalList = (currOpt: PaymentMethod) => {
         const protocals: PaymentsType[] = []
         let index = 0
         while (index < Payments.length) {
@@ -498,7 +496,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         return protocals
     }
 
-    const getAvailableTokenList = (currOpt: PaymentMethodDraftType) => {
+    const getAvailableTokenList = (currOpt: PaymentMethod) => {
         return Payments
             .find(c => currOpt.chain === c.chain && currOpt.protocol === c.protocol)!.tokenList
             .filter(t => t.contract === currOpt.token_address 

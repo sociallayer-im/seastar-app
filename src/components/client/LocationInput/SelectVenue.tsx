@@ -7,7 +7,7 @@ import {Dictionary} from "@/lang"
 import useModal from "@/components/client/Modal/useModal"
 import DialogVenueDetail from "@/components/DialogVenueDetail"
 import {isEventTimeSuitable} from "@/utils"
-import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
+import {EventDraftType, VenueDetail} from '@sola/sdk'
 
 export interface SelectVenueProps extends LocationInputProps {
     onSwitchToCreateLocation: () => void
@@ -24,7 +24,7 @@ export default function SelectVenue({
     const currVenue = venues.find(v => v.id === event.venue_id)
     const {openModal} = useModal()
 
-    const setVenue = (venue: Solar.Venue) => {
+    const setVenue = (venue: VenueDetail) => {
         if (!venue.id) {
             onSwitchToCreateLocation()
         } else {
@@ -57,7 +57,7 @@ export default function SelectVenue({
     const createLocationOpt = {
         id: 0,
         title: `<i class="uil-plus-circle text-lg"></i> ${lang['Other Location']}`
-    } as Solar.Venue
+    } as VenueDetail
 
     const toLink = (url: string) => {
         window.open(url, '_blank')
@@ -70,11 +70,10 @@ export default function SelectVenue({
             || v.visibility === 'all'
             || (v.visibility === 'manager' && isManager)
             || (v.visibility === 'member' && isMember)
-            || v.visibility === 'all',
         )
     }, [isManager, venues])
 
-    const showDetail = (venue: Solar.Venue) => {
+    const showDetail = (venue: VenueDetail) => {
         openModal({
             content: () => <DialogVenueDetail venue={venue} lang={lang}/>,
         })
@@ -82,6 +81,7 @@ export default function SelectVenue({
 
     return <div className="mb-8">
         <DropdownMenu
+            optDividers={true}
             fixWidth
             options={[createLocationOpt, ...venueOpts]}
             value={currVenue ? [currVenue] : undefined}
@@ -130,7 +130,7 @@ export default function SelectVenue({
                 <i className="uil-search ml-1"/>
             </Badge>}
             {!!currVenue?.link && <Badge variant="hosting" className="mr-1 mt-2 cursor-pointer" onClick={() => {
-                toLink(currVenue?.link)
+                toLink(currVenue.link!)
             }}>
                 {lang['Link']}
                 <i className="uil-link ml-1"/>
@@ -152,7 +152,7 @@ export default function SelectVenue({
 }
 
 export interface VenueOptProps {
-    venue: Solar.Venue
+    venue: VenueDetail
     lang: Dictionary
     isManager: boolean
     isMember: boolean

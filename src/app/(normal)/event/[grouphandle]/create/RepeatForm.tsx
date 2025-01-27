@@ -1,4 +1,3 @@
-import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 import useModal from "@/components/client/Modal/useModal"
 import DropdownMenu from "@/components/client/DropdownMenu"
 import {useMemo, useState} from "react"
@@ -6,6 +5,7 @@ import {Input} from "@/components/shadcn/Input"
 import {Button} from "@/components/shadcn/Button"
 import dayjs from "@/libs/dayjs"
 import {Dictionary} from "@/lang"
+import {EventDraftType} from '@sola/sdk'
 
 export interface RepeatFormType {
     interval: string | null

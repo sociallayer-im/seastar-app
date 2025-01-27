@@ -1,11 +1,63 @@
 import { gql } from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
 
+export const VENUE_TIMESLOT_FRAGMENT = gql`
+    fragment VenueTimeslotFragment on venue_timeslots {
+        id
+        venue_id
+        day_of_week
+        disabled
+        start_at
+        end_at
+        role
+    }`
+
+export const VENUE_OVERRIDE_FRAGMENT = gql`
+    fragment VenueOverrideFragment on venue_overrides {
+        id
+        venue_id
+        day
+        disabled
+        start_at
+        end_at
+        role
+    }`
+
 export const VENUE_FRAGMENT = gql`
     fragment VenueFragment on venues {
         id
         title
         visibility
+    }`
+
+export const VENUE_DETAIL_FRAGMENT = gql`
+    ${VENUE_FRAGMENT}
+    ${VENUE_TIMESLOT_FRAGMENT}
+    ${VENUE_OVERRIDE_FRAGMENT}
+    fragment VenueDetailFragment on venues {
+        ...VenueFragment
+        location_data
+        location
+        about
+        group_id
+        owner_id
+        created_at
+        formatted_address
+        geo_lat
+        geo_lng
+        start_date
+        end_date
+        timeslots
+        link
+        capacity
+        overrides
+        require_approval
+        venue_timeslots {
+            ...VenueTimeslotFragment
+        }
+        venue_overrides {
+            ...VenueOverrideFragment
+        }
     }`
 
 export const TRACK_FRAGMENT = gql`
@@ -84,11 +136,11 @@ export const GROUP_DETAIL_FRAGMENT = gql`
             ...TrackFragment
         }
         venues{
-            ...VenueFragment
+            ...VenueDetailFragment
         }
     }
     ${GROUP_FRAGMENT}
-    ${VENUE_FRAGMENT}
+    ${VENUE_DETAIL_FRAGMENT}
     ${MEMBERSHIP_FRAGMENT}
     ${TRACK_FRAGMENT}
 `
@@ -154,7 +206,7 @@ export const GET_MEMBERSHIP_BY_GROUP_ID = gql`
     }
 `
 
-export const GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS = gql`
+export const GET_AVAILABLE_GROUPS_FOR_BADGE_CLASS_CREATOR = gql`
     ${GROUP_FRAGMENT}
     query GetAvailableBadgeClassCreatorGroups($handle: String!) {
         groups(where: {

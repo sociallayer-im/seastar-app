@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
 import {BADGE_CLASS_FRAGMENT} from '../badge'
-import {TRACK_FRAGMENT, VENUE_FRAGMENT, GROUP_FRAGMENT} from '../group'
+import {TRACK_FRAGMENT, GROUP_FRAGMENT} from '../group'
 
 console.log('PROFILE_FRAGMENT', !!PROFILE_FRAGMENT)
 console.log('GROUP_FRAGMENT', !!GROUP_FRAGMENT)
@@ -16,6 +16,8 @@ export const EVENT_ROLE_FRAGMENT = gql`
         item_type
         nickname
         role
+        email
+        image_url
     }`
 
 export const PARTICIPANT_FRAGMENT = gql`
@@ -121,30 +123,6 @@ export const GET_GROUP_EVENT_BY_HANDLE = gql`
         }
     }
 `
-
-export const VENUE_DETAIL_FRAGMENT = gql`
-    ${VENUE_FRAGMENT}
-    fragment VenueDetailFragment on venues {
-        ...VenueFragment
-        location_data
-        location
-        about
-        group_id
-        owner_id
-        created_at
-        formatted_address
-        geo_lat
-        geo_lng
-        start_date
-        end_date
-        timeslots
-        link
-        capacity
-        overrides
-        require_approval
-        venue_timeslots
-        venue_overrides
-    }`
 
 export const PAYMENT_METHOD_FRAGMENT = gql`
     fragment PaymentMethodFragment on payment_methods {

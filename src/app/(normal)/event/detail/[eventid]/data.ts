@@ -1,6 +1,5 @@
 import {analyzeGroupMembershipAndCheckProfilePermissions, checkProcess, pickSearchParam} from "@/utils"
 import {redirect} from "next/navigation"
-import {getGroupData} from "@/app/(normal)/event/[grouphandle]/create/data"
 import {getCurrProfile} from '@/app/actions'
 import {getEventDetailById, getGroupDetailByHandle, Participant} from '@sola/sdk'
 import {AVNeeds, SeatingStyle} from '@/app/configForSpecifyGroup'

@@ -1,6 +1,7 @@
 import {gql, request} from "graphql-request"
 import dayjs from "@/libs/dayjs"
-import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
+import {EventDraftType} from '@sola/sdk'
+
 
 const api = process.env.NEXT_PUBLIC_API_URL
 

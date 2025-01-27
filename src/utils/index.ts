@@ -4,7 +4,7 @@ import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
 import {paymentTokenList} from "@/utils/payment_setting"
-import {Profile, Event, GroupDetail, EventDetail, Ticket} from '@sola/sdk'
+import {Profile, Event, GroupDetail, EventDetail, Ticket, VenueDetail} from '@sola/sdk'
 import Dayjs from '@/libs/dayjs'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
@@ -194,7 +194,7 @@ export function isEventTimeSuitable(
     eventEndTime: string,
     isManager: boolean,
     isMember: boolean,
-    venue?: Solar.Venue
+    venue?: VenueDetail
 ) {
     const startTime = dayjs.tz(new Date(eventStartTime).getTime(), timezone)
     const endTime = dayjs.tz(new Date(eventEndTime!).getTime(), timezone)

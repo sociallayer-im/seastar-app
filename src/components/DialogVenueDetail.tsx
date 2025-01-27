@@ -1,7 +1,8 @@
 import {Dictionary} from "@/lang"
+import {VenueDetail} from '@sola/sdk'
 
 export interface DialogVenueDetailProps {
-    venue: Solar.Venue
+    venue: VenueDetail
     lang: Dictionary
 }
 

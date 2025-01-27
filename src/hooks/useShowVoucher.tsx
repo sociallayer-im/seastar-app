@@ -15,6 +15,8 @@ export default function useShowVoucher() {
                 currProfile = await getProfileDetailByAuth(auth)
             }
             const voucherDetail = await getVoucherDetailById(voucherId)
+            if (!voucherDetail) return
+
             let receiver: Profile | null = null
             if (voucherDetail.receiver_id) {
                 receiver = await getProfileDetailById(voucherDetail.receiver_id)

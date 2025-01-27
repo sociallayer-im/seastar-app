@@ -1,4 +1,3 @@
-import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 import {Dictionary} from "@/lang"
 import {Input} from "@/components/shadcn/Input"
 import {ChangeEvent, useCallback, useEffect, useRef, useState} from "react"
@@ -7,15 +6,16 @@ import {SearchProfile} from "@/service/solar"
 import {getAvatar} from "@/utils"
 import {debounce} from 'lodash'
 import useUploadAvatar from "@/hooks/useUploadAvatar"
+import {EventDraftType, EventRole, EventRoleType} from '@sola/sdk'
 
 interface EventRoleInputProps {
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
-    role: Solar.EventRoleType,
+    role: EventRoleType,
     lang: Dictionary
 }
 
 
-const getEmptyRole = (role: Solar.EventRoleType) => {
+const getEmptyRole = (role: EventRoleType) => {
     return {
         role,
         nickname: '',
@@ -23,11 +23,11 @@ const getEmptyRole = (role: Solar.EventRoleType) => {
         email: '',
         image_url: '',
         item_type: 'Profile'
-    } as Solar.EventRole
+    } as EventRole
 }
 
 export default function EventRoleInput({lang, role, state: {event, setEvent}}: EventRoleInputProps) {
-    const initList = (): Solar.EventRole[] => {
+    const initList = (): EventRole[] => {
         return event.event_roles?.filter(r => r.role === role)
             .map(r => ({
                 role: r.role,
@@ -36,7 +36,7 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
                 email: r.email,
                 image_url: r.image_url,
                 item_type: r.item_type
-            } as Solar.EventRole)) || []
+            } as EventRole)) || []
     }
 
     // Remove the role that already exists, create new roles after saving/creating event,
@@ -44,9 +44,9 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
     const listToRemove = event.event_roles?.filter(r => !!r.id && r.role === role)
         .map(r => ({...r, _destroy: '1'})) || []
 
-    const [list, setList] = useState<Solar.EventRole[]>(initList())
+    const [list, setList] = useState<EventRole[]>(initList())
 
-    const updateEventRole = (newList: Solar.EventRole[]) => {
+    const updateEventRole = (newList: EventRole[]) => {
         const _list = event.event_roles?.filter(r => r.role !== role) || []
         const __list = [..._list, ...newList.filter(r => !!r.nickname), ...listToRemove]
         setEvent({
@@ -61,13 +61,13 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
         updateEventRole(newList)
     }
 
-    const removeItem = (item: Solar.EventRole) => {
+    const removeItem = (item: EventRole) => {
         const newList = list.filter(r => r !== item)
         setList(newList)
         updateEventRole(newList)
     }
 
-    const changeItem = (item: Solar.EventRole, index: number) => {
+    const changeItem = (item: EventRole, index: number) => {
         const newList = list.map((r, i) => i === index ? item : r)
         setList(newList)
         updateEventRole(newList)
@@ -98,10 +98,10 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
 }
 
 export interface RoleOptionProps {
-    role: Solar.EventRoleType,
-    item: Solar.EventRole,
+    role: EventRoleType,
+    item: EventRole,
     lang: Dictionary
-    onChange?: (role: Solar.EventRole) => void
+    onChange?: (role: EventRole) => void
     onAdd?: () => void
     onRemove?: () => void
     showAddBtn?: boolean

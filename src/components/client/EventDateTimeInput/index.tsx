@@ -1,4 +1,3 @@
-import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 import {Input} from "@/components/shadcn/Input"
 import type {Dictionary} from "@/lang"
 import DatePicker from "@/components/client/DatePicker"
@@ -7,10 +6,11 @@ import {useEffect, useMemo} from "react"
 import dayjs from "@/libs/dayjs"
 import {calculateDuration} from "@/utils"
 import TimezonePicker from "@/components/client/TimezonePicker"
+import {EventDraftType, VenueDetail} from '@sola/sdk'
 
 export interface EventDateTimeInputProps {
     lang: Dictionary
-    venues: Solar.Venue[],
+    venues: VenueDetail[],
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
 }
 
@@ -171,6 +171,12 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
     }, [venueHasTimeslots])
 
     return event.timezone ? <div>
+        {venueHasTimeslots &&
+            <div className="text-orange-300 text-xs flex-row-item-center bg-orange-50 px-3 my-2 py-1 rounded-lg">
+                <i className="uil-info-circle text-lg mr-1"/>
+                {lang['Due to the timeslot settings of the venue, only same-day events can be created']}
+            </div>
+        }
         <div className="flex-row-item-center">
             <div className="w-11 text-center mr-1">{lang['From']}</div>
             <DatePicker
@@ -231,12 +237,6 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
                 </div>
             </TimezonePicker>
         </div>
-        {venueHasTimeslots &&
-            <div className="text-orange-300 text-xs flex-row-item-center bg-orange-50 px-2 mt-2 py-1">
-                <i className="uil-info-circle text-lg mr-1"/>
-                {lang['Due to the timeslot settings of the venue, only same-day events can be created']}
-            </div>
-        }
     </div> : null
 }
 

@@ -1,7 +1,7 @@
 import {pickSearchParam} from '@/utils'
 import {getCurrProfile} from '@/app/actions'
 import {redirect} from 'next/navigation'
-import {getAvailableBadgeClassCreatorGroups} from '@sola/sdk'
+import {getAvailableGroupsForBadgeClassCreator} from '@sola/sdk'
 
 export type CreateBadgePageSearchParams = {
     badge_type?: string | string[]
@@ -24,7 +24,7 @@ export default async function CreateBadgePageData({searchParams} : CreateBadgePa
         redirect('/404')
     }
 
-    const availableGroupCreator = await getAvailableBadgeClassCreatorGroups(currProfile.handle)
+    const availableGroupCreator = await getAvailableGroupsForBadgeClassCreator(currProfile.handle)
 
     // If groupSenderId is provided, check if the group is in the availableGroupCreator list
     if (!!groupSenderId && !availableGroupCreator.find(group => group.id === parseInt(groupSenderId))) {

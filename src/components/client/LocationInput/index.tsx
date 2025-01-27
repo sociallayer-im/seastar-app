@@ -1,22 +1,21 @@
-import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 import SelectVenue from "@/components/client/LocationInput/SelectVenue"
 import {useRef, useState} from "react"
 import SearchLocation from "@/components/client/LocationInput/SearchLocation"
 import {Dictionary} from "@/lang"
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
+import {EventDraftType, VenueDetail} from '@sola/sdk'
 
 export interface LocationInputProps {
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
-    venues: Solar.Venue[],
+    venues: VenueDetail[],
     lang: Dictionary,
     isManager: boolean
     isMember: boolean
 }
 
 export default function LocationInput({state: {event, setEvent}, venues, lang, isManager, isMember}: LocationInputProps) {
-
     const [useVenue, _setUseVenue] = useState(true)
-    const venueCache = useRef<null | Solar.Venue>(null)
+    const venueCache = useRef<null | VenueDetail>(null)
 
     const setUseVenue = (useVenue: boolean) => {
         if (useVenue) {

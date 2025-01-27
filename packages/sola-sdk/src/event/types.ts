@@ -74,6 +74,7 @@ export interface Ticket {
     payment_methods: PaymentMethod[]
     payment_methods_attributes: PaymentMethod[]
     ticket_type: string
+    _destroy?: string
 }
 
 export interface PaymentMethod {
@@ -116,15 +117,15 @@ export interface EventRole {
     item_type: 'Profile' | 'Group',
     nickname: string | null
     role: EventRoleType
+    email?: string | null
+    image_url: string | null
 }
 
 export interface EventRoleDetail extends EventRole {
-    email?: string | null
-    image_url: string | null
     profile?: Profile
     group?: Group
-    _destroy?: string
     event: Event
+    _destroy?: string
 }
 
 export interface Track {
@@ -139,54 +140,11 @@ export interface Track {
     _destroy?: string
 }
 
-export interface Venue {
-    id: number,
-    title: string,
-    visibility: null | 'all' | 'manager',
-}
+export type TicketDraft  = Pick<Ticket, 'id' | 'title' | 'content' | 'check_badge_class_id' | 'quantity' | 'end_time' | 'payment_methods' | 'tracks_allowed' | 'ticket_type' | '_destroy'>
 
-export interface VenueDetail extends Venue {
-    location_data: string | null,
-    location: string,
-    about: string,
-    group_id: number,
-    owner_id: number,
-    created_at: string,
-    formatted_address: null | string,
-    geo_lat: null | string,
-    geo_lng: null | string,
-    start_date: string | null,
-    end_date: string | null,
-    timeslots: null | string,
-    link: string | null,
-    capacity: number | null,
-    overrides: null | string[],
-    require_approval?: boolean,
-    venue_timeslots: VenueTimeslot[]
-    venue_overrides: VenueOverride[]
-}
-
-export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
-
-export interface VenueTimeslot {
-    id?: number
-    venue_id?: number,
-    day_of_week: Weekday,
-    disabled: boolean,
-    start_at: string,
-    end_at: string,
-    role: 'member' | 'manager' | 'all'
-    _destroy?: string
-}
-
-export interface VenueOverride {
-    id?: number
-    venue_id: number,
-    day: string, // '2022-01-01'
-    disabled: boolean,
-    start_at: string | null,
-    end_at: string | null,
-    role: 'member' | 'manager' | 'all'
-    _destroy?: string
+export interface EventDraftType extends Pick<EventDetail, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'group_id' | 'tickets'> {
+    timezone: string | null
+    ticket_attributes?: TicketDraft[]
+    event_roles: EventRole[] | null
 }
 

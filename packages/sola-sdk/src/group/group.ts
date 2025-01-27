@@ -1,6 +1,6 @@
 import {getGqlClient, getSdkConfig} from "../client"
 import {
-    GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS, GET_EVENT_GROUPS,
+    GET_AVAILABLE_GROUPS_FOR_BADGE_CLASS_CREATOR, GET_EVENT_GROUPS,
     GET_GROUP_DETAIL_BY_HANDLE, GET_GROUP_DETAIL_BY_ID,
     GET_MEMBERSHIP_BY_GROUP_ID,
     GET_PROFILE_GROUP,
@@ -306,10 +306,10 @@ export const rejectInvite = async (inviteId: number, auth_token: string) => {
     }
 }
 
-export const getAvailableBadgeClassCreatorGroups = async (profileHandle: string) => {
+export const getAvailableGroupsForBadgeClassCreator = async (profileHandle: string) => {
     const client = getGqlClient()
     const response = await client.query({
-        query: GET_AVAILABLE_BADGE_CLASS_CREATOR_GROUPS,
+        query: GET_AVAILABLE_GROUPS_FOR_BADGE_CLASS_CREATOR,
         variables: {handle: profileHandle}
     })
 

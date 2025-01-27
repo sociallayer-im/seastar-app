@@ -1,7 +1,7 @@
 'use client'
 
 import type {Dictionary} from "@/lang"
-import {CreateEventPageDataType, EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
+import {CreateEventPageDataType} from "@/app/(normal)/event/[grouphandle]/create/data"
 import {useEffect, useRef, useState} from "react"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import useUploadImage from "@/hooks/useUploadImage"
@@ -22,19 +22,17 @@ import Cookies from 'js-cookie'
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import TicketForm, {Checker} from "@/app/(normal)/event/[grouphandle]/create/TicketForm"
 import RepeatForm, {RepeatFormType} from "@/app/(normal)/event/[grouphandle]/create/RepeatForm"
+import TracksFilter from '@/components/client/TracksFilter'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
 export interface EventFormProps {
     lang: Dictionary
-    event: EventDraftType
     data: CreateEventPageDataType,
 }
 
-
-
-export default function EventForm({lang, event, data}: EventFormProps) {
-    const [draft, setDraft] = useState<EventDraftType>(event)
+export default function EventForm({lang, data}: EventFormProps) {
+    const [draft, setDraft] = useState(data.eventDraft)
     const {uploadImage} = useUploadImage()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -151,7 +149,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
     return <div className="min-h-[100svh] w-full">
         <div className="page-width min-h-[100svh] px-3 pb-12 pt-0 !pb-16">
             <div
-                className="py-6 font-semibold text-center text-xl">{event.id ? lang['Edit Event'] : lang['Create Event']}</div>
+                className="py-6 font-semibold text-center text-xl">{draft.id ? lang['Edit Event'] : lang['Create Event']}</div>
 
             <div className="flex flex-col items-center sm:items-start sm:flex-row w-full">
                 <div className="sm:order-2 mt-4 sm:mt-0 mb-8">
@@ -174,7 +172,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                         : <img src={draft.cover_url} alt="" className="w-[324px] h-auto mb-4"/>
                     }
                     <Button onClick={setCover}
-                        variant={'secondary'} className="block btn mx-auto w-[324px]">
+                            variant={'secondary'} className="block btn mx-auto w-[324px]">
                         {lang['Upload Cover']}
                     </Button>
                 </div>
@@ -182,25 +180,13 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                 <div className="sm:order-1 sm:mr-8 flex-1 max-w-[644px]">
                     {!!data.tracks.length && <>
                         <div className="font-semibold mb-1">{lang['Event Track']}</div>
-                        <div className="flex-row flex flex-wrap items-center mb-8">
-                            {data.tracks.map(t => {
-                                const color = getLabelColor(t.title)
-                                const themeStyle = t.id === draft.track_id ? {
-                                    color: color,
-                                    borderColor: color
-                                } : {borderColor: '#ededed'}
-                                return <Button
-                                    onClick={() => setDraft({...draft, track_id: t.id})}
-                                    variant="outline"
-                                    className="mr-2"
-                                    style={themeStyle}
-                                    key={t.id}>
-                                    <div className="text-xs font-normal">
-                                        <div className="font-semibold">{t.title}</div>
-                                        <div>{t.kind}</div>
-                                    </div>
-                                </Button>
-                            })}
+                        <div className="mb-8">
+                            <TracksFilter tracks={data.tracks}
+                                          value={draft.track_id}
+                                          onSelect={(trackId) => {
+                                              setDraft({...draft, track_id: trackId || null})
+                                          }}
+                            />
                         </div>
                     </>}
 
@@ -208,10 +194,10 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                         <div className="font-semibold mb-1">{lang['Event Name']} <span className="text-red-500">*</span>
                         </div>
                         <Input className="w-full"
-                            placeholder={lang['Input event name']}
-                            value={draft.title}
-                            required
-                            onChange={e => setDraft({...draft, title: e.target.value})}/>
+                               placeholder={lang['Input event name']}
+                               value={draft.title}
+                               required
+                               onChange={e => setDraft({...draft, title: e.target.value})}/>
                         {!!titleError && <div className="text-red-400 mt-2 text-xs err-msg">{titleError}</div>}
                     </div>
 
@@ -242,7 +228,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                             <RichTextEditorDynamic
                                 initText={draft.notes || ''}
                                 onChange={(md) => {
-                                    setDraft({...event, notes: md})
+                                    setDraft({...draft, notes: md})
                                 }}
                             />
                         </div>
@@ -267,7 +253,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                         />
                         <RepeatForm
                             lang={lang}
-                            event={event}
+                            event={draft}
                             repeatForm={repeatForm}
                             onChange={repeatForm => setRepeatForm(repeatForm)}
                         />
@@ -276,8 +262,8 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                             <div
                                 className="text-red-400 mt-2 text-xs err-msg">{lang['The selected time slot is occupied by another event at the current venue. Occupying event:']}
                                 <a className="text-blue-400"
-                                    target="_blank"
-                                    href={`/event/detail/${occupiedEvent.id}`}>[{occupiedEvent.title}]</a>
+                                   target="_blank"
+                                   href={`/event/detail/${occupiedEvent.id}`}>[{occupiedEvent.title}]</a>
                             </div>
                         }
                     </div>
@@ -285,12 +271,12 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                     <div className="mb-8">
                         <div className="font-semibold mb-1">{lang['Meeting URL']}</div>
                         <Input className="w-full"
-                            placeholder={lang['Input meeting url']}
-                            onChange={e => {
-                                setDraft({...draft, meeting_url: e.target.value})
-                            }}
-                            startAdornment={<i className="uil-link text-lg"/>}
-                            value={draft.meeting_url || ''}/>
+                               placeholder={lang['Input meeting url']}
+                               onChange={e => {
+                                   setDraft({...draft, meeting_url: e.target.value})
+                               }}
+                               startAdornment={<i className="uil-link text-lg"/>}
+                               value={draft.meeting_url || ''}/>
                     </div>
 
                     {!!data.availableHost.length &&
@@ -315,15 +301,15 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                     <div className="mb-8">
                         <div className="font-semibold mb-1">{lang['Invite Co-hosts']}</div>
                         <EventRoleInput lang={lang}
-                            state={{event: draft, setEvent: setDraft}}
-                            role={'co_host' as Solar.EventRoleType}/>
+                                        state={{event: draft, setEvent: setDraft}}
+                                        role={'co_host' as Solar.EventRoleType}/>
                     </div>
 
                     <div className="mb-8">
                         <div className="font-semibold mb-1">{lang['Invite Speakers']}</div>
                         <EventRoleInput lang={lang}
-                            state={{event: draft, setEvent: setDraft}}
-                            role={'speaker' as Solar.EventRoleType}/>
+                                        state={{event: draft, setEvent: setDraft}}
+                                        role={'speaker' as Solar.EventRoleType}/>
                     </div>
 
                     <div className="mb-8">
@@ -334,9 +320,9 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                             }}/>
                         </div>
 
-                        { enableTicket && <>
+                        {enableTicket && <>
                             <TicketForm
-                                profileBadgeClasses={data.badgeClasses}
+                                profileBadgeClasses={[]}
                                 lang={lang}
                                 state={{event: draft, setEvent: setDraft}}
                                 tracks={data.tracks}
@@ -354,7 +340,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                     window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})
                                 }, 500)
                             }}
-                            className={`${buttonVariants({variant: 'ghost'})} flex w-full justify-between items-center cursor-pointer`}>
+                                 className={`${buttonVariants({variant: 'ghost'})} flex w-full justify-between items-center cursor-pointer`}>
                                 <div className="font-semibold">
                                     {lang['More Setting']}
                                 </div>
@@ -374,7 +360,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                     <div
                                         className="text-gray-500 text-xs">{lang['When an event participant checks in, he or she automatically receives a badge at the end of the event']}</div>
                                     <SelectedEventBadge
-                                        profileBadgeClasses={data.badgeClasses}
+                                        profileBadgeClasses={[]}
                                         lang={lang}
                                         state={{event: draft, setEvent: setDraft}}/>
 
@@ -382,20 +368,20 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                         <div
                                             className="font-semibold mb-1 text-sm">{lang['Maximum participants']}</div>
                                         <Input placeholder={'No limit'}
-                                            autoComplete={'off'}
-                                            className="!h-[2rem] w-[130px] text-sm"
-                                            type={'phone'}
-                                            onChange={e => {
-                                                setDraft({...draft, max_participant: parseInt(e.target.value)})
-                                            }}
-                                            value={draft.max_participant || ''}
-                                            endAdornment={!!draft.max_participant
-                                                ? <i className="uil-times-circle text-lg cursor-pointer"
-                                                    onClick={() => {
-                                                        setDraft({...draft, max_participant: null})
-                                                    }}/>
-                                                : <i className="uil-edit-alt text-lg"/>
-                                            }/>
+                                               autoComplete={'off'}
+                                               className="!h-[2rem] w-[130px] text-sm"
+                                               type={'phone'}
+                                               onChange={e => {
+                                                   setDraft({...draft, max_participant: parseInt(e.target.value)})
+                                               }}
+                                               value={draft.max_participant || ''}
+                                               endAdornment={!!draft.max_participant
+                                                   ? <i className="uil-times-circle text-lg cursor-pointer"
+                                                        onClick={() => {
+                                                            setDraft({...draft, max_participant: null})
+                                                        }}/>
+                                                   : <i className="uil-edit-alt text-lg"/>
+                                               }/>
                                     </div>
 
                                     <div className="mt-8">
@@ -403,7 +389,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                         <div onClick={() => {
                                             setDraft({...draft, display: 'normal'})
                                         }}
-                                        className={`flex-row-item-center justify-between border cursor-pointer p-2 rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
+                                             className={`flex-row-item-center justify-between border cursor-pointer p-2 rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                                             <div>
                                                 <div className="text-xs font-semibold">Normal event</div>
                                                 <div className="text-gray-500 text-xs font-normal">Select a normal
@@ -420,7 +406,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                         <div onClick={() => {
                                             setDraft({...draft, display: 'private'})
                                         }}
-                                        className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
+                                             className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                                             <div>
                                                 <div className="text-xs font-semibold">Private event</div>
                                                 <div className="text-gray-500 text-xs font-normal">Select a private
@@ -439,7 +425,7 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                         <div onClick={() => {
                                             setDraft({...draft, display: 'public'})
                                         }}
-                                        className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
+                                             className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                                             <div>
                                                 <div className="text-xs font-semibold">Public event</div>
                                                 <div className="text-gray-500 text-xs font-normal">Select a public
@@ -466,9 +452,9 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                                 </div>
                                             </div>
                                             <Switch checked={draft.pinned}
-                                                onClick={() => {
-                                                    setDraft({...draft, pinned: !draft.pinned})
-                                                }}
+                                                    onClick={() => {
+                                                        setDraft({...draft, pinned: !draft.pinned})
+                                                    }}
                                             />
                                         </div>
                                     </div>
@@ -483,12 +469,12 @@ export default function EventForm({lang, event, data}: EventFormProps) {
                                                 </div>
                                             </div>
                                             <Switch checked={draft.status === 'closed'}
-                                                onClick={() => {
-                                                    setDraft({
-                                                        ...draft,
-                                                        status: draft.status === 'closed' ? (event.status === 'closed' ? 'open' : event.status) : 'closed'
-                                                    })
-                                                }}
+                                                    onClick={() => {
+                                                        setDraft({
+                                                            ...draft,
+                                                            status: draft.status === 'closed' ? (draft.status === 'closed' ? 'open' : draft.status) : 'closed'
+                                                        })
+                                                    }}
                                             />
                                         </div>
                                     </div>

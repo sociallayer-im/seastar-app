@@ -25,7 +25,6 @@ export interface GroupEventHomeDataWithHandleProps extends GroupEventHomeDataPro
     groupHandle?: string
 }
 
-
 export default async function GroupEventHomeData({params, searchParams, groupHandle}: GroupEventHomeDataWithHandleProps) {
     const handle = groupHandle || params.grouphandle
     if (!handle) {
@@ -49,10 +48,6 @@ export default async function GroupEventHomeData({params, searchParams, groupHan
         isMember,
         isIssuer
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
-
-    if (!groupDetail) {
-        redirect('/404')
-    }
 
     const filterOpts: EventListFilterProps = {
         group_id: groupDetail.id.toString(),

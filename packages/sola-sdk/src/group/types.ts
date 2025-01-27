@@ -1,5 +1,5 @@
 import {Profile, SocialMedia} from '../profile'
-import {Track, Venue} from '../event'
+import {Track} from '../event'
 
 export interface Group {
     id: number,
@@ -33,7 +33,7 @@ export interface GroupDetail extends Group {
     end_date: string | null,
     memberships: Membership[],
     tracks: Track[]
-    venues: Venue[]
+    venues: VenueDetail[]
 }
 
 export interface Membership {
@@ -49,4 +49,56 @@ export interface MembershipDetail extends Membership {
 
 export interface GroupWithOwner extends Group {
     owner: Profile
+}
+
+
+export interface Venue {
+    id: number,
+    title: string,
+    visibility: null | 'all' | 'manager' | 'member',
+}
+
+export interface VenueDetail extends Venue {
+    location_data: string | null,
+    location: string,
+    about: string,
+    group_id: number,
+    owner_id: number,
+    created_at: string,
+    formatted_address: null | string,
+    geo_lat: null | string,
+    geo_lng: null | string,
+    start_date: string | null,
+    end_date: string | null,
+    timeslots: null | string,
+    link: string | null,
+    capacity: number | null,
+    overrides: null | string[],
+    require_approval?: boolean,
+    venue_timeslots: VenueTimeslot[]
+    venue_overrides: VenueOverride[]
+}
+
+export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+
+export interface VenueTimeslot {
+    id?: number
+    venue_id?: number,
+    day_of_week: Weekday,
+    disabled: boolean,
+    start_at: string,
+    end_at: string,
+    role: 'member' | 'manager' | 'all'
+    _destroy?: string
+}
+
+export interface VenueOverride {
+    id?: number
+    venue_id: number,
+    day: string, // '2022-01-01'
+    disabled: boolean,
+    start_at: string | null,
+    end_at: string | null,
+    role: 'member' | 'manager' | 'all'
+    _destroy?: string
 }

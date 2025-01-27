@@ -1,14 +1,14 @@
 import DropdownMenu from "@/components/client/DropdownMenu"
 import {Dictionary} from "@/lang"
-import {EventDraftType} from "@/app/(normal)/event/[grouphandle]/create/data"
 import {useMemo} from "react"
 import {getAvatar} from "@/utils"
 import {buttonVariants} from "@/components/shadcn/Button"
 import {Badge} from "@/components/shadcn/Badge"
+import {EventDraftType, Profile, Group} from '@sola/sdk'
 
 interface SelectedEventHostProps {
     lang: Dictionary,
-    availableHost: Array<Solar.ProfileSample | Solar.GroupSample>,
+    availableHost: Array<Profile | Group>,
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
 }
 
