@@ -83,7 +83,7 @@ export const zh: Dictionary = {
     'Other Location': '其他地点',
     'Timeslots': '时间段',
     'Overrides': '覆盖',
-    'Link': 'Link',
+    'Link': '链接',
     'Need Approval': '需要批准',
     'Select Venue': '选择地点',
     'Upload Cover': '上传封面',
@@ -322,4 +322,5 @@ export const zh: Dictionary = {
     'Attend event to view notes':'参加事件以查看笔记',
     'All Tags':'所有标签',
     'All Tracks': '所有 Track',
+    'Seats': '座位',
 }

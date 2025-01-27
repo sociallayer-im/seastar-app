@@ -97,7 +97,7 @@ export default function SearchLocation({
     }, [keywords])
 
 
-    return <div className="w-full mb-8">
+    return <div className="w-full">
         <div id="gmap" className="w-0 h-0"/>
         <div className="w-full mb-8">
             <DropdownMenu
@@ -128,7 +128,7 @@ export default function SearchLocation({
             </DropdownMenu>
         </div>
         <div className="font-semibold mb-1">{lang['Custom Location Name']}</div>
-        <Input className="w-full mb-8"
+        <Input className="w-full"
             placeholder={lang['Input a custom name for location']}
             value={event.location || ''}
             onChange={e => {

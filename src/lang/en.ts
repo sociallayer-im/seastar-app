@@ -319,7 +319,8 @@ export const en = {
     'Month':'Month',
     'Attend event to view notes':'Attend event to view notes',
     'All Tags': 'All Tags',
-    'All Tracks':'All Tracks'
+    'All Tracks':'All Tracks',
+    'Seats': 'Seats',
 
 }
 

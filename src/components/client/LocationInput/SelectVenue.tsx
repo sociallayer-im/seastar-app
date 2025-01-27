@@ -14,13 +14,13 @@ export interface SelectVenueProps extends LocationInputProps {
 }
 
 export default function SelectVenue({
-    state: {event, setEvent},
-    venues,
-    onSwitchToCreateLocation,
-    isManager,
-    isMember,
-    lang
-}: SelectVenueProps) {
+                                        state: {event, setEvent},
+                                        venues,
+                                        onSwitchToCreateLocation,
+                                        isManager,
+                                        isMember,
+                                        lang
+                                    }: SelectVenueProps) {
     const currVenue = venues.find(v => v.id === event.venue_id)
     const {openModal} = useModal()
 
@@ -79,7 +79,7 @@ export default function SelectVenue({
         })
     }
 
-    return <div className="mb-8">
+    return <div>
         <DropdownMenu
             optDividers={true}
             fixWidth
@@ -117,7 +117,7 @@ export default function SelectVenue({
                 onClick={() => {
                     showDetail(currVenue)
                 }}
-                variant="ongoing" className="mr-1 mt-2 cursor-pointer">
+                variant="past" className="mr-1 mt-2 cursor-pointer hover:brightness-95">
                 {lang['Timeslots']}
                 <i className="uil-search ml-1"/>
             </Badge>}
@@ -125,19 +125,20 @@ export default function SelectVenue({
                 onClick={() => {
                     showDetail(currVenue)
                 }}
-                variant="pending" className="mr-1 mt-2 cursor-pointer">
+                variant="past" className="mr-1 mt-2 cursor-pointer hover:brightness-95">
                 {lang['Overrides']}
                 <i className="uil-search ml-1"/>
             </Badge>}
-            {!!currVenue?.link && <Badge variant="hosting" className="mr-1 mt-2 cursor-pointer" onClick={() => {
-                toLink(currVenue.link!)
-            }}>
+            {!!currVenue?.link && <Badge variant="past" className="mr-1 mt-2 cursor-pointer hover:brightness-95"
+                                         onClick={() => {
+                                             toLink(currVenue.link!)
+                                         }}>
                 {lang['Link']}
                 <i className="uil-link ml-1"/>
             </Badge>}
-            {!!currVenue?.capacity && <Badge variant="past" className="mr-1 mt-2">{currVenue.capacity} Seats</Badge>}
+            {!!currVenue?.capacity && <Badge variant="past" className="mr-1 mt-2">{currVenue.capacity} {lang['Seats']}</Badge>}
             {!!currVenue?.require_approval &&
-                <Badge variant="upcoming" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
+                <Badge variant="past" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
             {!!currVenue?.about &&
                 <div className="text-sm mt-2 text-[#999]"><i className="uil-align-left"></i> {currVenue.about}</div>
             }
@@ -160,7 +161,7 @@ export interface VenueOptProps {
 }
 
 function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
-    const notSuitable = isEventTimeSuitable(
+    const inapplicable = isEventTimeSuitable(
         event.timezone!,
         event.start_time,
         event.end_time,
@@ -169,27 +170,27 @@ function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
         venue,
     )
 
-    return <div className={`${notSuitable ? 'pointer-events-none' : ''}`}>
-        <div className={`${notSuitable ? 'opacity-50' : ''}`}>
+    return <div className={`${inapplicable ? 'pointer-events-none' : ''}`}>
+        <div className={`${inapplicable ? 'opacity-50' : ''}`}>
             <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.title}}/>
             <div className="text-sm text-[#999]">
                 {!!venue.venue_timeslots?.length &&
-                    <Badge variant="ongoing" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
+                    <Badge variant="past" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
                 {!!venue.venue_overrides?.length &&
-                    <Badge variant="pending" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
-                {!!venue.link && <Badge variant="hosting" className="mr-1 mt-2">{lang['Link']}</Badge>}
-                {!!venue.capacity && <Badge variant="past" className="mr-1 mt-2">{venue.capacity} Seats</Badge>}
+                    <Badge variant="past" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
+                {!!venue.link && <Badge variant="past" className="mr-1 mt-2">{lang['Link']}</Badge>}
+                {!!venue.capacity && <Badge variant="past" className="mr-1 mt-2">{venue.capacity} {lang['Seats']}</Badge>}
                 {!!venue.require_approval &&
-                    <Badge variant="upcoming" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
+                    <Badge variant="past" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
             </div>
             {!!venue.about &&
                 <div className="text-sm mt-2 text-[#999]"><i className="uil-align-left"></i> {venue.about}</div>
             }
         </div>
-        {!!lang[notSuitable as keyof Dictionary] &&
+        {!!lang[inapplicable as keyof Dictionary] &&
             <div className="text-red-500 text-xs mt-1 flex-row-item-center">
                 <i className="uil-info-circle text-base mr-1"/>
-                {lang[notSuitable as keyof Dictionary] || ''}
+                {lang[inapplicable as keyof Dictionary] || ''}
             </div>
         }
     </div>

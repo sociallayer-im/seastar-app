@@ -6,14 +6,12 @@ import {useEffect, useRef, useState} from "react"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import useUploadImage from "@/hooks/useUploadImage"
 import {Input} from "@/components/shadcn/Input"
-import {getLabelColor} from "@/utils/label_color"
 import dynamic from 'next/dynamic'
 import {Switch} from "@/components/shadcn/Switch"
 import LocationInput from "@/components/client/LocationInput"
 import EventDateTimeInput from "@/components/client/EventDateTimeInput"
 import {eventCoverTimeStr, isEventTimeSuitable} from "@/utils"
 import SelectedEventHost from "@/components/client/SelectedEventHost"
-import SelectTag from "@/components/client/SelectTag"
 import {CreteEvent, getOccupiedTimeEvent} from "@/service/solar"
 import useModal from "@/components/client/Modal/useModal"
 import SelectedEventBadge from "@/components/client/SelectedEventBadge"
@@ -23,6 +21,7 @@ import {useToast} from "@/components/shadcn/Toast/use-toast"
 import TicketForm, {Checker} from "@/app/(normal)/event/[grouphandle]/create/TicketForm"
 import RepeatForm, {RepeatFormType} from "@/app/(normal)/event/[grouphandle]/create/RepeatForm"
 import TracksFilter from '@/components/client/TracksFilter'
+import TagsFilter from '@/components/client/TagsFilter'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -294,10 +293,16 @@ export default function EventForm({lang, data}: EventFormProps) {
 
                     <div className="mb-8">
                         <div className="font-semibold mb-1">{lang['Tags']}</div>
-                        <SelectTag
-                            onSelect={(tags) => setDraft({...draft, tags})}
-                            tags={data.tags || []}
-                            value={draft.tags || []}/>
+                        <TagsFilter
+                            allowResetBtn={false}
+                            multiple={true}
+                            tags={data.tags}
+                            lang={lang}
+                            onSelected={(tags) => {
+                               setDraft({...draft, tags: tags?.length ? tags : null})
+                            }}
+                            values={draft.tags || []}
+                        />
                         {!!tagError && <div className="text-red-400 mt-2 text-xs err-msg">{tagError}</div>}
                     </div>
 
