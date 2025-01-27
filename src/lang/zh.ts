@@ -323,4 +323,11 @@ export const zh: Dictionary = {
     'All Tags':'所有标签',
     'All Tracks': '所有 Track',
     'Seats': '座位',
+    'Display': '展示',
+    'Normal Event': '普通事件',
+    'Select a normal event, the event you created is shown to all users.': '您创建的事件对所有用户可见。',
+    'Private Event': '私密事件',
+    'Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.': '您创建的事件只能通过链接查看，用户可以在“我的事件”页面查看该事件。',
+    'Public Event': '公开事件',
+    'Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.' : '创建的事件对公众开放，即使全局设置为仅成员可见。',
 }

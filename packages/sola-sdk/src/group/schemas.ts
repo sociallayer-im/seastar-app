@@ -230,3 +230,18 @@ export const GET_EVENT_GROUPS = gql`
         }
     }
 `
+
+export const GET_AVAILABLE_GROUPS_FOR_EVENT_HOST = gql`
+    ${GROUP_FRAGMENT}
+    query GetAvailableBadgeClassCreatorGroups($handle: String!) {
+        groups(where: {
+            status: {_neq: "freezed"}, 
+            memberships: {
+                role: {_in: ["owner", "manager"]}, 
+                profile: {handle: {_eq: $handle}}
+            }
+        }) {
+            ...GroupFragment
+        }
+    }
+`

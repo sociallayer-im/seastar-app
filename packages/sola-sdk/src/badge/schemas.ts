@@ -173,10 +173,10 @@ export const INVITE_DETAIL_FRAGMENT = gql`
     }
 `
 
-export const GET_BADGE_CLASS_AND_INVITE_BY_HANDLE = gql`
+export const GET_BADGE_CLASS_AND_INVITE_BY_GROUP_HANDLE = gql`
     ${BADGE_CLASS_FRAGMENT}
     ${INVITE_FRAGMENT}
-    query GetBadgeClassAndInviteByHandle($handle: String!, $now: timestamp!) {
+    query GetBadgeClassAndInviteByGroupHandle($handle: String!, $now: timestamp!) {
         badge_classes(where: {group: {handle: {_eq: $handle}}}) {
             ...BadgeClassFragment
         }
@@ -185,6 +185,15 @@ export const GET_BADGE_CLASS_AND_INVITE_BY_HANDLE = gql`
             expires_at: {_gt: $now}, 
             group: {handle: {_eq: $handle}}} order_by: {id: desc}) {
             ...InviteFragment
+        }
+    }
+`
+
+export const GET_BADGE_CLASS_BY_GROUP_ID = gql`
+    ${BADGE_CLASS_FRAGMENT}
+    query GetBadgeClassAndInviteByGroupId($id: bigint!) {
+        badge_classes(where: {group: {id: {_eq: $id}}}) {
+            ...BadgeClassFragment
         }
     }
 `

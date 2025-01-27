@@ -18,7 +18,7 @@ export default function useSelectBadgeClass() {
     const {openModal} = useModal()
 
     const selectBadgeClass = (
-        {lang, profileBadgeClasses, groupBadgeClasses, onSelect, toProfileHandle, group}: DialogSelectedBadgeProps
+        {lang, profileBadgeClasses, groupBadgeClasses, onSelect, toProfileHandle, group, returnPage}: DialogSelectedBadgeProps
     ) => {
         openModal({
             content: (close) => <DialogSelectedBadge
@@ -27,6 +27,7 @@ export default function useSelectBadgeClass() {
                 toProfileHandle={toProfileHandle}
                 profileBadgeClasses={profileBadgeClasses}
                 group={group}
+                returnPage={returnPage}
                 groupBadgeClasses={groupBadgeClasses}
                 onSelect={(b) => {
                     !!onSelect && onSelect(b)
@@ -94,13 +95,13 @@ export function DialogSelectedBadge({lang, close, toProfileHandle, group, ...pro
                  style={{background: 'rgba(236,238,250,.2)'}}
             >
                 <div className="font-semibold mb-2">{lang['Choose a badge from group']}</div>
-                <div className="flex-row-item-center overflow-y-hidden overflow-x-scroll">
+                <div className="flex-row-item-center overflow-y-hidden overflow-x-scroll py-2">
                     {props.groupBadgeClasses.map(b => {
                         return <div onClick={() => {
                             props.onSelect?.(b);
                             close?.()
                         }}
-                                    className="flex-shrink-0 flex-grow-0 mr-2 cursor-pointer w-16 h-16 rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"
+                                    className="p-2 flex-shrink-0 flex-grow-0 mr-2 cursor-pointer w-16 h-16 rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"
                                     key={b.id}>
                             <Image src={b.image_url!} width={50} height={50} alt="" className="rounded-full"/>
                         </div>

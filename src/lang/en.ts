@@ -321,6 +321,13 @@ export const en = {
     'All Tags': 'All Tags',
     'All Tracks':'All Tracks',
     'Seats': 'Seats',
+    'Display': 'Display',
+    'Normal Event': 'Normal Event',
+    'Select a normal event, the event you created is shown to all users.': 'Select a normal event, the event you created is shown to all users.',
+    'Private Event': 'Private Event',
+    'Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.': 'Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.',
+    'Public Event': 'Public Event',
+    'Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.' : 'Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.',
 
 }
 

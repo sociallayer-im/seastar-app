@@ -299,7 +299,7 @@ export default function EventForm({lang, data}: EventFormProps) {
                             tags={data.tags}
                             lang={lang}
                             onSelected={(tags) => {
-                               setDraft({...draft, tags: tags?.length ? tags : null})
+                                setDraft({...draft, tags: tags?.length ? tags : null})
                             }}
                             values={draft.tags || []}
                         />
@@ -368,10 +368,9 @@ export default function EventForm({lang, data}: EventFormProps) {
                                     <div
                                         className="text-gray-500 text-xs">{lang['When an event participant checks in, he or she automatically receives a badge at the end of the event']}</div>
                                     <SelectedEventBadge
-                                        profileBadgeClasses={[]}
+                                        currProfile={data.currProfile}
                                         lang={lang}
                                         state={{event: draft, setEvent: setDraft}}/>
-
                                     <div className="flex-row-item-center justify-between mt-8">
                                         <div
                                             className="font-semibold mb-1 text-sm">{lang['Maximum participants']}</div>
@@ -393,15 +392,15 @@ export default function EventForm({lang, data}: EventFormProps) {
                                     </div>
 
                                     <div className="mt-8">
-                                        <div className="font-semibold mb-1 text-sm">Display</div>
+                                        <div className="font-semibold mb-1 text-sm">{lang['Display']}</div>
                                         <div onClick={() => {
                                             setDraft({...draft, display: 'normal'})
                                         }}
                                              className={`flex-row-item-center justify-between border cursor-pointer p-2 rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                                             <div>
-                                                <div className="text-xs font-semibold">Normal event</div>
-                                                <div className="text-gray-500 text-xs font-normal">Select a normal
-                                                    event, the event you created is shown to all users.
+                                                <div className="text-xs font-semibold">{lang['Normal Event']}</div>
+                                                <div className="text-gray-500 text-xs font-normal">
+                                                    {lang['Select a normal event, the event you created is shown to all users.']}
                                                 </div>
                                             </div>
                                             {draft.display === 'normal'
@@ -416,11 +415,9 @@ export default function EventForm({lang, data}: EventFormProps) {
                                         }}
                                              className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                                             <div>
-                                                <div className="text-xs font-semibold">Private event</div>
-                                                <div className="text-gray-500 text-xs font-normal">Select a private
-                                                    event, the event you created can only be viewed through the
-                                                    link,
-                                                    and users can view the event in My Event page.
+                                                <div className="text-xs font-semibold">{lang['Private Event']}</div>
+                                                <div className="text-gray-500 text-xs font-normal">
+                                                    {lang['Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.']}
                                                 </div>
                                             </div>
                                             {draft.display === 'private'
@@ -435,11 +432,9 @@ export default function EventForm({lang, data}: EventFormProps) {
                                         }}
                                              className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                                             <div>
-                                                <div className="text-xs font-semibold">Public event</div>
-                                                <div className="text-gray-500 text-xs font-normal">Select a public
-                                                    event, the event you created is open to the public even other
-                                                    events
-                                                    are hidden for non-members.
+                                                <div className="text-xs font-semibold">{lang['Public Event']}</div>
+                                                <div className="text-gray-500 text-xs font-normal">
+                                                    {lang['Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.']}
                                                 </div>
                                             </div>
                                             {draft.display === 'public'

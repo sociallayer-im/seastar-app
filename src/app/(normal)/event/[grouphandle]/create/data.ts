@@ -6,12 +6,11 @@ import {
     Group,
     PaymentMethod,
     Profile,
-    EventDetail,
     TicketDraft,
     GroupDetail,
     Membership,
-    Track, Venue,
-    EventDraftType, VenueDetail
+    Track,
+    EventDraftType, VenueDetail, getAvailableGroupsForEventHost
 } from '@sola/sdk'
 
 export interface CreateEventPageDataProps {
@@ -107,7 +106,9 @@ export default async function CreateEventPageData({params}: CreateEventDataProps
         isIssuer
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
-    const availableHost: Array<Profile | Group> = [currProfile]
+    const availableGroupHost = await getAvailableGroupsForEventHost(currProfile.handle)
+
+    const availableHost: Array<Profile | Group> = [currProfile, ...availableGroupHost]
 
     return {
         currProfile,
