@@ -28,15 +28,18 @@ export default function SelectVenue({
         if (!venue.id) {
             onSwitchToCreateLocation()
         } else {
-            setEvent({
+            const eventDraft = {
                 ...event,
                 venue_id: venue.id,
                 geo_lng: venue.geo_lng,
                 geo_lat: venue.geo_lng,
                 formatted_address: venue.formatted_address,
                 location_data: venue.location_data,
-                location: venue.location
-            })
+                location: venue.location,
+                ...(venue.capacity !== undefined && {max_participant: venue.capacity})
+            }
+
+            setEvent(eventDraft)
         }
     }
 
@@ -136,7 +139,8 @@ export default function SelectVenue({
                 {lang['Link']}
                 <i className="uil-link ml-1"/>
             </Badge>}
-            {!!currVenue?.capacity && <Badge variant="past" className="mr-1 mt-2">{currVenue.capacity} {lang['Seats']}</Badge>}
+            {!!currVenue?.capacity &&
+                <Badge variant="past" className="mr-1 mt-2">{currVenue.capacity} {lang['Seats']}</Badge>}
             {!!currVenue?.require_approval &&
                 <Badge variant="past" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
             {!!currVenue?.about &&
@@ -179,7 +183,8 @@ function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
                 {!!venue.venue_overrides?.length &&
                     <Badge variant="past" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
                 {!!venue.link && <Badge variant="past" className="mr-1 mt-2">{lang['Link']}</Badge>}
-                {!!venue.capacity && <Badge variant="past" className="mr-1 mt-2">{venue.capacity} {lang['Seats']}</Badge>}
+                {!!venue.capacity &&
+                    <Badge variant="past" className="mr-1 mt-2">{venue.capacity} {lang['Seats']}</Badge>}
                 {!!venue.require_approval &&
                     <Badge variant="past" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
             </div>
