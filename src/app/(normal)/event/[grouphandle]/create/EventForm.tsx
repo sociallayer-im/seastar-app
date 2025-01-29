@@ -12,7 +12,6 @@ import LocationInput from "@/components/client/LocationInput"
 import EventDateTimeInput from "@/components/client/EventDateTimeInput"
 import {eventCoverTimeStr, isEventTimeSuitable} from "@/utils"
 import SelectedEventHost from "@/components/client/SelectedEventHost"
-import {CreteEvent, getOccupiedTimeEvent} from "@/service/solar"
 import useModal from "@/components/client/Modal/useModal"
 import SelectedEventBadge from "@/components/client/SelectedEventBadge"
 import EventRoleInput from "@/components/client/EventRoleInput"
@@ -22,6 +21,7 @@ import TicketForm, {Checker} from "@/app/(normal)/event/[grouphandle]/create/Tic
 import RepeatForm, {RepeatFormType} from "@/app/(normal)/event/[grouphandle]/create/RepeatForm"
 import TracksFilter from '@/components/client/TracksFilter'
 import TagsFilter from '@/components/client/TagsFilter'
+import {getOccupiedTimeEvent, Event, createEvent} from '@sola/sdk'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -50,7 +50,7 @@ export default function EventForm({lang, data}: EventFormProps) {
 
     // errors
     const [timeError, setTimeError] = useState('')
-    const [occupiedEvent, setOccupiedEvent] = useState<Solar.Event | null>(null)
+    const [occupiedEvent, setOccupiedEvent] = useState<Event | null>(null)
     const [tagError, setTagError] = useState('')
     const [titleError, setTitleError] = useState('')
 
@@ -78,13 +78,14 @@ export default function EventForm({lang, data}: EventFormProps) {
 
             const loading = showLoading()
             try {
-                const occupiedEvents = await getOccupiedTimeEvent(
-                    draft.start_time,
-                    draft.end_time,
-                    draft.timezone!,
-                    draft.venue_id,
-                    draft.id
-                )
+                const occupiedEvents = await getOccupiedTimeEvent({
+                    startTime: draft.start_time,
+                    endTime: draft.end_time,
+                    timezone: draft.timezone!,
+                    venueId: draft.venue_id,
+                    excludeEventId: draft.id
+                })
+
                 setOccupiedEvent(occupiedEvents)
             } catch (e: unknown) {
                 console.error(e)
@@ -99,7 +100,7 @@ export default function EventForm({lang, data}: EventFormProps) {
             ? lang['The maximum number of tags is 3'] : '')
     }, [draft.tags])
 
-    const checkDraft = () => {
+    const handleSingleEvent = async () => {
         if (!draft.title) {
             setTitleError(lang['Event Name is required'])
             setTimeout(() => {
@@ -120,29 +121,21 @@ export default function EventForm({lang, data}: EventFormProps) {
         }
 
         const authToken = Cookies.get(process.env.NEXT_PUBLIC_AUTH_FIELD!)
-
-        if (!authToken) {
+        const loading = showLoading()
+        try {
+            const event = await createEvent({eventDraft: draft, authToken: authToken!})
+            console.log('event', event)
+            window.location.href = `/event/share/${event.id}`
+        } catch (e: unknown) {
+            console.error(e)
             toast({
-                title: 'Please login first',
+                title: 'Failed to create event',
+                description: e instanceof Error ? e.message : 'Unknown error',
                 variant: 'destructive'
             })
-            return
+        } finally {
+            closeModal(loading)
         }
-
-        // const loading = showLoading()
-        // try {
-        //     const event = CreteEvent({...draft, auth_token: authToken})
-        //     console.log('event', event)
-        // } catch (e: unknown) {
-        //     console.error(e)
-        //     toast({
-        //         title: 'Failed to create event',
-        //         description: e instanceof Error ? e.message : 'Unknown error',
-        //         variant: 'destructive'
-        //     })
-        // } finally {
-        //     closeModal(loading)
-        // }
     }
 
     return <div className="min-h-[100svh] w-full">
@@ -486,7 +479,7 @@ export default function EventForm({lang, data}: EventFormProps) {
                         </div>
                     </div>
 
-                    <Button variant={'special'} className="w-full" onClick={checkDraft}>Create Event</Button>
+                    <Button variant={'special'} className="w-full" onClick={handleSingleEvent}>Create Event</Button>
                 </div>
             </div>
         </div>

@@ -38,6 +38,7 @@ export interface CreateEventPageDataType {
 
 export const emptyEvent: EventDraftType = {
     id: 0,
+    group_id: 0,
     cover_url: '',
     title: '',
     track_id: null,
@@ -60,8 +61,7 @@ export const emptyEvent: EventDraftType = {
     pinned: false,
     status: 'open',
     badge_class_id: null,
-    tickets: [],
-    ticket_attributes: []
+    tickets: []
 }
 
 export const emptyPaymentMethod: PaymentMethod = {
@@ -112,7 +112,7 @@ export default async function CreateEventPageData({params}: CreateEventDataProps
 
     return {
         currProfile,
-        eventDraft: emptyEvent,
+        eventDraft: {...emptyEvent, group_id: groupDetail.id},
         groupDetail,
         memberships: groupDetail.memberships || [],
         isGroupOwner: isOwner,

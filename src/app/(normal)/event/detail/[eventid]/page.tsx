@@ -243,7 +243,7 @@ export default async function EventDetail({params, searchParams}: {
                             eventDetail.event_roles?.filter(role => role.role === 'speaker').map(role => {
                                 return <a key={role.id}
                                           className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                          href={role.item_id ? `/profile/${role.profile!.handle}` : '#'}>
+                                          href={role.item_id ? `/profile/${role.profile!.handle}` : undefined}>
                                     <img className="w-11 h-11 rounded-full mr-2"
                                          src={getAvatar(role.item_id, role.image_url)} alt=""/>
                                     <div>

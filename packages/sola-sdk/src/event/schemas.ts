@@ -219,4 +219,3 @@ export const GET_EVENT_DETAIL_BY_ID = gql`
         }
     }
 `
-

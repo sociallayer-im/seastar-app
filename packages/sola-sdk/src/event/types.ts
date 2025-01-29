@@ -142,9 +142,10 @@ export interface Track {
 
 export type TicketDraft  = Pick<Ticket, 'id' | 'title' | 'content' | 'check_badge_class_id' | 'quantity' | 'end_time' | 'payment_methods' | 'tracks_allowed' | 'ticket_type' | '_destroy'>
 
-export interface EventDraftType extends Pick<EventDetail, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'group_id' | 'tickets'> {
+export interface EventDraftType extends Pick<EventDetail, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id'> {
     timezone: string | null
-    ticket_attributes?: TicketDraft[]
+    tickets: TicketDraft[]
     event_roles: EventRole[] | null
+    group_id: number
 }
 

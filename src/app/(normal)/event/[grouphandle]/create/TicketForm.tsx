@@ -50,7 +50,7 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, p
             handleAddTicket()
         }
 
-        setEvent({...event, ticket_attributes: tickets})
+        setEvent({...event, tickets: tickets})
     }, [tickets])
     
     const handleAddTicket = () => {

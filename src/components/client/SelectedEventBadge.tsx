@@ -78,27 +78,31 @@ export default function SelectedEventBadge({
         }
     }
 
-    return <div className="mt-2">
-        {loading && <div className="loading-bg h-[114px] w-[114px] rounded-lg"/>}
+    return !!event.id ?
+        <div className="mt-2">
+            {loading && <div className="loading-bg h-[114px] w-[114px] rounded-lg"/>}
 
-        {!!badgeClass &&
-            <div
-                className="relative w-[114px] h-[114px] rounded-lg bg-[#ecf2ee] flex flex-col justify-center items-center">
-                <img className="w-[60px] h-[60px] rounded-full mb-2" src={badgeClass.image_url!} alt=""/>
-                <div className="text-xs w-[80%] mx-auto webkit-box-clamp-1 text-center">{badgeClass.title}</div>
-                <i onClick={resetBadge}
-                   className="uil-times cursor-pointer opacity-50 hover:opacity-100 text-lg right-2 top-1 absolute"/>
-            </div>
+            {!!badgeClass &&
+                <div
+                    className="relative w-[114px] h-[114px] rounded-lg bg-[#ecf2ee] flex flex-col justify-center items-center">
+                    <img className="w-[60px] h-[60px] rounded-full mb-2" src={badgeClass.image_url!} alt=""/>
+                    <div className="text-xs w-[80%] mx-auto webkit-box-clamp-1 text-center">{badgeClass.title}</div>
+                    <i onClick={resetBadge}
+                       className="uil-times cursor-pointer opacity-50 hover:opacity-100 text-lg right-2 top-1 absolute"/>
+                </div>
 
-        }
+            }
 
-        {!badgeClass &&
-            <Button variant={'secondary'} className="mt-2 text-sm"
-                    onClick={handleSelectedBadge}
-            >
-                <i className="uil-plus-circle text-lg"/>
-                {lang['Set a POAP badge for attendees']}
-            </Button>
-        }
-    </div>
+            {!badgeClass &&
+                <Button variant={'secondary'} className="mt-2 text-sm"
+                        onClick={handleSelectedBadge}
+                >
+                    <i className="uil-plus-circle text-lg"/>
+                    {lang['Set a POAP badge for attendees']}
+                </Button>
+            }
+        </div>
+        : <div className="text-xs text-gray-500">
+            {lang['You can set up POAP after the event is created.']}
+        </div>
 }

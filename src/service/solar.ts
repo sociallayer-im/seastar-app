@@ -83,11 +83,11 @@ export const updateProfile = async (profile: Solar.Profile, auth_token: string) 
     return data.profile as Solar.Profile
 }
 
-export const getOccupiedTimeEvent = async (startTime: string, endTime: string, timezone: string, venueId: number | null, eventId?: number) => {
+export const getOccupiedTimeEvent = async (startTime: string, endTime: string, timezone: string, venueId: number | null, excludeEventId?: number) => {
     if (!venueId) return null
 
     const doc = gql`query MyQuery {
-        events(where: {venue_id: {_eq: ${venueId}}, status: {_eq: "open"}${eventId ? `,id: {_neq:${eventId}}` : ''}}) {
+        events(where: {venue_id: {_eq: ${venueId}}, status: {_eq: "open"}${excludeEventId ? `,id: {_neq:${excludeEventId}}` : ''}}) {
             id
             title
             start_time
@@ -96,6 +96,8 @@ export const getOccupiedTimeEvent = async (startTime: string, endTime: string, t
     }`
 
     const {events} = await request<{ events: Solar.Event[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+
+    console.log('events', events)
 
     return events.find((e) => {
         const eventStartTime = new Date(e.start_time!).getTime()

@@ -328,6 +328,7 @@ export const en = {
     'Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.': 'Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.',
     'Public Event': 'Public Event',
     'Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.' : 'Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.',
+    'You can set up POAP after the event is created.':'You can set up POAP after the event is created.'
 
 }
 

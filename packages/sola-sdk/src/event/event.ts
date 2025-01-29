@@ -1,7 +1,9 @@
-import {Event, EventDetail} from './types'
+import {Event, EventDetail, EventDraftType} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
 import {GET_EVENT_DETAIL_BY_ID, GET_GROUP_EVENT_BY_HANDLE, GET_PROFILE_EVENTS_BY_HANDLE} from './schemas'
 import {fixDate} from '../uitls'
+import dayjs from '@/libs/dayjs'
+import {gql} from '@apollo/client'
 
 export const getStaredEvent = async (authToken: string) => {
     if (!authToken) {
@@ -32,8 +34,8 @@ export const getProfileEventByHandle = async (handle: string) => {
 
     return {
         attends: response.data.attends.map((a: { event: Event }) => fixDate(a.event)) as Event[],
-        hosting: response.data.hosting.map((e:Event) => fixDate(e)) as Event[],
-        coHosting: response.data.coHosting.map((a: { event: Event }) =>  fixDate(a.event)) as Event[]
+        hosting: response.data.hosting.map((e: Event) => fixDate(e)) as Event[],
+        coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event)) as Event[]
     }
 }
 
@@ -44,7 +46,7 @@ export const getGroupEventByHandle = async (handle: string) => {
         variables: {handle}
     })
 
-    return response.data.events.map((e:Event) => fixDate(e)) as Event[]
+    return response.data.events.map((e: Event) => fixDate(e)) as Event[]
 }
 
 export const getEventIcsUrl = (groupHandle: string) => {
@@ -177,4 +179,86 @@ export const attendEventWithoutTicket = async (eventId: number, authToken: strin
             throw new Error('Failed to attend event')
         }
     }
+}
+
+export const createEvent = async (props: {eventDraft: EventDraftType, authToken: string}) => {
+    const eventProps = {
+        auth_token: props.authToken,
+        group_id: props.eventDraft.group_id,
+        event: {
+            ...props.eventDraft,
+            event_roles_attributes: props.eventDraft.event_roles,
+            tickets_attributes: props.eventDraft.tickets,
+        }
+    }
+
+    const response = await fetch(`${getSdkConfig().api}/event/create`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventProps)
+    })
+
+    if (!response.ok) {
+        throw new Error('Create failed')
+    }
+
+    const data = await response.json()
+
+    if (data.result === 'error') {
+        throw new Error(data.message)
+    }
+
+    return data.event as Event
+}
+
+export type GetOccupiedTimeEventProps = {
+    startTime: string,
+    endTime: string,
+    timezone: string,
+    venueId: number | null,
+    excludeEventId?: number
+}
+
+export const getOccupiedTimeEvent = async ({
+                                               startTime,
+                                               endTime,
+                                               timezone,
+                                               venueId,
+                                               excludeEventId
+                                           }: GetOccupiedTimeEventProps) => {
+    if (!venueId) return null
+
+    const doc = gql`query MyQuery {
+        events(where: {venue_id: {_eq: ${venueId}}, 
+        status: {_in: ["open", "published"]}${excludeEventId ? `,id: {_neq:${excludeEventId}}` : ''}}) {
+            id
+            title
+            start_time
+            end_time
+        }
+    }`
+
+    const client = getGqlClient()
+    const response = await client.query({
+        query: doc
+    })
+
+    const events = response.data.events.map((e:Event) => fixDate(e)) as Event[]
+
+    console.log('eventsevents', events)
+
+    return events.find((e) => {
+        const eventStartTime = new Date(e.start_time!).getTime()
+        const eventEndTime = new Date(e.end_time!).getTime()
+        const selectedStartTime = new Date(startTime).getTime()
+        const selectedEndTime = new Date(endTime).getTime()
+        const eventIsAllDay = dayjs.tz(eventStartTime, timezone).hour() === 0 && (eventEndTime - eventStartTime + 60000) % 8640000 === 0
+        const selectedIsAllDay = dayjs.tz(selectedStartTime, timezone).hour() === 0 && (selectedEndTime - selectedStartTime + 60000) % 8640000 === 0
+        return ((selectedStartTime < eventStartTime && selectedEndTime > eventStartTime) ||
+                (selectedStartTime >= eventStartTime && selectedEndTime <= eventEndTime) ||
+                (selectedStartTime < eventEndTime && selectedEndTime > eventEndTime)) &&
+            (!eventIsAllDay && !selectedIsAllDay)
+    }) || null
 }
