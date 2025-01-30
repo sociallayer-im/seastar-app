@@ -4,12 +4,13 @@ import DisplayDateTime from '@/components/client/DisplayDateTime'
 import QrCode from '@/components/client/QRcode'
 import {headers} from 'next/headers'
 import {eventCoverTimeStr, getGmtOffset} from '@/utils'
-import ShareActionsBtn from '@/app/(normal)/event/share/[eventid]/ShareActionsBtn'
+import dynamic from 'next/dynamic'
+
+const DynamicShareActionsBtn = dynamic(() => import('@/app/(normal)/event/share/[eventid]/ShareActionsBtn'), {ssr: false})
 
 export async function generateMetadata(props: EventDetailDataProps) {
     const {eventDetail} = await EventDetailPage(props)
     const {lang} = await selectLang()
-
 
     return {
         title: `${lang['Share Event']}-${eventDetail.title} | Social Layer`,
@@ -30,9 +31,9 @@ export default async function ShareEventPage(props: EventDetailDataProps) {
                 <div
                     className="share-card shadow w-[335px] h-auto flex-shrink-0 bg-[#F1FCF8] p-5 pt-6 box-border overflow-hidden rounded-lg">
                     {!!eventDetail.cover_url
-                       ? <img src={eventDetail.cover_url}
-                             className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg"/>
-                        :<div className="mb-4 flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
+                        ? <img src={eventDetail.cover_url}
+                               className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg"/>
+                        : <div className="mb-4 flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
                             <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>
                                 <div
                                     className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
@@ -100,7 +101,7 @@ export default async function ShareEventPage(props: EventDetailDataProps) {
                 </div>
 
                 <div className="my-3 w-[335px] mx-auto">
-                    <ShareActionsBtn lang={lang} eventDetail={eventDetail} groupHandle={groupDetail.handle}/>
+                    <DynamicShareActionsBtn lang={lang} eventDetail={eventDetail} groupHandle={groupDetail.handle}/>
                 </div>
             </div>
         </div>

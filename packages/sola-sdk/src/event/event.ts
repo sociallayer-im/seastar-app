@@ -246,9 +246,6 @@ export const getOccupiedTimeEvent = async ({
     })
 
     const events = response.data.events.map((e:Event) => fixDate(e)) as Event[]
-
-    console.log('eventsevents', events)
-
     return events.find((e) => {
         const eventStartTime = new Date(e.start_time!).getTime()
         const eventEndTime = new Date(e.end_time!).getTime()
@@ -262,3 +259,77 @@ export const getOccupiedTimeEvent = async ({
             (!eventIsAllDay && !selectedIsAllDay)
     }) || null
 }
+
+export interface CreateRecurringEventParams{
+    eventDraft: EventDraftType,
+    authToken: string,
+    eventCount: number,
+    interval: string,
+}
+
+export const createRecurringEvent = async (props: CreateRecurringEventParams) => {
+    const eventProps = {
+        auth_token: props.authToken,
+        group_id: props.eventDraft.group_id,
+        event_count: props.eventCount,
+        timezone: props.eventDraft.timezone,
+        interval: props.interval,
+        event: {
+            ...props.eventDraft,
+            event_roles_attributes: props.eventDraft.event_roles,
+            tickets_attributes: props.eventDraft.tickets,
+        }
+    }
+
+    const response = await fetch(`${getSdkConfig().api}/recurring/create`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventProps)
+    })
+
+    if (!response.ok) {
+        throw new Error('Create failed')
+    }
+
+    const data = await response.json()
+
+    if (data.result === 'error') {
+        throw new Error(data.message)
+    }
+}
+
+export const updateEvent = async (props: {eventDraft: EventDraftType, authToken: string}) => {
+    const eventProps = {
+        auth_token: props.authToken,
+        id: props.eventDraft.id,
+        event: {
+            ...props.eventDraft,
+            event_roles_attributes: props.eventDraft.event_roles,
+            tickets_attributes: props.eventDraft.tickets,
+        }
+    }
+
+    const response = await fetch(`${getSdkConfig().api}/event/update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventProps)
+    })
+
+    if (!response.ok) {
+        throw new Error('Update failed')
+    }
+
+    const data = await response.json()
+
+    if (data.result === 'error') {
+        throw new Error(data.message)
+    }
+
+    return data.event as Event
+}
+
+

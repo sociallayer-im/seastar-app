@@ -1,0 +1,57 @@
+import {
+    EventDraftType, getAvailableGroupsForEventHost,
+    getEventDetailById,
+    getGroupDetailByHandle, Group,
+    Profile,
+} from '@sola/sdk'
+import {getCurrProfile} from '@/app/actions'
+import {redirect} from 'next/navigation'
+import {analyzeGroupMembershipAndCheckProfilePermissions} from '@/utils'
+import {CreateEventPageDataType} from '@/app/(normal)/event/[grouphandle]/create/data'
+
+export interface EditEventProps {
+    params: { eventid: number }
+}
+
+
+export default async function EditEventData({params: {eventid}}: EditEventProps) {
+    const currProfile = await getCurrProfile()
+    if (!currProfile) {
+        redirect('/')
+    }
+
+    const eventDetail = await getEventDetailById(eventid)
+    if (!eventDetail) {
+        redirect('/404')
+    }
+
+    const groupDetail = await getGroupDetailByHandle(eventDetail.group.handle)
+    if (!groupDetail) {
+        redirect('/404')
+    }
+
+    const {
+        isManager,
+        isOwner,
+        isMember,
+        isIssuer
+    } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
+
+    const availableGroupHost = await getAvailableGroupsForEventHost(currProfile.handle)
+    const availableHost: Array<Profile | Group> = [currProfile, ...availableGroupHost]
+
+    return {
+        currProfile,
+        eventDraft: eventDetail as EventDraftType,
+        groupDetail,
+        memberships: groupDetail.memberships || [],
+        isGroupOwner: isOwner,
+        isGroupManager: isManager,
+        isGroupMember: isMember,
+        isGroupIssuer: isIssuer,
+        availableHost,
+        tracks: groupDetail?.tracks || [],
+        venues: groupDetail?.venues || [],
+        tags: groupDetail?.event_tags || [],
+    } as CreateEventPageDataType
+}

@@ -337,4 +337,5 @@ export const zh: Dictionary = {
     'Save Image': '保存图片',
     'View Event Detail':'查看事件详情',
     'Copied':'已复制',
+    'Cancel Event':'取消事件',
 }

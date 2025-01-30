@@ -10,31 +10,30 @@ import dynamic from 'next/dynamic'
 import {Switch} from "@/components/shadcn/Switch"
 import LocationInput from "@/components/client/LocationInput"
 import EventDateTimeInput from "@/components/client/EventDateTimeInput"
-import {eventCoverTimeStr, isEventTimeSuitable} from "@/utils"
+import {checkTrackSuitable, eventCoverTimeStr, isEventTimeSuitable} from "@/utils"
 import SelectedEventHost from "@/components/client/SelectedEventHost"
 import useModal from "@/components/client/Modal/useModal"
 import SelectedEventBadge from "@/components/client/SelectedEventBadge"
 import EventRoleInput from "@/components/client/EventRoleInput"
-import Cookies from 'js-cookie'
-import {useToast} from "@/components/shadcn/Toast/use-toast"
 import TicketForm, {Checker} from "@/app/(normal)/event/[grouphandle]/create/TicketForm"
 import RepeatForm, {RepeatFormType} from "@/app/(normal)/event/[grouphandle]/create/RepeatForm"
 import TracksFilter from '@/components/client/TracksFilter'
 import TagsFilter from '@/components/client/TagsFilter'
-import {getOccupiedTimeEvent, Event, createEvent} from '@sola/sdk'
+import {getOccupiedTimeEvent, Event, EventDraftType} from '@sola/sdk'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
 export interface EventFormProps {
     lang: Dictionary
     data: CreateEventPageDataType,
+    onConfirm?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void
+    onCancel?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void
 }
 
-export default function EventForm({lang, data}: EventFormProps) {
+export default function EventForm({lang, data, onConfirm}: EventFormProps) {
     const [draft, setDraft] = useState(data.eventDraft)
     const {uploadImage} = useUploadImage()
     const {showLoading, closeModal} = useModal()
-    const {toast} = useToast()
     const ticketCheckerRef = useRef<Checker>({check: undefined})
 
     // ui
@@ -50,6 +49,7 @@ export default function EventForm({lang, data}: EventFormProps) {
 
     // errors
     const [timeError, setTimeError] = useState('')
+    const [trackDayError, setTrackDayError] = useState('')
     const [occupiedEvent, setOccupiedEvent] = useState<Event | null>(null)
     const [tagError, setTagError] = useState('')
     const [titleError, setTitleError] = useState('')
@@ -61,7 +61,9 @@ export default function EventForm({lang, data}: EventFormProps) {
 
     useEffect(() => {
         console.log('draft', draft)
-    }, [draft])
+        console.log('repeatForm', repeatForm)
+        // onConfirm?.(draft, repeatForm)
+    }, [draft, repeatForm])
 
     useEffect(() => {
         ;(async () => {
@@ -100,7 +102,11 @@ export default function EventForm({lang, data}: EventFormProps) {
             ? lang['The maximum number of tags is 3'] : '')
     }, [draft.tags])
 
-    const handleSingleEvent = async () => {
+    useEffect(() => {
+        setTrackDayError(draft.track_id ? checkTrackSuitable(draft, data.tracks.find(t => t.id === draft.track_id)!) : '')
+    }, [draft.track_id, draft.start_time, draft.end_time, draft.timezone])
+
+    const handleConfirm = async () => {
         if (!draft.title) {
             setTitleError(lang['Event Name is required'])
             setTimeout(() => {
@@ -114,34 +120,31 @@ export default function EventForm({lang, data}: EventFormProps) {
         if (!!timeError
             || !!tagError
             || !!occupiedEvent
+            || !!trackDayError
             || (ticketCheckerRef.current.check && !ticketCheckerRef.current.check())) {
             setTimeout(() => {
                 document.querySelector('.err-msg')?.scrollIntoView({behavior: 'smooth', block: 'center'})
             }, 200)
+            return
         }
 
-        const authToken = Cookies.get(process.env.NEXT_PUBLIC_AUTH_FIELD!)
-        const loading = showLoading()
-        try {
-            const event = await createEvent({eventDraft: draft, authToken: authToken!})
-            console.log('event', event)
-            window.location.href = `/event/share/${event.id}`
-        } catch (e: unknown) {
-            console.error(e)
-            toast({
-                title: 'Failed to create event',
-                description: e instanceof Error ? e.message : 'Unknown error',
-                variant: 'destructive'
-            })
-        } finally {
-            closeModal(loading)
-        }
+        onConfirm?.(draft, repeatForm)
     }
 
     return <div className="min-h-[100svh] w-full">
         <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">
             <div
-                className="py-6 font-semibold text-center text-xl">{draft.id ? lang['Edit Event'] : lang['Create Event']}</div>
+                className="pt-6 pb-10 font-semibold text-center text-xl relative">
+                {draft.id ? lang['Edit Event'] : lang['Create Event']}
+
+                {draft.id &&
+                    <Button variant={'secondary'}
+                            size={'sm'}
+                            className="absolute right-0 text-sm !text-red-500">
+                        {lang['Cancel Event']}
+                    </Button>
+                }
+            </div>
 
             <div className="flex flex-col items-center sm:items-start sm:flex-row w-full">
                 <div className="sm:order-2 mt-4 sm:mt-0 mb-8">
@@ -253,6 +256,7 @@ export default function EventForm({lang, data}: EventFormProps) {
                             onChange={repeatForm => setRepeatForm(repeatForm)}
                         />
                         {!!timeError && <div className="text-red-400 mt-2 text-xs err-msg">{timeError}</div>}
+                        {!!trackDayError && <div className="text-red-400 mt-2 text-xs err-msg">{trackDayError}</div>}
                         {!!occupiedEvent &&
                             <div
                                 className="text-red-400 mt-2 text-xs err-msg">{lang['The selected time slot is occupied by another event at the current venue. Occupying event:']}
@@ -479,7 +483,14 @@ export default function EventForm({lang, data}: EventFormProps) {
                         </div>
                     </div>
 
-                    <Button variant={'special'} className="w-full" onClick={handleSingleEvent}>Create Event</Button>
+                    <div className="grid grid-cols-2 gap-3">
+                        <Button variant={'secondary'} className="w-full" onClick={handleConfirm}>
+                            {lang['Back']}
+                        </Button>
+                        <Button variant={'special'} className="w-full" onClick={handleConfirm}>
+                            {!draft.id ? lang['Create Event'] : lang['Edit Event']}
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

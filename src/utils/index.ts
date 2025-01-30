@@ -4,7 +4,7 @@ import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
 import {paymentTokenList} from "@/utils/payment_setting"
-import {Profile, Event, GroupDetail, EventDetail, Ticket, VenueDetail} from '@sola/sdk'
+import {Profile, Event, GroupDetail, EventDetail, Ticket, VenueDetail, Track, EventDraftType} from '@sola/sdk'
 import Dayjs from '@/libs/dayjs'
 import domtoimage from 'dom-to-image'
 
@@ -195,7 +195,7 @@ export function isEventTimeSuitable(
     eventEndTime: string,
     isManager: boolean,
     isMember: boolean,
-    venue?: VenueDetail
+    venue?: VenueDetail,
 ) {
     const startTime = dayjs.tz(new Date(eventStartTime).getTime(), timezone)
     const endTime = dayjs.tz(new Date(eventEndTime!).getTime(), timezone)
@@ -457,14 +457,16 @@ export const formatEventTime = (dateTimeStr: string, timezone?: string) => {
 }
 
 export function isSupportedDownloadCardBrowser() {
-    if(typeof window !== 'undefined') return false
-
     const userAgent = navigator.userAgent.toLowerCase()
     const supportedBrowsers = ['safari', 'chrome', 'firefox', 'edge']
     return supportedBrowsers.some(browser => userAgent.indexOf(browser) !== -1)
 }
 
-export const saveDomImage = async ({dom, fileName, scaleFactor=1}: {dom: HTMLElement, fileName: string, scaleFactor: number}) => {
+export const saveDomImage = async ({dom, fileName, scaleFactor = 1}: {
+    dom: HTMLElement,
+    fileName: string,
+    scaleFactor: number
+}) => {
     const originWidth = dom.clientWidth
     const originHeight = dom.clientHeight
 
@@ -484,6 +486,29 @@ export const saveDomImage = async ({dom, fileName, scaleFactor=1}: {dom: HTMLEle
     a.href = dataUrl
     a.download = `${fileName}.png`
     a.click()
+}
+
+export const checkTrackSuitable = (event: EventDraftType, track?: Track): string => {
+    if (!!track) {
+        const eventStartTime = dayjs.tz(new Date(event.start_time!).getTime(), event.timezone!).format('YYYY-MM-DD')
+        const eventEndTime = dayjs.tz(new Date(event.end_time!).getTime(), event.timezone!).format('YYYY-MM-DD')
+
+        if (track.start_date && eventStartTime < track.start_date) {
+            return `The event start date cannot be earlier than the track start date: ${track.start_date}`
+        }
+
+        if (track.end_date && eventEndTime >= track.end_date) {
+            return `The event end date cannot be later than the track end date: ${track.end_date}`
+        }
+
+        if (track.start_date && track.end_date && (eventStartTime < track.start_date || eventEndTime >= track.end_date)) {
+            return `The event date must be within the track date range: ${track.start_date} to ${track.end_date}`
+        }
+
+        return ''
+    } else {
+        return ''
+    }
 }
 
 

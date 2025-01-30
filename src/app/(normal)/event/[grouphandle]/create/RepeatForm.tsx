@@ -77,7 +77,7 @@ export default function RepeatForm(props: RepeatFormProps) {
     
     return <div
         onClick={showSetting}
-        className={`${repeatText? 'text-green-500 ' : ''}cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center !inline-flex font-semibold active:brightness-90`}>
+        className={`${repeatText? 'bg-secondary ' : ''} cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center !inline-flex font-semibold active:brightness-90`}>
         <i className="uil-repeat text-base mr-0.5"/>
         {repeatText || props.lang['Does not Repeat']}
     </div>
@@ -95,9 +95,6 @@ export interface DialogRepeatSettingProps {
 function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang}: DialogRepeatSettingProps) {
     const [repeatForm, setRepeatForm] = useState(form)
     const [error, setError] = useState('')
-
-
-    
 
     const preview = useMemo(() => {
         if (!repeatForm.interval

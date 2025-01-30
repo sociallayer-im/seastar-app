@@ -335,6 +335,7 @@ export const en = {
     'Save Image': 'Save Image',
     'View Event Detail':'View Event Detail',
     'Copied':'Copied',
+    'Cancel Event': 'Cancel Event'
 
 }
 

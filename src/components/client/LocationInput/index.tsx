@@ -14,7 +14,7 @@ export interface LocationInputProps {
 }
 
 export default function LocationInput({state: {event, setEvent}, venues, lang, isManager, isMember}: LocationInputProps) {
-    const [useVenue, _setUseVenue] = useState(true)
+    const [useVenue, _setUseVenue] = useState(event.venue_id || (!event.venue_id && !event.formatted_address))
     const venueCache = useRef<null | VenueDetail>(null)
 
     const setUseVenue = (useVenue: boolean) => {

@@ -107,7 +107,6 @@ export default async function CreateEventPageData({params}: CreateEventDataProps
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
     const availableGroupHost = await getAvailableGroupsForEventHost(currProfile.handle)
-
     const availableHost: Array<Profile | Group> = [currProfile, ...availableGroupHost]
 
     return {
