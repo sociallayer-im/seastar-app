@@ -457,7 +457,8 @@ export const formatEventTime = (dateTimeStr: string, timezone?: string) => {
 }
 
 export function isSupportedDownloadCardBrowser() {
-    if(!navigator) return false
+    if(typeof window !== 'undefined') return false
+
     const userAgent = navigator.userAgent.toLowerCase()
     const supportedBrowsers = ['safari', 'chrome', 'firefox', 'edge']
     return supportedBrowsers.some(browser => userAgent.indexOf(browser) !== -1)
@@ -475,7 +476,8 @@ export const saveDomImage = async ({dom, fileName, scaleFactor=1}: {dom: HTMLEle
         style: {
             transform: `scale(${scaleFactor})`,
             transformOrigin: 'top left',
-            borderRadius: '0'
+            borderRadius: '0',
+            boxShadow: 'none'
         }
     })
     const a = document.createElement('a')

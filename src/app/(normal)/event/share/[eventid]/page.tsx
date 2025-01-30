@@ -3,7 +3,7 @@ import {selectLang} from '@/app/actions'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import QrCode from '@/components/client/QRcode'
 import {headers} from 'next/headers'
-import {getGmtOffset} from '@/utils'
+import {eventCoverTimeStr, getGmtOffset} from '@/utils'
 import ShareActionsBtn from '@/app/(normal)/event/share/[eventid]/ShareActionsBtn'
 
 export async function generateMetadata(props: EventDetailDataProps) {
@@ -28,9 +28,26 @@ export default async function ShareEventPage(props: EventDetailDataProps) {
 
             <div className="flex flex-col items-center justify-center">
                 <div
-                    className="share-card w-[335px] h-auto flex-shrink-0 bg-[#F1FCF8] p-5 pt-6 box-border overflow-hidden rounded-lg">
-                    <img src={eventDetail.cover_url!}
-                         className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg"/>
+                    className="share-card shadow w-[335px] h-auto flex-shrink-0 bg-[#F1FCF8] p-5 pt-6 box-border overflow-hidden rounded-lg">
+                    {!!eventDetail.cover_url
+                       ? <img src={eventDetail.cover_url}
+                             className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg"/>
+                        :<div className="mb-4 flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
+                            <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>
+                                <div
+                                    className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
+                                    {eventDetail.title || lang['Event Name']}
+                                </div>
+                                <div
+                                    className="text-lg absolute font-semibold left-[76px] top-[178px]">{eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).date}
+                                    <br/>
+                                    {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).time}
+                                </div>
+                                <div
+                                    className="text-lg absolute font-semibold left-[76px] top-[240px]">{eventDetail.location}</div>
+                            </div>
+                        </div>
+                    }
                     <div className="text-[20px] font-semibold leading-[28px] mt-[33px] mb-[22px]">
                         {eventDetail.title}
                     </div>
