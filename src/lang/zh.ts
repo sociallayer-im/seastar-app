@@ -331,4 +331,10 @@ export const zh: Dictionary = {
     'Public Event': '公开事件',
     'Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.' : '创建的事件对公众开放，即使全局设置为仅成员可见。',
     'You can set up POAP after the event is created.': '您可以在创建事件后设置 POAP。',
+    'Share Event': '分享事件',
+    'Scan the code': '扫描二维码',
+    'and attend the event': '并参加活动',
+    'Save Image': '保存图片',
+    'View Event Detail':'查看事件详情',
+    'Copied':'已复制',
 }

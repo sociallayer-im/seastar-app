@@ -6,6 +6,7 @@ import BigNumber from "bignumber.js"
 import {paymentTokenList} from "@/utils/payment_setting"
 import {Profile, Event, GroupDetail, EventDetail, Ticket, VenueDetail} from '@sola/sdk'
 import Dayjs from '@/libs/dayjs'
+import domtoimage from 'dom-to-image'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -431,6 +432,12 @@ export const getRangeFromTimeProps = (start_date?: string, end_date?: string) =>
     if (start.endOf('month').format('YYYY-MM-DD') === end_date) return 'month'
 }
 
+export const getGmtOffset = (timezone: string) => {
+    const date = dayjs.tz(new Date(), timezone)
+    const utcOffset = date.utcOffset() / 60
+    return utcOffset >= 0 ? `GMT+${utcOffset}` : `GMT${utcOffset}`
+}
+
 export const formatEventTime = (dateTimeStr: string, timezone?: string) => {
     const tz = timezone || dayjs.tz.guess()
     const date = dayjs.tz(new Date(dateTimeStr).getTime(), tz)
@@ -447,6 +454,34 @@ export const formatEventTime = (dateTimeStr: string, timezone?: string) => {
             lastWeek: 'ddd MMM DD, HH:mm',
             sameElse: 'ddd MMM DD, HH:mm'
         }) + ` ${GMT}`
+}
+
+export function isSupportedDownloadCardBrowser() {
+    if(!navigator) return false
+    const userAgent = navigator.userAgent.toLowerCase()
+    const supportedBrowsers = ['safari', 'chrome', 'firefox', 'edge']
+    return supportedBrowsers.some(browser => userAgent.indexOf(browser) !== -1)
+}
+
+export const saveDomImage = async ({dom, fileName, scaleFactor=1}: {dom: HTMLElement, fileName: string, scaleFactor: number}) => {
+    const originWidth = dom.clientWidth
+    const originHeight = dom.clientHeight
+
+    const scaleWidth = originWidth * scaleFactor
+    const scaleHeight = originHeight * scaleFactor
+    const dataUrl = await domtoimage.toPng(dom, {
+        width: scaleWidth,
+        height: scaleHeight,
+        style: {
+            transform: `scale(${scaleFactor})`,
+            transformOrigin: 'top left',
+            borderRadius: '0'
+        }
+    })
+    const a = document.createElement('a')
+    a.href = dataUrl
+    a.download = `${fileName}.png`
+    a.click()
 }
 
 

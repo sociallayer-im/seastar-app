@@ -139,7 +139,7 @@ export default function EventForm({lang, data}: EventFormProps) {
     }
 
     return <div className="min-h-[100svh] w-full">
-        <div className="page-width min-h-[100svh] px-3 pb-12 pt-0 !pb-16">
+        <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">
             <div
                 className="py-6 font-semibold text-center text-xl">{draft.id ? lang['Edit Event'] : lang['Create Event']}</div>
 

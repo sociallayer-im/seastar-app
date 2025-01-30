@@ -1,4 +1,92 @@
-export default function ShareEventPage() {
+import EventDetailPage, {EventDetailDataProps} from '@/app/(normal)/event/detail/[eventid]/data'
+import {selectLang} from '@/app/actions'
+import DisplayDateTime from '@/components/client/DisplayDateTime'
+import QrCode from '@/components/client/QRcode'
+import {headers} from 'next/headers'
+import {getGmtOffset} from '@/utils'
+import ShareActionsBtn from '@/app/(normal)/event/share/[eventid]/ShareActionsBtn'
 
-    return <div>shere</div>
+export async function generateMetadata(props: EventDetailDataProps) {
+    const {eventDetail} = await EventDetailPage(props)
+    const {lang} = await selectLang()
+
+
+    return {
+        title: `${lang['Share Event']}-${eventDetail.title} | Social Layer`,
+    }
+}
+
+export default async function ShareEventPage(props: EventDetailDataProps) {
+    const {eventDetail, groupDetail} = await EventDetailPage(props)
+    const {lang} = await selectLang()
+    const shareUrl = `${new URL(headers().get('x-current-path')!).origin}/event/detail/${eventDetail.id}`
+
+    return <div className="min-h-[100svh] w-full">
+        <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">
+            <div
+                className="py-6 font-semibold text-center text-xl">{lang['Share Event']}</div>
+
+            <div className="flex flex-col items-center justify-center">
+                <div
+                    className="share-card w-[335px] h-auto flex-shrink-0 bg-[#F1FCF8] p-5 pt-6 box-border overflow-hidden rounded-lg">
+                    <img src={eventDetail.cover_url!}
+                         className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg"/>
+                    <div className="text-[20px] font-semibold leading-[28px] mt-[33px] mb-[22px]">
+                        {eventDetail.title}
+                    </div>
+                    {!!eventDetail.start_time &&
+                        <div className="flex flex-row text-xs font-normal">
+                            <i className="uil-calendar-alt mr-1"/>
+                            <div className={'start-time'}>
+                                <DisplayDateTime dataTimeStr={eventDetail.start_time} tz={eventDetail.timezone}/>
+                            </div>
+                            {
+                                eventDetail.end_time &&
+                                <>
+                                    <span>—</span>
+                                    <div className={'end-time'}>
+                                        <DisplayDateTime dataTimeStr={eventDetail.end_time} tz={eventDetail.timezone}/>
+                                        {getGmtOffset(eventDetail.timezone)}
+                                    </div>
+                                </>
+                            }
+                        </div>
+                    }
+                    {!!eventDetail.timezone &&
+                        <div className="flex flex-row text-xs font-normal">
+                            <div className="pl-4">{eventDetail.timezone}</div>
+                        </div>
+                    }
+                    {
+                        !!eventDetail.location && <div className="text-xs flex flex-row items-start  mt-2">
+                            <i className="uil-location-point mr-1"/>
+                            <div>{eventDetail.location}
+                                <br/> {eventDetail.formatted_address ? `${eventDetail.formatted_address}` : ''}</div>
+                        </div>
+                    }
+                    {
+                        !!eventDetail.meeting_url && <div className="text-xs flex flex-row items-start  mt-2">
+                            <i className="uil-link mr-1"/>
+                            <div>{eventDetail.meeting_url}</div>
+                        </div>
+                    }
+
+                    <div
+                        className="bg-[rgba(149,170,163,0.15)] p-5 m-[20px_-20px_-20px] flex flex-row justify-between items-center">
+                        <div className="text-[#272928] text-[14px] font-semibold leading-[19px]">
+                            <div>{lang['Scan the code']} <br/>{lang['and attend the event']}</div>
+                            <img src="/images/logo_horizontal.svg" alt=""/>
+                        </div>
+                        <QrCode size={[63, 63]}
+                                text={shareUrl}/>
+                    </div>
+                </div>
+
+                <div className="my-3 w-[335px] mx-auto">
+                    <ShareActionsBtn lang={lang} eventDetail={eventDetail} groupHandle={groupDetail.handle}/>
+                </div>
+            </div>
+        </div>
+
+    </div>
 }
