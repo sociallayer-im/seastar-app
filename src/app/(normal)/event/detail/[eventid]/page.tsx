@@ -11,7 +11,7 @@ import {
     getEventDetailPageTimeStr, shortWalletAddress
 } from "@/utils"
 import {selectLang} from "@/app/actions"
-import {Button} from "@/components/shadcn/Button"
+import {Button, buttonVariants} from "@/components/shadcn/Button"
 import {getChainIconById} from "@/utils/payment_setting"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import NoData from "@/components/NoData"
@@ -22,7 +22,7 @@ import EventFeedbackBtn from '@/components/EventFeedbackBtn'
 import AttendEventBtn from '@/components/client/AttendEventBtn'
 import {Badge} from '@/components/shadcn/Badge'
 import SignInPanel from '@/components/SignInPanel'
-import {SeatingStyle} from '@/app/configForSpecifyGroup'
+import EventParticipantList from '@/components/client/EventParticipantList'
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -152,14 +152,16 @@ export default async function EventDetail({params, searchParams}: {
                                 {isEventOperator ?
                                     eventDetail.badge_class_id
                                         ? <div className="flex-row-item-center mt-2">
-                                            <Button variant={'secondary'} className="text-xs flex-1">
+                                            <a className={`${buttonVariants({variant: 'secondary'})} text-xs flex-1`}
+                                               href={`/event/checkin-for-participants/${eventDetail.id}`}>
                                                 <span>{lang['Check-In And Send POAP']}</span>
-                                            </Button>
+                                            </a>
                                         </div>
                                         : <div className="flex-row-item-center mt-2">
-                                            <Button variant={'secondary'} className="text-xs flex-1">
+                                            <a className={`${buttonVariants({variant: 'secondary'})} text-xs flex-1`}
+                                               href={`/event/checkin-for-participants/${eventDetail.id}`}>
                                                 <span>{lang['Check-In For Participants']}</span>
-                                            </Button>
+                                            </a>
                                         </div>
                                     : currProfileAttended ? <div className="flex-row-item-center mt-2">
                                         <Button variant={'secondary'} className="text-xs flex-1">
@@ -380,8 +382,8 @@ export default async function EventDetail({params, searchParams}: {
                                 </div>
                                 : <div className="bg-secondary border-dashed border-2 rounded-lg p-3 mt-8 ">
                                     <div className="font-semibold mb-2">{lang['Attend event to view notes']}</div>
-                                    <div className="bg-gray-300 w-full h-4 rounded-lg mb-2" />
-                                    <div className="bg-gray-300 w-80 h-4 rounded-lg" />
+                                    <div className="bg-gray-300 w-full h-4 rounded-lg mb-2"/>
+                                    <div className="bg-gray-300 w-80 h-4 rounded-lg"/>
                                 </div>
                             : null
                         }
@@ -389,53 +391,12 @@ export default async function EventDetail({params, searchParams}: {
                 }
 
                 {tab === 'participants' &&
-                    <div>
-                        {!!eventDetail.participants && eventDetail.participants.length > 0 &&
-                            <div className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
-                                <i className="uil-download-alt text-lg mr-1"></i>
-                                <span>Download the list of all participants</span>
-                            </div>}
-
-                        {!eventDetail.participants || eventDetail.participants.length === 0 && <NoData/>}
-
-                        <div>
-                            {
-                                eventDetail.participants?.map(participant => {
-                                    return <div key={participant.id}
-                                                className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
-                                        <div className="flex-row-item-center">
-                                            <img className="w-7 h-7 rounded-full mr-2"
-                                                 src={getAvatar(participant.profile.id, participant.profile.image_url)}/>
-                                            <div className="text-xs">
-                                                <div>{participant.profile.nickname || participant.profile.handle}</div>
-                                                <div
-                                                    className="text-gray-400">{!!participant.ticket_item?.sender_address && shortWalletAddress(participant.ticket_item?.sender_address)}</div>
-                                            </div>
-                                        </div>
-
-
-                                        <div className="flex-row-item-center">
-                                            {!!participant.ticket &&
-                                                <div className="text-xs">{participant.ticket.title}</div>
-                                            }
-                                            {participant.profile.id === currProfile?.id &&
-                                                <div
-                                                    className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-red-400">
-                                                    Cancel
-                                                </div>
-                                            }
-                                            {isEventCreator || isGroupManager &&
-                                                <div
-                                                    className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
-                                                    Check In
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                })
-                            }
-                        </div>
-                    </div>
+                    <EventParticipantList
+                        lang={lang}
+                        eventDetail={eventDetail}
+                        currProfile={currProfile}
+                        isEventOperator={isEventOperator}
+                    />
                 }
 
                 {tab === 'tickets' &&

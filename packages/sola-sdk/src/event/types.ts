@@ -140,9 +140,12 @@ export interface Track {
     _destroy?: string
 }
 
-export type TicketDraft  = Pick<Ticket, 'id' | 'title' | 'content' | 'check_badge_class_id' | 'quantity' | 'end_time' | 'payment_methods' | 'tracks_allowed' | 'ticket_type' | '_destroy'>
+export interface TicketDraft  extends Pick<Ticket, 'title' | 'content' | 'check_badge_class_id' | 'quantity' | 'end_time' | 'payment_methods' | 'tracks_allowed' | 'ticket_type' | '_destroy'> {
+    id?: number
+}
 
-export interface EventDraftType extends Pick<EventDetail, 'id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id'> {
+export interface EventDraftType extends Pick<EventDetail, 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id'> {
+    id?: number
     timezone: string | null
     tickets: TicketDraft[]
     event_roles: EventRole[] | null

@@ -200,7 +200,7 @@ export const EVENT_DETAIL_FRAGMENT = gql`
         location_data
         venue_id
         display
-        participants {
+        participants (where: {status: {_neq: "cancelled"}}) {
             ...ParticipantFragment
         }
         track{

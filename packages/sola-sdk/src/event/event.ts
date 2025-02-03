@@ -1,4 +1,4 @@
-import {Event, EventDetail, EventDraftType} from './types'
+import {Event, EventDetail, EventDraftType, Participant} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
 import {GET_EVENT_DETAIL_BY_ID, GET_GROUP_EVENT_BY_HANDLE, GET_PROFILE_EVENTS_BY_HANDLE} from './schemas'
 import {fixDate} from '../uitls'
@@ -181,15 +181,24 @@ export const attendEventWithoutTicket = async (eventId: number, authToken: strin
     }
 }
 
+const buildSaveEventProps = (eventDraft: EventDraftType)=> {
+    return {
+        ...eventDraft,
+        event_roles_attributes: eventDraft.event_roles || [],
+        tickets_attributes: eventDraft.tickets.map(t => {
+            return {
+                ...t,
+                payment_methods_attributes: t.payment_methods || []
+            }
+        }) || [],
+    }
+}
+
 export const createEvent = async (props: { eventDraft: EventDraftType, authToken: string }) => {
     const eventProps = {
         auth_token: props.authToken,
         group_id: props.eventDraft.group_id,
-        event: {
-            ...props.eventDraft,
-            event_roles_attributes: props.eventDraft.event_roles,
-            tickets_attributes: props.eventDraft.tickets,
-        }
+        event: buildSaveEventProps(props.eventDraft)
     }
 
     const response = await fetch(`${getSdkConfig().api}/event/create`, {
@@ -274,11 +283,7 @@ export const createRecurringEvent = async (props: CreateRecurringEventParams) =>
         event_count: props.eventCount,
         timezone: props.eventDraft.timezone,
         interval: props.interval,
-        event: {
-            ...props.eventDraft,
-            event_roles_attributes: props.eventDraft.event_roles,
-            tickets_attributes: props.eventDraft.tickets,
-        }
+        event: buildSaveEventProps(props.eventDraft)
     }
 
     const response = await fetch(`${getSdkConfig().api}/recurring/create`, {
@@ -304,11 +309,7 @@ export const updateEvent = async (props: { eventDraft: EventDraftType, authToken
     const eventProps = {
         auth_token: props.authToken,
         id: props.eventDraft.id,
-        event: {
-            ...props.eventDraft,
-            event_roles_attributes: props.eventDraft.event_roles,
-            tickets_attributes: props.eventDraft.tickets,
-        }
+        event: buildSaveEventProps(props.eventDraft)
     }
 
     const response = await fetch(`${getSdkConfig().api}/event/update`, {
@@ -352,6 +353,53 @@ export const cancelEvent = async (eventId: number, authToken: string) => {
     if (data.result !== 'ok') {
         throw new Error(data.message)
     }
+}
+
+export const cancelAttendEvent = async (eventId: number, authToken: string) => {
+    const response = await fetch(`${getSdkConfig().api}/event/cancel`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: eventId,
+            auth_token: authToken
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to cancel attend event')
+    }
+
+    const data = await response.json()
+    return data.participant as Participant
+}
+
+type CheckInEventForParticipantParams = {
+    authToken: string,
+    eventId: number,
+    participantProfileId: number
+}
+
+export const checkInEventForParticipant = async (props: CheckInEventForParticipantParams) => {
+    const response = await fetch(`${getSdkConfig().api}/event/check`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            auth_token: props.authToken,
+            id: props.eventId,
+            profile_id: props.participantProfileId
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to check in')
+    }
+
+    const data = await response.json()
+    return data.participant as Participant
 }
 
 

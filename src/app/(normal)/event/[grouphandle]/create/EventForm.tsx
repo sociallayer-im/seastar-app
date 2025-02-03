@@ -39,7 +39,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
     // ui
     const [enableNote, setEnableNote] = useState(!!draft.notes)
     const [enableMoreSetting, setEnableMoreSetting] = useState(false)
-    const [enableTicket, setEnableTicket] = useState(false)
+    const [enableTicket, setEnableTicket] = useState(!!draft.tickets?.length)
 
     // repeat form
     const [repeatForm, setRepeatForm] = useState<RepeatFormType>({
@@ -128,10 +128,15 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
             return
         }
 
+        const _draft = {...draft}
+        if (!enableTicket) {
+            _draft.tickets = []
+        }
+
         onConfirm?.(draft, repeatForm)
     }
 
-    const cancelEvent = async () => {
+    const handleCancelEvent = async () => {
         onCancel?.(draft, repeatForm)
     }
 
@@ -141,9 +146,9 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                 className="pt-6 pb-10 font-semibold text-center text-xl relative">
                 {draft.id ? lang['Edit Event'] : lang['Create Event']}
 
-                {draft.id &&
+                {!!draft.id && draft.status !== 'cancelled' &&
                     <Button
-                        onClick={cancelEvent}
+                        onClick={handleCancelEvent}
                         variant={'secondary'}
                         size={'sm'}
                         className="absolute right-0 text-sm !text-red-500">

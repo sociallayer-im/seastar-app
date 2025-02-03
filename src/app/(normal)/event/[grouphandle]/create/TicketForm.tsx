@@ -447,7 +447,8 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                 chain: Payments[0].chain,
                 token_name: Payments[0].tokenList[0].name,
                 token_address: Payments[0].tokenList[0].contract,
-                protocol: Payments[0].protocol
+                protocol: Payments[0].protocol,
+                price: 10 ** Payments[0].tokenList[0].decimals
             }])
         }
     }, [paymentMethods])
@@ -552,6 +553,9 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             paymentMethods
                 .filter(p => !p._destroy)
                 .map((p, index) => {
+                    const currProtocal = Payments.find(c => c.chain === p.chain && c.protocol === p.protocol)
+                    const currToken = currProtocal!.tokenList.find(t => t.name === p.token_name)
+
                     return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
                         <div className="mb-2 text-sm font-semibold">{lang['Payment']} {index + 1}</div>
                         <div
@@ -562,7 +566,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                     <div className="ml-2">
                                         <DropdownMenu
                                             options={getAvailablePaymentProtocalList(p)}
-                                            value={Payments.filter(c => c.chain === p.chain)}
+                                            value={[currProtocal!]}
                                             onSelect={(option) => {
                                                 if (option[0].chain === p.chain) return
                                                 const targetToken = option[0].tokenList.find((t: PaymentSettingToken) => {
@@ -592,13 +596,13 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                             <Input
                                                 type="text"
                                                 readOnly
-                                                value={Payments.find(c => c.chain === p.chain && p.protocol === c.protocol)!.label}
+                                                value={currProtocal!.label}
                                                 inputSize={'md'}
                                                 className="cursor-pointer"
                                                 endAdornment={<i className="uil-angle-down text-lg"/>}
                                                 startAdornment={<img
                                                     className="w-5 h-5 rounded-full"
-                                                    src={Payments.find(c => c.chain === p.chain && p.protocol === c.protocol)!.protocolIcon}/>}
+                                                    src={currProtocal!.protocolIcon}/>}
                                             />
                                         </DropdownMenu>
                                     </div>
@@ -628,21 +632,19 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                                 inputSize={'md'}
                                                 className="cursor-pointer"
                                                 endAdornment={<i className="uil-angle-down text-lg"/>}
-                                                startAdornment={<img src={Payments
-                                                    .find(c => c.chain === p.chain && p.protocol === c.protocol)?.tokenList
-                                                    .find(t => t.name === p.token_name)!.icon}
+                                                startAdornment={<img src={currToken!.icon}
                                                 className="w-5 h-5 rounded-full"
                                                 alt=""/>}
                                             />
                                         </DropdownMenu>
                                     </div>
                                     <Input type="number"
-                                        value={!!p.price || Number(p.price) === 0 ? p.price : ''}
+                                        value={!!p.price || Number(p.price) === 0 ? p.price / 10**currToken!.decimals : ''}
                                         onWheel={e => e.currentTarget.blur()}
                                         inputSize={'md'}
                                         onChange={e => setPaymentMethods(paymentMethods.map((p, i) => i === index ? {
                                             ...p,
-                                            price: parseInt(e.target.value)
+                                            price: parseInt(e.target.value) * 10**currToken!.decimals
                                         } : p))}
                                         className="ml-2"/>
                                 </div>

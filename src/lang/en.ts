@@ -338,6 +338,13 @@ export const en = {
     'Cancel Event': 'Cancel Event',
     'Event Canceled': 'Event Canceled',
     'Are you sure you want to cancel this event?': 'Are you sure you want to cancel this event?',
+    'Check In': 'Check In',
+    'Cancel Participation': 'Cancel Participation',
+    'Are you sure you want to cancel your participation?': 'Are you sure you want to cancel your participation?',
+    'Participation cancelled': 'Participation cancelled',
+    'Are you sure you want to check in for this participant?': 'Are you sure you want to check in for this participant?',
+    'Check in successful':'Check in successful',
+    'Checked':'Checked',
 
 }
 

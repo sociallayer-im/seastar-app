@@ -37,7 +37,6 @@ export interface CreateEventPageDataType {
 }
 
 export const emptyEvent: EventDraftType = {
-    id: 0,
     group_id: 0,
     cover_url: '',
     title: '',
@@ -65,7 +64,6 @@ export const emptyEvent: EventDraftType = {
 }
 
 export const emptyPaymentMethod: PaymentMethod = {
-    id: 0,
     item_type: 'Ticket',
     chain: '',
     token_name: null,
@@ -76,7 +74,6 @@ export const emptyPaymentMethod: PaymentMethod = {
 }
 
 export const emptyTicket: TicketDraft = {
-    id: 0,
     title: '',
     content: '',
     check_badge_class_id: null,

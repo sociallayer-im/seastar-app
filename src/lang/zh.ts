@@ -340,4 +340,11 @@ export const zh: Dictionary = {
     'Cancel Event':'取消事件',
     'Event Canceled': '事件已取消',
     'Are you sure you want to cancel this event?': '您确定要取消此事件吗？',
+    'Check In': '签到',
+    'Cancel Participation': '取消参与',
+    'Are you sure you want to cancel your participation?':'您确定要取消参与吗？',
+    'Participation cancelled':'参与已取消',
+    'Are you sure you want to check in for this participant?':'您确定要为此参与者签到吗？',
+    'Check in successful':'签到成功',
+    'Checked':'已签到',
 }
