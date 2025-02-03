@@ -30,7 +30,7 @@ export interface EventFormProps {
     onCancel?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void
 }
 
-export default function EventForm({lang, data, onConfirm}: EventFormProps) {
+export default function EventForm({lang, data, onConfirm, onCancel}: EventFormProps) {
     const [draft, setDraft] = useState(data.eventDraft)
     const {uploadImage} = useUploadImage()
     const {showLoading, closeModal} = useModal()
@@ -131,6 +131,10 @@ export default function EventForm({lang, data, onConfirm}: EventFormProps) {
         onConfirm?.(draft, repeatForm)
     }
 
+    const cancelEvent = async () => {
+        onCancel?.(draft, repeatForm)
+    }
+
     return <div className="min-h-[100svh] w-full">
         <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">
             <div
@@ -138,9 +142,11 @@ export default function EventForm({lang, data, onConfirm}: EventFormProps) {
                 {draft.id ? lang['Edit Event'] : lang['Create Event']}
 
                 {draft.id &&
-                    <Button variant={'secondary'}
-                            size={'sm'}
-                            className="absolute right-0 text-sm !text-red-500">
+                    <Button
+                        onClick={cancelEvent}
+                        variant={'secondary'}
+                        size={'sm'}
+                        className="absolute right-0 text-sm !text-red-500">
                         {lang['Cancel Event']}
                     </Button>
                 }
@@ -483,14 +489,30 @@ export default function EventForm({lang, data, onConfirm}: EventFormProps) {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                        <Button variant={'secondary'} className="w-full" onClick={handleConfirm}>
-                            {lang['Back']}
-                        </Button>
-                        <Button variant={'special'} className="w-full" onClick={handleConfirm}>
-                            {!draft.id ? lang['Create Event'] : lang['Edit Event']}
-                        </Button>
-                    </div>
+                    {draft.status !== 'cancelled' ?
+                        <div className="grid grid-cols-2 gap-3">
+                            <Button variant={'secondary'} className="w-full"
+                                    onClick={() => {
+                                        window.history.go(-1)
+                                    }}>
+                                {lang['Back']}
+                            </Button>
+                            <Button variant={'special'} className="w-full" onClick={handleConfirm}>
+                                {!draft.id ? lang['Create Event'] : lang['Edit Event']}
+                            </Button>
+                        </div>
+                        : <div className="grid grid-cols-2 gap-3">
+                            <Button variant={'secondary'} className="w-full"
+                                    onClick={() => {
+                                        window.history.go(-1)
+                                    }}>
+                                {lang['Back']}
+                            </Button>
+                            <Button variant={'secondary'} disabled={true} className="w-full">
+                                {lang['Event Canceled']}
+                            </Button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

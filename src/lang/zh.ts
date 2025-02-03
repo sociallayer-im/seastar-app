@@ -338,4 +338,6 @@ export const zh: Dictionary = {
     'View Event Detail':'查看事件详情',
     'Copied':'已复制',
     'Cancel Event':'取消事件',
+    'Event Canceled': '事件已取消',
+    'Are you sure you want to cancel this event?': '您确定要取消此事件吗？',
 }

@@ -181,7 +181,7 @@ export const attendEventWithoutTicket = async (eventId: number, authToken: strin
     }
 }
 
-export const createEvent = async (props: {eventDraft: EventDraftType, authToken: string}) => {
+export const createEvent = async (props: { eventDraft: EventDraftType, authToken: string }) => {
     const eventProps = {
         auth_token: props.authToken,
         group_id: props.eventDraft.group_id,
@@ -245,7 +245,7 @@ export const getOccupiedTimeEvent = async ({
         query: doc
     })
 
-    const events = response.data.events.map((e:Event) => fixDate(e)) as Event[]
+    const events = response.data.events.map((e: Event) => fixDate(e)) as Event[]
     return events.find((e) => {
         const eventStartTime = new Date(e.start_time!).getTime()
         const eventEndTime = new Date(e.end_time!).getTime()
@@ -260,7 +260,7 @@ export const getOccupiedTimeEvent = async ({
     }) || null
 }
 
-export interface CreateRecurringEventParams{
+export interface CreateRecurringEventParams {
     eventDraft: EventDraftType,
     authToken: string,
     eventCount: number,
@@ -300,7 +300,7 @@ export const createRecurringEvent = async (props: CreateRecurringEventParams) =>
     }
 }
 
-export const updateEvent = async (props: {eventDraft: EventDraftType, authToken: string}) => {
+export const updateEvent = async (props: { eventDraft: EventDraftType, authToken: string }) => {
     const eventProps = {
         auth_token: props.authToken,
         id: props.eventDraft.id,
@@ -330,6 +330,28 @@ export const updateEvent = async (props: {eventDraft: EventDraftType, authToken:
     }
 
     return data.event as Event
+}
+
+export const cancelEvent = async (eventId: number, authToken: string) => {
+    const response = await fetch(`${getSdkConfig().api}/event/unpublish`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: eventId,
+            auth_token: authToken
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to cancel event')
+    }
+
+    const data = await response.json()
+    if (data.result !== 'ok') {
+        throw new Error(data.message)
+    }
 }
 
 
