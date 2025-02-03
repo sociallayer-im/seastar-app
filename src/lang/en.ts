@@ -347,7 +347,8 @@ export const en = {
     'Checked':'Checked',
     'Download the list of all participants':'Download the list of all participants',
     'Participants':'Participants',
-    'Scan the Participant\'s QR Code': 'Scan the Participant\'s QR Code'
+    'Scan the Participant\'s QR Code': 'Scan the Participant\'s QR Code',
+    'Online event, please check in for participants below.':'Online event, please check in for participants below.'
 
 }
 

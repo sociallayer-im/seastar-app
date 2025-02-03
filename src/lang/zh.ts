@@ -350,4 +350,5 @@ export const zh: Dictionary = {
     'Download the list of all participants': '下载所有参与者的列表',
     'Participants':'参与者',
     'Scan the Participant\'s QR Code':'扫描参与者的二维码',
+    'Online event, please check in for participants below.':'在线活动，请在下方为参与者签到。',
 }

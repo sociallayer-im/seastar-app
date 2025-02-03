@@ -62,6 +62,10 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
             || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && ticket.payment_methods.length === 0) // free ticket
     })
 
+    const currProfileCheckedIn = eventDetail.participants?.find((item: Participant) => {
+        return item.profile.id === currProfile?.id && item.status === 'checked'
+    })
+
     const isEventCreator = eventDetail.owner.id === currProfile?.id
 
     // check if the current user is an operator of the event, operator can edit the event
@@ -94,6 +98,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         eventProcess: checkProcess(eventDetail.start_time, eventDetail.end_time),
         isTicketEvent: !!eventDetail.tickets?.length,
         currProfileAttended,
+        currProfileCheckedIn,
         isOwner: eventDetail.owner.id === currProfile?.id,
         owner: eventDetail.owner,
         groupHost,

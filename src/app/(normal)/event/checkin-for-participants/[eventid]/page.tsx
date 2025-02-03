@@ -3,12 +3,12 @@ import {selectLang} from '@/app/actions'
 import CheckInData from '@/app/(normal)/event/checkin-for-participants/[eventid]/data'
 import EventParticipantList from '@/components/client/EventParticipantList'
 import {eventCoverTimeStr} from '@/utils'
-import {Button} from '@/components/shadcn/Button'
+import CheckinBtn from '@/app/(normal)/event/checkin-for-participants/[eventid]/CheckinBtn'
+import QrCode from '@/components/client/QRcode'
 
 export default async function CheckinForParticipants(props: EventDetailDataProps) {
     const {eventDetail, isEventOperator, currProfile} = await CheckInData(props)
     const {lang} = await selectLang()
-
 
     return <div className="page-width-sm !pt-3 !pb-12">
         <div className="text-lg font-semibold text-center my-3">{lang['Check-In For Participants']}</div>
@@ -16,7 +16,7 @@ export default async function CheckinForParticipants(props: EventDetailDataProps
             {!!eventDetail.cover_url
                 ? <img src={eventDetail.cover_url}
                        className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg" alt=""/>
-                : <div className="mb-4 flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
+                : <div className="flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
                     <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>
                         <div
                             className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
@@ -35,14 +35,11 @@ export default async function CheckinForParticipants(props: EventDetailDataProps
 
             <div className="text-lg font-semibold text-center mt-3">{eventDetail.title}</div>
 
-            <div className="max-w-[295px] w-full mt-3">
-                <Button variant={'primary'} className="w-full">
-                    {lang['Scan the Participant\'s QR Code']}
-                </Button>
-            </div>
+            <CheckinBtn eventDetail={eventDetail} lang={lang}/>
         </div>
 
-        <div className="font-semibold text-lg"> {lang['Participants']} <span className="text-sm">({eventDetail.participants?.length})</span></div>
+        <div className="font-semibold text-lg"> {lang['Participants']} <span
+            className="text-sm">({eventDetail.participants?.length})</span></div>
         <EventParticipantList
             lang={lang}
             isEventOperator={isEventOperator}
