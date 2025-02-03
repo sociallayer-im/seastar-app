@@ -351,4 +351,7 @@ export const zh: Dictionary = {
     'Participants':'参与者',
     'Scan the Participant\'s QR Code':'扫描参与者的二维码',
     'Online event, please check in for participants below.':'在线活动，请在下方为参与者签到。',
+    'Send POAP':'发送 POAP',
+    'Do you want to send POAP to participants checked in ?':'您要发送 POAP 给已签到的参与者吗？',
+    'POAP Sent':'POAP 已发送',
 }

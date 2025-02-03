@@ -348,7 +348,10 @@ export const en = {
     'Download the list of all participants':'Download the list of all participants',
     'Participants':'Participants',
     'Scan the Participant\'s QR Code': 'Scan the Participant\'s QR Code',
-    'Online event, please check in for participants below.':'Online event, please check in for participants below.'
+    'Online event, please check in for participants below.':'Online event, please check in for participants below.',
+    'Send POAP':'Send POAP',
+    'Do you want to send POAP to participants checked in ?':'Do you want to send POAP to participants checked in ?',
+    'POAP Sent':'POAP Sent',
 
 }
 

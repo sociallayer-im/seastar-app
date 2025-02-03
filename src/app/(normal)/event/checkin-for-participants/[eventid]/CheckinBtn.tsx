@@ -1,12 +1,13 @@
 'use client'
 
-import {checkInEventForParticipant, EventDetail} from '@sola/sdk'
+import {checkInEventForParticipant, EventDetail, sendEventPoap} from '@sola/sdk'
 import {Button} from '@/components/shadcn/Button'
 import {Dictionary} from '@/lang'
 import useScanQrcode from '@/hooks/useScanQrcode'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useModal from '@/components/client/Modal/useModal'
 import {getAuth} from '@/utils'
+import useConfirmDialog from '@/hooks/useConfirmDialog'
 
 export interface CheckinBtnProps {
     eventDetail: EventDetail
@@ -16,6 +17,7 @@ export interface CheckinBtnProps {
 export default function CheckinBtn({eventDetail, lang}: CheckinBtnProps) {
     const {scanQrcode} = useScanQrcode()
     const {showLoading, closeModal} = useModal()
+    const {showConfirmDialog} = useConfirmDialog()
     const {toast} = useToast()
 
     const handleCheckin = async () => {
@@ -71,6 +73,33 @@ export default function CheckinBtn({eventDetail, lang}: CheckinBtnProps) {
         })
     }
 
+    const handleSendBadge = async () => {
+        showConfirmDialog({
+            type: 'info',
+            lang,
+            title: lang['Send POAP'],
+            content: lang['Do you want to send POAP to participants checked in ?'],
+            onConfig: async () => {
+                const loading = showLoading()
+                try {
+                    await sendEventPoap(eventDetail.id, getAuth()!)
+                    toast({
+                        description: lang['POAP Sent'],
+                        variant: 'success'
+                    })
+                } catch (e: unknown) {
+                    console.error(e)
+                    toast({
+                        description: e instanceof Error ? e.message : 'Unknown error',
+                        variant: 'destructive'
+                    })
+                } finally {
+                    closeModal(loading)
+                }
+            }
+        })
+    }
+
 
     return <>
         {!eventDetail.meeting_url ?
@@ -80,6 +109,12 @@ export default function CheckinBtn({eventDetail, lang}: CheckinBtnProps) {
                 </Button>
             </div> :
             <div className="mt-3">{lang['Online event, please check in for participants below.']}</div>
+        }
+        {!!eventDetail.badge_class_id && <div className="max-w-[295px] w-full mt-3">
+            <Button variant={'secondary'} className="w-full" onClick={handleSendBadge}>
+                {lang['Send POAP']}
+            </Button>
+        </div>
         }
     </>
 }

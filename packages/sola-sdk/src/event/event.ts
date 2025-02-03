@@ -402,4 +402,21 @@ export const checkInEventForParticipant = async (props: CheckInEventForParticipa
     return data.participant as Participant
 }
 
+export const sendEventPoap = async (eventId: number, authToken: string) => {
+    const response = await fetch(`${getSdkConfig().api}/event/send_badge`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: eventId,
+            auth_token: authToken
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to send poap')
+    }
+}
+
 
