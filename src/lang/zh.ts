@@ -347,4 +347,7 @@ export const zh: Dictionary = {
     'Are you sure you want to check in for this participant?':'您确定要为此参与者签到吗？',
     'Check in successful':'签到成功',
     'Checked':'已签到',
+    'Download the list of all participants': '下载所有参与者的列表',
+    'Participants':'参与者',
+    'Scan the Participant\'s QR Code':'扫描参与者的二维码',
 }

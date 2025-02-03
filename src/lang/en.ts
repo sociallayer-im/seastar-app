@@ -345,6 +345,9 @@ export const en = {
     'Are you sure you want to check in for this participant?': 'Are you sure you want to check in for this participant?',
     'Check in successful':'Check in successful',
     'Checked':'Checked',
+    'Download the list of all participants':'Download the list of all participants',
+    'Participants':'Participants',
+    'Scan the Participant\'s QR Code': 'Scan the Participant\'s QR Code'
 
 }
 

@@ -90,11 +90,37 @@ export default function EventParticipantList({
         })
     }
 
+    const downloadCSV = () => {
+        const title = ['Username', 'Nickname', 'Email', 'Payment wallet address', 'Status', 'RSVP time']
+        const rows = eventDetail.participants?.map((item, index) => {
+            return [item.profile.handle,
+                item.profile.nickname || '',
+                (item.profile as any).email || '',
+                item.ticket_item?.sender_address || '',
+                item.status,
+                item.created_at + 'Z'
+            ]
+        }) || []
+
+        const csvContent = "data:text/csv;charset=utf-8,"
+            + title.join(",") + "\n" + rows.map(e => e.join(",")).join("\n");
+
+        const encodedUri = encodeURI(csvContent);
+
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "participants.csv");
+        document.body.appendChild(link); // Required for FF
+        link.click();
+        link.remove();
+    }
+
     return <div>
-        {!!eventDetail.participants && eventDetail.participants.length > 0 &&
-            <div className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
-                <i className="uil-download-alt text-lg mr-1"></i>
-                <span>Download the list of all participants</span>
+        {!!eventDetail.participants && eventDetail.participants.length > 0 && isEventOperator &&
+            <div onClick={downloadCSV}
+                className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
+                <i className="uil-download-alt text-lg mr-1"/>
+                <span>{lang['Download the list of all participants']}</span>
             </div>}
 
         {!eventDetail.participants || eventDetail.participants.length === 0 && <NoData/>}

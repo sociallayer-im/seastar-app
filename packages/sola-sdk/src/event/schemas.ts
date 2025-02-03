@@ -33,6 +33,7 @@ export const PARTICIPANT_FRAGMENT = gql`
         payment_status
         profile {
             ...ProfileFragment
+            email
         }
     }`
 
