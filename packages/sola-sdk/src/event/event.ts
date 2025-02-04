@@ -426,7 +426,7 @@ export const sendEventPoap = async (eventId: number, authToken: string) => {
 
 export const getMapEvents = async (groupHandle: string)=> {
     const client = getGqlClient()
-    const now = new Date().toISOString()
+    const now = dayjs().toISOString()
     const response = await client.query({
         query: GET_MAP_EVENTS_BY_GROUP_HANDLE,
         variables: {handle:groupHandle, now}

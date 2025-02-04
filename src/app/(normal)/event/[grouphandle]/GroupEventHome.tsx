@@ -20,24 +20,17 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
         members,
         isManager,
         filterOpts,
-        mapEvents,
+        mapMarkers,
     } = await GroupEventHomeData(props)
 
     const {lang} = await selectLang()
-
-    const mapEventsMarker: GoogleMapMarkerProps[] = mapEvents.map(e => {
-        return {
-            position: {lat: Number(e.geo_lat!), lng: Number(e.geo_lng!)},
-            title: e.title,
-        }
-    })
 
     return <div style={{background: '#fff url(/images/event_home_bg.png) top center repeat-x'}}>
         <div className="page-width min-h-[100svh] !pt-3 !sm:pt-6 flex-col flex md:flex-row">
 
             <div className="flex-1 max-w-[648px] order-2 md:order-1">
-                {groupDetail.map_enabled && !!mapEventsMarker.length && <div className="w-full h-[260px] mb-6 relative">
-                    <GoogleMap lang={lang} markers={mapEventsMarker} center={mapEventsMarker[0].position}/>
+                {groupDetail.map_enabled && !!mapMarkers.length && <div className="w-full h-[260px] mb-6 relative">
+                    <GoogleMap lang={lang} markers={mapMarkers} center={mapMarkers[0].position}/>
                     <a className={`${buttonVariants({variant: "secondary", size: "sm"})} absolute bottom-2 right-2 z-10 text-xs bg-white shadow`}
                        href={`/map/${groupDetail.handle}/event`}>
                         {lang['Browse on Map']} <i className="uil-expand-arrows-alt text-base"/>

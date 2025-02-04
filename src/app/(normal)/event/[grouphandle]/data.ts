@@ -9,6 +9,7 @@ import {
     analyzeGroupMembershipAndCheckProfilePermissions,
     setEventAttendedStatus,
 } from '@/utils'
+import {GoogleMapMarkerProps} from '@/components/client/Map'
 
 export type GroupEventHomeParams = {
     grouphandle?: string
@@ -25,7 +26,11 @@ export interface GroupEventHomeDataWithHandleProps extends GroupEventHomeDataPro
     groupHandle?: string
 }
 
-export default async function GroupEventHomeData({params, searchParams, groupHandle}: GroupEventHomeDataWithHandleProps) {
+export default async function GroupEventHomeData({
+                                                     params,
+                                                     searchParams,
+                                                     groupHandle
+                                                 }: GroupEventHomeDataWithHandleProps) {
     const handle = groupHandle || params.grouphandle
     if (!handle) {
         redirect('/404')
@@ -71,15 +76,27 @@ export default async function GroupEventHomeData({params, searchParams, groupHan
         currProfile
     })
 
-    let mapEvents:Event[] = []
+    let mapMarkers: GoogleMapMarkerProps[] = []
     if (groupDetail.map_enabled) {
-        mapEvents = await getMapEvents(groupDetail.handle)
+        const mapEvents = await getMapEvents(groupDetail.handle)
+        mapEvents.reverse().forEach((event: Event) => {
+            if (!mapMarkers.find((m) => {
+                return m.position.lng === parseFloat(event.geo_lng!) && m.position.lat === parseFloat(event.geo_lat!)
+            })) {
+                mapMarkers.push({
+                    position: {
+                        lat: parseFloat(event.geo_lat!),
+                        lng: parseFloat(event.geo_lng!)
+                    },
+                    title: event.title,
+                })
+            }
+        })
     }
 
-    console.log('mapEvents.length', mapEvents.length)
 
     return {
-        mapEvents,
+        mapMarkers,
         filterOpts,
         groupDetail,
         currProfile,
