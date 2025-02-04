@@ -511,6 +511,11 @@ export const checkTrackSuitable = (event: EventDraftType, track?: Track): string
     }
 }
 
+export function reverseObjectFields<T extends Record<string, any>>(obj: T): T {
+    return Object.fromEntries(
+        Object.entries(obj).reverse()
+    ) as T
+}
 
 
 
