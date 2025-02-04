@@ -61,6 +61,9 @@ export const EVENT_FRAGMENT = gql`
         status
         track_id
         pinned
+        geo_lat
+        geo_lng
+        formatted_address
     }`
 
 export const EVENT_ROLE_DETAIL_FRAGMENT = gql`

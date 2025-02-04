@@ -352,7 +352,8 @@ export const en = {
     'Send POAP':'Send POAP',
     'Do you want to send POAP to participants checked in ?':'Do you want to send POAP to participants checked in ?',
     'POAP Sent':'POAP Sent',
-
+    'Upcoming Events':'Upcoming Events',
+    'Create a Marker': 'Create a Marker'
 }
 
 export type Dictionary = typeof en

@@ -354,4 +354,6 @@ export const zh: Dictionary = {
     'Send POAP':'发送 POAP',
     'Do you want to send POAP to participants checked in ?':'您要发送 POAP 给已签到的参与者吗？',
     'POAP Sent':'POAP 已发送',
+    'Upcoming Events':'个即将开始的事件',
+    'Create a Marker': '创建一个标记',
 }

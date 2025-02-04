@@ -19,12 +19,12 @@ export interface Event {
     status: string | null,
     track_id: number | null,
     pinned: boolean
+    geo_lat: string | null,
+    geo_lng: string | null,
+    formatted_address: string | null
 }
 
 export interface EventDetail extends Event {
-    formatted_address: string | null,
-    geo_lat: string | null,
-    geo_lng: string | null,
     content: string | null,
     max_participant: number | null,
     min_participant: number | null,

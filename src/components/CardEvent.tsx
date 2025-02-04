@@ -32,8 +32,8 @@ export default function CardEvent({event, className, id, style}: {event: EventWi
                 {event.isJoined && <Badge variant='joining' className="mr-1">Joining</Badge>}
 
             </div>
-            <div className="my-1 flex-row-item-center font-semibold text-sm sm:text-base">
-                {event.title} {event.timezone}
+            <div className="my-1 flex-row-item-center font-semibold text-sm sm:text-base webkit-box-clamp-2">
+                {event.title}
             </div>
             <div className="flex-row-item-center !flex-wrap text-xs mt-1 mb-3">
                 {
