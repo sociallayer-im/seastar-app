@@ -223,3 +223,19 @@ export const GET_EVENT_DETAIL_BY_ID = gql`
         }
     }
 `
+
+export const GET_MAP_EVENTS_BY_GROUP_HANDLE = gql`
+    ${EVENT_FRAGMENT}
+    query GetMapEventsByGroupHandle($handle: String!, $now: timestamp!) {
+        events(where: {
+            display: {_neq: "private"},
+            group: {handle: {_eq: $handle}}, 
+            status: {_neq: "cancel"},
+            geo_lat: {_is_null: false},
+            geo_lng: {_is_null: false}
+            start_time: {_gte: $now}
+            }, limit: 10, order_by: {start_time: asc}) {
+                ...EventFragment
+        }
+    }
+`

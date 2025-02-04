@@ -356,4 +356,5 @@ export const zh: Dictionary = {
     'POAP Sent':'POAP 已发送',
     'Upcoming Events':'个即将开始的事件',
     'Create a Marker': '创建一个标记',
+    'Browse on Map':'在地图上浏览',
 }

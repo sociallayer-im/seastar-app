@@ -1,7 +1,7 @@
 import {
     getGroupDetailByHandle,
     getProfileEventByHandle,
-    Event, EventFilters, getEvents, EventListFilterProps
+    Event, EventFilters, getEvents, EventListFilterProps, getMapEvents
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
@@ -71,7 +71,15 @@ export default async function GroupEventHomeData({params, searchParams, groupHan
         currProfile
     })
 
+    let mapEvents:Event[] = []
+    if (groupDetail.map_enabled) {
+        mapEvents = await getMapEvents(groupDetail.handle)
+    }
+
+    console.log('mapEvents.length', mapEvents.length)
+
     return {
+        mapEvents,
         filterOpts,
         groupDetail,
         currProfile,

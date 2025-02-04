@@ -7,6 +7,8 @@ import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import Footer from '@/components/Footer'
 import Feedback from '@/components/client/Feedback'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
+import GoogleMap from '@/components/client/Map'
+import {buttonVariants} from '@/components/shadcn/Button'
 
 export async function generateMetadata() {
     return {
@@ -15,42 +17,28 @@ export async function generateMetadata() {
 }
 
 export default async function DiscoverPage() {
-    const {eventGroups, popupCities, events, currProfile} = await DiscoverPageData()
+    const {eventGroups, popupCities, events, currProfile, popupCityMap} = await DiscoverPageData()
     const {lang} = await selectLang()
+
+    const mapMarkers = popupCityMap.map((event) => {
+        return {
+            position: {lat: Number(event.geo_lat), lng: Number(event.geo_lng)},
+            title: event.title
+        }
+    })
 
 
     return <div className="page-width min-h-[100svh] pt-0 sm:pt-6 !pb-16">
         <div>
             <h2 className="text-2xl font-semibold mb-3">{lang['Pop-up Cities']} 2025</h2>
-            <a href={`/event/playground2`}
-               className="min-h-[216px] rounded-lg shadow p-4 flex md:flex-row flex-col">
-                <div
-                    className="h-[184px] md:w-[318px] w-[100%] mb-3 md:mb-0 flex-grow-0 flex-shrink-0 rounded overflow-hidden flex flex-row justify-center items-center mr-4">
-                    <img className="min-w-[100%] min-h-[184px] object-cover"
-                         src="https://ik.imagekit.io/soladata/5wrdgcma_x0R8W93Ih?tr=w-636,h-368" alt=""/>
-                </div>
-                <div className="flex-1">
-                    <div className="font-semibold leading-8 text-2xl">Devcon</div>
-                    <div className="webkit-box-clamp-2 h-12 leading-6 mb-7">Devcon Popup City</div>
-
-                    <div className="flex-row-item-center leading-6">
-                        <i className="uil-location-point text-lg mr-1"/>
-                        <div className="webkit-box-clamp-1">Bangkok, Thailand</div>
-                    </div>
-
-                    <div className="flex-row-item-center leading-6">
-                        <i className="uil-calender text-lg mr-1"/>
-                        <div className="webkit-box-clamp-1">Wed, FEB 26 - Wed, MAR 05</div>
-                    </div>
-
-                    <div className="flex-row-item-center leading-6">
-                        <img className="w-5 h-5 rounded-full mr-1" src="/images/default_avatar/avatar_1.png" alt=""/>
-                        <div className="webkit-box-clamp-1">by Devcon</div>
-                    </div>
-                </div>
-            </a>
+            <div className="w-full h-[260px] mb-6 relative">
+                <GoogleMap lang={lang} markers={mapMarkers} center={mapMarkers[mapMarkers.length - 1].position} defaultZoom={1}/>
+                <a className={`${buttonVariants({variant: "secondary", size: "sm"})} absolute bottom-2 right-2 z-10 text-xs bg-white shadow`}
+                   href={`/map/popup2025/event`}>
+                    {lang['Browse on Map']} <i className="uil-expand-arrows-alt text-base"/>
+                </a>
+            </div>
         </div>
-
 
         <div className="mt-8">
             <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
@@ -71,9 +59,9 @@ export default async function DiscoverPage() {
                         </div>
                         <div className="webkit-box-clamp-1 text-xs">
                             <DisplayDateTime format={'ddd, MMM DD'}
-                                dataTimeStr={popupCity.start_date!} />
+                                             dataTimeStr={popupCity.start_date!}/>
                             -
-                            <DisplayDateTime format={'ddd, MMM DD'} dataTimeStr={popupCity.end_date!} />
+                            <DisplayDateTime format={'ddd, MMM DD'} dataTimeStr={popupCity.end_date!}/>
                         </div>
                         <div className="webkit-box-clamp-2 text-lg font-semibold leading-5 h-10 mb-4">
                             {popupCity.title}

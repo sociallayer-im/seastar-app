@@ -1,4 +1,4 @@
-import {Event, getEvents, getGroupDetailByHandle, getProfileEventByHandle} from '@sola/sdk'
+import {Event, getEvents, getGroupDetailByHandle, getMapEvents, getProfileEventByHandle} from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {analyzeGroupMembershipAndCheckProfilePermissions, pickSearchParam, setEventAttendedStatus} from '@/utils'
@@ -64,6 +64,6 @@ export default async function GroupEventMapData({params, searchParams}: GroupEve
         isOwner,
         isMember,
         isIssuer,
-        targetEventId
+        targetEventId,
     }
 }

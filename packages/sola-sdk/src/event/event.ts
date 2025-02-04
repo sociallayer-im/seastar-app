@@ -1,6 +1,11 @@
 import {Event, EventDetail, EventDraftType, Participant} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
-import {GET_EVENT_DETAIL_BY_ID, GET_GROUP_EVENT_BY_HANDLE, GET_PROFILE_EVENTS_BY_HANDLE} from './schemas'
+import {
+    GET_EVENT_DETAIL_BY_ID,
+    GET_GROUP_EVENT_BY_HANDLE,
+    GET_MAP_EVENTS_BY_GROUP_HANDLE,
+    GET_PROFILE_EVENTS_BY_HANDLE
+} from './schemas'
 import {fixDate} from '../uitls'
 import dayjs from '@/libs/dayjs'
 import {gql} from '@apollo/client'
@@ -417,6 +422,17 @@ export const sendEventPoap = async (eventId: number, authToken: string) => {
     if (!response.ok) {
         throw new Error('Failed to send poap')
     }
+}
+
+export const getMapEvents = async (groupHandle: string)=> {
+    const client = getGqlClient()
+    const now = new Date().toISOString()
+    const response = await client.query({
+        query: GET_MAP_EVENTS_BY_GROUP_HANDLE,
+        variables: {handle:groupHandle, now}
+    })
+
+    return response.data.events.map((e: Event) => fixDate(e)) as Event[]
 }
 
 

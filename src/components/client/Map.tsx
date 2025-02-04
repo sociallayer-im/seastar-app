@@ -14,13 +14,13 @@ export interface GoogleMapMarkerProps {
 }
 
 export interface GoogleMapProps {
-    center: {lat: number, lng: number}
+    center?: {lat: number, lng: number}
     defaultZoom?: number
     markers: GoogleMapMarkerProps[]
     lang: Dictionary
 }
 
-export default function GoogleMap({center,markers,lang, defaultZoom=15}: GoogleMapProps) {
+export default function GoogleMap({center={lat: -34.397, lng: 150.644} ,markers, lang, defaultZoom=15}: GoogleMapProps) {
     const [mapCenter, setMapCenter] = useState(center)
 
     return <GoogleMapProvider>

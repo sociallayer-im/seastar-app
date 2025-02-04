@@ -1,5 +1,5 @@
 import {getGqlClient, getSdkConfig} from '../client'
-import {Event, Group, getGroupDetailById, GroupDetail} from '@sola/sdk'
+import {Event, Group, getGroupDetailById, GroupDetail, getGroupEventByHandle} from '@sola/sdk'
 import {PopupCity} from './types'
 import {GET_POPUP_CITIES} from './schemas'
 
@@ -21,11 +21,14 @@ export const discoverData = async () => {
         }
     })
 
+    const popupCityMap = await getGroupEventByHandle('popup2025')
+
     return {
         eventGroups: data.groups as Group[],
         popupCities: sortedPopupCities as PopupCity[],
         events: data.events as Event[],
-        mapGroup: mapGroup!
+        mapGroup: mapGroup!,
+        popupCityMap
     }
 }
 
