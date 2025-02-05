@@ -2,7 +2,6 @@
 
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
 import {Map, AdvancedMarker, useMap} from '@vis.gl/react-google-maps'
-import {Dictionary} from '@/lang'
 import {Button} from '@/components/shadcn/Button'
 import {useMemo, useState} from 'react'
 
@@ -17,13 +16,13 @@ export interface GoogleMapProps {
     center?: { lat: number, lng: number }
     defaultZoom?: number
     markers: GoogleMapMarkerProps[]
-    lang: Dictionary
+    langType?: string
 }
 
 export default function GoogleMap({
                                       center = {lat: -34.397, lng: 150.644},
                                       markers,
-                                      lang,
+                                      langType,
                                       defaultZoom = 15
                                   }: GoogleMapProps) {
     const [mapCenter, setMapCenter] = useState(center)
@@ -38,7 +37,7 @@ export default function GoogleMap({
         }
     }, [mapCenter])
 
-    return <GoogleMapProvider>
+    return <GoogleMapProvider langType={langType}>
         <Map mapId="e2f9ddc0facd5a80"
              defaultCenter={mapCenter}
              defaultZoom={defaultZoom}

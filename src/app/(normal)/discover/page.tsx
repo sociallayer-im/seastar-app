@@ -18,7 +18,7 @@ export async function generateMetadata() {
 
 export default async function DiscoverPage() {
     const {eventGroups, popupCities, events, currProfile, popupCityMap} = await DiscoverPageData()
-    const {lang} = await selectLang()
+    const {lang, type} = await selectLang()
 
     const mapMarkers = popupCityMap.map((event) => {
         return {
@@ -32,7 +32,7 @@ export default async function DiscoverPage() {
         <div>
             <h2 className="text-2xl font-semibold mb-3">{lang['Pop-up Cities']} 2025</h2>
             <div className="w-full h-[260px] mb-6 relative">
-                <GoogleMap lang={lang} markers={mapMarkers} center={mapMarkers[mapMarkers.length - 1].position} defaultZoom={1}/>
+                <GoogleMap langType={type} markers={mapMarkers} center={mapMarkers[mapMarkers.length - 1].position} defaultZoom={1}/>
                 <a className={`${buttonVariants({variant: "secondary", size: "sm"})} absolute bottom-2 right-2 z-10 text-xs bg-white shadow`}
                    href={`/map/popup2025/event`}>
                     {lang['Browse on Map']} <i className="uil-expand-arrows-alt text-base"/>

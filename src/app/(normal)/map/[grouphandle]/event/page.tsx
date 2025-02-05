@@ -4,9 +4,10 @@ import {selectLang} from '@/app/actions'
 
 export default async function MapPage(props: GroupEventMapDataProps) {
     const {events, targetEventId, groupDetail} = await GroupEventMapData(props)
-    const {lang} = await selectLang()
+    const {lang, type} = await selectLang()
 
     return <EventMap
+        langType={type}
         events={events}
         lang={lang}
         groupDetail={groupDetail}

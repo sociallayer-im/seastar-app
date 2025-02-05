@@ -10,7 +10,7 @@ import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import SignInPanel from '@/components/SignInPanel'
 import EventHomeFilter from '@/components/client/EventHomeFilter'
 import EventListGroupedByDate from '@/components/EventListGroupedByDate'
-import GoogleMap, {GoogleMapMarkerProps} from '@/components/client/Map'
+import GoogleMap from '@/components/client/Map'
 
 export default async function GroupEventHome(props: GroupEventHomeDataWithHandleProps) {
     const {
@@ -23,14 +23,14 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
         mapMarkers,
     } = await GroupEventHomeData(props)
 
-    const {lang} = await selectLang()
+    const {lang, type} = await selectLang()
 
     return <div style={{background: '#fff url(/images/event_home_bg.png) top center repeat-x'}}>
         <div className="page-width min-h-[100svh] !pt-3 !sm:pt-6 flex-col flex md:flex-row">
 
             <div className="flex-1 max-w-[648px] order-2 md:order-1">
                 {groupDetail.map_enabled && !!mapMarkers.length && <div className="w-full h-[260px] mb-6 relative">
-                    <GoogleMap lang={lang} markers={mapMarkers} center={mapMarkers[0].position}/>
+                    <GoogleMap markers={mapMarkers} center={mapMarkers[0].position} langType={type}/>
                     <a className={`${buttonVariants({variant: "secondary", size: "sm"})} absolute bottom-2 right-2 z-10 text-xs bg-white shadow`}
                        href={`/map/${groupDetail.handle}/event`}>
                         {lang['Browse on Map']} <i className="uil-expand-arrows-alt text-base"/>

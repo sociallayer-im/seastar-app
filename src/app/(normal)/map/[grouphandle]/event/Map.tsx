@@ -16,6 +16,7 @@ interface GroupedEvents {
 export interface EventMapProps {
     events: EventWithJoinStatus[]
     lang: Dictionary
+    langType: string
     targetEventId?: number
     groupDetail: GroupDetail
 }
@@ -76,7 +77,7 @@ export default function EventMap(props: EventMapProps) {
                 title: `${groupedEvents[key].length}${props.lang['Upcoming Events']}`,
                 onClick: () => setCurrGroupEventsKey(key),
             } as GoogleMapMarkerProps))}
-            lang={props.lang}/>
+            langType={props.langType}/>
         <div
             className="flex-row-item-center absolute top-3  justify-start md:justify-center w-full flex-nowrap overflow-auto">
 
