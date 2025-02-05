@@ -43,13 +43,13 @@ export default function GoogleMap({
              defaultZoom={defaultZoom}
              disableDefaultUI>
             {
-                markersToShow.map((marker, index) => {
+                markersToShow.map((marker,index) => {
                     const selected = mapCenter.lat === marker.position.lat && mapCenter.lng === marker.position.lng
                     return <MapMarker
                         onClick={() => setMapCenter(marker.position)}
                         marker={marker}
                         selected={selected}
-                        key={index}/>
+                        key={JSON.stringify(marker.position) + index}/>
                 })
             }
         </Map>

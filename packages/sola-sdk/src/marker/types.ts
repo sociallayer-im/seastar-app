@@ -32,3 +32,8 @@ export interface MarkerDetail extends Marker {
     owner: Profile
     badge_class: BadgeClass | null
 }
+
+export interface MarkerDraft extends Omit<Marker, 'id' | 'category' | 'owner_id' | 'marker_type' | 'pin_image_url' | 'status' | 'voucher_id' | 'map_checkins_count' | 'marker_state'> {
+        id?: number,
+        category: string | null
+    }

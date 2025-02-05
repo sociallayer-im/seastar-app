@@ -1,19 +1,21 @@
-import {LocationInputProps} from "@/components/client/LocationInput/index"
 import {Input} from "@/components/shadcn/Input"
 import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
 import {useCallback, useEffect, useMemo, useState} from "react"
 import {debounce} from 'lodash'
 import {useMapsLibrary} from '@vis.gl/react-google-maps'
+import {MarkerDraft} from '@sola/sdk'
+import {Dictionary} from '@/lang'
 
-export interface SelectVenue extends Omit<LocationInputProps, 'venues'> {
-    onSwitchToCreateLocation: () => void
+export interface SearchMarkerLocationProps {
+    state: {draft: MarkerDraft, setDraft: (draft: MarkerDraft) => void}
+    lang: Dictionary
+
 }
 
-export default function SearchLocation({
-    state: {event, setEvent},
-    lang,
-    onSwitchToCreateLocation
-}: SelectVenue) {
+export default function SearchMarkerLocation({
+    state: {draft, setDraft},
+    lang
+}: SearchMarkerLocationProps) {
     const placesLib = useMapsLibrary('places')
     const AutocompleteService = useMemo(() => {
         return !!placesLib && new placesLib.AutocompleteService()
@@ -61,8 +63,8 @@ export default function SearchLocation({
         if (!prediction.place_id) {
             // custom address
             const [lat, lng] = prediction.structured_formatting.main_text.split(',')
-            setEvent({
-                ...event,
+            setDraft({
+                ...draft,
                 formatted_address: prediction.structured_formatting.main_text,
                 location: prediction.structured_formatting.secondary_text,
                 geo_lat: Number(lat),
@@ -76,8 +78,8 @@ export default function SearchLocation({
                 placeId: prediction.place_id
             }, (place) => {
                 if (place) {
-                    setEvent({
-                        ...event,
+                    setDraft({
+                        ...draft,
                         formatted_address: place.formatted_address!,
                         location: prediction.structured_formatting.main_text!,
                         geo_lat: place.geometry?.location?.lat() || null,
@@ -99,7 +101,7 @@ export default function SearchLocation({
 
     return <div className="w-full">
         <div id="gmap" className="w-0 h-0"/>
-        <div className="w-full mb-8">
+        <div className="w-full">
             <DropdownMenu
                 trigger={dropdown}
                 options={predictions}
@@ -116,24 +118,13 @@ export default function SearchLocation({
                 <Input className="w-full"
                     onChange={e => {
                         setKeywords(e.target.value)
-                        setEvent({...event, formatted_address: e.target.value})
+                        setDraft({...draft, formatted_address: e.target.value})
                     }}
                     onFocus={() => !!predictions.length && dropdown.trigger && dropdown.trigger(true)}
                     placeholder={lang['Input address or geo point eg. 4071.1,-74.06']}
-                    value={event.formatted_address || ''}
-                    endAdornment={<i
-                        className="uil-times-circle text-xl cursor-pointer"
-                        onClick={onSwitchToCreateLocation}/>}
+                    value={draft.formatted_address || ''}
                 />
             </DropdownMenu>
         </div>
-        <div className="font-semibold mb-1">{lang['Custom Location Name']}</div>
-        <Input className="w-full"
-            placeholder={lang['Input a custom name for location']}
-            value={event.location || ''}
-            onChange={e => {
-                setEvent({...event, location: e.target.value})
-            }}
-        />
     </div>
 }

@@ -356,6 +356,12 @@ export const en = {
     'Create a Marker': 'Create a Marker',
     'Browse on Map':'Browse on Map',
     'All Markers':'All Markers',
+    'Title':'Title',
+    'Input location':'Input location',
+    'Input marker title':'Input marker title',
+    'Category':'Category',
+    'Input marker description':'Input marker description',
+    'Image (Optional)':'Image (Optional)',
 }
 
 export type Dictionary = typeof en

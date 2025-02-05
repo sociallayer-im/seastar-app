@@ -19,8 +19,8 @@ export interface Event {
     status: string | null,
     track_id: number | null,
     pinned: boolean
-    geo_lat: string | null,
-    geo_lng: string | null,
+    geo_lat: number | null,
+    geo_lng: number | null,
     formatted_address: string | null
 }
 

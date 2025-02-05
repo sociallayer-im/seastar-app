@@ -52,6 +52,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
 
     return <div className='w-full h-[calc(100svh-48px)] relative outline-none'>
         <GoogleMap
+            defaultZoom={currCategory ? 15 : 3}
             center={defaultCenter}
             markers={markers.map((m, i) => ({
                 position: {lat: Number(m.geo_lat!), lng: Number(m.geo_lng!)},

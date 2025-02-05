@@ -81,12 +81,12 @@ export default async function GroupEventHomeData({
         const mapEvents = await getMapEvents(groupDetail.handle)
         mapEvents.reverse().forEach((event: Event) => {
             if (!mapMarkers.find((m) => {
-                return m.position.lng === parseFloat(event.geo_lng!) && m.position.lat === parseFloat(event.geo_lat!)
+                return m.position.lng === event.geo_lng! && m.position.lat === event.geo_lng!
             })) {
                 mapMarkers.push({
                     position: {
-                        lat: parseFloat(event.geo_lat!),
-                        lng: parseFloat(event.geo_lng!)
+                        lat: event.geo_lng!,
+                        lng: event.geo_lng!
                     },
                     title: event.title,
                 })

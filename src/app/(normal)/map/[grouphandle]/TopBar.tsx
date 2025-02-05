@@ -1,10 +1,23 @@
-import {GroupDetail} from '@sola/sdk'
-import {buttonVariants} from '@/components/shadcn/Button'
+'use client'
+
+import {createMarker, GroupDetail, MarkerDraft} from '@sola/sdk'
+import {Button, buttonVariants} from '@/components/shadcn/Button'
 import {MARKER_TYPES} from '@/app/(normal)/map/[grouphandle]/marker/marker_type'
 import {Dictionary} from '@/lang'
 import {useEffect, useRef} from 'react'
+import useModal from '@/components/client/Modal/useModal'
+import MarkerForm from '@/app/(normal)/marker/[grouphandle]/create/MarkerForm'
+import {emptyMarker} from '@/app/(normal)/marker/[grouphandle]/create/data'
+import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {getAuth} from '@/utils'
 
-export default function TopBar({groupDetail, lang, markerCategory}:{groupDetail: GroupDetail, lang: Dictionary, markerCategory?: string}) {
+export default function TopBar({groupDetail, lang, markerCategory}: {
+    groupDetail: GroupDetail,
+    lang: Dictionary,
+    markerCategory?: string
+}) {
+    const {openModal} = useModal()
+
     const barRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -27,18 +40,31 @@ export default function TopBar({groupDetail, lang, markerCategory}:{groupDetail:
 
     useEffect(() => {
         document.getElementById(`category-${markerCategory}`)?.scrollIntoView({behavior: 'instant', block: 'center'})
-    }, []);
+    }, [])
+
+    const showCreateMarkerModal = () => {
+        const draft = {
+            ...emptyMarker,
+            group_id: groupDetail.id
+        }
+        openModal({
+            content: (close) => <DialogCreateMarker
+                lang={lang}
+                groupDetail={groupDetail}
+                draft={draft}
+                close={close!}
+            />
+        })
+    }
 
     return <div ref={barRef}
-        className="flex-row-item-center absolute top-3  justify-start md:justify-center w-full flex-nowrap overflow-auto">
+                className="flex-row-item-center absolute top-3 justify-start md:justify-center w-full flex-nowrap overflow-auto">
 
-        <a className={`${buttonVariants({
-            variant: 'primary',
-            size: 'sm'
-        })} bg-background ml-3 text-sm`}>
+        <Button variant={'primary'} size={'sm'} onClick={showCreateMarkerModal}
+           className="bg-background ml-3 text-sm">
             <i className="uil-plus-circle text-lg"/>
             {lang['Create a Marker']}
-        </a>
+        </Button>
 
         <a className={`${buttonVariants({
             variant: markerCategory ? 'white' : 'normal',
@@ -59,11 +85,64 @@ export default function TopBar({groupDetail, lang, markerCategory}:{groupDetail:
                       id={`category-${type.label}`}
                       href={`/map/${groupDetail.handle}/marker?category=${encodeURIComponent(type.label)}`}
                       className={`${buttonVariants({
-                          variant: markerCategory === type.label ? 'normal': 'white',
+                          variant: markerCategory === type.label ? 'normal' : 'white',
                           size: 'sm'
                       })} bg-background ml-3 text-sm`}>
                 {type.label}
             </a>
         })}
+    </div>
+}
+
+export interface DialogCreateMarkerProps {
+    draft: MarkerDraft
+    lang: Dictionary
+    groupDetail: GroupDetail
+    close: () => void
+}
+
+function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarkerProps) {
+    const {showLoading, closeModal} = useModal()
+    const {toast} = useToast()
+
+    const handleCreateMarker = async (draft: MarkerDraft) => {
+        const loadingId = showLoading()
+        try {
+            const authToken = getAuth()
+            const marker = await createMarker(draft, authToken!)
+
+            toast({
+                title: 'Create marker success',
+                variant: 'success'
+            })
+
+            setTimeout(() => {
+                window.location.href = `/map/${groupDetail.handle}/marker`
+            }, 2000)
+        } catch (e: unknown) {
+            console.error(e)
+            toast({
+                title: e instanceof Error ? e.message : 'Create marker failed',
+                variant: 'destructive'
+            })
+        } finally {
+            closeModal(loadingId)
+        }
+    }
+
+
+    return <div className="max-w-[96vw] w-[500px] bg-white rounded-lg p-3 shadow max-h-[96svh] sm:max-h-[80svh] overflow-auto">
+        <div className="font-semibold mb-6 text-lg flex-row-item-center justify-between">
+            <div>{lang['Create a Marker']}</div>
+            <i className="uil-times-circle text-2xl cursor-pointer text-gray-500" onClick={close} />
+        </div>
+        <div className="flex-row-item-center !flex-wrap">
+            <MarkerForm
+                onCancel={close}
+                markerDraft={draft}
+                onConfirm={handleCreateMarker}
+                lang={lang}
+            />
+        </div>
     </div>
 }

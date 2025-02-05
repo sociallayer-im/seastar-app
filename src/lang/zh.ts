@@ -358,4 +358,10 @@ export const zh: Dictionary = {
     'Create a Marker': '创建一个标记',
     'Browse on Map':'在地图上浏览',
     'All Markers':'所有标记',
+    'Title':'标题',
+    'Input location':'输入位置',
+    'Input marker title':'输入标记标题',
+    'Category':'类别',
+    'Input marker description':'输入标记描述',
+    'Image (Optional)': '图片（可选）',
 }
