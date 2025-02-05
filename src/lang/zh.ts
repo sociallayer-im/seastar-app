@@ -357,4 +357,5 @@ export const zh: Dictionary = {
     'Upcoming Events':'个即将开始的事件',
     'Create a Marker': '创建一个标记',
     'Browse on Map':'在地图上浏览',
+    'All Markers':'所有标记',
 }

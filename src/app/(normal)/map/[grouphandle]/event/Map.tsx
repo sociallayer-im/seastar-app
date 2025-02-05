@@ -1,13 +1,12 @@
 'use client'
 
-import {buttonVariants} from '@/components/shadcn/Button'
 import CardEvent from "@/components/CardEvent"
 import {useEffect, useState, useRef} from 'react'
 import {Dictionary} from '@/lang'
 import GoogleMap, {GoogleMapMarkerProps} from '@/components/client/Map'
 import {EventWithJoinStatus} from '@/utils'
-import {MARKER_TYPES} from '@/app/(normal)/map/[grouphandle]/marker/marker_type'
 import {GroupDetail} from '@sola/sdk'
+import TopBar from '@/app/(normal)/map/[grouphandle]/TopBar'
 
 interface GroupedEvents {
     [index: string]: EventWithJoinStatus[]
@@ -78,34 +77,8 @@ export default function EventMap(props: EventMapProps) {
                 onClick: () => setCurrGroupEventsKey(key),
             } as GoogleMapMarkerProps))}
             langType={props.langType}/>
-        <div
-            className="flex-row-item-center absolute top-3  justify-start md:justify-center w-full flex-nowrap overflow-auto">
 
-            <a className={`${buttonVariants({
-                variant: 'primary',
-                size: 'sm'
-            })} bg-background ml-3 text-sm`}>
-                <i className="uil-plus-circle text-lg"/>
-                {props.lang['Create a Marker']}
-            </a>
-
-            <a className={`${buttonVariants({
-                variant: 'normal',
-                size: 'sm'
-            })} bg-background ml-3 text-sm`}
-            >{props.lang['Events']}</a>
-
-            {MARKER_TYPES.map((type, i) => {
-                return <a key={i}
-                          href={`/map/${props.groupDetail.handle}/marker?category=${decodeURIComponent(type.category)}`}
-                          className={`${buttonVariants({
-                              variant: 'secondary',
-                              size: 'sm'
-                          })} bg-background ml-3 text-sm`}>
-                    {type.label}
-                </a>
-            })}
-        </div>
+        <TopBar lang={props.lang} groupDetail={props.groupDetail} />
 
         {(!currGroupEventsKey || !groupedEvents[currGroupEventsKey].length) &&
             <div

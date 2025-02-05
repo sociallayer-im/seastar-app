@@ -27,7 +27,6 @@ export default async function DiscoverPage() {
         }
     })
 
-
     return <div className="page-width min-h-[100svh] pt-0 sm:pt-6 !pb-16">
         <div>
             <h2 className="text-2xl font-semibold mb-3">{lang['Pop-up Cities']} 2025</h2>

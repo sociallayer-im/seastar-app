@@ -355,6 +355,7 @@ export const en = {
     'Upcoming Events':' Upcoming Events',
     'Create a Marker': 'Create a Marker',
     'Browse on Map':'Browse on Map',
+    'All Markers':'All Markers',
 }
 
 export type Dictionary = typeof en

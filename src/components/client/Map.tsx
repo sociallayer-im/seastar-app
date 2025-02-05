@@ -3,7 +3,7 @@
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
 import {Map, AdvancedMarker, useMap} from '@vis.gl/react-google-maps'
 import {Button} from '@/components/shadcn/Button'
-import {useMemo, useState} from 'react'
+import {useMemo, useState, useEffect} from 'react'
 
 export interface GoogleMapMarkerProps {
     position: { lat: number, lng: number }
