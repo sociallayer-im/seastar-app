@@ -297,12 +297,14 @@ export default async function EventDetail({params, searchParams}: {
                             </div>
                             <div>
                                 <div className="font-semibold text-base">{eventDetail.location}</div>
-                                <div className="text-gray-400 text-base">
-                                    {eventDetail.formatted_address}
-                                    <ClickToCopy text={eventDetail.formatted_address!}>
-                                        <i className="cursor-pointer uil-copy ml-1 text-lg text-foreground"/>
-                                    </ClickToCopy>
-                                </div>
+                                {!!eventDetail.formatted_address &&
+                                    <div className="text-gray-400 text-base">
+                                        {eventDetail.formatted_address}
+                                        <ClickToCopy text={eventDetail.formatted_address}>
+                                            <i className="cursor-pointer uil-copy ml-1 text-lg text-foreground"/>
+                                        </ClickToCopy>
+                                    </div>
+                                }
                             </div>
                         </div>
                     }

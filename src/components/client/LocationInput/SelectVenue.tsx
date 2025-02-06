@@ -120,7 +120,7 @@ export default function SelectVenue({
                 onClick={() => {
                     showDetail(currVenue)
                 }}
-                variant="past" className="mr-1 mt-2 cursor-pointer hover:brightness-95">
+                variant="secondary" className="mr-1 mt-2 cursor-pointer hover:brightness-95">
                 {lang['Timeslots']}
                 <i className="uil-search ml-1"/>
             </Badge>}
@@ -128,11 +128,11 @@ export default function SelectVenue({
                 onClick={() => {
                     showDetail(currVenue)
                 }}
-                variant="past" className="mr-1 mt-2 cursor-pointer hover:brightness-95">
+                variant="secondary" className="mr-1 mt-2 cursor-pointer hover:brightness-95">
                 {lang['Overrides']}
                 <i className="uil-search ml-1"/>
             </Badge>}
-            {!!currVenue?.link && <Badge variant="past" className="mr-1 mt-2 cursor-pointer hover:brightness-95"
+            {!!currVenue?.link && <Badge variant="secondary" className="mr-1 mt-2 cursor-pointer hover:brightness-95"
                                          onClick={() => {
                                              toLink(currVenue.link!)
                                          }}>
@@ -140,15 +140,15 @@ export default function SelectVenue({
                 <i className="uil-link ml-1"/>
             </Badge>}
             {!!currVenue?.capacity &&
-                <Badge variant="past" className="mr-1 mt-2">{currVenue.capacity} {lang['Seats']}</Badge>}
+                <Badge variant="secondary" className="mr-1 mt-2">{currVenue.capacity} {lang['Seats']}</Badge>}
             {!!currVenue?.require_approval &&
-                <Badge variant="past" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
+                <Badge variant="secondary" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
             {!!currVenue?.about &&
                 <div className="text-sm mt-2 text-[#999]"><i className="uil-align-left"></i> {currVenue.about}</div>
             }
         </div>
         {!!currVenue?.require_approval && !isManager &&
-            <div className="text-orange-300 text-xs flex-row-item-center bg-orange-50 px-2 mt-2 py-1">
+            <div className="text-orange-300 text-xs flex-row-item-center bg-orange-50 px-2 mt-2 py-1 rounded-lg">
                 <i className="uil-info-circle text-lg mr-1"/>
                 {lang['You will apply to use this venue']}
             </div>
@@ -179,14 +179,14 @@ function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
             <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.title}}/>
             <div className="text-sm text-[#999]">
                 {!!venue.venue_timeslots?.length &&
-                    <Badge variant="past" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
+                    <Badge variant="secondary" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
                 {!!venue.venue_overrides?.length &&
-                    <Badge variant="past" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
-                {!!venue.link && <Badge variant="past" className="mr-1 mt-2">{lang['Link']}</Badge>}
+                    <Badge variant="secondary" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
+                {!!venue.link && <Badge variant="secondary" className="mr-1 mt-2">{lang['Link']}</Badge>}
                 {!!venue.capacity &&
-                    <Badge variant="past" className="mr-1 mt-2">{venue.capacity} {lang['Seats']}</Badge>}
+                    <Badge variant="secondary" className="mr-1 mt-2">{venue.capacity} {lang['Seats']}</Badge>}
                 {!!venue.require_approval &&
-                    <Badge variant="past" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
+                    <Badge variant="secondary" className="mr-1 mt-2">{lang['Need Approval']}</Badge>}
             </div>
             {!!venue.about &&
                 <div className="text-sm mt-2 text-[#999]"><i className="uil-align-left"></i> {venue.about}</div>
