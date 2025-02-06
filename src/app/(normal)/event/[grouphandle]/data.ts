@@ -85,7 +85,7 @@ export default async function GroupEventHomeData({
             })) {
                 mapMarkers.push({
                     position: {
-                        lat: event.geo_lng!,
+                        lat: event.geo_lat!,
                         lng: event.geo_lng!
                     },
                     title: event.title,

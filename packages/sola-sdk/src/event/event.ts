@@ -127,7 +127,14 @@ export const getEvents = async (filters: EventListFilterProps, authToken?: strin
 
     const data = await res.json()
 
-    return data.events as Event[]
+    return data.events.map((e: any) => {
+        return {
+            ...e,
+            owner: e.profile,
+            geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
+            geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
+        }
+    }) as Event[]
 }
 
 export const getEventDetailById = async (eventId: number) => {
