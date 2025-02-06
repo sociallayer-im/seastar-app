@@ -23,7 +23,41 @@ export const getStaredEvent = async (authToken: string) => {
         }
 
         const data = await res.json()
-        return data.events as Event[]
+        return data.events.map((e: any) => {
+            return {
+                ...e,
+                owner: e.profile,
+                geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
+                geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
+            }
+        }) as Event[]
+    } catch (e: unknown) {
+        console.error(e)
+        return []
+    }
+}
+
+export const getMyPendingApprovalEvent = async (authToken: string) => {
+    if (!authToken) {
+        throw new Error('authToken is required')
+    }
+
+    const url = `${getSdkConfig().api}/event/pending_approval_list?auth_token=${authToken}`
+    try {
+        const res = await fetch(url)
+        if (!res.ok) {
+            return []
+        }
+
+        const data = await res.json()
+        return data.events.map((e: any) => {
+            return {
+                ...e,
+                owner: e.profile,
+                geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
+                geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
+            }
+        }) as Event[]
     } catch (e: unknown) {
         console.error(e)
         return []
@@ -193,7 +227,7 @@ export const attendEventWithoutTicket = async (eventId: number, authToken: strin
     }
 }
 
-const buildSaveEventProps = (eventDraft: EventDraftType)=> {
+const buildSaveEventProps = (eventDraft: EventDraftType) => {
     return {
         ...eventDraft,
         event_roles_attributes: eventDraft.event_roles || [],
@@ -431,12 +465,12 @@ export const sendEventPoap = async (eventId: number, authToken: string) => {
     }
 }
 
-export const getMapEvents = async (groupHandle: string)=> {
+export const getMapEvents = async (groupHandle: string) => {
     const client = getGqlClient()
     const now = dayjs().toISOString()
     const response = await client.query({
         query: GET_MAP_EVENTS_BY_GROUP_HANDLE,
-        variables: {handle:groupHandle, now}
+        variables: {handle: groupHandle, now}
     })
 
     return response.data.events.map((e: Event) => fixDate(e)) as Event[]

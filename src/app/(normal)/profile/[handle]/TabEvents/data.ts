@@ -1,24 +1,32 @@
 import {cookies} from 'next/headers'
-import {getProfileEventByHandle, setSdkConfig, Event, ClientMode, getStaredEvent, Profile} from '@sola/sdk'
-import {EventWithJoinStatus, setEventAttendedStatus} from '@/utils'
+import {
+    getProfileEventByHandle,
+    setSdkConfig,
+    ClientMode,
+    getStaredEvent,
+    Profile,
+    getMyPendingApprovalEvent
+} from '@sola/sdk'
+import {setEventAttendedStatus} from '@/utils'
 
 setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
 export const ProfileEventListData = async function (handle: string, currProfile?: Profile | null) {
     const profileEvents = await getProfileEventByHandle(handle)
+    const isSelf = currProfile?.handle === handle
 
-    let currProfileAttends: Event[] = []
-    if (!!currProfile) {
-        currProfileAttends = (await getProfileEventByHandle(currProfile.handle)).attends
-    }
-
-    let staredEvents: Event[] = []
-    if (currProfile?.handle === handle) {
-        const auth_token = cookies().get(process.env.NEXT_PUBLIC_AUTH_FIELD!)?.value
-        if (auth_token) {
-            staredEvents = await getStaredEvent(auth_token)
-        }
-    }
+    const [currProfileAttends, staredEvents] = await Promise.all([
+        currProfile ? (await getProfileEventByHandle(currProfile.handle)).attends : [],
+        (async () => {
+            if (isSelf) {
+                const auth_token = cookies().get(process.env.NEXT_PUBLIC_AUTH_FIELD!)?.value
+                if (auth_token) {
+                    return await getStaredEvent(auth_token)
+                }
+            }
+            return []
+        })()
+    ])
 
     const hosting = setEventAttendedStatus({
         events: profileEvents.hosting,
