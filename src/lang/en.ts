@@ -362,6 +362,9 @@ export const en = {
     'Category':'Category',
     'Input marker description':'Input marker description',
     'Image (Optional)':'Image (Optional)',
+    'Marker': 'Marker',
+    'Edit Marker': 'Edit Marker',
+    'Remove':'Remove',
 }
 
 export type Dictionary = typeof en

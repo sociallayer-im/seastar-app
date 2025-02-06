@@ -13,12 +13,13 @@ import useUploadAvatar from '@/hooks/useUploadAvatar'
 export interface MarkerFormProps {
     markerDraft: MarkerDraft
     lang: Dictionary,
-    onConfirm?:  (draft: MarkerDraft) => any | Promise<any>
+    onConfirm?: (draft: MarkerDraft) => any | Promise<any>
     onPickLocation?: () => void
     onCancel?: () => void
+    onRemove?: () => void
 }
 
-export default function MarkerForm({markerDraft, lang, onConfirm, onPickLocation, onCancel}: MarkerFormProps) {
+export default function MarkerForm({markerDraft, lang, onConfirm, onPickLocation, onCancel, onRemove}: MarkerFormProps) {
     const {uploadAvatar} = useUploadAvatar()
 
     const [draft, setDraft] = useState<MarkerDraft>(markerDraft)
@@ -131,16 +132,26 @@ export default function MarkerForm({markerDraft, lang, onConfirm, onPickLocation
             </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-            <Button variant={'secondary'}
+        <div className="flex-row-item-center justify-center">
+            <Button variant={'secondary'} className="flex-1"
                     onClick={() => {
                         !!onCancel && onCancel()
                     }}>
                 {lang['Cancel']}
             </Button>
-            <Button variant={'primary'}
+
+            {!!draft.id &&
+                <Button variant={'secondary'} className="flex-1 ml-3 !text-red-500"
+                        onClick={() => {
+                            !!onRemove && onRemove()
+                        }}>
+                    {lang['Remove']}
+                </Button>
+            }
+
+            <Button variant={'primary'} className="flex-1 ml-3"
                     onClick={handleConfirm}
-            >{lang['Create a Marker']}</Button>
+            >{draft.id ? lang['Save'] : lang['Create a Marker']}</Button>
         </div>
     </div>
 }

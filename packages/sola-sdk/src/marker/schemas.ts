@@ -66,3 +66,12 @@ export const GET_MARKERS_BY_GROUP_HANDLE = gql`
         }
     }
 `;
+
+export const GET_MARKER_DETAIL_BY_ID = gql`
+    ${MARKER_DETAIL_FRAGMENT}
+    query GetMarkerDetailById($id: bigint!) {
+        markers(where: {id: {_eq: $id}}) {
+            ...MarkerDetailFragment
+        }
+    }
+  `

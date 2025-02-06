@@ -364,4 +364,7 @@ export const zh: Dictionary = {
     'Category':'类别',
     'Input marker description':'输入标记描述',
     'Image (Optional)': '图片（可选）',
+    'Marker':'标记',
+    'Edit Marker':'编辑标记',
+    'Remove': '移除',
 }

@@ -79,7 +79,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
                 markers.map((marker) => {
                     const style = marker.id === selectedMarkerId ? {background: 'linear-gradient(276deg,#f7df3a -18.27%,#d2f8e8 59.84%)'} : undefined
 
-                    return <a href={`/marker/${marker.id}`}
+                    return <a href={`/marker/detail/${marker.id}`}
                               style={style}
                               id={'marker-' + marker.id}
                               className={'shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] mr-3 h-[164px] max-w-[430px] w-[calc(100vw-24px)] flex-shrink-0 flex-grow-0'}>
