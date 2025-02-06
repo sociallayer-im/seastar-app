@@ -32,7 +32,7 @@ export default function SelectVenue({
                 ...event,
                 venue_id: venue.id,
                 geo_lng: venue.geo_lng,
-                geo_lat: venue.geo_lng,
+                geo_lat: venue.geo_lat,
                 formatted_address: venue.formatted_address,
                 location_data: venue.location_data,
                 location: venue.location,

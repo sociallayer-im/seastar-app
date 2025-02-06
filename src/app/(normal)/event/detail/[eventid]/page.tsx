@@ -23,8 +23,8 @@ import AttendEventBtn from '@/components/client/AttendEventBtn'
 import {Badge} from '@/components/shadcn/Badge'
 import SignInPanel from '@/components/SignInPanel'
 import EventParticipantList from '@/components/client/EventParticipantList'
-import {Dictionary} from '@/lang'
 import RecurringListBtn from '@/app/(normal)/event/detail/[eventid]/RecurringListBtn'
+import GoogleMap from '@/components/client/Map'
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -284,7 +284,7 @@ export default async function EventDetail({params, searchParams}: {
                             <div className="font-semibold text-base">{getEventDetailPageTimeStr(eventDetail).date}</div>
                             <div className="text-gray-400 text-base">{getEventDetailPageTimeStr(eventDetail).time}</div>
                             {!!recurring &&
-                                <RecurringListBtn lang={lang} recurring={recurring} currEventId={eventDetail.id} />
+                                <RecurringListBtn lang={lang} recurring={recurring} currEventId={eventDetail.id}/>
                             }
                         </div>
                     </div>
@@ -303,13 +303,31 @@ export default async function EventDetail({params, searchParams}: {
                             </div>
                         </div>
                     }
-                    <div className="ml-11 mt-[-12px]">
-                        <div className="flex-row-item-center mb-2">
-                            <a className="text-xs text-blue-400 cursor-pointer"
-                               target={'_blank'}
-                               href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
+                    {!!eventDetail.geo_lat && !!eventDetail.geo_lng &&
+                        <div className="ml-11 mt-[-12px]">
+                            <div className="flex-row-item-center mb-2">
+                                <a className="text-xs text-blue-400 cursor-pointer"
+                                   target={'_blank'}
+                                   href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
+                            </div>
+                                <div>{eventDetail.geo_lng} {eventDetail.geo_lat}</div>
+                            <div className="h-40">
+                                <GoogleMap
+                                    defaultZoom={3}
+                                    center={{
+                                        lng: eventDetail.geo_lng,
+                                        lat: eventDetail.geo_lat
+                                    }}
+                                    markers={[{
+                                    title: eventDetail.title,
+                                    position: {
+                                        lng: eventDetail.geo_lng,
+                                        lat: eventDetail.geo_lat
+                                    }
+                                }]} />
+                            </div>
                         </div>
-                    </div>
+                    }
                     {!!eventDetail.meeting_url &&
                         <div className="flex-row-item-center py-4">
                             <div

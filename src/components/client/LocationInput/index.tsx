@@ -23,7 +23,7 @@ export default function LocationInput({state: {event, setEvent}, venues, lang, i
                 ...event,
                 venue_id: venueCache.current?.id || null,
                 geo_lng: venueCache.current?.geo_lng || null,
-                geo_lat: venueCache.current?.geo_lng || null,
+                geo_lat: venueCache.current?.geo_lat || null,
                 formatted_address: venueCache.current?.formatted_address || null,
                 location_data: venueCache.current?.location_data || null,
                 location: venueCache.current?.location || null
