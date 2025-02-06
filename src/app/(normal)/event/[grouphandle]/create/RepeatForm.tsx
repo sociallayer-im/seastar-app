@@ -16,7 +16,8 @@ export interface RepeatFormProps {
     event: EventDraftType
     repeatForm: RepeatFormType
     onChange: (value: RepeatFormType) => void
-    lang: Dictionary
+    lang: Dictionary,
+    disabled?: boolean
 }
 
 const getRepeatInterval = (lang: Dictionary) => {
@@ -31,7 +32,7 @@ const getRepeatInterval = (lang: Dictionary) => {
         },
         {
             value: 'week',
-            label:  lang['Every Week']
+            label: lang['Every Week']
         },
         {
             value: 'month',
@@ -47,6 +48,7 @@ export default function RepeatForm(props: RepeatFormProps) {
     const showSetting = () => {
         openModal({
             content: (close) => <DialogRepeatSetting
+                disabled={props.disabled}
                 lang={props.lang}
                 start_time={props.event.start_time}
                 timezone={props.event.timezone || 'UTC'}
@@ -63,21 +65,21 @@ export default function RepeatForm(props: RepeatFormProps) {
         if (props.repeatForm.interval) {
             const RepeatInterval = getRepeatInterval(props.lang)
             switch (props.repeatForm.interval) {
-            case RepeatInterval[1].value:
-                return `${props.lang['Every Day']}, ${props.lang['repeat']} ${props.repeatForm.event_count} ${props.lang['times']}`
-            case RepeatInterval[2].value:
-                return `${props.lang['Every Week']}, ${props.lang['repeat']} ${props.repeatForm.event_count} ${props.lang['times']}`
-            case RepeatInterval[3].value:
-                return `${props.lang['Every Month']}, ${props.lang['repeat']} ${props.repeatForm.event_count} ${props.lang['times']}`
-            default:
-                return ''
+                case RepeatInterval[1].value:
+                    return `${props.lang['Every Day']}, ${props.lang['repeat']} ${props.repeatForm.event_count} ${props.lang['times']}`
+                case RepeatInterval[2].value:
+                    return `${props.lang['Every Week']}, ${props.lang['repeat']} ${props.repeatForm.event_count} ${props.lang['times']}`
+                case RepeatInterval[3].value:
+                    return `${props.lang['Every Month']}, ${props.lang['repeat']} ${props.repeatForm.event_count} ${props.lang['times']}`
+                default:
+                    return ''
             }
         }
     }, [props.repeatForm.interval, props.lang, props.repeatForm.event_count])
-    
+
     return <div
         onClick={showSetting}
-        className={`${repeatText? 'bg-secondary ' : ''} cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center !inline-flex font-semibold active:brightness-90`}>
+        className={`${repeatText ? 'bg-secondary ' : ''} cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center !inline-flex font-semibold active:brightness-90`}>
         <i className="uil-repeat text-base mr-0.5"/>
         {repeatText || props.lang['Does not Repeat']}
     </div>
@@ -90,9 +92,10 @@ export interface DialogRepeatSettingProps {
     onConfirm: (form: RepeatFormType) => void
     timezone: string
     close: () => void
+    disabled?: boolean
 }
 
-function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang}: DialogRepeatSettingProps) {
+function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang, disabled}: DialogRepeatSettingProps) {
     const [repeatForm, setRepeatForm] = useState(form)
     const [error, setError] = useState('')
 
@@ -100,7 +103,7 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
         if (!repeatForm.interval
             || !repeatForm.event_count
             && (!!repeatForm.event_count && repeatForm.event_count < 1)) {
-            return  []
+            return []
         }
 
         const start = dayjs.tz(new Date(start_time).getTime(), timezone)
@@ -108,7 +111,7 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
             return start.add(i, repeatForm.interval as any).format('YYYY-MM-DD HH:mm')
         })
     }, [repeatForm.event_count, repeatForm.interval, start_time])
-    
+
     const handleConfirm = () => {
         if (!!repeatForm.interval) {
             if (!repeatForm.event_count) {
@@ -125,7 +128,7 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
 
         onConfirm(repeatForm)
     }
-    
+
     const RepeatInterval = getRepeatInterval(lang)
 
     return <div className="shadow rounded-lg bg-white p-4 w-80">
@@ -134,6 +137,7 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
             <div>{lang['Repeat period']}</div>
             <div className="mb-3">
                 <DropdownMenu
+                    disabled={disabled}
                     value={RepeatInterval.filter((r => r.value === repeatForm.interval))}
                     options={RepeatInterval}
                     valueKey={'value'}
@@ -156,16 +160,16 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
             </div>
             <div>{lang['Repeat Times']}</div>
             <Input value={repeatForm.event_count || ''}
-                disabled={!repeatForm.interval}
-                onChange={e => {
-                    setRepeatForm({...repeatForm, event_count:  Number(e.target.value)})
-                }}
-                type="number"
-                className={'w-full mb-3'}
-                endAdornment={lang['Times']}
-                onWheel={(e) => {
-                    e.currentTarget.blur()
-                }}/>
+                   disabled={!repeatForm.interval || disabled}
+                   onChange={e => {
+                       setRepeatForm({...repeatForm, event_count: Number(e.target.value)})
+                   }}
+                   type="number"
+                   className={'w-full mb-3'}
+                   endAdornment={lang['Times']}
+                   onWheel={(e) => {
+                       e.currentTarget.blur()
+                   }}/>
             <div className="text-red-400 mb-2 text-xs">{error}</div>
 
 
@@ -173,18 +177,19 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
                 <div className="mb-3">
                     <div>{lang['Event Times Preview']}</div>
                     {preview.map((t) => <div key={t}
-                        className="px-2 py-1 rounded mb-1 bg-secondary"
+                                             className="px-2 py-1 rounded mb-1 bg-secondary"
                     >{t}</div>)}
                 </div>
             }
 
             <div className="flex-row-item-center">
-                <Button variant={'secondary'} 
-                    onClick={close}
-                    className="flex-1">{lang['Cancel']}</Button>
-                <Button variant={'primary'} 
-                    onClick={handleConfirm}
-                    className="flex-1 ml-2">{lang['Confirm']}</Button>
+                <Button variant={'secondary'}
+                        onClick={close}
+                        className="flex-1">{lang['Cancel']}</Button>
+                <Button variant={disabled ? 'secondary' : 'primary'}
+                        disabled={disabled}
+                        onClick={handleConfirm}
+                        className="flex-1 ml-2">{lang['Confirm']}</Button>
             </div>
         </div>
     </div>

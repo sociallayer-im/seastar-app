@@ -43,8 +43,8 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
 
     // repeat form
     const [repeatForm, setRepeatForm] = useState<RepeatFormType>({
-        interval: null,
-        event_count: 1
+        interval: data.recurring?.interval || null,
+        event_count: data.recurring?.event_count || 1
     })
 
     // errors
@@ -260,12 +260,15 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                             venues={data.venues}
                             state={{event: draft, setEvent: setDraft}}
                         />
-                        <RepeatForm
-                            lang={lang}
-                            event={draft}
-                            repeatForm={repeatForm}
-                            onChange={repeatForm => setRepeatForm(repeatForm)}
-                        />
+                        {data.isGroupManager &&
+                            <RepeatForm
+                                disabled={!!draft.id}
+                                lang={lang}
+                                event={draft}
+                                repeatForm={repeatForm}
+                                onChange={repeatForm => setRepeatForm(repeatForm)}
+                            />
+                        }
                         {!!timeError && <div className="text-red-400 mt-2 text-xs err-msg">{timeError}</div>}
                         {!!trackDayError && <div className="text-red-400 mt-2 text-xs err-msg">{trackDayError}</div>}
                         {!!occupiedEvent &&

@@ -373,4 +373,8 @@ export const zh: Dictionary = {
     'year': '年',
     'every': '每',
     'View map':'查看地图',
+    'Select the scope of application': '选择应用范围',
+    'Only this event':'仅此事件',
+    'All recurring events':'所有重复事件',
+    'This event and following events': '此事件和后续事件',
 }

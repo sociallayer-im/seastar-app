@@ -1,8 +1,8 @@
 import {
     EventDraftType, getAvailableGroupsForEventHost,
     getEventDetailById,
-    getGroupDetailByHandle, Group,
-    Profile,
+    getGroupDetailByHandle, getRecurringById, Group,
+    Profile, Recurring,
 } from '@sola/sdk'
 import {getCurrProfile} from '@/app/actions'
 import {redirect} from 'next/navigation'
@@ -40,9 +40,15 @@ export default async function EditEventData({params: {eventid}}: EditEventProps)
     const availableGroupHost = await getAvailableGroupsForEventHost(currProfile.handle)
     const availableHost: Array<Profile | Group> = [currProfile, ...availableGroupHost]
 
+    let recurring:Recurring | null = null
+    if (!!eventDetail.recurring_id) {
+        recurring = await getRecurringById(eventDetail.recurring_id)
+    }
+
     return {
         currProfile,
         eventDraft: eventDetail as EventDraftType,
+        recurring,
         groupDetail,
         memberships: groupDetail.memberships || [],
         isGroupOwner: isOwner,

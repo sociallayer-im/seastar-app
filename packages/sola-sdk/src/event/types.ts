@@ -145,7 +145,7 @@ export interface TicketDraft  extends Pick<Ticket, 'title' | 'content' | 'check_
     id?: number
 }
 
-export interface EventDraftType extends Pick<EventDetail, 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id'> {
+export interface EventDraftType extends Pick<EventDetail, | 'recurring_id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id'> {
     id?: number
     timezone: string | null
     tickets: TicketDraft[]
@@ -158,6 +158,7 @@ export interface Recurring {
     start_time: string | null,
     end_time: string | null,
     interval: string,
-    timezone: string
+    timezone: string,
+    event_count: number,
 }
 

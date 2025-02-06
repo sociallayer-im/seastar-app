@@ -38,11 +38,6 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         redirect('/404')
     }
 
-    let recurring:Recurring | null = null
-    if (!!eventDetail.recurring_id) {
-        recurring = await getRecurringById(eventDetail.recurring_id)
-    }
-
     const {
         isManager: isGroupManager,
         isMember: isGroupMember,
@@ -86,7 +81,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
             || isEventCreator
             || eventDetail.event_roles?.some(role => role.role === 'co_host' && role.item_id === currProfile.id)
             || eventDetail.event_roles?.some(role => role.role === 'speaker' && role.item_id === currProfile.id)
-            )
+        )
 
     // check if the current user can access the event
     const canAccess = isEventOperator
@@ -95,6 +90,11 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
 
     const seatingStyle = eventDetail.requirement_tags?.filter(tag => SeatingStyle.includes(tag))
     const avNeeds = eventDetail.requirement_tags?.filter(tag => AVNeeds.includes(tag))
+
+    let recurring: Recurring | null = null
+    if (!!eventDetail.recurring_id) {
+        recurring = await getRecurringById(eventDetail.recurring_id)
+    }
 
     return {
         currProfile,

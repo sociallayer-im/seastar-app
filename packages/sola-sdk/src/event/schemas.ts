@@ -259,5 +259,6 @@ export const GET_RECURRING_BY_ID = gql`
             end_time
             timezone
             interval
+            event_count
         }
     }`

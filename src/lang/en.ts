@@ -371,6 +371,10 @@ export const en = {
     'year': 'year',
     'every':'every ',
     'View map': 'View map',
+    'Select the scope of application':'Select the scope of application',
+    'Only this event': 'Only this event',
+    'All recurring events':'All recurring events',
+    'This event and following events':'This event and following events',
 }
 
 export type Dictionary = typeof en

@@ -10,7 +10,7 @@ import {
     GroupDetail,
     Membership,
     Track,
-    EventDraftType, VenueDetail, getAvailableGroupsForEventHost
+    EventDraftType, VenueDetail, getAvailableGroupsForEventHost, Recurring
 } from '@sola/sdk'
 
 export interface CreateEventPageDataProps {
@@ -34,6 +34,7 @@ export interface CreateEventPageDataType {
     tracks: Track[],
     venues: VenueDetail[],
     tags: string[],
+    recurring: Recurring | null
 }
 
 export const emptyEvent: EventDraftType = {
@@ -60,7 +61,8 @@ export const emptyEvent: EventDraftType = {
     pinned: false,
     status: 'open',
     badge_class_id: null,
-    tickets: []
+    tickets: [],
+    recurring_id: null,
 }
 
 export const emptyPaymentMethod: PaymentMethod = {
@@ -108,6 +110,7 @@ export default async function CreateEventPageData({params}: CreateEventDataProps
 
     return {
         currProfile,
+        recurring: null,
         eventDraft: {...emptyEvent, group_id: groupDetail.id},
         groupDetail,
         memberships: groupDetail.memberships || [],

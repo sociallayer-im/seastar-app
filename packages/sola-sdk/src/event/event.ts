@@ -497,4 +497,60 @@ export const getRecurringById = async (recurringId: number) => {
     return response.data.recurrings[0] as Recurring || null
 }
 
+export type UpdateRecurringEventProps = {
+    eventDraft: EventDraftType,
+    recurringId: number,
+    authToken: string,
+    afterEventId?: number
+    startTimeDiff: number
+    endTimeDiff: number
+}
+
+export const updateRecurringEvent = async ({startTimeDiff, endTimeDiff, eventDraft, recurringId, afterEventId, authToken}: UpdateRecurringEventProps) => {
+    const props = {
+        auth_token: authToken,
+        recurring_id: recurringId,
+        after_event_id: afterEventId,
+        selector: afterEventId ? 'after' : 'all',
+        event: eventDraft,
+        start_time_diff: startTimeDiff,
+        end_time_diff: endTimeDiff
+    }
+
+    const response = await fetch(`${getSdkConfig().api}/recurring/update`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(props)
+    })
+
+    if (!response.ok) {
+        throw new Error('Update failed')
+    }
+}
+
+export type CancelRecurringEventProps = Omit<UpdateRecurringEventProps, 'eventDraft' | 'endTimeDiff' | 'startTimeDiff'>
+
+export const cancelRecurringEvent = async ({recurringId, afterEventId, authToken}: CancelRecurringEventProps) => {
+    const props = {
+        auth_token: authToken,
+        recurring_id: recurringId,
+        event_id: afterEventId,
+        selector: afterEventId ? 'after' : 'all',
+    }
+
+    const response = await fetch(`${getSdkConfig().api}/recurring/cancel_event`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(props)
+    })
+
+    if (!response.ok) {
+        throw new Error('Cancel failed')
+    }
+}
+
 
