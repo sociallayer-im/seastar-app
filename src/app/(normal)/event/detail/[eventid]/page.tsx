@@ -25,6 +25,7 @@ import SignInPanel from '@/components/SignInPanel'
 import EventParticipantList from '@/components/client/EventParticipantList'
 import RecurringListBtn from '@/app/(normal)/event/detail/[eventid]/RecurringListBtn'
 import GoogleMap from '@/components/client/Map'
+import ClickToCopy from '@/components/client/ClickToCopy'
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -298,7 +299,9 @@ export default async function EventDetail({params, searchParams}: {
                                 <div className="font-semibold text-base">{eventDetail.location}</div>
                                 <div className="text-gray-400 text-base">
                                     {eventDetail.formatted_address}
-                                    <i className="cursor-pointer uil-copy ml-1 text-lg text-foreground"/>
+                                    <ClickToCopy text={eventDetail.formatted_address}>
+                                        <i className="cursor-pointer uil-copy ml-1 text-lg text-foreground"/>
+                                    </ClickToCopy>
                                 </div>
                             </div>
                         </div>
@@ -310,7 +313,6 @@ export default async function EventDetail({params, searchParams}: {
                                    target={'_blank'}
                                    href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
                             </div>
-                                <div>{eventDetail.geo_lng} {eventDetail.geo_lat}</div>
                             <div className="h-40">
                                 <GoogleMap
                                     defaultZoom={3}

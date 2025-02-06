@@ -9,7 +9,8 @@ export default function ClickToCopy(props: { text: string, children: ReactNode, 
     const copyText = () => {
         navigator.clipboard.writeText(props.text)
         toast({
-            title: 'Link Copied'
+            title: 'Copied',
+            variant: 'success'
         })
     }
 
