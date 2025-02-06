@@ -1,7 +1,7 @@
 'use client'
 
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
-import {Map, AdvancedMarker, useMap} from '@vis.gl/react-google-maps'
+import {Map, AdvancedMarker, useMap, MapEvent, MapMouseEvent} from '@vis.gl/react-google-maps'
 import {Button} from '@/components/shadcn/Button'
 import {useMemo, useState, useEffect} from 'react'
 
@@ -26,6 +26,7 @@ export default function GoogleMap({
                                       defaultZoom = 15
                                   }: GoogleMapProps) {
     const [mapCenter, setMapCenter] = useState(center)
+    const [pickingLocation, setPickingLocation] = useState(false)
 
     const markersToShow = useMemo(() => {
         // set the layer of center marker to the top,
@@ -37,13 +38,35 @@ export default function GoogleMap({
         }
     }, [mapCenter])
 
+    const handleMapClick = (e: MapMouseEvent) => {
+        const location = e.detail.latLng
+        window.postMessage({type: 'picked-location', location}, window.location.origin)
+        setPickingLocation(false)
+    }
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        const handlePickLocation = (e: MessageEvent) => {
+            if (e.data.type === 'pick-location') {
+                setPickingLocation(true)
+            }
+        }
+
+        window.addEventListener('message', handlePickLocation)
+        return () => {
+            window.removeEventListener('message', handlePickLocation)
+        }
+    }, [])
+
     return <GoogleMapProvider langType={langType}>
         <Map mapId="e2f9ddc0facd5a80"
              defaultCenter={mapCenter}
              defaultZoom={defaultZoom}
+             onClick={pickingLocation ? handleMapClick : undefined}
+             className={pickingLocation ? 'picking-location' : undefined}
              disableDefaultUI>
             {
-                markersToShow.map((marker,index) => {
+                markersToShow.map((marker, index) => {
                     const selected = mapCenter.lat === marker.position.lat && mapCenter.lng === marker.position.lng
                     return <MapMarker
                         onClick={() => setMapCenter(marker.position)}

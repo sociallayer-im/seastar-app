@@ -46,12 +46,13 @@ export default function SearchLocation({
         AutocompleteService.getQueryPredictions({
             input: keyword,
         }, (predictions) => {
+            let res = customAddress ? [customAddress]  : []
             if (predictions?.length) {
                 const _predictions = predictions.filter(p => !!p.place_id)
-                if (customAddress) {_predictions.unshift(customAddress)}
-                setPredictions(_predictions || [])
-                !!_predictions.length && dropdown.trigger && dropdown.trigger(true)
+                res = res.concat(_predictions)
             }
+            setPredictions(res)
+            !!res.length && dropdown.trigger && dropdown.trigger(true)
         })
     }, 300), [AutocompleteService, dropdown])
 

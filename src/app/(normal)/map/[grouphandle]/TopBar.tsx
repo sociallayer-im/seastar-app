@@ -42,8 +42,8 @@ export default function TopBar({groupDetail, lang, markerCategory}: {
         document.getElementById(`category-${markerCategory}`)?.scrollIntoView({behavior: 'instant', block: 'center'})
     }, [])
 
-    const showCreateMarkerModal = () => {
-        const draft = {
+    const showCreateMarkerModal = (draft?:MarkerDraft) => {
+         draft = draft || {
             ...emptyMarker,
             group_id: groupDetail.id
         }
@@ -57,10 +57,26 @@ export default function TopBar({groupDetail, lang, markerCategory}: {
         })
     }
 
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        window.addEventListener('message', (e) => {
+            if (e.data.type === 'picked-location' && e.data.location) {
+                const location = e.data.location
+                const draft = JSON.parse(window.sessionStorage.getItem('marker-draft')!)
+                draft.geo_lat = location.lat
+                draft.geo_lng = location.lng
+                draft.formatted_address = `${location.lat},${location.lng}`
+                draft.location = 'Custom Location'
+                window.sessionStorage.removeItem('marker-draft')
+                showCreateMarkerModal(draft)
+            }
+        })
+    }, [])
+
     return <div ref={barRef}
                 className="flex-row-item-center absolute top-3 justify-start md:justify-center w-full flex-nowrap overflow-auto">
 
-        <Button variant={'primary'} size={'sm'} onClick={showCreateMarkerModal}
+        <Button variant={'primary'} size={'sm'} onClick={() => showCreateMarkerModal()}
            className="bg-background ml-3 text-sm">
             <i className="uil-plus-circle text-lg"/>
             {lang['Create a Marker']}
@@ -109,7 +125,7 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
         const loadingId = showLoading()
         try {
             const authToken = getAuth()
-            const marker = await createMarker(draft, authToken!)
+            await createMarker(draft, authToken!)
 
             toast({
                 title: 'Create marker success',
@@ -130,6 +146,11 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
         }
     }
 
+    const handlePickLocation = (draft: MarkerDraft) => {
+        window.sessionStorage.setItem('marker-draft', JSON.stringify(draft))
+        window.postMessage({type: 'pick-location'}, window.location.origin)
+        close()
+    }
 
     return <div className="max-w-[96vw] w-[500px] bg-white rounded-lg p-3 shadow max-h-[96svh] sm:max-h-[80svh] overflow-auto">
         <div className="font-semibold mb-6 text-lg flex-row-item-center justify-between">
@@ -140,8 +161,9 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
             <MarkerForm
                 onCancel={close}
                 markerDraft={draft}
-                onConfirm={handleCreateMarker}
+                onConfirm={async (draft) => {await handleCreateMarker(draft);close()}}
                 lang={lang}
+                onPickLocation={handlePickLocation}
             />
         </div>
     </div>

@@ -52,7 +52,7 @@ export const MARKER_DETAIL_FRAGMENT = gql`
 export const GET_MARKERS_BY_GROUP_HANDLE_AND_CATEGORY = gql`
     ${MARKER_FRAGMENT}
     query GetMarkersByGroupHandle($handle: String!, $category: String!) {
-        markers(where: {group: {handle: {_eq: $handle}}, category: {_eq: $category}},order_by: {id: desc}) {
+        markers(where: {group: {handle: {_eq: $handle}}, category: {_eq: $category}, status: {_neq: "removed"}},order_by: {id: desc}) {
             ...MarkerFragment
         }
     }
@@ -61,7 +61,7 @@ export const GET_MARKERS_BY_GROUP_HANDLE_AND_CATEGORY = gql`
 export const GET_MARKERS_BY_GROUP_HANDLE = gql`
     ${MARKER_FRAGMENT}
     query GetMarkersByGroupHandle($handle: String!) {
-        markers(where: {group: {handle: {_eq: $handle}}},order_by: {id: desc}) {
+        markers(where: {group: {handle: {_eq: $handle}}, status: {_neq: "removed"}},order_by: {id: desc}) {
             ...MarkerFragment
         }
     }
@@ -70,7 +70,7 @@ export const GET_MARKERS_BY_GROUP_HANDLE = gql`
 export const GET_MARKER_DETAIL_BY_ID = gql`
     ${MARKER_DETAIL_FRAGMENT}
     query GetMarkerDetailById($id: bigint!) {
-        markers(where: {id: {_eq: $id}}) {
+        markers(where: {id: {_eq: $id}},order_by: {id: desc}) {
             ...MarkerDetailFragment
         }
     }

@@ -32,9 +32,12 @@ export default function SearchMarkerLocation({
         if (!AutocompleteService) return
 
         // check if the keyword is geo point
+        alert('search')
         const rex = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/
+
         let customAddress: google.maps.places.QueryAutocompletePrediction | null = null
         if (rex.test(keyword)) {
+            alert('is customAddress')
             const [lat, lng] = keyword.split(',')
             customAddress = {
                 description: `Use ${lat},${lng}`,
@@ -48,12 +51,13 @@ export default function SearchMarkerLocation({
         AutocompleteService.getQueryPredictions({
             input: keyword,
         }, (predictions) => {
+            let res = customAddress ? [customAddress]  : []
             if (predictions?.length) {
                 const _predictions = predictions.filter(p => !!p.place_id)
-                if (customAddress) {_predictions.unshift(customAddress)}
-                setPredictions(_predictions || [])
-                !!_predictions.length && dropdown.trigger && dropdown.trigger(true)
+                res = res.concat(_predictions)
             }
+            setPredictions(res)
+            !!res.length && dropdown.trigger && dropdown.trigger(true)
         })
     }, 300), [AutocompleteService, dropdown])
 

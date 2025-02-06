@@ -46,7 +46,6 @@ export default function CreateMarkerForm({draft, lang, groupDetail}: CreateMarke
         window.history.back()
     }
 
-
     return <MarkerForm
         lang={lang}
         markerDraft={draft}

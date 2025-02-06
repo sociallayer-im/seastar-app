@@ -9,18 +9,29 @@ import {MARKER_TYPES} from '@/app/(normal)/map/[grouphandle]/marker/marker_type'
 import SearchMarkerLocation from '@/components/client/SearchMarkerLocation'
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
 import useUploadAvatar from '@/hooks/useUploadAvatar'
+import useModal from '@/components/client/Modal/useModal'
+import {useToast} from '@/components/shadcn/Toast/use-toast'
 
 export interface MarkerFormProps {
     markerDraft: MarkerDraft
     lang: Dictionary,
     onConfirm?: (draft: MarkerDraft) => any | Promise<any>
-    onPickLocation?: () => void
+    onPickLocation?: (draft: MarkerDraft) => void
     onCancel?: () => void
     onRemove?: () => void
 }
 
-export default function MarkerForm({markerDraft, lang, onConfirm, onPickLocation, onCancel, onRemove}: MarkerFormProps) {
+export default function MarkerForm({
+                                       markerDraft,
+                                       lang,
+                                       onConfirm,
+                                       onPickLocation,
+                                       onCancel,
+                                       onRemove
+                                   }: MarkerFormProps) {
     const {uploadAvatar} = useUploadAvatar()
+    const {showLoading, closeModal} = useModal()
+    const {toast} = useToast()
 
     const [draft, setDraft] = useState<MarkerDraft>(markerDraft)
 
@@ -57,6 +68,34 @@ export default function MarkerForm({markerDraft, lang, onConfirm, onPickLocation
         !!onConfirm && onConfirm(draft)
     }
 
+    const getDriveLocation = () => {
+        if (navigator.geolocation) {
+            const loading = showLoading()
+            navigator.geolocation.getCurrentPosition((position) => {
+                setDraft({
+                    ...draft,
+                    geo_lat: position.coords.latitude,
+                    geo_lng: position.coords.longitude,
+                    formatted_address: `${position.coords.latitude},${position.coords.longitude}`,
+                    location: 'Custom Address'
+                })
+                closeModal(loading)
+            }, (error) => {
+                closeModal(loading)
+                console.error(error)
+                toast({
+                    title: 'Failed to get location',
+                    variant: 'destructive'
+                })
+            })
+        } else {
+            toast({
+                title: 'Geolocation is not supported by this browser',
+                variant: 'destructive'
+            })
+        }
+    }
+
     return <div className="grid grid-cols-1 gap-6 w-full">
         <div>
             <div className="font-semibold mb-1">{lang['Location']} <span className="text-red-500">*</span>
@@ -67,6 +106,24 @@ export default function MarkerForm({markerDraft, lang, onConfirm, onPickLocation
                     lang={lang}
                 />
             </GoogleMapProvider>
+            <div>
+                {!!onPickLocation &&
+                    <Button
+                        onClick={() => onPickLocation(draft)}
+                        variant={'secondary'} size={'sm'} className="mr-2 text-sm mt-2">
+                        <i className="uil-map-pin-alt text-lg"/>
+                        Map Location
+                    </Button>
+                }
+                <Button
+                    onClick={getDriveLocation}
+                    variant={'secondary'}
+                    size={'sm'}
+                    className="text-sm mt-2">
+                    <i className="uil-location-pin-alt text-lg"/>
+                    Device Location
+                </Button>
+            </div>
             {!!locationError && <div className="text-red-400 mt-2 text-xs err-msg">{locationError}</div>}
         </div>
 
