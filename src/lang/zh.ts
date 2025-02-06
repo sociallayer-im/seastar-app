@@ -367,4 +367,10 @@ export const zh: Dictionary = {
     'Marker':'标记',
     'Edit Marker':'编辑标记',
     'Remove': '移除',
+    'day': '天',
+    'month': '月',
+    'week': '周',
+    'year': '年',
+    'every': '每',
+    'View map':'查看地图',
 }

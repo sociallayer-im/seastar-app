@@ -63,7 +63,7 @@ export const uploadFile = async (file: Blob, auth_token: string) => {
     }
 
     const data = await response.json()
-    return data.url as string
+    return data.result.url as string
 }
 
 export const updateProfile = async (profile: Solar.Profile, auth_token: string) => {

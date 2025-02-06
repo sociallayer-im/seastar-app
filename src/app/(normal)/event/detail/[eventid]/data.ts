@@ -1,7 +1,14 @@
 import {analyzeGroupMembershipAndCheckProfilePermissions, checkProcess, pickSearchParam} from "@/utils"
 import {redirect} from "next/navigation"
 import {getCurrProfile} from '@/app/actions'
-import {getEventDetailById, getGroupDetailByHandle, Participant} from '@sola/sdk'
+import {
+    Event,
+    getEventByRecurringId,
+    getEventDetailById,
+    getGroupDetailByHandle, getRecurringById,
+    Participant,
+    Recurring
+} from '@sola/sdk'
 import {AVNeeds, SeatingStyle} from '@/app/configForSpecifyGroup'
 
 export interface EventDetailPageDataProps {
@@ -29,6 +36,11 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
     const groupDetail = await getGroupDetailByHandle(eventDetail.group.handle)
     if (!groupDetail) {
         redirect('/404')
+    }
+
+    let recurring:Recurring | null = null
+    if (!!eventDetail.recurring_id) {
+        recurring = await getRecurringById(eventDetail.recurring_id)
     }
 
     const {
@@ -88,6 +100,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         currProfile,
         eventDetail,
         groupDetail,
+        recurring,
         isGroupOwner,
         isGroupManager,
         isGroupMember,

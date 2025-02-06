@@ -8,7 +8,7 @@ import {
     eventCoverTimeStr,
     genGoogleMapLinkByEvent,
     getAvatar,
-    getEventDetailPageTimeStr, shortWalletAddress
+    getEventDetailPageTimeStr
 } from "@/utils"
 import {selectLang} from "@/app/actions"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
@@ -23,6 +23,8 @@ import AttendEventBtn from '@/components/client/AttendEventBtn'
 import {Badge} from '@/components/shadcn/Badge'
 import SignInPanel from '@/components/SignInPanel'
 import EventParticipantList from '@/components/client/EventParticipantList'
+import {Dictionary} from '@/lang'
+import RecurringListBtn from '@/app/(normal)/event/detail/[eventid]/RecurringListBtn'
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -57,7 +59,8 @@ export default async function EventDetail({params, searchParams}: {
         isEventClosed,
         showParticipants,
         avNeeds,
-        seatingStyle
+        seatingStyle,
+        recurring
     } = await EventDetailPage({
         params,
         searchParams
@@ -280,6 +283,9 @@ export default async function EventDetail({params, searchParams}: {
                         <div>
                             <div className="font-semibold text-base">{getEventDetailPageTimeStr(eventDetail).date}</div>
                             <div className="text-gray-400 text-base">{getEventDetailPageTimeStr(eventDetail).time}</div>
+                            {!!recurring &&
+                                <RecurringListBtn lang={lang} recurring={recurring} currEventId={eventDetail.id} />
+                            }
                         </div>
                     </div>
                     {!!eventDetail.location &&
@@ -301,7 +307,7 @@ export default async function EventDetail({params, searchParams}: {
                         <div className="flex-row-item-center mb-2">
                             <a className="text-xs text-blue-400 cursor-pointer"
                                target={'_blank'}
-                               href={genGoogleMapLinkByEvent(eventDetail)}>View map</a>
+                               href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
                         </div>
                     </div>
                     {!!eventDetail.meeting_url &&

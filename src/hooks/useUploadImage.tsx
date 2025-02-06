@@ -42,7 +42,7 @@ export default function useUploadImage() {
                         resolve(url)
                     }
                     image.onerror = () => {
-                        reject(new Error('Upload failed'))
+                        reject(new Error('Load image failed'))
                     }
                 } catch (e:unknown) {
                     toast({

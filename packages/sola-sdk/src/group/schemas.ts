@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
+import {EVENT_FRAGMENT} from '../event'
 
 export const VENUE_TIMESLOT_FRAGMENT = gql`
     fragment VenueTimeslotFragment on venue_timeslots {

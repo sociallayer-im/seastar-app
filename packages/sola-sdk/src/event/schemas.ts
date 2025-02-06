@@ -182,6 +182,7 @@ export const EVENT_DETAIL_FRAGMENT = gql`
     ${TICKET_FRAGMENT}
     fragment EventDetailFragment on events {
         ...EventFragment
+        recurring_id
         formatted_address
         geo_lat
         geo_lng
@@ -239,3 +240,24 @@ export const GET_MAP_EVENTS_BY_GROUP_HANDLE = gql`
         }
     }
 `
+
+
+export const GET_EVENTS_BY_RECURRING_ID = gql`
+    ${EVENT_FRAGMENT}
+    query GetEventsByRecurringId($recurringId: Int!) {
+        events(where: {recurring_id: {_eq: $recurringId}}) {
+            ...EventFragment
+        }
+    }
+`
+
+export const GET_RECURRING_BY_ID = gql`
+    query GetRecurringById($id: bigint!) {
+        recurrings(where: {id: {_eq: $id}}) {
+            id
+            start_time
+            end_time
+            timezone
+            interval
+        }
+    }`

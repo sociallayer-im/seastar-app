@@ -44,6 +44,7 @@ export interface EventDetail extends Event {
     extra: number[] | null,
     operators: number[] | null
     event_roles: EventRoleDetail[] | null
+    recurring_id: number | null
 }
 
 export interface Ticket {
@@ -150,5 +151,13 @@ export interface EventDraftType extends Pick<EventDetail, 'cover_url' | 'title' 
     tickets: TicketDraft[]
     event_roles: EventRole[] | null
     group_id: number
+}
+
+export interface Recurring {
+    id: number,
+    start_time: string | null,
+    end_time: string | null,
+    interval: string,
+    timezone: string
 }
 

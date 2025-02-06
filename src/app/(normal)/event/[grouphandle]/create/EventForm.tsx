@@ -503,7 +503,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                                 {lang['Back']}
                             </Button>
                             <Button variant={'special'} className="w-full" onClick={handleConfirm}>
-                                {!draft.id ? lang['Create Event'] : lang['Edit Event']}
+                                {!draft.id ? lang['Create Event'] : lang['Save']}
                             </Button>
                         </div>
                         : <div className="grid grid-cols-2 gap-3">

@@ -28,17 +28,17 @@ export default async function MyEvents({events, tab}: { events: EventWithJoinSta
                         {lang['Stared']}
                     </a>
                     <a
-                        className={`${buttonVariants({size: 'sm', variant: tab === 'pending' ? 'normal' : 'ghost'})}`}
-                        href="/my-events/pending-requests">
-                        {lang['Pending Requests']}
-                    </a>
-                    <a
                         className={`${buttonVariants({
                             size: 'sm',
                             variant: tab === 'co-hosting' ? 'normal' : 'ghost'
                         })}`}
                         href="/my-events/co-hosting">
                         {lang['Co-hosting']}
+                    </a>
+                    <a
+                        className={`${buttonVariants({size: 'sm', variant: tab === 'pending' ? 'normal' : 'ghost'})}`}
+                        href="/my-events/pending-requests">
+                        {lang['Pending Requests']}
                     </a>
                 </div>
 

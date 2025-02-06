@@ -365,6 +365,12 @@ export const en = {
     'Marker': 'Marker',
     'Edit Marker': 'Edit Marker',
     'Remove':'Remove',
+    'day': 'day',
+    'month': 'month',
+    'week': 'week',
+    'year': 'year',
+    'every':'every ',
+    'View map': 'View map',
 }
 
 export type Dictionary = typeof en

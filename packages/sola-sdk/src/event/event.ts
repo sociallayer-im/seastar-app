@@ -1,10 +1,11 @@
-import {Event, EventDetail, EventDraftType, Participant} from './types'
+import {Event, EventDetail, EventDraftType, Participant, Recurring} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
 import {
     GET_EVENT_DETAIL_BY_ID,
     GET_GROUP_EVENT_BY_HANDLE,
     GET_MAP_EVENTS_BY_GROUP_HANDLE,
-    GET_PROFILE_EVENTS_BY_HANDLE
+    GET_PROFILE_EVENTS_BY_HANDLE,
+    GET_EVENTS_BY_RECURRING_ID, GET_RECURRING_BY_ID
 } from './schemas'
 import {fixDate} from '../uitls'
 import dayjs from '@/libs/dayjs'
@@ -474,6 +475,26 @@ export const getMapEvents = async (groupHandle: string) => {
     })
 
     return response.data.events.map((e: Event) => fixDate(e)) as Event[]
+}
+
+export const getEventByRecurringId = async (recurringId: number) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_EVENTS_BY_RECURRING_ID,
+        variables: {recurringId}
+    })
+
+    return response.data.events.map((e: Event) => fixDate(e)) as Event[]
+}
+
+export const getRecurringById = async (recurringId: number) => {
+    const client = getGqlClient()
+    const response = await client.query({
+        query: GET_RECURRING_BY_ID,
+        variables: {id: recurringId}
+    })
+
+    return response.data.recurrings[0] as Recurring || null
 }
 
 
