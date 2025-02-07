@@ -10,13 +10,16 @@ import {
 import {fixDate} from '../uitls'
 import dayjs from '@/libs/dayjs'
 import {gql} from '@apollo/client'
+import {SolaSdkFunctionParams} from '../types'
 
-export const getStaredEvent = async (authToken: string) => {
+export const getStaredEvent = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{
+    authToken: string
+}>) => {
     if (!authToken) {
         throw new Error('authToken is required')
     }
 
-    const url = `${getSdkConfig().api}/event/my_event_list?collection=my_stars&auth_token=${authToken}`
+    const url = `${getSdkConfig(clientMode).api}/event/my_event_list?collection=my_stars&auth_token=${authToken}`
     try {
         const res = await fetch(url)
         if (!res.ok) {
@@ -38,12 +41,14 @@ export const getStaredEvent = async (authToken: string) => {
     }
 }
 
-export const getMyPendingApprovalEvent = async (authToken: string) => {
+export const getMyPendingApprovalEvent = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{
+    authToken: string
+}>) => {
     if (!authToken) {
         throw new Error('authToken is required')
     }
 
-    const url = `${getSdkConfig().api}/event/pending_approval_list?auth_token=${authToken}`
+    const url = `${getSdkConfig(clientMode).api}/event/pending_approval_list?auth_token=${authToken}`
     try {
         const res = await fetch(url)
         if (!res.ok) {
@@ -65,8 +70,10 @@ export const getMyPendingApprovalEvent = async (authToken: string) => {
     }
 }
 
-export const getProfileEventByHandle = async (handle: string) => {
-    const client = getGqlClient()
+export const getProfileEventByHandle = async ({params: {handle}, clientMode}: SolaSdkFunctionParams<{
+    handle: string
+}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_PROFILE_EVENTS_BY_HANDLE,
         variables: {handle}
@@ -79,8 +86,10 @@ export const getProfileEventByHandle = async (handle: string) => {
     }
 }
 
-export const getGroupEventByHandle = async (handle: string) => {
-    const client = getGqlClient()
+export const getGroupEventByHandle = async ({params: {handle}, clientMode}: SolaSdkFunctionParams<{
+    handle: string
+}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_GROUP_EVENT_BY_HANDLE,
         variables: {handle}
@@ -89,8 +98,8 @@ export const getGroupEventByHandle = async (handle: string) => {
     return response.data.events.map((e: Event) => fixDate(e)) as Event[]
 }
 
-export const getEventIcsUrl = (groupHandle: string) => {
-    const url = `${getSdkConfig().api}/group/icalendar?group_name=${groupHandle}`
+export const getEventIcsUrl = ({params: {groupHandle}, clientMode}: SolaSdkFunctionParams<{ groupHandle: string }>) => {
+    const url = `${getSdkConfig(clientMode).api}/group/icalendar?group_name=${groupHandle}`
     const googleCalendarLink = `https://www.google.com/calendar/render?cid=${encodeURIComponent(url.replace('https', 'http'))}`;
     const outlookCalendarLink = `https://outlook.live.com/calendar/0/addcalendar?url=${encodeURIComponent(url)}`;
     const systemCalendarLink = url.replace('https', 'webcal')
@@ -139,7 +148,10 @@ export type EventListFilterProps = {
     skip_recurring?: string
 }
 
-export const getEvents = async (filters: EventListFilterProps, authToken?: string) => {
+export const getEvents = async ({params: {filters, authToken}, clientMode}: SolaSdkFunctionParams<{
+    filters: EventListFilterProps,
+    authToken?: string
+}>) => {
     const searchParams = new URLSearchParams()
     for (const key in filters) {
         if (filters.hasOwnProperty(key)) {
@@ -152,7 +164,7 @@ export const getEvents = async (filters: EventListFilterProps, authToken?: strin
 
     !!authToken && searchParams.append("auth_token", authToken)
 
-    const url = `${getSdkConfig().api}/event/list?${searchParams.toString()}`
+    const url = `${getSdkConfig(clientMode).api}/event/list?${searchParams.toString()}`
     // console.log(url)
     const res = await fetch(url)
 
@@ -172,8 +184,10 @@ export const getEvents = async (filters: EventListFilterProps, authToken?: strin
     }) as Event[]
 }
 
-export const getEventDetailById = async (eventId: number) => {
-    const client = getGqlClient()
+export const getEventDetailById = async ({params: {eventId}, clientMode}: SolaSdkFunctionParams<{
+    eventId: number
+}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_EVENT_DETAIL_BY_ID,
         variables: {id: eventId}
@@ -186,18 +200,22 @@ export const getEventDetailById = async (eventId: number) => {
     return fixDate(response.data.events[0]) as EventDetail
 }
 
-export const sendEventFeedback = async (props: { eventId: number, feedback: string, authToken: string }) => {
-    const res = await fetch(`${getSdkConfig().api}/comment/create`, {
+export const sendEventFeedback = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: number,
+    feedback: string,
+    authToken: string
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/comment/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            auth_token: props.authToken,
+            auth_token: params.authToken,
             comment_type: 'feedback',
             item_type: 'Event',
-            item_id: props.eventId,
-            content: props.feedback
+            item_id: params.eventId,
+            content: params.feedback
         })
     })
 
@@ -206,15 +224,18 @@ export const sendEventFeedback = async (props: { eventId: number, feedback: stri
     }
 }
 
-export const attendEventWithoutTicket = async (eventId: number, authToken: string) => {
-    const res = await fetch(`${getSdkConfig().api}/event/join`, {
+export const attendEventWithoutTicket = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: number,
+    authToken: string
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/event/join`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            id: eventId,
-            auth_token: authToken
+            id: params.eventId,
+            auth_token: params.authToken
         })
     })
 
@@ -241,14 +262,17 @@ const buildSaveEventProps = (eventDraft: EventDraftType) => {
     }
 }
 
-export const createEvent = async (props: { eventDraft: EventDraftType, authToken: string }) => {
+export const createEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventDraft: EventDraftType,
+    authToken: string
+}>) => {
     const eventProps = {
-        auth_token: props.authToken,
-        group_id: props.eventDraft.group_id,
-        event: buildSaveEventProps(props.eventDraft)
+        auth_token: params.authToken,
+        group_id: params.eventDraft.group_id,
+        event: buildSaveEventProps(params.eventDraft)
     }
 
-    const response = await fetch(`${getSdkConfig().api}/event/create`, {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -278,12 +302,14 @@ export type GetOccupiedTimeEventProps = {
 }
 
 export const getOccupiedTimeEvent = async ({
-                                               startTime,
-                                               endTime,
-                                               timezone,
-                                               venueId,
-                                               excludeEventId
-                                           }: GetOccupiedTimeEventProps) => {
+                                               params: {
+                                                   startTime,
+                                                   endTime,
+                                                   timezone,
+                                                   venueId,
+                                                   excludeEventId
+                                               }, clientMode
+                                           }: SolaSdkFunctionParams<GetOccupiedTimeEventProps>) => {
     if (!venueId) return null
 
     const doc = gql`query MyQuery {
@@ -296,7 +322,7 @@ export const getOccupiedTimeEvent = async ({
         }
     }`
 
-    const client = getGqlClient()
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: doc
     })
@@ -323,17 +349,17 @@ export interface CreateRecurringEventParams {
     interval: string,
 }
 
-export const createRecurringEvent = async (props: CreateRecurringEventParams) => {
+export const createRecurringEvent = async ({params, clientMode}: SolaSdkFunctionParams<CreateRecurringEventParams>) => {
     const eventProps = {
-        auth_token: props.authToken,
-        group_id: props.eventDraft.group_id,
-        event_count: props.eventCount,
-        timezone: props.eventDraft.timezone,
-        interval: props.interval,
-        event: buildSaveEventProps(props.eventDraft)
+        auth_token: params.authToken,
+        group_id: params.eventDraft.group_id,
+        event_count: params.eventCount,
+        timezone: params.eventDraft.timezone,
+        interval: params.interval,
+        event: buildSaveEventProps(params.eventDraft)
     }
 
-    const response = await fetch(`${getSdkConfig().api}/recurring/create`, {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/recurring/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -352,14 +378,17 @@ export const createRecurringEvent = async (props: CreateRecurringEventParams) =>
     }
 }
 
-export const updateEvent = async (props: { eventDraft: EventDraftType, authToken: string }) => {
+export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventDraft: EventDraftType,
+    authToken: string
+}>) => {
     const eventProps = {
-        auth_token: props.authToken,
-        id: props.eventDraft.id,
-        event: buildSaveEventProps(props.eventDraft)
+        auth_token: params.authToken,
+        id: params.eventDraft.id,
+        event: buildSaveEventProps(params.eventDraft)
     }
 
-    const response = await fetch(`${getSdkConfig().api}/event/update`, {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/update`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -380,8 +409,11 @@ export const updateEvent = async (props: { eventDraft: EventDraftType, authToken
     return data.event as Event
 }
 
-export const cancelEvent = async (eventId: number, authToken: string) => {
-    const response = await fetch(`${getSdkConfig().api}/event/unpublish`, {
+export const cancelEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: number,
+    authToken: string
+}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/unpublish`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -402,8 +434,11 @@ export const cancelEvent = async (eventId: number, authToken: string) => {
     }
 }
 
-export const cancelAttendEvent = async (eventId: number, authToken: string) => {
-    const response = await fetch(`${getSdkConfig().api}/event/cancel`, {
+export const cancelAttendEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: number,
+    authToken: string
+}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/cancel`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -428,16 +463,19 @@ type CheckInEventForParticipantParams = {
     participantProfileId: number
 }
 
-export const checkInEventForParticipant = async (props: CheckInEventForParticipantParams) => {
-    const response = await fetch(`${getSdkConfig().api}/event/check`, {
+export const checkInEventForParticipant = async ({
+                                                     params,
+                                                     clientMode
+                                                 }: SolaSdkFunctionParams<CheckInEventForParticipantParams>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/check`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            auth_token: props.authToken,
-            id: props.eventId,
-            profile_id: props.participantProfileId
+            auth_token: params.authToken,
+            id: params.eventId,
+            profile_id: params.participantProfileId
         })
     })
 
@@ -449,8 +487,11 @@ export const checkInEventForParticipant = async (props: CheckInEventForParticipa
     return data.participant as Participant
 }
 
-export const sendEventPoap = async (eventId: number, authToken: string) => {
-    const response = await fetch(`${getSdkConfig().api}/event/send_badge`, {
+export const sendEventPoap = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: number,
+    authToken: string
+}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/send_badge`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -466,8 +507,10 @@ export const sendEventPoap = async (eventId: number, authToken: string) => {
     }
 }
 
-export const getMapEvents = async (groupHandle: string) => {
-    const client = getGqlClient()
+export const getMapEvents = async ({params: {groupHandle}, clientMode}: SolaSdkFunctionParams<{
+    groupHandle: string
+}>) => {
+    const client = getGqlClient(clientMode)
     const now = dayjs().toISOString()
     const response = await client.query({
         query: GET_MAP_EVENTS_BY_GROUP_HANDLE,
@@ -477,8 +520,10 @@ export const getMapEvents = async (groupHandle: string) => {
     return response.data.events.map((e: Event) => fixDate(e)) as Event[]
 }
 
-export const getEventByRecurringId = async (recurringId: number) => {
-    const client = getGqlClient()
+export const getEventByRecurringId = async ({params: {recurringId}, clientMode}: SolaSdkFunctionParams<{
+    recurringId: number
+}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_EVENTS_BY_RECURRING_ID,
         variables: {recurringId}
@@ -487,7 +532,9 @@ export const getEventByRecurringId = async (recurringId: number) => {
     return response.data.events.map((e: Event) => fixDate(e)) as Event[]
 }
 
-export const getRecurringById = async (recurringId: number) => {
+export const getRecurringById = async ({params: {recurringId}, clientMode}: SolaSdkFunctionParams<{
+    recurringId: number
+}>) => {
     const client = getGqlClient()
     const response = await client.query({
         query: GET_RECURRING_BY_ID,
@@ -506,7 +553,16 @@ export type UpdateRecurringEventProps = {
     endTimeDiff: number
 }
 
-export const updateRecurringEvent = async ({startTimeDiff, endTimeDiff, eventDraft, recurringId, afterEventId, authToken}: UpdateRecurringEventProps) => {
+export const updateRecurringEvent = async ({
+                                               params: {
+                                                   startTimeDiff,
+                                                   endTimeDiff,
+                                                   eventDraft,
+                                                   recurringId,
+                                                   afterEventId,
+                                                   authToken
+                                               }, clientMode
+                                           }: SolaSdkFunctionParams<UpdateRecurringEventProps>) => {
     const props = {
         auth_token: authToken,
         recurring_id: recurringId,
@@ -517,7 +573,7 @@ export const updateRecurringEvent = async ({startTimeDiff, endTimeDiff, eventDra
         end_time_diff: endTimeDiff
     }
 
-    const response = await fetch(`${getSdkConfig().api}/recurring/update`, {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/recurring/update`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -532,7 +588,7 @@ export const updateRecurringEvent = async ({startTimeDiff, endTimeDiff, eventDra
 
 export type CancelRecurringEventProps = Omit<UpdateRecurringEventProps, 'eventDraft' | 'endTimeDiff' | 'startTimeDiff'>
 
-export const cancelRecurringEvent = async ({recurringId, afterEventId, authToken}: CancelRecurringEventProps) => {
+export const cancelRecurringEvent = async ({params: {recurringId, afterEventId, authToken}, clientMode}: SolaSdkFunctionParams<CancelRecurringEventProps>) => {
     const props = {
         auth_token: authToken,
         recurring_id: recurringId,
@@ -540,7 +596,7 @@ export const cancelRecurringEvent = async ({recurringId, afterEventId, authToken
         selector: afterEventId ? 'after' : 'all',
     }
 
-    const response = await fetch(`${getSdkConfig().api}/recurring/cancel_event`, {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/recurring/cancel_event`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

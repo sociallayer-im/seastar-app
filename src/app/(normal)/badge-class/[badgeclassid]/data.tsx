@@ -2,6 +2,7 @@ import {redirect} from "next/navigation"
 import {getBadgeClassDetailByBadgeClassId, getProfileDetailByHandle, Profile} from '@sola/sdk'
 import {getCurrProfile} from '@/app/actions'
 import {pickSearchParam} from '@/utils'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface BadgeClassPageParams {
     badgeclassid: string
@@ -17,7 +18,10 @@ export interface BadgeClassPageDataProps {
 }
 
 export default async function BadgeClassPageData({params, searchParams}: BadgeClassPageDataProps) {
-    const badgeClassDetail = await getBadgeClassDetailByBadgeClassId(parseInt(params.badgeclassid))
+    const badgeClassDetail = await getBadgeClassDetailByBadgeClassId({
+        params: {badgeClassId: parseInt(params.badgeclassid)},
+        clientMode: CLIENT_MODE
+    })
     const currProfile = await getCurrProfile()
 
     const toProfileHandle = pickSearchParam(searchParams.to)
@@ -28,7 +32,10 @@ export default async function BadgeClassPageData({params, searchParams}: BadgeCl
 
     let toProfile: Profile | null = null
     if (!!toProfileHandle) {
-        toProfile = await getProfileDetailByHandle(toProfileHandle)
+        toProfile = await getProfileDetailByHandle({
+            params: {handle: toProfileHandle},
+            clientMode:CLIENT_MODE
+        })
     }
 
     return {

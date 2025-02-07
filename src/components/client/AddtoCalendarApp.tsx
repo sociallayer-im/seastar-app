@@ -5,11 +5,15 @@ import useModal from '@/components/client/Modal/useModal'
 import {Button, buttonVariants} from '@/components/shadcn/Button'
 import {Dictionary} from '@/lang'
 import CopyText from '@/components/client/CopyText'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function AddToCalendarAppBtn({groupHandle, lang}: { groupHandle: string, lang: Dictionary }) {
     const {openModal} = useModal()
 
-    const urls = getEventIcsUrl(groupHandle)
+    const urls = getEventIcsUrl({
+        params: {groupHandle: groupHandle},
+        clientMode: CLIENT_MODE
+    })
 
     const showAddToCalendarDialog = () => {
         openModal({

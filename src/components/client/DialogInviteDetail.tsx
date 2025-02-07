@@ -6,6 +6,7 @@ import DisplayDateTime from '@/components/client/DisplayDateTime'
 import {Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
 import {useEffect, useState} from 'react'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface DialogInviteDetailProps {
     inviteDetail: InviteDetail
@@ -31,7 +32,13 @@ export default function DialogInviteDetail({inviteDetail, lang, close}: DialogIn
                 return
             }
 
-            await acceptInvite(inviteDetail.id, authToken)
+            await acceptInvite({
+                params: {
+                    inviteId: inviteDetail.id,
+                    authToken
+                },
+                clientMode: CLIENT_MODE
+            })
             window.location.href = `/group/${inviteDetail.group.handle}`
         } catch (e: unknown) {
             closeModal(loading)
@@ -50,7 +57,12 @@ export default function DialogInviteDetail({inviteDetail, lang, close}: DialogIn
                 return
             }
 
-            await rejectInvite(inviteDetail.id, authToken)
+            await rejectInvite({
+                params: {
+                    inviteId: inviteDetail.id, authToken
+                },
+                clientMode: CLIENT_MODE
+            })
             closeModal(loading)
             close()
         } catch (e) {

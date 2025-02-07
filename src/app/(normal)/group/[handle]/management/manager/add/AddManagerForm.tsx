@@ -10,6 +10,7 @@ import {Button} from '@/components/shadcn/Button'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useModal from '@/components/client/Modal/useModal'
+import {CLIENT_MODE} from '@/app/config'
 
 interface AddManagerFormProps {
     lang: Dictionary
@@ -45,7 +46,14 @@ export default function AddManagerForm({lang, members, group}: AddManagerFormPro
                 return
             }
 
-            await addManager(selected[0]!.profile.id, group.id, authToken)
+            await addManager({
+                params: {
+                    profileId: selected[0]!.profile.id,
+                    groupId: group.id,
+                    authToken
+                },
+                 clientMode: CLIENT_MODE
+            })
             history.go(-1)
         } catch (e: unknown) {
             console.error(e)

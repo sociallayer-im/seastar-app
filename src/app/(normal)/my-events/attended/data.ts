@@ -1,8 +1,8 @@
 import {getCurrProfile} from '@/app/actions'
 import {redirect} from 'next/navigation'
-import {ProfileEventListData} from '@/app/(normal)/profile/[handle]/TabEvents/data'
 import {getProfileEventByHandle} from '@sola/sdk'
 import {setEventAttendedStatus} from '@/utils'
+import {CLIENT_MODE} from '@/app/config'
 
 export default async function MyEventsAttendedPageData() {
     const currProfile = await getCurrProfile()
@@ -11,7 +11,10 @@ export default async function MyEventsAttendedPageData() {
         redirect('/404')
     }
 
-    const profileEvents = await getProfileEventByHandle(currProfile.handle)
+    const profileEvents = await getProfileEventByHandle({
+        params: {handle: currProfile.handle},
+        clientMode: CLIENT_MODE
+    })
 
     const attends = setEventAttendedStatus({
         events: profileEvents.attends,

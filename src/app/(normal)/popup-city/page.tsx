@@ -4,10 +4,11 @@ import Image from 'next/image'
 import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
+import {CLIENT_MODE} from '@/app/config'
 
 export default async function PopupCityListPage() {
     const {lang} = await selectLang()
-    const popupCities = await getPopupCities()
+    const popupCities = await getPopupCities({clientMode: CLIENT_MODE})
 
     return <div className="page-width min-h-[100svh] pt-0 sm:pt-6 !pb-16">
         <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">

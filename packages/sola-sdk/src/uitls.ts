@@ -1,7 +1,11 @@
 import {getProfileByHandlesOrAddresses} from './profile'
+import {CLIENT_MODE} from '@/app/config'
 
 export const checkAndGetProfileByHandlesOrAddresses = async (handlesOrAddresses: string[]) => {
-    const {handleResult, addressResult} = await getProfileByHandlesOrAddresses(handlesOrAddresses)
+    const {handleResult, addressResult} = await getProfileByHandlesOrAddresses({
+        params: {handlesOrAddresses},
+        clientMode: CLIENT_MODE
+    })
     handlesOrAddresses.forEach((item, index) => {
         const hasHandleProfile = handleResult.some(h => h.handle === item)
         if (!hasHandleProfile) {

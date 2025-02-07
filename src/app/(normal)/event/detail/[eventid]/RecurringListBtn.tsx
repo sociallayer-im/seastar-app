@@ -6,6 +6,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {buttonVariants} from '@/components/shadcn/Button'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface RecurringListBtnProps {
     recurring: Recurring
@@ -20,7 +21,10 @@ export default function RecurringListBtn({recurring, lang, currEventId}: Recurri
     const showDialog = async () => {
         const loading = showLoading()
         try {
-            const recurringEvents = await getEventByRecurringId(recurring.id)
+            const recurringEvents = await getEventByRecurringId({
+                params: {recurringId: recurring.id},
+                clientMode: CLIENT_MODE
+            })
             openModal({
                 content: (close) => <DialogRecurringList
                     events={recurringEvents}
@@ -56,19 +60,19 @@ function DialogRecurringList({events, lang, currEventId, close}: DialogRecurring
     return <div className="w-[350px] h-auto max-h-[90svh] overflow-auto p-3 shadow rounded-lg bg-white">
         <div className="flex-row-item-center justify-between mb-3">
             <div className="font-semibold text-lg">{lang['Repeating Events']}</div>
-            <i className="uil-times-circle cursor-pointer text-xl text-gray-500" onClick={close} />
+            <i className="uil-times-circle cursor-pointer text-xl text-gray-500" onClick={close}/>
         </div>
         <div className="grid grid-cols-1 gap-1">
-            { events.map((event) => {
-                    const color = currEventId === event.id ? '!text-primary' : '!text-foreground'
-                    return <a className={`${buttonVariants({variant: 'secondary'})} ${color}`}
-                              href={`/event/detail/${event.id}`}
-                              key={event.id}>
-                        <div className="flex-row-item-center">
-                            <DisplayDateTime dataTimeStr={event.start_time} tz={event.timezone}/>
-                        </div>
-                    </a>
-                })
+            {events.map((event) => {
+                const color = currEventId === event.id ? '!text-primary' : '!text-foreground'
+                return <a className={`${buttonVariants({variant: 'secondary'})} ${color}`}
+                          href={`/event/detail/${event.id}`}
+                          key={event.id}>
+                    <div className="flex-row-item-center">
+                        <DisplayDateTime dataTimeStr={event.start_time} tz={event.timezone}/>
+                    </div>
+                </a>
+            })
             }
         </div>
     </div>

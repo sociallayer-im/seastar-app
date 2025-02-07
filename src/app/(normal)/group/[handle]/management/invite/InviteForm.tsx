@@ -12,6 +12,7 @@ import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import resolveLocalCsvFile from '@/utils/markdown/resolveLocalCsvFile'
 import useModal from '@/components/client/Modal/useModal'
+import {CLIENT_MODE} from '@/app/config'
 
 
 export interface InviteFormProps {
@@ -79,7 +80,16 @@ export default function InviteForm({lang, group}: InviteFormProps) {
                 setError('You are not logged in')
                 return
             }
-            const res = await sendInvite(group.id, handles, role, reason, authToken)
+            await sendInvite({
+                params: {
+                    groupId: group.id,
+                    receivers: handles,
+                    role,
+                    message: reason,
+                    authToken
+                },
+                clientMode: CLIENT_MODE
+            })
             closeModal(loading)
             window.location.href = `/group/${group.handle}/management/invite/success?role=${role}`
         } catch (e: unknown) {

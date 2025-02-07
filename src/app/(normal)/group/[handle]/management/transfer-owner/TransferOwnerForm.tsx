@@ -9,6 +9,7 @@ import NoData from '@/components/NoData'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface MemberManagementFormProps {
     members: Membership[],
@@ -37,17 +38,26 @@ export default function TransferOwnerForm({members, lang, group}: MemberManageme
             const authToken = getAuth()
             if (!authToken) {
                 closeModal(loading)
-                toast({title: 'Please log in first' , variant: 'destructive'})
+                toast({title: 'Please log in first', variant: 'destructive'})
                 return
             }
 
-            await transferGroup(group.id, selected!.profile.handle, authToken)
+            await transferGroup({
+                params: {
+                    groupId: group.id,
+                    newOwnerHandle: selected!.profile.handle,
+                    authToken
+                },
+                clientMode: CLIENT_MODE
+            })
             window.location.href = `/group/${group.handle}`
         } catch (e: unknown) {
             console.error(e)
             closeModal(loading)
-            toast({description: e instanceof Error ? e.message : 'An error occurred',
-                variant: 'destructive'})
+            toast({
+                description: e instanceof Error ? e.message : 'An error occurred',
+                variant: 'destructive'
+            })
         }
     }
 
@@ -67,8 +77,10 @@ export default function TransferOwnerForm({members, lang, group}: MemberManageme
             <div className="w-full max-w-[800px] mx-auto">
                 {memberList.map((member, i) => {
                     return <div key={i}
-                        onClick={() => { handleSelect(member) }}
-                        className="mb-3 justify-between cursor-pointer flex-row-item-center shadow rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
+                                onClick={() => {
+                                    handleSelect(member)
+                                }}
+                                className="mb-3 justify-between cursor-pointer flex-row-item-center shadow rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
                         <div className='flex-row-item-center'>
                             <img
                                 className="w-7 h-7 rounded-full mr-2"

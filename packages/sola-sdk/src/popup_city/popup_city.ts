@@ -1,10 +1,10 @@
-import {getGqlClient, getSdkConfig} from '../client'
+import {ClientMode, getGqlClient, getSdkConfig} from '../client'
 import {Event, Group, getGroupDetailById, GroupDetail, getGroupEventByHandle} from '@sola/sdk'
 import {PopupCity} from './types'
 import {GET_POPUP_CITIES} from './schemas'
 
-export const discoverData = async () => {
-    const url = `${getSdkConfig().api}/event/discover`
+export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
+    const url = `${getSdkConfig(clientMode).api}/event/discover`
     const response = await fetch(url)
 
     if (!response.ok) {
@@ -12,7 +12,7 @@ export const discoverData = async () => {
     }
 
     const data = await response.json()
-    const mapGroup = await getGroupDetailById(3558)
+    const mapGroup = await getGroupDetailById({params: {groupId: 3558}, clientMode})
 
     const sortedPopupCities = data.popups.sort((a: PopupCity, b: PopupCity) => {
         // if a popup city has ":featured" tag, it should be placed at the top
@@ -21,7 +21,7 @@ export const discoverData = async () => {
         }
     })
 
-    const popupCityMap = await getGroupEventByHandle('popup2025')
+    const popupCityMap = await getGroupEventByHandle({params: {handle: 'popup2025'}, clientMode})
 
     return {
         eventGroups: data.groups as Group[],
@@ -32,8 +32,8 @@ export const discoverData = async () => {
     }
 }
 
-export const getPopupCities = async () => {
-    const client = getGqlClient()
+export const getPopupCities = async ({clientMode}: {clientMode: ClientMode}) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_POPUP_CITIES
     })

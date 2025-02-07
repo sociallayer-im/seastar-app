@@ -10,6 +10,7 @@ import MarkerForm from '@/app/(normal)/marker/[grouphandle]/create/MarkerForm'
 import {emptyMarker} from '@/app/(normal)/marker/[grouphandle]/create/data'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function TopBar({groupDetail, lang, markerCategory}: {
     groupDetail: GroupDetail,
@@ -42,8 +43,8 @@ export default function TopBar({groupDetail, lang, markerCategory}: {
         document.getElementById(`category-${markerCategory}`)?.scrollIntoView({behavior: 'instant', block: 'center'})
     }, [])
 
-    const showCreateMarkerModal = (draft?:MarkerDraft) => {
-         draft = draft || {
+    const showCreateMarkerModal = (draft?: MarkerDraft) => {
+        draft = draft || {
             ...emptyMarker,
             group_id: groupDetail.id
         }
@@ -77,7 +78,7 @@ export default function TopBar({groupDetail, lang, markerCategory}: {
                 className="flex-row-item-center absolute top-3 justify-start md:justify-center w-full flex-nowrap overflow-auto">
 
         <Button variant={'primary'} size={'sm'} onClick={() => showCreateMarkerModal()}
-           className="bg-background ml-3 text-sm">
+                className="bg-background ml-3 text-sm">
             <i className="uil-plus-circle text-lg"/>
             {lang['Create a Marker']}
         </Button>
@@ -125,7 +126,13 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
         const loadingId = showLoading()
         try {
             const authToken = getAuth()
-            await createMarker(draft, authToken!)
+            await createMarker({
+                params: {
+                    marker: draft,
+                    authToken: authToken!
+                },
+                clientMode: CLIENT_MODE
+            })
 
             toast({
                 title: 'Create marker success',
@@ -152,16 +159,20 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
         close()
     }
 
-    return <div className="max-w-[96vw] w-[500px] bg-white rounded-lg p-3 shadow max-h-[96svh] sm:max-h-[80svh] overflow-auto">
+    return <div
+        className="max-w-[96vw] w-[500px] bg-white rounded-lg p-3 shadow max-h-[96svh] sm:max-h-[80svh] overflow-auto">
         <div className="font-semibold mb-6 text-lg flex-row-item-center justify-between">
             <div>{lang['Create a Marker']}</div>
-            <i className="uil-times-circle text-2xl cursor-pointer text-gray-500" onClick={close} />
+            <i className="uil-times-circle text-2xl cursor-pointer text-gray-500" onClick={close}/>
         </div>
         <div className="flex-row-item-center !flex-wrap">
             <MarkerForm
                 onCancel={close}
                 markerDraft={draft}
-                onConfirm={async (draft) => {await handleCreateMarker(draft);close()}}
+                onConfirm={async (draft) => {
+                    await handleCreateMarker(draft);
+                    close()
+                }}
                 lang={lang}
                 onPickLocation={handlePickLocation}
             />

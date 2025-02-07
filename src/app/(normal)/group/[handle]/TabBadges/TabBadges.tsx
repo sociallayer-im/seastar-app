@@ -2,6 +2,7 @@ import GroupBadgeData from "@/app/(normal)/group/[handle]/TabBadges/data"
 import Tabs from "@/app/(normal)/group/[handle]/TabBadges/Tabs"
 import {getCurrProfile, selectLang} from "@/app/actions"
 import {getGroupDetailByHandle} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 interface TabBadgesProps {
     handle: string
@@ -10,12 +11,14 @@ interface TabBadgesProps {
     isMember: boolean
 }
 
-export default async function TabBadges ({handle, isManager, isIssuer, isMember}: TabBadgesProps) {
+export default async function TabBadges({handle, isManager, isIssuer, isMember}: TabBadgesProps) {
     const {badgeClasses, groupInvites} = await GroupBadgeData(handle)
     const {lang} = await selectLang()
     const currProfile = await getCurrProfile() || undefined
-    const groupsDetail = await getGroupDetailByHandle(handle)
-
+    const groupsDetail = await getGroupDetailByHandle({
+        params: {groupHandle: handle},
+        clientMode: CLIENT_MODE
+    })
 
 
     return <Tabs
@@ -26,5 +29,5 @@ export default async function TabBadges ({handle, isManager, isIssuer, isMember}
         created={badgeClasses}
         inviting={groupInvites}
         currProfile={currProfile}
-        lang={lang} />
+        lang={lang}/>
 }

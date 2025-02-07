@@ -3,8 +3,8 @@
 import {cookies, headers} from 'next/headers'
 import {getLang, getLangType} from '@/lang'
 import {AUTH_FIELD} from '@/utils'
-import {getProfileByToken} from '@/service/solar'
 import {getProfileDetailByAuth} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export const selectLang = async function () {
     const acceptLanguage = headers().get('accept-language')
@@ -27,5 +27,8 @@ export const getCurrProfile = async function () {
         return null
     }
 
-    return await getProfileDetailByAuth(authToken)
+    return await getProfileDetailByAuth({
+        params: {authToken: authToken},
+        clientMode: CLIENT_MODE
+    })
 }

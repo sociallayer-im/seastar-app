@@ -6,6 +6,7 @@ import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 import {getAuth} from '@/utils'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface RemoveManagerBtnProps {
     profileId: number,
@@ -32,9 +33,15 @@ export default function RemoveManagerBtn({profileId, groupId, lang}: RemoveManag
                 return
             }
 
-            await removeManager(profileId, groupId, authToken)
+            await removeManager({
+                params: {
+                    profileId: profileId,
+                    groupId,
+                    authToken
+                }, clientMode: CLIENT_MODE
+            })
             window.location.reload()
-        } catch (e: unknown){
+        } catch (e: unknown) {
             console.error(e)
             closeModal(loading)
             toast({

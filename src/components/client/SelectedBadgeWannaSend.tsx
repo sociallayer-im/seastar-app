@@ -10,6 +10,7 @@ import {
     Group,
     ProfileDetail
 } from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface SelectedBadgeWannaSendProps {
     children?: ReactNode
@@ -39,12 +40,18 @@ export default function SelectedBadgeWannaSend({
         try {
             let profileBadgeClasses: BadgeClass[] = []
             if (profileDetail) {
-                profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle(profileDetail.handle)).badgeClasses
+                profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle({
+                    params: {handle: profileDetail.handle},
+                    clientMode: CLIENT_MODE
+                })).badgeClasses
             }
 
             let groupBadgeClasses: BadgeClass[] = []
             if (group) {
-                groupBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle(group.handle)).badgeClasses
+                groupBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle({
+                    params: {handle: group.handle},
+                    clientMode: CLIENT_MODE
+                })).badgeClasses
             }
 
             selectBadgeClass({

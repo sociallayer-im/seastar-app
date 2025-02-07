@@ -1,4 +1,4 @@
-import {analyzeGroupMembershipAndCheckProfilePermissions, AUTH_FIELD, getPrefillEventDateTime} from "@/utils"
+import {analyzeGroupMembershipAndCheckProfilePermissions, getPrefillEventDateTime} from "@/utils"
 import {redirect} from "next/navigation"
 import {getCurrProfile} from '@/app/actions'
 import {
@@ -12,6 +12,7 @@ import {
     Track,
     EventDraftType, VenueDetail, getAvailableGroupsForEventHost, Recurring
 } from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface CreateEventPageDataProps {
     grouphandle: string
@@ -92,7 +93,10 @@ export default async function CreateEventPageData({params}: CreateEventDataProps
         redirect('/')
     }
 
-    const groupDetail = await getGroupDetailByHandle(params.grouphandle)
+    const groupDetail = await getGroupDetailByHandle({
+        params: {groupHandle: params.grouphandle},
+        clientMode: CLIENT_MODE
+    })
 
     if (!groupDetail) {
         redirect('/404')
@@ -105,7 +109,10 @@ export default async function CreateEventPageData({params}: CreateEventDataProps
         isIssuer
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
-    const availableGroupHost = await getAvailableGroupsForEventHost(currProfile.handle)
+    const availableGroupHost = await getAvailableGroupsForEventHost({
+        params: {profileHandle: currProfile.handle},
+        clientMode: CLIENT_MODE
+    })
     const availableHost: Array<Profile | Group> = [currProfile, ...availableGroupHost]
 
     return {

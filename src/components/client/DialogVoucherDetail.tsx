@@ -9,6 +9,7 @@ import Avatar from '@/components/Avatar'
 import {useState} from 'react'
 import useModal from '@/components/client/Modal/useModal'
 import {getAuth, clientToSignIn, displayProfileName} from '@/utils'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface VoucherDetailProps {
     voucherDetail: VoucherDetail
@@ -61,11 +62,23 @@ export default function DialogVoucherDetail({
             const authToken = getAuth()
             if (voucherDetail.strategy === 'code') {
                 if (!voucherCode && isOwner) {
-                    voucherCode = await getVoucherCode(voucherDetail.id, authToken!)
+                    voucherCode = await getVoucherCode({
+                        params: {
+                            voucherId: voucherDetail.id,
+                            authToken: authToken!
+                        },
+                        clientMode: CLIENT_MODE
+                    })
                 }
-                await useVoucher({voucherId: voucherDetail.id, code: voucherCode!, authToken: authToken!})
+                await useVoucher({
+                    params: {voucherId: voucherDetail.id, code: voucherCode!, authToken: authToken!},
+                    clientMode: CLIENT_MODE
+                })
             } else {
-                await useVoucher({voucherId: voucherDetail.id, authToken: authToken!})
+                await useVoucher({
+                    params: {voucherId: voucherDetail.id, authToken: authToken!},
+                    clientMode: CLIENT_MODE
+                })
             }
             window.location.href = `/profile/${currProfile!.handle}?tab=badges`
         } catch (e: unknown) {
@@ -79,7 +92,13 @@ export default function DialogVoucherDetail({
         const loading = showLoading()
         try {
             const authToken = getAuth()
-            await rejectVoucher(voucherDetail.badge_class.id, authToken!)
+            await rejectVoucher({
+                params: {
+                    badgeClassId: voucherDetail.badge_class.id,
+                    authToken: authToken!
+                },
+                clientMode: CLIENT_MODE
+            })
             if (close) {
                 close()
             } else {

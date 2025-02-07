@@ -6,11 +6,12 @@ import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface CreateMarkerFormProps {
     draft: MarkerDraft
     lang: Dictionary
-    groupDetail:GroupDetail
+    groupDetail: GroupDetail
 }
 
 export default function CreateMarkerForm({draft, lang, groupDetail}: CreateMarkerFormProps) {
@@ -21,7 +22,10 @@ export default function CreateMarkerForm({draft, lang, groupDetail}: CreateMarke
         const loadingId = showLoading()
         try {
             const authToken = getAuth()
-            const marker = await createMarker(draft, authToken!)
+            await createMarker({
+                params: {marker: draft, authToken: authToken!},
+                clientMode: CLIENT_MODE
+            })
 
             toast({
                 title: 'Create marker success',

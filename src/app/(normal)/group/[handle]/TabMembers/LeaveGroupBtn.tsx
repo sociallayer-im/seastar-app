@@ -7,6 +7,7 @@ import useConfirmDialog from '@/hooks/useConfirmDialog'
 import useModal from '@/components/client/Modal/useModal'
 import {getAuth} from '@/utils'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface LeaveGroupBtnProps {
     lang: Dictionary
@@ -28,7 +29,13 @@ export default function LeaveGroupBtn({lang, group, profile}: LeaveGroupBtnProps
                 toast({title: 'Please login first', variant: 'destructive'})
                 return
             }
-            await leaveGroup(profile.id, group.id, authToken)
+            await leaveGroup({
+                params: {
+                    groupId: group.id,
+                    profileId: profile.id,
+                    authToken,
+                }, clientMode: CLIENT_MODE
+            })
             window.location.reload()
         } catch (e: unknown) {
             closeModal(loading)
@@ -48,7 +55,7 @@ export default function LeaveGroupBtn({lang, group, profile}: LeaveGroupBtnProps
 
     return <Button
         onClick={showConfirm}
-        className={`text-xs sm:text-sm sm:h-9 mt-3 sm:mt-0`} variant={'warm'} size={'sm'} >
+        className={`text-xs sm:text-sm sm:h-9 mt-3 sm:mt-0`} variant={'warm'} size={'sm'}>
         {lang['Leave Group']}
     </Button>
 }

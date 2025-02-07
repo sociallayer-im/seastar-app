@@ -1,8 +1,7 @@
 'use client'
 
 import {
-    subscriptingInvite,
-    subscriptingVoucher,
+    SubscriptionClient,
     SubscriptionInviteResponse,
     ProfileDetail,
     SubscriptionVoucherResponse
@@ -18,6 +17,7 @@ import {
     newVoucherDisplayed
 } from '@/components/client/Subscription/uilts'
 import useShowVoucher from '@/hooks/useShowVoucher'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function Subscription({lang, profile}: { lang: Dictionary, profile: ProfileDetail }) {
     const [invitesMsg, setInvitesMsg] = useState<SubscriptionInviteResponse>({invites: []})
@@ -57,13 +57,14 @@ export default function Subscription({lang, profile}: { lang: Dictionary, profil
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            subscriptingInvite({
+            const client = new SubscriptionClient(CLIENT_MODE)
+            client.subscriptingInvite({
                 profile,
                 onMessage: (message) => {
                     setInvitesMsg(message)
                 }
             })
-            subscriptingVoucher({
+            client.subscriptingVoucher({
                 profile,
                 onMessage: (message) => {
                     setVouchersMsg(message)

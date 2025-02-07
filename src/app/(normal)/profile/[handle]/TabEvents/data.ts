@@ -1,27 +1,32 @@
-import {cookies} from 'next/headers'
 import {
     getProfileEventByHandle,
-    setSdkConfig,
-    ClientMode,
     getStaredEvent,
     Profile,
-    getMyPendingApprovalEvent
 } from '@sola/sdk'
 import {setEventAttendedStatus} from '@/utils'
-
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
+import {CLIENT_MODE} from '@/app/config'
+import {getServerSideAuth} from '@/app/actions'
 
 export const ProfileEventListData = async function (handle: string, currProfile?: Profile | null) {
-    const profileEvents = await getProfileEventByHandle(handle)
+    const profileEvents = await getProfileEventByHandle({
+        params: {handle: handle},
+        clientMode: CLIENT_MODE
+    })
     const isSelf = currProfile?.handle === handle
 
     const [currProfileAttends, staredEvents] = await Promise.all([
-        currProfile ? (await getProfileEventByHandle(currProfile.handle)).attends : [],
+        currProfile ? (await getProfileEventByHandle({
+            params: {handle: handle},
+            clientMode: CLIENT_MODE
+        })).attends : [],
         (async () => {
             if (isSelf) {
-                const auth_token = cookies().get(process.env.NEXT_PUBLIC_AUTH_FIELD!)?.value
-                if (auth_token) {
-                    return await getStaredEvent(auth_token)
+                const authToken = await getServerSideAuth()
+                if (authToken) {
+                    return await getStaredEvent({
+                        params: {authToken: authToken},
+                        clientMode: CLIENT_MODE
+                    })
                 }
             }
             return []

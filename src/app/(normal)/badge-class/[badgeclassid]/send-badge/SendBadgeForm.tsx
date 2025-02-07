@@ -10,6 +10,7 @@ import {Textarea} from "@/components/shadcn/Textarea"
 import {BadgeClassDetail, Profile, sendAccountVoucher, sendCodeVoucher} from '@sola/sdk'
 import {getAuth} from '@/utils'
 import useModal from '@/components/client/Modal/useModal'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface SendBadgeFormProps {
     badgeClass: BadgeClassDetail
@@ -39,10 +40,13 @@ export default function SendBadgeForm({badgeClass, lang, toProfile, isPrivate}: 
 
         const authToken = getAuth()
         const voucher = await sendCodeVoucher({
-            authToken: authToken!,
-            amount: counter ? Number(counter) : undefined,
-            badgeClassId: badgeClass.id,
-            message: reason
+            params: {
+                authToken: authToken!,
+                amount: counter ? Number(counter) : undefined,
+                badgeClassId: badgeClass.id,
+                message: reason
+            },
+            clientMode: CLIENT_MODE
         })
         location.href = `/voucher/${voucher.id}/share`
     }
@@ -55,10 +59,12 @@ export default function SendBadgeForm({badgeClass, lang, toProfile, isPrivate}: 
 
         const authToken = getAuth()
         const vouchers = await sendAccountVoucher({
-            authToken: authToken!,
-            badgeClassId: badgeClass.id,
-            message: reason,
-            receivers: receivers.map(item => item.handle || item.nickname) as string[]
+            params: {
+                authToken: authToken!,
+                badgeClassId: badgeClass.id,
+                message: reason,
+                receivers: receivers.map(item => item.handle || item.nickname) as string[]
+            }, clientMode: CLIENT_MODE
         })
         location.href = `/voucher/${vouchers[0].id}/share`
     }

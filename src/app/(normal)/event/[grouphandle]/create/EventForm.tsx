@@ -20,6 +20,7 @@ import RepeatForm, {RepeatFormType} from "@/app/(normal)/event/[grouphandle]/cre
 import TracksFilter from '@/components/client/TracksFilter'
 import TagsFilter from '@/components/client/TagsFilter'
 import {getOccupiedTimeEvent, Event, EventDraftType} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -81,11 +82,13 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
             const loading = showLoading()
             try {
                 const occupiedEvents = await getOccupiedTimeEvent({
-                    startTime: draft.start_time,
-                    endTime: draft.end_time,
-                    timezone: draft.timezone!,
-                    venueId: draft.venue_id,
-                    excludeEventId: draft.id
+                    params: {
+                        startTime: draft.start_time,
+                        endTime: draft.end_time,
+                        timezone: draft.timezone!,
+                        venueId: draft.venue_id,
+                        excludeEventId: draft.id
+                    }, clientMode: CLIENT_MODE
                 })
 
                 setOccupiedEvent(occupiedEvents)

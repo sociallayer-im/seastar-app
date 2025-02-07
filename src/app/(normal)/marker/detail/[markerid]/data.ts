@@ -1,6 +1,7 @@
 import {getMarkerById} from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile} from '@/app/actions'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface MarkerDetailPageParams {
     markerid: string
@@ -13,7 +14,10 @@ export interface MarkerDetailPageDataProps {
 export default async function MarkerDetailData({params} : MarkerDetailPageDataProps) {
     const {markerid} = params
 
-    const markerDetail = await getMarkerById(Number(markerid))
+    const markerDetail = await getMarkerById({
+        params: {markerId: parseInt(markerid)},
+        clientMode: CLIENT_MODE
+    })
     const currProfile = await getCurrProfile()
 
     const currProfileIsCreator = markerDetail?.owner.id === currProfile?.id

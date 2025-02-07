@@ -11,6 +11,7 @@ import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatFo
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {useState} from 'react'
 import {Button} from '@/components/shadcn/Button'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function EditEventForm(props: { lang: Dictionary, data: CreateEventPageDataType }) {
     const {showLoading, closeModal, openModal} = useModal()
@@ -22,7 +23,9 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
         const loading = showLoading()
 
         try {
-            const event = await updateEvent({eventDraft, authToken: authToken!})
+            const event = await updateEvent({
+                params: {eventDraft, authToken: authToken!}, clientMode: CLIENT_MODE
+            })
             window.location.href = `/event/detail/${event.id}`
         } catch (e: unknown) {
             console.error(e)
@@ -45,12 +48,14 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
             const endTimeSecondDiff = parseInt(((new Date(props.data.eventDraft.end_time).getTime() - new Date(eventDraft.end_time).getTime()) / 1000).toString())
 
             await updateRecurringEvent({
-                eventDraft,
-                authToken: authToken!,
-                recurringId: eventDraft.recurring_id!,
-                afterEventId: selector === 'after' ? eventDraft.id! : undefined,
-                startTimeDiff: startTimeSecondDiff,
-                endTimeDiff: endTimeSecondDiff,
+                params: {
+                    eventDraft,
+                    authToken: authToken!,
+                    recurringId: eventDraft.recurring_id!,
+                    afterEventId: selector === 'after' ? eventDraft.id! : undefined,
+                    startTimeDiff: startTimeSecondDiff,
+                    endTimeDiff: endTimeSecondDiff,
+                }, clientMode: CLIENT_MODE
             })
             window.location.href = `/event/detail/${eventDraft.id}`
         } catch (e: unknown) {
@@ -97,7 +102,10 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
                 const authToken = getAuth()
                 const loading = showLoading()
                 try {
-                    await cancelEvent(eventDraft.id!, authToken!)
+                    await cancelEvent({
+                        params: {eventId: eventDraft.id!, authToken: authToken!},
+                        clientMode: CLIENT_MODE
+                    })
                     toast({description: 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
                         window.location.href = `/event/${props.data.groupDetail.handle}`
@@ -127,9 +135,11 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
                 const loading = showLoading()
                 try {
                     await cancelRecurringEvent({
-                        recurringId: eventDraft.recurring_id!,
-                        afterEventId: selector === 'after' ? eventDraft.id! : undefined,
-                        authToken: authToken!
+                        params: {
+                            recurringId: eventDraft.recurring_id!,
+                            afterEventId: selector === 'after' ? eventDraft.id! : undefined,
+                            authToken: authToken!
+                        }, clientMode: CLIENT_MODE
                     })
 
                     toast({description: 'Event cancelled', variant: 'success'})

@@ -8,6 +8,7 @@ import {getAuth} from '@/utils'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Textarea} from '@/components/shadcn/Textarea'
 import {Dictionary} from '@/lang'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function EventFeedbackBtn({eventId, lang, className}: {
     eventId: number,
@@ -43,9 +44,12 @@ function DialogFeedback({lang, ...props}: { close: () => void, event_id: number,
         const loading = showLoading()
         try {
             await sendEventFeedback({
-                eventId: props.event_id,
-                feedback: feedback,
-                authToken: authToken!,
+                params: {
+                    eventId: props.event_id,
+                    feedback: feedback,
+                    authToken: authToken!,
+                },
+                clientMode: CLIENT_MODE
             })
             toast({
                 title: 'Feedback sent',

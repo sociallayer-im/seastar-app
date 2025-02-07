@@ -1,14 +1,20 @@
-import {getGroupEventByHandle, Event, getProfileEventByHandle, setSdkConfig, ClientMode, Profile} from '@sola/sdk'
+import {getGroupEventByHandle, Event, getProfileEventByHandle, ClientMode, Profile} from '@sola/sdk'
 import {setEventAttendedStatus} from '@/utils'
+import {CLIENT_MODE} from '@/app/config'
 
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
 export const GroupEventListData = async function (handle: string, currProfile?: Profile | null) {
-    const groupEvents = await getGroupEventByHandle(handle)
+    const groupEvents = await getGroupEventByHandle({
+        params: {handle: handle},
+        clientMode: CLIENT_MODE
+    })
 
-    let currProfileAttends:Event[] = []
+    let currProfileAttends: Event[] = []
     if (currProfile) {
-        currProfileAttends = (await getProfileEventByHandle(currProfile.handle)).attends
+        currProfileAttends = (await getProfileEventByHandle({
+            params: {handle: handle},
+            clientMode: CLIENT_MODE
+        })).attends
     }
 
     return setEventAttendedStatus({

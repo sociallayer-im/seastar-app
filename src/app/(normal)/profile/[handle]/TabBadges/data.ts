@@ -1,10 +1,12 @@
-import {getBadgeAndBadgeClassByOwnerHandle, setSdkConfig, ClientMode} from '@sola/sdk'
-
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
+import {getBadgeAndBadgeClassByOwnerHandle, ClientMode} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 
 export const ProfileBadgeListData = async (handle: string) => {
-    const badgeData = await getBadgeAndBadgeClassByOwnerHandle(handle)
+    const badgeData = await getBadgeAndBadgeClassByOwnerHandle({
+        params: {handle: handle},
+        clientMode: CLIENT_MODE
+    })
 
     // move to top if display equals to 'top'
     const owned = badgeData.badges.sort((a, b) => a.display === 'top' ? -1 : b.display === 'top' ? 1 : 0)

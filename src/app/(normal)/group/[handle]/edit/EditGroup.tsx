@@ -15,6 +15,7 @@ import {Switch} from "@/components/shadcn/Switch"
 import {GroupDetail, updateGroup, Membership, freezeGroup} from '@sola/sdk'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {getAuth} from '@/utils'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface EditProfileProps {
     group: GroupDetail
@@ -63,7 +64,10 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                 throw new Error('Please login first')
             }
 
-            await updateGroup(newGroup, auth_token)
+            await updateGroup({
+                params: {group: newGroup, auth_token: auth_token},
+                clientMode: CLIENT_MODE
+            })
             toast({title: 'Group updated'})
             window.location.href = '/group/' + newGroup.handle
         } catch (e: unknown) {
@@ -88,7 +92,10 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                         toast({title: 'Please login first', variant: 'destructive'})
                         return
                     }
-                    await freezeGroup(group.id, authToken)
+                    await freezeGroup({
+                        params: {groupId: group.id, authToken: authToken!},
+                        clientMode: CLIENT_MODE
+                    })
                     window.location.href = `/profile/${currProfileHandle}`
                 } catch (e: unknown) {
                     console.error(e)

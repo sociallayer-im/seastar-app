@@ -1,10 +1,7 @@
-import {getBadgeClassAndInviteByGroupHandle, setSdkConfig, ClientMode} from '@sola/sdk'
-import * as process from 'node:process'
+import {getBadgeClassAndInviteByGroupHandle} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
-export type SampleInvite = Pick<Solar.Invite, 'id' | 'role' | 'group' >
-
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
 export default async function GroupBadgeData(handle: string) {
-    return await getBadgeClassAndInviteByGroupHandle(handle)
+    return await getBadgeClassAndInviteByGroupHandle({params: {groupHandle: handle}, clientMode: CLIENT_MODE})
 }

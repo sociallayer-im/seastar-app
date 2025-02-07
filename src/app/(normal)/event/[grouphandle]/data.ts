@@ -10,6 +10,7 @@ import {
     setEventAttendedStatus,
 } from '@/utils'
 import {GoogleMapMarkerProps} from '@/components/client/Map'
+import {CLIENT_MODE} from '@/app/config'
 
 export type GroupEventHomeParams = {
     grouphandle?: string
@@ -36,7 +37,10 @@ export default async function GroupEventHomeData({
         redirect('/404')
     }
 
-    const groupDetail = await getGroupDetailByHandle(handle)
+    const groupDetail = await getGroupDetailByHandle({
+        params: {groupHandle: handle},
+        clientMode: CLIENT_MODE
+    })
     if (!groupDetail) {
         redirect('/404')
     }
@@ -64,10 +68,16 @@ export default async function GroupEventHomeData({
     }
 
     const authToken = await getServerSideAuth()
-    const filteredEvents = await getEvents(filterOpts, authToken)
+    const filteredEvents = await getEvents({
+        params: {filters: filterOpts, authToken},
+        clientMode: CLIENT_MODE
+    })
     let currProfileAttends: Event[] = []
     if (!!currProfile) {
-        currProfileAttends = (await getProfileEventByHandle(handle)).attends
+        currProfileAttends = (await getProfileEventByHandle({
+            params: {handle: handle},
+            clientMode: CLIENT_MODE
+        })).attends
     }
 
     const eventWithStatus = setEventAttendedStatus({
@@ -78,7 +88,10 @@ export default async function GroupEventHomeData({
 
     let mapMarkers: GoogleMapMarkerProps[] = []
     if (groupDetail.map_enabled) {
-        const mapEvents = await getMapEvents(groupDetail.handle)
+        const mapEvents = await getMapEvents({
+            params: {groupHandle: groupDetail.handle},
+            clientMode: CLIENT_MODE
+        })
         mapEvents.reverse().forEach((event: Event) => {
             if (!mapMarkers.find((m) => {
                 return m.position.lng === event.geo_lng! && m.position.lat === event.geo_lng!
@@ -93,7 +106,6 @@ export default async function GroupEventHomeData({
             }
         })
     }
-
 
     return {
         mapMarkers,

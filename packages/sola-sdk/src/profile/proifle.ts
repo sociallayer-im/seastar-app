@@ -4,18 +4,18 @@ import {
     GET_PROFILE_BY_HANDLE,
     GET_PROFILE_BY_HANDLES_OR_ADDRESSES, GET_PROFILE_BY_ID
 } from "./schemas"
-import {ProfileDetail} from "./types"
-import Profile = Solar.Profile
+import {ProfileDetail, Profile} from "./types"
+import {SolaSdkFunctionParams} from '../types'
 
 /**
  * Get profile detail by handle
  * @param handle - profile handle
  */
-export const getProfileDetailByHandle = async (handle: string) => {
-    const client = getGqlClient()
+export const getProfileDetailByHandle = async ({params, clientMode}:SolaSdkFunctionParams<{handle: string}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_PROFILE_BY_HANDLE,
-        variables: {handle}
+        variables: {handle: params.handle}
     })
 
     if (!response.data.profiles || !response.data.profiles.length) {
@@ -34,11 +34,11 @@ export const getProfileDetailByHandle = async (handle: string) => {
  * @param id
  */
 
-export const getProfileDetailById = async (id: number) => {
-    const client = getGqlClient()
+export const getProfileDetailById = async ({params, clientMode}:SolaSdkFunctionParams<{id: number}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_PROFILE_BY_ID,
-        variables: {id}
+        variables: {id: params.id}
     })
 
     if (!response.data.profiles || !response.data.profiles.length) {
@@ -52,12 +52,12 @@ export const getProfileDetailById = async (id: number) => {
  * Get profile detail by auth token
  * @param authToken - auth token
  */
-export const getProfileDetailByAuth = async (authToken: string) => {
-    if (!authToken) {
+export const getProfileDetailByAuth = async ({params, clientMode}:SolaSdkFunctionParams<{authToken: string}>) => {
+    if (!params.authToken) {
         throw new Error('No auth token provided')
     }
 
-    const url = `${getSdkConfig().api}/profile/me?auth_token=${authToken}`
+    const url = `${getSdkConfig(clientMode).api}/profile/me?auth_token=${params.authToken}`
     const response = await fetch(url)
 
     if (!response.ok) {
@@ -73,13 +73,13 @@ export const getProfileDetailByAuth = async (authToken: string) => {
  * @param profile - profile detail
  * @param authToken - auth token
  */
-export const updateProfile = async (profile: ProfileDetail, authToken: string) => {
-    const response = await fetch(`${getSdkConfig().api}/profile/update`, {
+export const updateProfile = async ({params, clientMode}:SolaSdkFunctionParams<{profile: ProfileDetail, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/profile/update`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({...profile, auth_token: authToken})
+        body: JSON.stringify({...params.profile, auth_token: params.authToken})
     })
 
     if (!response.ok) {
@@ -91,11 +91,11 @@ export const updateProfile = async (profile: ProfileDetail, authToken: string) =
 }
 
 
-export const getProfileFollowerAndFollowing = async (handle: string) => {
-    const client = getGqlClient()
+export const getProfileFollowerAndFollowing = async ({params, clientMode}:SolaSdkFunctionParams<{handle: string}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE,
-        variables: {handle}
+        variables: {handle: params.handle}
     })
 
     return {
@@ -105,11 +105,11 @@ export const getProfileFollowerAndFollowing = async (handle: string) => {
     }
 }
 
-export const getProfileByHandlesOrAddresses  = async (handlesOrAddresses: string[]) => {
-    const client = getGqlClient()
+export const getProfileByHandlesOrAddresses  = async ({params, clientMode}:SolaSdkFunctionParams<{handlesOrAddresses: string[]}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_PROFILE_BY_HANDLES_OR_ADDRESSES,
-        variables: {handles: handlesOrAddresses}
+        variables: {handles: params.handlesOrAddresses}
     })
 
     return {

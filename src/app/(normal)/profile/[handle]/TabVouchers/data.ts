@@ -1,7 +1,10 @@
-import {ClientMode, getVoucherByHandle, setSdkConfig} from '@sola/sdk'
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
+import {getVoucherByHandle} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export const ProfileVoucherData = async (handle: string) => {
-    return  await getVoucherByHandle(handle)
+    return  await getVoucherByHandle({
+        params: {handle: handle},
+        clientMode: CLIENT_MODE
+    })
 }
 

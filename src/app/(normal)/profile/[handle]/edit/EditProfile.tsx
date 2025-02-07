@@ -12,6 +12,7 @@ import DialogEditSocialMedia from "@/components/client/DialogEditSocialMedia"
 import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {ProfileDetail, updateProfile} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function EditProfile({profile, lang}: { profile: ProfileDetail, lang: Dictionary }) {
     const [newProfile, setNewProfile] = useState<ProfileDetail>(profile)
@@ -47,7 +48,10 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                 throw new Error('Please login first')
             }
 
-            await updateProfile(newProfile, authToken)
+            await updateProfile({
+                params: {profile: newProfile, authToken},
+                clientMode: CLIENT_MODE
+            })
             toast({title: 'Profile updated'})
             window.location.href = '/profile/' + newProfile.handle
         } catch (e: unknown) {
@@ -67,41 +71,41 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                     <div className="font-semibold pb-2">{lang['Avatar']}</div>
                     <div className="bg-secondary rounded-lg h-[170px] flex-col flex justify-center items-center mb-4">
                         <img className="mb-3 w-[100px] h-[100px] rounded-full"
-                            src={newProfile.image_url || '/images/upload_default.png'} alt=""/>
+                             src={newProfile.image_url || '/images/upload_default.png'} alt=""/>
                         <Button size="sm"
-                            onClick={() => uploadAvatar({
-                                onUploaded: (url) => {
-                                    setNewProfile({...newProfile, image_url: url})
-                                }
-                            })}
-                            className="text-xs bg-white !rounded-3xl !text-foreground">{lang['Upload Avatar']}</Button>
+                                onClick={() => uploadAvatar({
+                                    onUploaded: (url) => {
+                                        setNewProfile({...newProfile, image_url: url})
+                                    }
+                                })}
+                                className="text-xs bg-white !rounded-3xl !text-foreground">{lang['Upload Avatar']}</Button>
                     </div>
 
                     <div className="font-semibold pb-2">{lang['Nickname']}</div>
                     <Input value={newProfile.nickname || ''}
-                        placeholder={lang['Nickname']}
-                        onChange={e => {
-                            setNewProfile({...newProfile, nickname: e.target.value})
-                        }}
-                        maxLength={30}
-                        endAdornment={<span>{newProfile.nickname?.length || 0}/30</span>}
-                        className="w-full mb-4"/>
+                           placeholder={lang['Nickname']}
+                           onChange={e => {
+                               setNewProfile({...newProfile, nickname: e.target.value})
+                           }}
+                           maxLength={30}
+                           endAdornment={<span>{newProfile.nickname?.length || 0}/30</span>}
+                           className="w-full mb-4"/>
 
                     <div className="font-semibold pb-2">{lang['Location']}</div>
                     <Input value={newProfile.location || ''}
-                        placeholder={lang['Location']}
-                        onChange={e => {
-                            setNewProfile({...newProfile, location: e.target.value})
-                        }}
-                        className="w-full mb-4"/>
+                           placeholder={lang['Location']}
+                           onChange={e => {
+                               setNewProfile({...newProfile, location: e.target.value})
+                           }}
+                           className="w-full mb-4"/>
 
                     <div className="font-semibold pb-2">{lang['Bio']}</div>
                     <Textarea value={newProfile.about || ''}
-                        placeholder={lang['Bio']}
-                        onChange={e => {
-                            setNewProfile({...newProfile, about: e.target.value})
-                        }}
-                        className="min-h-[120px]"
+                              placeholder={lang['Bio']}
+                              onChange={e => {
+                                  setNewProfile({...newProfile, about: e.target.value})
+                              }}
+                              className="min-h-[120px]"
                     />
                 </div>
                 <div className="flex-1 mt-6">
@@ -109,7 +113,7 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                     {
                         (Object.keys(Media_Meta) as Array<keyof typeof Media_Meta>).map((key, i) => {
                             return <div key={i}
-                                className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
+                                        className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
                                     <div className="w-9 flex flex-row justify-center">
                                         <i className={`${Media_Meta[key].icon} !text-lg`}/>
@@ -139,7 +143,7 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                     history.go(-1)
                 }}>{lang['Cancel']}</Button>
                 <Button variant={'primary'} className="flex-1 sm:flex-grow-0 sm:min-w-36"
-                    onClick={handleSave}>{lang['Save']}</Button>
+                        onClick={handleSave}>{lang['Save']}</Button>
             </div>
         </div>
     </div>

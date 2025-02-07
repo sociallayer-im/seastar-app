@@ -6,6 +6,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import {attendEventWithoutTicket} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function AttendEventBtn({eventId, lang, className}: {
     eventId: number,
@@ -19,7 +20,13 @@ export default function AttendEventBtn({eventId, lang, className}: {
         const loading = showLoading()
         try {
             const authToken = getAuth()
-            await attendEventWithoutTicket(eventId, authToken!)
+            await attendEventWithoutTicket({
+                params: {
+                    eventId: eventId,
+                    authToken: authToken!
+                },
+                clientMode: CLIENT_MODE
+            })
             toast({
                 title: 'Attended event',
                 variant: 'success'

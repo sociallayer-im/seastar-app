@@ -1,6 +1,7 @@
 import {redirect} from "next/navigation"
-import {getBadgeDetailByBadgeId, getGroupDetailByHandle, getGroupDetailById, Group} from '@sola/sdk'
+import {getBadgeDetailByBadgeId} from '@sola/sdk'
 import {getCurrProfile} from '@/app/actions'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface BadgePageParams {
     badgeid: string
@@ -11,7 +12,10 @@ export interface BadgePageDataProps {
 }
 
 export default async function BadgePageData({params}: BadgePageDataProps) {
-    const badgeDetail= await getBadgeDetailByBadgeId(parseInt(params.badgeid))
+    const badgeDetail = await getBadgeDetailByBadgeId({
+        params: {badgeId: parseInt(params.badgeid)},
+        clientMode: CLIENT_MODE
+    })
     const currProfile = await getCurrProfile()
 
     if (!badgeDetail) {

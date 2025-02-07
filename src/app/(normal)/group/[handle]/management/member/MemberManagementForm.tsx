@@ -2,7 +2,7 @@
 
 import {Membership, Group, removeMember} from "@sola/sdk"
 import {Dictionary} from "@/lang"
-import {displayProfileName, getAuth, getAvatar} from "@/utils"
+import {displayProfileName, getAuth} from "@/utils"
 import {useState} from "react"
 import {Button} from "@/components/shadcn/Button"
 import useModal from '@/components/client/Modal/useModal'
@@ -10,6 +10,7 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import NoData from '@/components/NoData'
 import Avatar from '@/components/Avatar'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface MemberManagementFormProps {
     members: Membership[],
@@ -20,7 +21,7 @@ export interface MemberManagementFormProps {
 export default function MemberManagementForm({members, lang, group}: MemberManagementFormProps) {
     const memberList = members.filter(m => m.role !== 'owner')
     const [selected, setSelected] = useState<Membership[]>([])
-    const {openModal, closeModal, showLoading} = useModal()
+    const {closeModal, showLoading} = useModal()
     const {showConfirmDialog} = useConfirmDialog()
     const {toast} = useToast()
 
@@ -42,7 +43,13 @@ export default function MemberManagementForm({members, lang, group}: MemberManag
                 toast({title: 'Please login first', variant: 'destructive'})
                 return
             }
-            await removeMember(selected[0]!.profile.id, group.id, auth_token)
+            await removeMember({
+                params: {
+                    profileId:selected[0]!.profile.id,
+                    groupId: group.id,
+                    authToken: auth_token
+                }, clientMode: CLIENT_MODE
+            })
             window.location.reload()
         } catch (e) {
             closeModal(loading)

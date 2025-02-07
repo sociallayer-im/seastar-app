@@ -12,6 +12,7 @@ import {
     getBadgeClassByGroupId
 } from '@sola/sdk'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface SelectedEventBadgeProps {
     lang: Dictionary
@@ -52,11 +53,19 @@ export default function SelectedEventBadge({
     const handleSelectedBadge = async () => {
         const loading = showLoading()
         try {
-            const profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle(currProfile.handle)).badgeClasses
+            const profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle({
+                params: {handle: currProfile.handle},
+                clientMode: CLIENT_MODE
+            })).badgeClasses
             let groupHostBadgeClasses: BadgeClass[] = []
             const groupHost = event.event_roles?.find(role => role.role === 'group_host')
             if (groupHost) {
-                groupHostBadgeClasses = await getBadgeClassByGroupId(groupHost.item_id!)
+                groupHostBadgeClasses = await getBadgeClassByGroupId({
+                    params: {
+                        groupId: groupHost.item_id!
+                    },
+                    clientMode: CLIENT_MODE
+                })
             }
 
             selectBadgeClass({

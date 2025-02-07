@@ -10,6 +10,7 @@ import {
     Recurring
 } from '@sola/sdk'
 import {AVNeeds, SeatingStyle} from '@/app/configForSpecifyGroup'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface EventDetailPageDataProps {
     eventid: string
@@ -28,12 +29,18 @@ export interface EventDetailDataProps {
 export default async function EventDetailPage({params, searchParams}: EventDetailDataProps) {
     const currProfile = await getCurrProfile()
 
-    const eventDetail = await getEventDetailById(parseInt(params.eventid))
+    const eventDetail = await getEventDetailById({
+        params: {eventId: parseInt(params.eventid)},
+        clientMode: CLIENT_MODE
+    })
     if (!eventDetail) {
         redirect('/404')
     }
 
-    const groupDetail = await getGroupDetailByHandle(eventDetail.group.handle)
+    const groupDetail = await getGroupDetailByHandle({
+        params: {groupHandle: eventDetail.group.handle},
+        clientMode: CLIENT_MODE
+    })
     if (!groupDetail) {
         redirect('/404')
     }
@@ -93,7 +100,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
 
     let recurring: Recurring | null = null
     if (!!eventDetail.recurring_id) {
-        recurring = await getRecurringById(eventDetail.recurring_id)
+        recurring = await getRecurringById({params:{recurringId: eventDetail.recurring_id}, clientMode: CLIENT_MODE})
     }
 
     return {

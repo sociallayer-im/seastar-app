@@ -3,7 +3,7 @@
 import {Dictionary} from "@/lang"
 import {Input} from "@/components/shadcn/Input"
 import DropdownMenu from "@/components/client/DropdownMenu"
-import {displayProfileName, getAuth, getAvatar} from "@/utils"
+import {displayProfileName, getAuth} from "@/utils"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import {Textarea} from "@/components/shadcn/Textarea"
 import CreateBadgePageData from '@/app/(normal)/badge-class/create/data'
@@ -14,6 +14,7 @@ import Avatar from '@/components/Avatar'
 import {Badge} from '@/components/shadcn/Badge'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface CreateBadgeFormProps extends Awaited<ReturnType<typeof CreateBadgePageData>> {
     lang: Dictionary
@@ -112,8 +113,10 @@ export default function CreateBadgeForm({
         try {
             const authToken = getAuth()
             const badgeClass = await createBadgeClass({
-                badgeClass: badgeClassDraft,
-                authToken: authToken!
+                params: {
+                    badgeClass: badgeClassDraft,
+                    authToken: authToken!
+                }, clientMode: CLIENT_MODE
             })
 
             toast({description: 'Badge created successfully', variant: 'success'})

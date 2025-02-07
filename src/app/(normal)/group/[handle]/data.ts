@@ -8,14 +8,11 @@ import {cookies} from 'next/headers'
 import {
     GroupDetail,
     Profile,
-    ClientMode,
     Membership,
-    setSdkConfig,
     getGroupDetailByHandle,
     ProfileDetail, getProfileDetailByAuth
 } from "@sola/sdk"
-
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
+import {CLIENT_MODE} from '@/app/config'
 
 export interface GroupPageParams {
     handle: string
@@ -45,7 +42,10 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
     const handle = params.handle
     const tab = pickSearchParam(searchParams.tab)
 
-    const groupsDetail = await getGroupDetailByHandle(handle)
+    const groupsDetail = await getGroupDetailByHandle({
+        params: {groupHandle: handle},
+        clientMode: CLIENT_MODE
+    })
 
     console.log('groupsDetail', groupsDetail?.handle)
 
@@ -58,7 +58,10 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
     let currProfile: ProfileDetail | null = null
     const authToken = cookies().get(AUTH_FIELD)?.value
     if (!!authToken) {
-        currProfile = await getProfileDetailByAuth(authToken)
+        currProfile = await getProfileDetailByAuth({
+            params: {authToken},
+            clientMode: CLIENT_MODE
+        })
     }
 
     const {

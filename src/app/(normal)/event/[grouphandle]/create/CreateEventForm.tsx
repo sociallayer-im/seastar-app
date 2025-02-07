@@ -8,6 +8,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatForm'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function CreateEventForm(props: { lang: Dictionary, data: CreateEventPageDataType }) {
     const {showLoading, closeModal} = useModal()
@@ -17,7 +18,10 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
         const authToken = getAuth()
         const loading = showLoading()
         try {
-            const event = await createEvent({eventDraft, authToken: authToken!})
+            const event = await createEvent({
+                params: {eventDraft, authToken: authToken!},
+                clientMode: CLIENT_MODE
+            })
             window.location.href = `/event/share/${event.id}`
         } catch (e: unknown) {
             console.error(e)
@@ -35,11 +39,13 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
         const authToken = getAuth()
         const loading = showLoading()
         try {
-            const event = await createRecurringEvent({
-                eventDraft,
-                authToken: authToken!,
-                eventCount: repeatForm.event_count!,
-                interval: repeatForm.interval!
+             await createRecurringEvent({
+                params: {
+                    eventDraft,
+                    authToken: authToken!,
+                    eventCount: repeatForm.event_count!,
+                    interval: repeatForm.interval!
+                }, clientMode: CLIENT_MODE
             })
             // window.location.href = `/event/share/${event.id}`
         } catch (e: unknown) {

@@ -4,29 +4,13 @@ import {PROD_NETWORK_CONFIG, DEV_NETWORK_CONFIG} from './constants'
 
 export type ClientMode = 'dev' | 'prod'
 
-export interface GqlClientConfigType {
-    clientMode: ClientMode,
-    enableCache: boolean
+export const getSdkConfig = (clientMode?: ClientMode) => {
+    return clientMode === 'dev' ? DEV_NETWORK_CONFIG : PROD_NETWORK_CONFIG
 }
 
-let config: GqlClientConfigType = {clientMode: "prod", enableCache: false}
-
-export const setSdkConfig = (newConfig: Partial<GqlClientConfigType>) => {
-    config = {...config, ...newConfig}
-    return config
-}
-
-export const getSdkConfig = () => {
-    return {
-        ...config,
-        ...(config.clientMode === 'dev' ? DEV_NETWORK_CONFIG : PROD_NETWORK_CONFIG)
-    }
-}
-
-export const getGqlClient = () => {
-    const config = getSdkConfig()
+export const getGqlClient = (clientMode?: ClientMode, enableCache?:boolean) => {
     const httpLink = new HttpLink({
-        uri: config.graphql,
+        uri: clientMode === 'dev' ? DEV_NETWORK_CONFIG.graphql : PROD_NETWORK_CONFIG.graphql,
         fetch: function (uri, options) {
             return fetch(uri, {
                 ...options ?? {},
@@ -45,10 +29,10 @@ export const getGqlClient = () => {
         cache: new InMemoryCache(),
         defaultOptions: {
             watchQuery: {
-                fetchPolicy: config.enableCache ? 'cache-first' : 'no-cache'
+                fetchPolicy: enableCache ? 'cache-first' : 'no-cache'
             },
             query: {
-                fetchPolicy: config.enableCache ? 'cache-first' : 'no-cache'
+                fetchPolicy: enableCache ? 'cache-first' : 'no-cache'
             }
         }
     })

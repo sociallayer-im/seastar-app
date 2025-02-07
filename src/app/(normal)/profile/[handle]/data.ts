@@ -1,10 +1,10 @@
 import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
-import {AUTH_FIELD} from "@/utils"
 import {redirect} from "next/navigation"
 import {pickSearchParam} from "@/utils"
-import {type ProfileDetail, type ClientMode, getProfileDetailByHandle, getProfileDetailByAuth, setSdkConfig} from '@sola/sdk'
+import {type ProfileDetail,  getProfileDetailByHandle, getProfileDetailByAuth} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
+import {getServerSideAuth} from '@/app/actions'
 
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
 export interface ProfilePageParams {
     handle: string
@@ -30,7 +30,10 @@ export interface ProfileData {
 export async function ProfileData(props: ProfileDataProps): Promise<ProfileData> {
     const handle = props.params.handle
     const tab = pickSearchParam(props.searchParams.tab)
-    const profileDetail = await getProfileDetailByHandle(handle)
+    const profileDetail = await getProfileDetailByHandle({
+        params: {handle: handle},
+        clientMode: CLIENT_MODE
+    })
 
     if (!profileDetail) {
         redirect('/error')
@@ -39,9 +42,12 @@ export async function ProfileData(props: ProfileDataProps): Promise<ProfileData>
     const profile = profileDetail
 
     let currProfile: ProfileDetail | null = null
-    const authToken = props.cookies.get(AUTH_FIELD)?.value
+    const authToken = await getServerSideAuth()
     if (!!authToken) {
-        currProfile = await getProfileDetailByAuth(authToken)
+        currProfile = await getProfileDetailByAuth({
+            params: {authToken: authToken},
+            clientMode: CLIENT_MODE
+        })
     }
 
     const isSelf = currProfile?.id === profile?.id

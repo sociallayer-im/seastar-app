@@ -1,7 +1,6 @@
-import {type ClientMode, getProfileFollowerAndFollowing, setSdkConfig} from '@sola/sdk'
+import {getProfileFollowerAndFollowing} from '@sola/sdk'
 import {redirect} from 'next/navigation'
-
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
+import {CLIENT_MODE} from '@/app/config'
 
 export interface FollowerPageDataProps {
     params: {
@@ -11,7 +10,10 @@ export interface FollowerPageDataProps {
 
 export async function FollowerPageData(props: FollowerPageDataProps) {
     const {params: {handle}} = props
-    const data = await getProfileFollowerAndFollowing(handle)
+    const data = await getProfileFollowerAndFollowing({
+        params: {handle: handle},
+        clientMode: CLIENT_MODE
+    })
 
     if (!data.profile) {
         redirect('/error')

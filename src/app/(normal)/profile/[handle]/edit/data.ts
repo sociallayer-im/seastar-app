@@ -1,7 +1,6 @@
 import {redirect} from "next/navigation"
-import {getProfileDetailByHandle, setSdkConfig, ClientMode} from '@sola/sdk'
-
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
+import {getProfileDetailByHandle} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface ProfilePageParams {
     handle: string
@@ -13,7 +12,10 @@ export interface EditProfileDataProps {
 
 export default async function EditProfileData({params} : EditProfileDataProps) {
     const handle = params.handle
-    const profile =  await getProfileDetailByHandle(handle)
+    const profile =  await getProfileDetailByHandle({
+        params: {handle: handle},
+        clientMode: CLIENT_MODE
+    })
 
     if (!profile) {
         redirect('/error')

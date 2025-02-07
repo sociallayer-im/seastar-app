@@ -8,6 +8,7 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useModal from '@/components/client/Modal/useModal'
 import {getAuth} from '@/utils'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface CheckinBtnProps {
     eventDetail: EventDetail
@@ -48,9 +49,11 @@ export default function CheckinBtn({eventDetail, lang}: CheckinBtnProps) {
             try {
                 const authToken = getAuth()
                 await checkInEventForParticipant({
-                    authToken: authToken!,
-                    eventId: eventDetail.id,
-                    participantProfileId: Number(profileId)
+                    params: {
+                        authToken: authToken!,
+                        eventId: eventDetail.id,
+                        participantProfileId: Number(profileId)
+                    }, clientMode: CLIENT_MODE
                 })
 
                 toast({
@@ -82,7 +85,12 @@ export default function CheckinBtn({eventDetail, lang}: CheckinBtnProps) {
             onConfig: async () => {
                 const loading = showLoading()
                 try {
-                    await sendEventPoap(eventDetail.id, getAuth()!)
+                    await sendEventPoap({
+                        params: {
+                            authToken: getAuth()!,
+                            eventId: eventDetail.id
+                        }, clientMode: CLIENT_MODE
+                    })
                     toast({
                         description: lang['POAP Sent'],
                         variant: 'success'

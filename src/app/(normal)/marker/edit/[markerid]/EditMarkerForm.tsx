@@ -7,6 +7,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface EditMarkerFormProps {
     lang: Dictionary,
@@ -23,7 +24,13 @@ export default function EditMarkerForm({lang, draft, group}: EditMarkerFormProps
         const loadingId = showLoading()
         try {
             const authToken = getAuth()
-            const marker = await updateMarker(draft, authToken!)
+            await updateMarker({
+                params: {
+                    markerDraft: draft,
+                    authToken: authToken!
+                },
+                clientMode: CLIENT_MODE
+            })
 
             toast({
                 title: 'Update marker success',
@@ -54,7 +61,12 @@ export default function EditMarkerForm({lang, draft, group}: EditMarkerFormProps
                 const loadingId = showLoading()
                 try {
                     const authToken = getAuth()
-                    await removeMarker(draft.id!, authToken!)
+                    await removeMarker({
+                        params: {
+                            markerId: draft.id!,
+                            authToken: authToken!
+                        }, clientMode: CLIENT_MODE
+                    })
 
                     toast({
                         title: 'Remove marker success',
@@ -81,7 +93,7 @@ export default function EditMarkerForm({lang, draft, group}: EditMarkerFormProps
         window.history.back()
     }
 
-    return  <MarkerForm
+    return <MarkerForm
         lang={lang}
         markerDraft={draft}
         onConfirm={handleUpdateMarker}

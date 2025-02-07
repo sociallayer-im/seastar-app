@@ -4,6 +4,6 @@ export const PROD_NETWORK_CONFIG = {
 }
 
 export const DEV_NETWORK_CONFIG = {
-    api: 'https://api.sola.day',
-    graphql: 'https://sails-devgraph.sola.day/v1/graphql',
+    api: 'https://sails-dev.sola.day',
+    graphql: 'https://devgraph.sola.day/v1/graphql',
 }

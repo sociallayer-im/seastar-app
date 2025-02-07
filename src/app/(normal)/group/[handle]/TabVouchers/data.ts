@@ -1,7 +1,10 @@
-import {getGroupVoucherByHandle, setSdkConfig, ClientMode} from '@sola/sdk'
+import {getGroupVoucherByHandle} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
 
 export default async function GroupVouchersData(handle: string) {
-    return await getGroupVoucherByHandle(handle)
+    return await getGroupVoucherByHandle({
+        params: {groupHandle: handle},
+        clientMode: CLIENT_MODE
+    })
 }

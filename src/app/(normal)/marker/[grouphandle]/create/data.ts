@@ -1,6 +1,7 @@
 import {getGroupDetailByHandle, MarkerDraft} from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile} from '@/app/actions'
+import {CLIENT_MODE} from '@/app/config'
 
 export type CreateMarkerDataParams= {
     grouphandle: string
@@ -31,7 +32,10 @@ export const emptyMarker: MarkerDraft = {
 export default async function CreateMarkerData({params}: CreateMarkerDataProps) {
     const {grouphandle} = params
 
-    const groupDetail = await getGroupDetailByHandle(grouphandle)
+    const groupDetail = await getGroupDetailByHandle({
+        params: {groupHandle: grouphandle},
+        clientMode: CLIENT_MODE
+    })
     if (!groupDetail) {
         redirect('/404')
     }

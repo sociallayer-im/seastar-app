@@ -1,4 +1,4 @@
-import {getGqlClient, getSdkConfig} from "../client"
+import {ClientMode, getGqlClient, getSdkConfig} from "../client"
 import {
     GET_AVAILABLE_GROUPS_FOR_BADGE_CLASS_CREATOR, GET_AVAILABLE_GROUPS_FOR_EVENT_HOST, GET_EVENT_GROUPS,
     GET_GROUP_DETAIL_BY_HANDLE, GET_GROUP_DETAIL_BY_ID,
@@ -8,13 +8,14 @@ import {
 } from "./schemas"
 import {Group, GroupDetail, GroupWithOwner, MembershipDetail} from "./types"
 import {checkAndGetProfileByHandlesOrAddresses} from '../uitls'
+import {SolaSdkFunctionParams} from '../types'
 
 /**
  * Get group detail by handle
  * @param groupHandle
  */
-export const getGroupDetailByHandle = async (groupHandle: string) => {
-    const client = getGqlClient()
+export const getGroupDetailByHandle = async ({params: {groupHandle}, clientMode}:SolaSdkFunctionParams<{groupHandle: string}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_GROUP_DETAIL_BY_HANDLE,
         variables: {handle: groupHandle}
@@ -27,7 +28,7 @@ export const getGroupDetailByHandle = async (groupHandle: string) => {
     return response.data.groups[0] as GroupDetail
 }
 
-export const getGroupDetailById = async (groupId: number) => {
+export const getGroupDetailById = async ({params: {groupId}}: SolaSdkFunctionParams<{groupId: number}>) => {
     const client = getGqlClient()
     const response = await client.query({
         query: GET_GROUP_DETAIL_BY_ID,
@@ -45,8 +46,8 @@ export const getGroupDetailById = async (groupId: number) => {
  * Get groups of profile management and joined by handle
  * @param profileHandle
  */
-export const getProfileMemberships = async (profileHandle: string) => {
-    const client = getGqlClient()
+export const getProfileMemberships = async ({params: {profileHandle}, clientMode}: SolaSdkFunctionParams<{profileHandle: string}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_PROFILE_MEMBERSHIPS,
         variables: {handle: profileHandle}
@@ -54,8 +55,8 @@ export const getProfileMemberships = async (profileHandle: string) => {
     return response.data.memberships as MembershipDetail[]
 }
 
-export const getProfileGroup = async (profileHandle: string) => {
-    const client = getGqlClient()
+export const getProfileGroup = async ({params: {profileHandle}, clientMode}:SolaSdkFunctionParams<{profileHandle: string}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_PROFILE_GROUP,
         variables: {handle: profileHandle}
@@ -75,8 +76,8 @@ export const getProfileGroup = async (profileHandle: string) => {
  * @param auth_token
  */
 
-export const updateGroup = async (group: GroupDetail, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/update`, {
+export const updateGroup = async ({params: {group, auth_token}, clientMode}:SolaSdkFunctionParams<{group: GroupDetail, auth_token: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/update`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -99,18 +100,19 @@ export const updateGroup = async (group: GroupDetail, auth_token: string) => {
  * Remove Member
  * @param profileId - profile id
  * @param groupId - group id
+ * @param auth_token
  */
 
-export const removeMember = async (profileId: number, groupId: number, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/remove_member`, {
+export const removeMember = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: number, groupId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/remove_member`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            profile_id: profileId,
-            group_id: groupId,
-            auth_token
+            profile_id: params.profileId,
+            group_id: params.groupId,
+            auth_token: params.authToken
         })
     })
 
@@ -119,16 +121,16 @@ export const removeMember = async (profileId: number, groupId: number, auth_toke
     }
 }
 
-export const removeManager = async (profileId: number, groupId: number, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/remove_manager`, {
+export const removeManager = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: number, groupId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/remove_manager`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            profile_id: profileId,
-            group_id: groupId,
-            auth_token
+            profile_id: params.profileId,
+            group_id: params.groupId,
+            auth_token: params.authToken
         })
     })
 
@@ -137,16 +139,16 @@ export const removeManager = async (profileId: number, groupId: number, auth_tok
     }
 }
 
-export const addManager = async (profileId: number, groupId: number, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/add_manager`, {
+export const addManager = async ({params, clientMode}:SolaSdkFunctionParams<{profileId: number, groupId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/add_manager`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            profile_id: profileId,
-            group_id: groupId,
-            auth_token
+            profile_id: params.profileId,
+            group_id: params.groupId,
+            auth_token: params.authToken
         })
     })
 
@@ -155,15 +157,15 @@ export const addManager = async (profileId: number, groupId: number, auth_token:
     }
 }
 
-export const freezeGroup = async (groupId: number, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/freeze_group`, {
+export const freezeGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/freeze_group`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            id: groupId,
-            auth_token
+            id: params.groupId,
+            auth_token: params.authToken
         })
     })
 
@@ -172,16 +174,16 @@ export const freezeGroup = async (groupId: number, auth_token: string) => {
     }
 }
 
-export const transferGroup = async (groupId: number, newOwnerHandle: string, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/transfer_owner`, {
+export const transferGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number, newOwnerHandle: string, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/transfer_owner`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            id: groupId,
-            new_owner_handle: newOwnerHandle,
-            auth_token
+            id: params.groupId,
+            new_owner_handle: params.newOwnerHandle,
+            auth_token: params.authToken
         })
     })
 
@@ -190,16 +192,16 @@ export const transferGroup = async (groupId: number, newOwnerHandle: string, aut
     }
 }
 
-export const leaveGroup = async (profileId: number, groupId: number, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/leave`, {
+export const leaveGroup = async ({params, clientMode}:SolaSdkFunctionParams<{profileId: number, groupId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/leave`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            profile_id: profileId,
-            group_id: groupId,
-            auth_token
+            profile_id: params.profileId,
+            group_id: params.groupId,
+            auth_token: params.authToken
         })
     })
 
@@ -213,11 +215,11 @@ export const leaveGroup = async (profileId: number, groupId: number, auth_token:
  * @param groupId
  */
 
-export const getMembershipByGroupId = async (groupId: number) => {
-    const client = getGqlClient()
+export const getMembershipByGroupId = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_MEMBERSHIP_BY_GROUP_ID,
-        variables: {id: groupId}
+        variables: {id: params.groupId}
     })
 
     return response.data.memberships as MembershipDetail[]
@@ -233,23 +235,23 @@ export const getMembershipByGroupId = async (groupId: number) => {
  */
 
 export const sendInvite = async (
-    groupId: number,
-    receivers: string[],
-    role: string,
-    message: string,
-    auth_token: string,
+    {params, clientMode}: SolaSdkFunctionParams<{groupId: number,
+        receivers: string[],
+        role: string,
+        message: string,
+        authToken: string,}>
 ) => {
-    const handlesOrAddresses = receivers.filter(item => !item.includes('@'))
+    const handlesOrAddresses = params.receivers.filter(item => !item.includes('@'))
     const {handleResult, addressResult} = await checkAndGetProfileByHandlesOrAddresses(handlesOrAddresses)
 
-    const memberShips = await getMembershipByGroupId(groupId)
+    const memberShips = await getMembershipByGroupId({params: {groupId: params.groupId}, clientMode})
     const handleHasJoined = memberShips.find(h => handleResult.some(m => m.handle === h.profile.handle))
-    if (handleHasJoined && handleHasJoined.role === role) {
+    if (handleHasJoined && handleHasJoined.role === params.role) {
         throw new Error(`Profile [${handleHasJoined.profile.handle}] has joined`)
     }
 
     const addressHasJoined = memberShips.find(a => addressResult.some(m => m.address === a.profile.address))
-    if (addressHasJoined && addressHasJoined.role === role) {
+    if (addressHasJoined && addressHasJoined.role === params.role) {
         throw new Error(`Profile [${addressHasJoined.profile.address}] has joined`)
     }
 
@@ -259,11 +261,11 @@ export const sendInvite = async (
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            group_id: groupId,
-            receivers,
-            auth_token,
-            message,
-            role
+            group_id: params.groupId,
+            receivers: params.receivers,
+            auth_token: params.authToken,
+            message: params.message,
+            role: params.role
         })
     })
 
@@ -272,15 +274,15 @@ export const sendInvite = async (
     }
 }
 
-export const acceptInvite = async (inviteId: number, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/accept_invite`, {
+export const acceptInvite = async ({params, clientMode}:SolaSdkFunctionParams<{inviteId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/accept_invite`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            group_invite_id: inviteId,
-            auth_token
+            group_invite_id: params.inviteId,
+            auth_token: params.authToken
         })
     })
 
@@ -289,15 +291,15 @@ export const acceptInvite = async (inviteId: number, auth_token: string) => {
     }
 }
 
-export const rejectInvite = async (inviteId: number, auth_token: string) => {
-    const response = await fetch(`${getSdkConfig().api}/group/cancel_invite`, {
+export const rejectInvite = async ({params, clientMode}:SolaSdkFunctionParams<{inviteId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/cancel_invite`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            group_invite_id: inviteId,
-            auth_token
+            group_invite_id: params.inviteId,
+            auth_token: params.authToken
         })
     })
 
@@ -306,18 +308,18 @@ export const rejectInvite = async (inviteId: number, auth_token: string) => {
     }
 }
 
-export const getAvailableGroupsForBadgeClassCreator = async (profileHandle: string) => {
-    const client = getGqlClient()
+export const getAvailableGroupsForBadgeClassCreator = async ({params, clientMode}: SolaSdkFunctionParams<{profileHandle: string}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_AVAILABLE_GROUPS_FOR_BADGE_CLASS_CREATOR,
-        variables: {handle: profileHandle}
+        variables: {handle: params.profileHandle}
     })
 
     return response.data.groups as Group[]
 }
 
-export const getEventGroups = async () => {
-    const client = getGqlClient()
+export const getEventGroups = async ({clientMode}: {clientMode?: ClientMode}) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_EVENT_GROUPS,
     })
@@ -325,11 +327,11 @@ export const getEventGroups = async () => {
     return response.data.groups as Group[]
 }
 
-export const getAvailableGroupsForEventHost = async (profileHandle: string) => {
-    const client = getGqlClient()
+export const getAvailableGroupsForEventHost = async ({params, clientMode}:SolaSdkFunctionParams<{profileHandle: string}>) => {
+    const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_AVAILABLE_GROUPS_FOR_EVENT_HOST,
-        variables: {handle: profileHandle}
+        variables: {handle: params.profileHandle}
     })
 
     return response.data.groups as Group[]

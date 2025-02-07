@@ -8,6 +8,7 @@ import Avatar from '@/components/Avatar'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface EventParticipantListProps {
     lang: Dictionary
@@ -36,7 +37,10 @@ export default function EventParticipantList({
                 const loading = showLoading()
                 try {
                     const authToken = getAuth()
-                    await cancelAttendEvent(eventDetail.id, authToken!)
+                    await cancelAttendEvent({
+                        params: {eventId: eventDetail.id, authToken: authToken!},
+                        clientMode: CLIENT_MODE
+                    })
                     toast({
                         description: lang['Participation cancelled'],
                         variant: 'success'
@@ -67,9 +71,12 @@ export default function EventParticipantList({
                 try {
                     const authToken = getAuth()
                     await checkInEventForParticipant({
-                        authToken: authToken!,
-                        eventId: eventDetail.id,
-                        participantProfileId: participant.profile.id!
+                        params: {
+                            authToken: authToken!,
+                            eventId: eventDetail.id,
+                            participantProfileId: participant.profile.id!
+                        },
+                        clientMode: CLIENT_MODE
                     })
                     toast({
                         description: lang['Check in successful'],
@@ -118,7 +125,7 @@ export default function EventParticipantList({
     return <div>
         {!!eventDetail.participants && eventDetail.participants.length > 0 && isEventOperator &&
             <div onClick={downloadCSV}
-                className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
+                 className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
                 <i className="uil-download-alt text-lg mr-1"/>
                 <span>{lang['Download the list of all participants']}</span>
             </div>}

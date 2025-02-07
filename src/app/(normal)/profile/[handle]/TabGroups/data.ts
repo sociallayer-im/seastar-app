@@ -1,6 +1,9 @@
-import {ClientMode, getProfileGroup, setSdkConfig} from '@sola/sdk'
-setSdkConfig({clientMode: process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode})
+import {ClientMode, getProfileGroup} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export const UserGroupListData = async (handle: string) => {
-   return await getProfileGroup(handle)
+   return await getProfileGroup({
+      params: {profileHandle: handle},
+      clientMode: CLIENT_MODE
+   })
 }
