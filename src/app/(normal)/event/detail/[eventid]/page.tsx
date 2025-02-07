@@ -168,21 +168,25 @@ export default async function EventDetail({params, searchParams}: {
                                                 <span>{lang['Check-In For Participants']}</span>
                                             </a>
                                         </div>
-                                    : !currProfileAttended
-                                        ? <div className="flex-row-item-center mt-2">
+                                    : null
+                                }
+
+                                {!currProfileCheckedIn && currProfileAttended &&
+                                         <div className="flex-row-item-center mt-2">
                                             <a className={`${buttonVariants({variant: 'primary'})} text-xs flex-1`}
                                                href={`/event/checkin/${eventDetail.id}`}>
                                                 <span>{lang['Check-In']}</span>
                                             </a>
                                         </div>
-                                        : currProfileCheckedIn
-                                            ? <div className="flex-row-item-center mt-2">
-                                                <Button disabled={true} variant={'secondary'}
-                                                        className="text-xs flex-1">
-                                                    {lang['Checked']}
-                                                </Button>
-                                            </div>
-                                            : null
+                                }
+
+                                { currProfileCheckedIn &&
+                                    <div className="flex-row-item-center mt-2">
+                                        <Button disabled={true} variant={'secondary'}
+                                                className="text-xs flex-1">
+                                            {lang['Checked']}
+                                        </Button>
+                                    </div>
                                 }
                             </div>
                             : <SignInPanel lang={lang}/>
