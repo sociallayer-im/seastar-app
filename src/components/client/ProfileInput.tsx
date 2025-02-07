@@ -2,15 +2,16 @@ import {Dictionary} from "@/lang"
 import {Input} from "@/components/shadcn/Input"
 import {ChangeEvent, useCallback, useEffect, useRef, useState} from "react"
 import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
-import {SearchProfile} from "@/service/solar"
 import {getAvatar} from "@/utils"
 import {debounce} from 'lodash'
+import {searchProfile, Profile} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 interface ProfileInputProps {
-    value: Array<Solar.ProfileSample>
+    value: Array<Profile>
     lang: Dictionary
     placeholder?: string
-    onChange?: (value: Array<Solar.ProfileSample>) => void
+    onChange?: (value: Array<Profile>) => void
 }
 
 
@@ -88,7 +89,7 @@ export interface RoleOptionProps {
 }
 
 function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placeholder}: RoleOptionProps) {
-    const [searchResult, setSearchResult] = useState<Solar.ProfileSample[]>([])
+    const [searchResult, setSearchResult] = useState<Profile[]>([])
     const {current: dropDownTrigger} = useRef<DropdownTrigger>({trigger: null})
 
     const handleSearch = useCallback(debounce(async (keyword: string) => {
@@ -97,7 +98,12 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placehol
             dropDownTrigger.trigger && dropDownTrigger.trigger(false)
             return
         }
-        const res = await SearchProfile(_keyword)
+        const res = await searchProfile({
+            params: {
+                query: _keyword
+            },
+            clientMode: CLIENT_MODE
+        })
         setSearchResult(res)
         dropDownTrigger.trigger && dropDownTrigger.trigger(!!res.length)
     }, 500), [dropDownTrigger])

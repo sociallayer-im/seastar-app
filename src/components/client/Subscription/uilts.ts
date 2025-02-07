@@ -55,3 +55,12 @@ export const addDisplayedVoucher = (voucherId: number) => {
     displayHistory.vouchers.push(voucherId)
     sessionStorage.setItem('subscription_display_history', JSON.stringify(displayHistory))
 }
+
+export const scrollToErrMsg = () => {
+    setTimeout(() => {
+        const errMsg = document.querySelector('.err-msg')
+        if (errMsg) {
+            errMsg.scrollIntoView({behavior: 'smooth', block: 'center'})
+        }
+    }, 300)
+}

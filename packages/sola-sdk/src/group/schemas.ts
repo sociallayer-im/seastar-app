@@ -1,6 +1,5 @@
-import { gql } from '@apollo/client'
+import {gql} from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
-import {EVENT_FRAGMENT} from '../event'
 
 export const VENUE_TIMESLOT_FRAGMENT = gql`
     fragment VenueTimeslotFragment on venue_timeslots {
@@ -71,6 +70,21 @@ export const TRACK_FRAGMENT = gql`
         start_date
         end_date
         manager_ids
+        icon_url
+    }`
+
+export const TRACK_ROLE_FRAGMENT = gql`
+    ${PROFILE_FRAGMENT}
+    fragment TrackRoleFragment on track_roles {
+        id
+        group_id
+        track_id
+        profile_id
+        receiver_address
+        role
+        profile {
+            ...ProfileFragment
+        }
     }`
 
 export const GROUP_FRAGMENT = gql`
@@ -243,6 +257,28 @@ export const GET_AVAILABLE_GROUPS_FOR_EVENT_HOST = gql`
             }
         }) {
             ...GroupFragment
+        }
+    }
+`
+
+export const GET_TRACK_DETAIL_BY_ID = gql`
+    ${TRACK_FRAGMENT}
+    ${TRACK_ROLE_FRAGMENT}
+    query GetTrackById($id: bigint!) {
+        tracks(where: {id: {_eq: $id}}) {
+            ...TrackFragment
+            track_roles {
+                ...TrackRoleFragment
+            }
+        }
+    }   
+`
+
+export const GET_TRACK_ROLE_BY_TRACK_ID = gql`
+    ${TRACK_ROLE_FRAGMENT}
+    query GetTrackRoleByTrackId($trackId: Int!) {
+        track_roles(where: {track_id: {_eq: $trackId}}) {
+            ...TrackRoleFragment
         }
     }
 `

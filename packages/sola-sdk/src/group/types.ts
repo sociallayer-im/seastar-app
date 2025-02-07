@@ -1,5 +1,7 @@
 import {Profile, SocialMedia} from '../profile'
-import {Track} from '../event'
+
+
+
 
 export interface Group {
     id: number,
@@ -101,4 +103,31 @@ export interface VenueOverride {
     end_at: string | null,
     role: 'member' | 'manager' | 'all'
     _destroy?: string
+}
+
+export interface TrackRole {
+    id?: number,
+    group_id: number | null,
+    track_id: number | null,
+    profile_id: number,
+    receiver_address: string | null,
+    role: string,
+    profile: Profile
+}
+
+export interface Track {
+    id: number
+    title: string
+    kind: 'public' | 'private'
+    icon_url: string | null
+    about: string | null
+    group_id: number
+    start_date: string | null
+    end_date: string| null
+    manager_ids: number[] | null
+    _destroy?: string
+}
+
+export interface TrackDetail extends Track {
+    track_roles: TrackRole[]
 }

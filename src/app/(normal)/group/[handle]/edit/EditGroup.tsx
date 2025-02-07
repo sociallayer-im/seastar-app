@@ -65,7 +65,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
             }
 
             await updateGroup({
-                params: {group: newGroup, auth_token: auth_token},
+                params: {group: newGroup, authToken: auth_token},
                 clientMode: CLIENT_MODE
             })
             toast({title: 'Group updated'})

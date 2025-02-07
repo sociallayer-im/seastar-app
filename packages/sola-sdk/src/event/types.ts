@@ -1,5 +1,5 @@
 import {Profile} from '../profile'
-import {Group} from '../group'
+import {Group, Track} from '../group'
 import {BadgeClass} from '../badge'
 
 export interface Event {
@@ -126,18 +126,6 @@ export interface EventRoleDetail extends EventRole {
     profile?: Profile
     group?: Group
     event: Event
-    _destroy?: string
-}
-
-export interface Track {
-    id: number
-    title: string
-    kind: 'public' | 'private'
-    about: string | null
-    group_id: number
-    start_date: string | null
-    end_date: string| null
-    manager_ids: number[] | null
     _destroy?: string
 }
 

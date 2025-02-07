@@ -2,7 +2,7 @@ import {getGqlClient, getSdkConfig} from "../client"
 import {
     GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE,
     GET_PROFILE_BY_HANDLE,
-    GET_PROFILE_BY_HANDLES_OR_ADDRESSES, GET_PROFILE_BY_ID
+    GET_PROFILE_BY_HANDLES_OR_ADDRESSES, GET_PROFILE_BY_ID, SEARCH_PROFILE
 } from "./schemas"
 import {ProfileDetail, Profile} from "./types"
 import {SolaSdkFunctionParams} from '../types'
@@ -116,4 +116,27 @@ export const getProfileByHandlesOrAddresses  = async ({params, clientMode}:SolaS
         handleResult: response.data.handleResult as Profile[],
         addressResult: response.data.addressResult as Profile[]
     }
+}
+
+export const searchProfile = async ({params, clientMode}:SolaSdkFunctionParams<{query: string, limit?: number}>) => {
+    const client = getGqlClient(clientMode)
+    const response = await client.query({
+        query: SEARCH_PROFILE,
+        variables: {keyword: params.query, limit: params.limit || 50}
+    })
+
+    let result = [] as  Profile[]
+    response.data.exact.forEach((profile: Profile) => {
+        if (!result.find((r: Profile) => r.id === profile.id)) {
+            result.push(profile)
+        }
+    })
+
+    response.data.predict.forEach((profile: Profile) => {
+        if (!result.find((r: Profile) => r.id === profile.id)) {
+            result.push(profile)
+        }
+    })
+
+    return result
 }

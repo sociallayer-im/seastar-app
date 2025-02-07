@@ -375,6 +375,18 @@ export const en = {
     'Only this event': 'Only this event',
     'All recurring events':'All recurring events',
     'This event and following events':'This event and following events',
+    'Save successful': 'Save successful',
+    'Save failed':'Save failed',
+    'Enter a tag':'Enter a tag',
+    'Remove Track':'Remove Track',
+    'Are you sure you want to remove this track?':'Are you sure you want to remove this track?',
+    'Removed':'Removed',
+    'Remove failed':'Remove failed',
+    'Select': 'Select',
+    'Create Track': 'Create Track',
+    'Create':'Create',
+    'Create successful':'Create successful',
+    'Create failed':'Create failed',
 }
 
 export type Dictionary = typeof en

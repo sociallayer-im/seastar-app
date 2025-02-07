@@ -1,5 +1,9 @@
-import {gql, request} from "graphql-request"
 import {redirect} from "next/navigation"
+import {getGroupDetailByHandle} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
+import {analyzeGroupMembershipAndCheckProfilePermissions} from '@/utils'
+import {getCurrProfile} from '@/app/actions'
+
 export interface GroupEventSettingDataParams {
     grouphandle: string
 }
@@ -9,41 +13,34 @@ export interface GroupEventSettingDataProps {
 }
 
 export default async function GroupEventSettingData(props: GroupEventSettingDataProps) {
-    const {groups, venues, tracks} = await getGroupEventSettingData(props.params.grouphandle)
+    const groupDetail = await getGroupDetailByHandle({
+        params: {groupHandle: props.params.grouphandle},
+        clientMode: CLIENT_MODE
+    })
 
-    if (!groups || !groups.length) {
+    if (!groupDetail) {
         redirect('/404')
     }
 
-    const group = groups[0]
-    return {
-        group: group,
-        venues: venues,
-        tracks: tracks
+    const currProfile = await getCurrProfile()
+
+    if (!currProfile) {
+        redirect(`/event/${groupDetail?.handle}`)
     }
-}
 
-export function getGroupEventSettingData(groupHandle: string) {
-    const doc = gql`query MyQuery {
-          groups:groups(where: {handle: {_eq: "${groupHandle}"}}) {
-            event_tags
-            timezone
-            handle
-            banner_link_url
-            banner_image_url
-            can_publish_event
-            can_join_event
-            can_view_event
-          },
-          venues:venues(where:{group: {handle: {_eq: "${groupHandle}"}}}){id},
-          tracks:tracks(where:{group: {handle: {_eq: "${groupHandle}"}}}){id}
-   }`
+    const {isManager} = analyzeGroupMembershipAndCheckProfilePermissions(
+        groupDetail,
+        currProfile
+    )
 
-    console.log('doc', doc)
+    if (!isManager) {
+        redirect(`/event/${groupDetail?.handle}`)
+    }
 
-    return request<{
-        groups: Solar.Group[]
-        venues: Solar.Venue[]
-        tracks: Solar.Track[]
-    }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
+
+    return {
+        groupDetail: groupDetail,
+        venues: groupDetail.venues,
+        tracks: groupDetail.tracks
+    }
 }

@@ -11,7 +11,8 @@ interface DatePickerProps {
     onChange?: (dateStr: string) => void,
     filterFn?: (dateStr: string) => boolean,
     children?: ReactNode,
-    disabled?: boolean
+    disabled?: boolean,
+    className?: string
 }
 
 interface CalendarProps extends Omit<DatePickerProps, 'children'> {
@@ -86,7 +87,7 @@ export default function DatePicker(props: DatePickerProps) {
     const [open, setOpen] = useState(false)
 
     return <Popover open={open}>
-        <PopoverTrigger disabled={disabled} onClick={() => !disabled && setOpen(true)}>
+        <PopoverTrigger disabled={disabled} onClick={() => !disabled && setOpen(true)} className={props.className}>
             {children}
         </PopoverTrigger>
         <PopoverContent align="start" className="bg-background" onInteractOutside={() => {setOpen(false)}}>

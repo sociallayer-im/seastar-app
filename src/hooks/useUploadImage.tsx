@@ -1,8 +1,9 @@
 import chooseFile from "@/utils/choseFile"
 import useModal from "@/components/client/Modal/useModal"
-import {uploadFile} from "@/service/solar"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import Cookies from "js-cookie"
+import {uploadFile} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 export default function useUploadImage() {
     const {closeModal, showLoading} = useModal()
@@ -35,7 +36,10 @@ export default function useUploadImage() {
                         throw new Error('Please login first')
                     }
 
-                    const url = await uploadFile(blob, auth_token)
+                    const url = await uploadFile({
+                        params: {file: blob, authToken: auth_token},
+                        clientMode: CLIENT_MODE
+                    })
                     const image = new Image()
                     image.src = url
                     image.onload = () => {

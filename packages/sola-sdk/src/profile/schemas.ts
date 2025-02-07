@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import {gql} from '@apollo/client'
 
 export const PROFILE_FRAGMENT = gql`
     fragment ProfileFragment on profiles {
@@ -93,3 +93,14 @@ export const GET_PROFILE_BY_ID = gql`
         }
     }
 `
+
+export const SEARCH_PROFILE = gql`
+    ${PROFILE_FRAGMENT}
+    query SearchProfile($keyword: String!, $limit: Int!) {
+          exact : profiles(where: {_or: [{handle: {_eq: $keyword}}, { nickname:{_eq: $keyword}}]}, limit: $limit){
+            ...ProfileFragment
+          }
+          predict: profiles(where: {_or: [{nickname: {_iregex: $keyword}}, { handle:{_iregex: $keyword}}]}, limit: $limit){
+            ...ProfileFragment
+          }
+        }`

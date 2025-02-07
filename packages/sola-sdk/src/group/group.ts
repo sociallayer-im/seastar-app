@@ -76,15 +76,16 @@ export const getProfileGroup = async ({params: {profileHandle}, clientMode}:Sola
  * @param auth_token
  */
 
-export const updateGroup = async ({params: {group, auth_token}, clientMode}:SolaSdkFunctionParams<{group: GroupDetail, auth_token: string}>) => {
+export const updateGroup = async ({params: {group, authToken}, clientMode}:SolaSdkFunctionParams<{group: GroupDetail, authToken: string}>) => {
     const response = await fetch(`${getSdkConfig(clientMode).api}/group/update`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            ...group,
-            auth_token
+            id: group.id,
+            auth_token: authToken,
+            group
         })
     })
 
