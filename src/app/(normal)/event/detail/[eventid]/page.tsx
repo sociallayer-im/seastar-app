@@ -180,7 +180,7 @@ export default async function EventDetail({params, searchParams}: {
                                         </div>
                                 }
 
-                                { currProfileCheckedIn &&
+                                {currProfileCheckedIn &&
                                     <div className="flex-row-item-center mt-2">
                                         <Button disabled={true} variant={'secondary'}
                                                 className="text-xs flex-1">
