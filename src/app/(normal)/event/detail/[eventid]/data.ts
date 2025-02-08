@@ -50,6 +50,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         isMember: isGroupMember,
         isIssuer: isGroupIssuer,
         isOwner: isGroupOwner,
+        canJoinEvent
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
 
@@ -69,7 +70,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         }) || []
     }
 
-    const currProfileAttended = eventDetail.participants?.find((item: Participant) => {
+    const currProfileAttended = !!eventDetail.participants?.find((item: Participant) => {
         const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
         return (!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked')) // no tickets needed
             || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && item.payment_status?.includes('succe')) // paid ticket
@@ -91,9 +92,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         )
 
     // check if the current user can access the event
-    const canAccess = isEventOperator
-        || (groupDetail.can_join_event === 'member' && isGroupMember)
-        || groupDetail.can_join_event === 'everyone'
+    const canAccess = isEventOperator || canJoinEvent
 
     const seatingStyle = eventDetail.requirement_tags?.filter(tag => SeatingStyle.includes(tag))
     const avNeeds = eventDetail.requirement_tags?.filter(tag => AVNeeds.includes(tag))

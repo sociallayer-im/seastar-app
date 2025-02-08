@@ -90,7 +90,7 @@ export default function TagForm({groupDetail, lang}: { groupDetail: GroupDetail,
                         onClick={() => {
                             history.go(-1)
                         }}
-                >{lang['Cancel']}</Button>
+                >{lang['Back']}</Button>
                 <Button variant={'primary'} className="w-full"
                         onClick={handleSave}
                 >{lang['Save']}</Button>

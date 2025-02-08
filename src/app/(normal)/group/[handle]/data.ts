@@ -36,6 +36,7 @@ export interface GroupData {
     currUserIsOwner: boolean,
     members: Membership[],
     tab: string,
+    canPublishEvent: boolean
 }
 
 export default async function GroupPageData({params, searchParams}: GroupDataProps) {
@@ -72,7 +73,8 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
         isManager,
         isOwner,
         isMember,
-        isIssuer
+        isIssuer,
+        canPublishEvent
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupsDetail, currProfile)
 
     return {
@@ -82,6 +84,7 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
         currUserIsMember: isMember,
         currUserIsIssuer: isIssuer,
         currUserIsOwner: isOwner,
+        canPublishEvent,
         tab: tab || 'events',
         members: [owner, ...managers, ...issuers, ...members]
     } as GroupData

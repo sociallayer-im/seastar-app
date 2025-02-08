@@ -5,7 +5,11 @@ import {selectLang} from "@/app/actions"
 import {buttonVariants} from "@/components/shadcn/Button"
 import {Profile} from '@sola/sdk'
 
-export default async function GroupEvents({handle, currProfile}: { handle: string, currProfile?: Profile | null }) {
+export default async function GroupEvents({handle, currProfile, canPublishEvent}: {
+    handle: string,
+    currProfile?: Profile | null,
+    canPublishEvent?: boolean
+}) {
     const events = await GroupEventListData(handle, currProfile)
     const {lang} = await selectLang()
 
@@ -15,13 +19,15 @@ export default async function GroupEvents({handle, currProfile}: { handle: strin
                 {events.length === 100 ? '99+' : events.length}</strong> {lang['Events']}</div>
             <div className="flex-row-item-center">
                 <a className={`${buttonVariants({variant: 'normal', size: 'sm'})} text-xs sm:text-sm sm:h-9 mr-2`}
-                    href={`/event/${handle}`}>
+                   href={`/event/${handle}`}>
                     {lang['View All Event']}
                 </a>
-                <a className={`${buttonVariants({variant: 'special', size: 'sm'})} text-xs sm:text-sm sm:h-9`}
-                    href={`/event/${handle}/create`}>
-                    {lang['Create an Event']}
-                </a>
+                {canPublishEvent &&
+                    <a className={`${buttonVariants({variant: 'special', size: 'sm'})} text-xs sm:text-sm sm:h-9`}
+                       href={`/event/${handle}/create`}>
+                        {lang['Create an Event']}
+                    </a>
+                }
             </div>
         </div>
 

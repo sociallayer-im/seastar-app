@@ -21,6 +21,7 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
         isManager,
         filterOpts,
         mapMarkers,
+        canPublishEvent
     } = await GroupEventHomeData(props)
 
     const {lang, type} = await selectLang()
@@ -31,7 +32,10 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
             <div className="flex-1 md:max-w-[648px] order-2 md:order-1">
                 {groupDetail.map_enabled && !!mapMarkers.length && <div className="w-full h-[260px] mb-6 relative">
                     <GoogleMap markers={mapMarkers} center={mapMarkers[0].position} langType={type}/>
-                    <a className={`${buttonVariants({variant: "secondary", size: "sm"})} absolute bottom-2 right-2 z-10 text-xs bg-white shadow`}
+                    <a className={`${buttonVariants({
+                        variant: "secondary",
+                        size: "sm"
+                    })} absolute bottom-2 right-2 z-10 text-xs bg-white shadow`}
                        href={`/map/${groupDetail.handle}/event`}>
                         {lang['Browse on Map']} <i className="uil-expand-arrows-alt text-base"/>
                     </a>
@@ -74,9 +78,11 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
 
 
                 {!!currProfile && <>
-                    <a href={`/event/${groupDetail.handle}/create`}
-                       className={`${buttonVariants({variant: "special"})} w-full mt-3`}
-                    >{lang['Create an Event']}</a>
+                    {canPublishEvent && groupDetail.status !== 'freezed' &&
+                        <a href={`/event/${groupDetail.handle}/create`}
+                           className={`${buttonVariants({variant: "special"})} w-full mt-3`}
+                        >{lang['Create an Event']}</a>
+                    }
 
                     <div className="flex-row-item-center mt-3">
                         <SelectedBadgeWannaSend

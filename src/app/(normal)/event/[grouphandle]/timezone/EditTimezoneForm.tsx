@@ -57,7 +57,7 @@ export default function EditTimezoneForm({groupDetail, lang}: { groupDetail: Gro
                         onClick={() => {
                             history.go(-1)
                         }}
-                >{lang['Cancel']}</Button>
+                >{lang['Back']}</Button>
                 <Button variant={'primary'} className="w-full"
                         onClick={handleSave}
                 >{lang['Save']}</Button>

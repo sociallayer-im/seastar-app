@@ -34,7 +34,8 @@ export default async function GroupPage(props: GroupDataProps) {
         currUserIsIssuer,
         currUserIsMember,
         currUserIsOwner,
-        members
+        members,
+        canPublishEvent
     } = await GroupPageData(props)
     const lang = (await selectLang()).lang
 
@@ -147,6 +148,7 @@ export default async function GroupPage(props: GroupDataProps) {
                 {
                     tab === 'events' && <div className="grid grid-cols-1 gap-3 w-full">
                         <TabEvents handle={group.handle}
+                                   canPublishEvent={canPublishEvent}
                                    currProfile={currProfile}/>
                     </div>
                 }

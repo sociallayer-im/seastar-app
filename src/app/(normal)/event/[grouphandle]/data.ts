@@ -55,7 +55,8 @@ export default async function GroupEventHomeData({
         isManager,
         isOwner,
         isMember,
-        isIssuer
+        isIssuer,
+        canPublishEvent
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
     const filterOpts: EventListFilterProps = {
@@ -117,6 +118,7 @@ export default async function GroupEventHomeData({
         isManager,
         isOwner,
         isMember,
-        isIssuer
+        isIssuer,
+        canPublishEvent
     }
 }

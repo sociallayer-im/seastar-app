@@ -1,5 +1,5 @@
 import {getGroupEventByHandle, Event, getProfileEventByHandle, ClientMode, Profile} from '@sola/sdk'
-import {setEventAttendedStatus} from '@/utils'
+import {analyzeGroupMembershipAndCheckProfilePermissions, setEventAttendedStatus} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
 
