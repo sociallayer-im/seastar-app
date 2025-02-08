@@ -387,6 +387,8 @@ export const en = {
     'Create':'Create',
     'Create successful':'Create successful',
     'Create failed':'Create failed',
+    'Remove Venue':'Remove Venue',
+    'Are you sure you want to remove this venue?':'Are you sure you want to remove this venue?',
 }
 
 export type Dictionary = typeof en

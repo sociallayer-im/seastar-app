@@ -13,6 +13,7 @@ import {SolaSdkFunctionParams} from '../types'
 /**
  * Get group detail by handle
  * @param groupHandle
+ * @param clientMode
  */
 export const getGroupDetailByHandle = async ({params: {groupHandle}, clientMode}:SolaSdkFunctionParams<{groupHandle: string}>) => {
     const client = getGqlClient(clientMode)

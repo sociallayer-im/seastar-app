@@ -13,6 +13,7 @@ interface DatePickerProps {
     children?: ReactNode,
     disabled?: boolean,
     className?: string
+    format?: string //YYYY/MM/DD'
 }
 
 interface CalendarProps extends Omit<DatePickerProps, 'children'> {
@@ -20,7 +21,7 @@ interface CalendarProps extends Omit<DatePickerProps, 'children'> {
 }
 
 export function Calendar(props: CalendarProps) {
-    const [currDate, setCurrDate] = useState(dayjs(props.initDate))
+    const [currDate, setCurrDate] = useState(dayjs(props.initDate.replace(/-/g, '/')))
     const monthsName = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
     const currMonthDateList = useMemo<Dayjs[]>(() => {
@@ -47,8 +48,8 @@ export function Calendar(props: CalendarProps) {
     return <div className="w-[316px] h-[308px] p-2">
         <div className="flex flex-row justify-between items-center py-2 text-base font-semibold">
             <i className="uil-angle-left text-2xl cursor-pointer active:scale-95" onClick={prevMonth}/>
-            <div>{currMonthDateList[0].format('MMMM')}</div>
-            <div>{currMonthDateList[0].format('YYYY')}</div>
+            <div>{currMonthDateList[0]?.format('MMMM')}</div>
+            <div>{currMonthDateList[0]?.format('YYYY')}</div>
             <i className="uil-angle-right text-2xl cursor-pointer active:scale-95" onClick={nextMonth}/>
         </div>
 
@@ -70,7 +71,7 @@ export function Calendar(props: CalendarProps) {
                         className={`${enabled ? '' : 'opacity-30 pointer-events-none '}${selected ? 'bg-primary ' : ''}h-9 flex-col flex justify-center text-center cursor-pointer rounded-full hover:border hover:border-gray-800`}
                         style={{gridColumnStart: date.day() || 7}}
                         onClick={() => {
-                            props.onChange?.(dayjs(date).format('YYYY/MM/DD'))
+                            props.onChange?.(dayjs(date).format(props.format || 'YYYY/MM/DD'))
                             props.close()
                         }}
                     >

@@ -4,7 +4,17 @@ import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
 import {paymentTokenList} from "@/utils/payment_setting"
-import {Profile, Event, GroupDetail, EventDetail, Ticket, VenueDetail, Track, EventDraftType} from '@sola/sdk'
+import {
+    Profile,
+    Event,
+    GroupDetail,
+    EventDetail,
+    Ticket,
+    VenueDetail,
+    Track,
+    EventDraftType,
+    VenueTimeslot, Weekday
+} from '@sola/sdk'
 import Dayjs from '@/libs/dayjs'
 import domtoimage from 'dom-to-image'
 
@@ -526,10 +536,72 @@ export const checkTrackSuitable = (event: EventDraftType, track?: Track): string
     }
 }
 
-export function reverseObjectFields<T extends Record<string, any>>(obj: T): T {
-    return Object.fromEntries(
-        Object.entries(obj).reverse()
-    ) as T
+
+export function categorizeTimeslotByWeekDay (timeslots: VenueTimeslot[]): Record<Weekday, VenueTimeslot[]> {
+    let categorizedTimeslots: Record<Weekday, VenueTimeslot[]> = {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: [],
+    }
+
+    timeslots.forEach(timeslot => {
+        const day = timeslot.day_of_week
+        categorizedTimeslots[day].push(timeslot)
+    })
+
+    // sort timeslots by start time
+    // categorizedTimeslots = Object.keys(categorizedTimeslots).reduce((acc, key) => {
+    //     acc[key as Weekday] = categorizedTimeslots[key as Weekday].sort((a, b) => {
+    //         return a.start_at.localeCompare(b.start_at)
+    //     })
+    //     return acc
+    // }
+    // , categorizedTimeslots)
+
+    // if some weekdays have no timeslots, add an empty array
+    categorizedTimeslots = Object.keys(categorizedTimeslots).reduce((acc, key) => {
+        if (!categorizedTimeslots[key as Weekday].length) {
+            const emptyTimeslot:VenueTimeslot = {
+                day_of_week: key as Weekday,
+                disabled: false,
+                start_at: '08:00',
+                end_at: '20:00',
+                role: 'all'
+            }
+            acc[key as Weekday] = [emptyTimeslot]
+        }
+        return acc
+    } , categorizedTimeslots)
+
+    return categorizedTimeslots
+}
+
+export const checkTimeSlotOverlapInWeekDay = (timeslots: VenueTimeslot[]) => {
+    const sortedTimeslots = (JSON.parse(JSON.stringify(timeslots)) as VenueTimeslot[]).sort((a, b) => {
+        return a.start_at.localeCompare(b.start_at)
+    })
+
+    for (let i = 0; i < sortedTimeslots.length - 1; i++) {
+        const current = sortedTimeslots[i]
+        const next = sortedTimeslots[i + 1]
+        if (current.end_at > next.start_at) {
+            return true
+        }
+    }
+
+    return false
+}
+
+export const inValidStartEndTime = (start_at?: string | null, end_at?: string | null) => {
+    if (!start_at || !end_at) {
+        return  false
+    }
+
+    return start_at >= end_at
 }
 
 

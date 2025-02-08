@@ -191,6 +191,7 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
                 />
             </DatePicker>
             <TimePicker
+                className="max-w-[88px]"
                 initTime={displayTime(event.start_time, event.timezone)}
                 onChange={(timeStr) => setStartTime(timeStr)}/>
 
@@ -210,6 +211,7 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
                     startAdornment={<i className="uil-calendar-alt text-lg"/>}/>
             </DatePicker>
             <TimePicker
+                className="max-w-[88px]"
                 filterFn={toTimePickerFilterFn}
                 initTime={displayTime(event.end_time, event.timezone)}
                 durationFn={durationFn}

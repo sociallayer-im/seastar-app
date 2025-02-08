@@ -389,4 +389,6 @@ export const zh: Dictionary = {
     'Create':'创建',
     'Create successful':'创建成功',
     'Create failed':'创建失败',
+    'Remove Venue':'移除场地',
+    'Are you sure you want to remove this venue?':'您确定要移除此场地吗？',
 }

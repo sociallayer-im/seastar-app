@@ -3,19 +3,19 @@ import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
 import {useCallback, useEffect, useMemo, useState} from "react"
 import {debounce} from 'lodash'
 import {useMapsLibrary} from '@vis.gl/react-google-maps'
-import {MarkerDraft} from '@sola/sdk'
+import {MarkerDraft, VenueDetail} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 
-export interface SearchMarkerLocationProps {
-    state: {draft: MarkerDraft, setDraft: (draft: MarkerDraft) => void}
+export interface SearchVenueLocationProps {
+    state: {draft: VenueDetail, setDraft: (draft: VenueDetail) => void}
     lang: Dictionary
 
 }
 
-export default function SearchMarkerLocation({
+export default function SearchVenueLocation({
     state: {draft, setDraft},
     lang
-}: SearchMarkerLocationProps) {
+}: SearchVenueLocationProps) {
     const placesLib = useMapsLibrary('places')
     const AutocompleteService = useMemo(() => {
         return !!placesLib && new placesLib.AutocompleteService()
@@ -23,7 +23,6 @@ export default function SearchMarkerLocation({
     const placesService = useMemo(() => {
         return !!placesLib && new placesLib.PlacesService(document.querySelector('#gmap') as HTMLDivElement)
     }, [placesLib])
-
 
     const [predictions, setPredictions] = useState<google.maps.places.QueryAutocompletePrediction[]>([])
     const dropdown: DropdownTrigger = {trigger: null}

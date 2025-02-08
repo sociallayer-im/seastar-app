@@ -2,9 +2,11 @@ import {useEffect, useId, useMemo, useRef, useState} from "react"
 import dayjs, {Dayjs} from "dayjs"
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/shadcn/Popover"
 import {Input} from "@/components/shadcn/Input"
+import {className} from 'postcss-selector-parser'
 
 interface TimePickerProps {
     initTime: string,
+    className?: string,
     onChange?: (timeStr: string) => void,
     filterFn?: (datetimeStr: string) => boolean
     durationFn?: (timeStr: string) => string,
@@ -106,18 +108,8 @@ export default function TimePicker(props: TimePickerProps) {
         }
     }, [open])
 
-    return <div className="flex-row-item-center">
-        <Popover open={open}>
-            <PopoverTrigger>
-                <div className="h-12"></div>
-            </PopoverTrigger>
-            <PopoverContent ref={contentRef} align="start" className="bg-background">
-                <TimeList {...props} close={() => {
-                    setOpen(false)
-                }}/>
-            </PopoverContent>
-        </Popover>
-        <Input className="w-[88px]"
+    return <div className={`flex-row-item-center flex-1 ${props.className}`}>
+        <Input className={`flex-1`}
             ref={inputRef}
             value={props.initTime}
             type="time" variant="textCenter"
@@ -128,5 +120,15 @@ export default function TimePicker(props: TimePickerProps) {
                 !!props.onChange && props.onChange(e.target.value)
             }}
         />
+        <Popover open={open}>
+            <PopoverTrigger>
+                <div className="h-12"></div>
+            </PopoverTrigger>
+            <PopoverContent ref={contentRef} align="end" className="bg-background">
+                <TimeList {...props} close={() => {
+                    setOpen(false)
+                }}/>
+            </PopoverContent>
+        </Popover>
     </div>
 }

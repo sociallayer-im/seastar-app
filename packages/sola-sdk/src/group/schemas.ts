@@ -144,13 +144,13 @@ export const GROUP_DETAIL_FRAGMENT = gql`
         main_event_id
         start_date
         end_date
-        memberships{
+        memberships(order_by: {id: asc}){
            ...MembershipFragment
         }
-        tracks{
+        tracks(order_by: {id: asc}) {
             ...TrackFragment
         }
-        venues{
+        venues(where:{visibility: {_neq: "none"}}, order_by: {id: asc}) {
             ...VenueDetailFragment
         }
     }
@@ -279,6 +279,15 @@ export const GET_TRACK_ROLE_BY_TRACK_ID = gql`
     query GetTrackRoleByTrackId($trackId: Int!) {
         track_roles(where: {track_id: {_eq: $trackId}}) {
             ...TrackRoleFragment
+        }
+    }
+`
+
+export const GENT_VENUE_DETAIL_BY_ID = gql`
+    ${VENUE_DETAIL_FRAGMENT}
+    query GetVenueById($id: bigint!) {
+        venues(where: {id: {_eq: $id}}) {
+            ...VenueDetailFragment
         }
     }
 `

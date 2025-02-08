@@ -82,6 +82,7 @@ export interface VenueDetail extends Venue {
 }
 
 export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+export type VenueRole = 'member' | 'manager' | 'all'
 
 export interface VenueTimeslot {
     id?: number
@@ -90,7 +91,7 @@ export interface VenueTimeslot {
     disabled: boolean,
     start_at: string,
     end_at: string,
-    role: 'member' | 'manager' | 'all'
+    role: VenueRole
     _destroy?: string
 }
 
