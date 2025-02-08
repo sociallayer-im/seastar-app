@@ -3,8 +3,11 @@
 import {cookies, headers} from 'next/headers'
 import {getLang, getLangType} from '@/lang'
 import {AUTH_FIELD} from '@/utils'
-import {getProfileDetailByAuth} from '@sola/sdk'
+import {getProfileDetailByAuth, ProfileDetail} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
+import NodeCache from 'node-cache'
+
+const Cache = new NodeCache()
 
 export const selectLang = async function () {
     const acceptLanguage = headers().get('accept-language')
@@ -22,13 +25,22 @@ export const getServerSideAuth = async () => {
 }
 
 export const getCurrProfile = async function () {
-    const authToken = cookies().get(AUTH_FIELD)?.value
+    const authToken = await getServerSideAuth()
     if (!authToken) {
         return null
     }
 
-    return await getProfileDetailByAuth({
+    const cache = Cache.get(authToken)
+    if (cache) {
+        return cache as ProfileDetail
+    }
+
+    const profile =  await getProfileDetailByAuth({
         params: {authToken: authToken},
         clientMode: CLIENT_MODE
     })
+
+    Cache.set(authToken, profile, 2)
+
+    return  profile
 }

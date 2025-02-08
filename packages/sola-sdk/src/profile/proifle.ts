@@ -63,7 +63,6 @@ export const getProfileDetailByAuth = async ({params, clientMode}:SolaSdkFunctio
     if (!response.ok) {
         return null
     }
-
     const data = await response.json()
     return data.profile as ProfileDetail
 }
