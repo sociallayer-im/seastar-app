@@ -11,12 +11,9 @@ export const removeTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
     const props = {
         auth_token: params.authToken,
         track_id: params.trackId,
-        track: {
-            _destroy: '1'
-        }
     }
 
-    const res = await fetch(`${getSdkConfig(clientMode).api}/group/update_track`, {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/group/remove_track`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -25,7 +22,7 @@ export const removeTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
     })
 
     if (!res.ok) {
-        throw new Error('Failed to send feedback')
+        throw new Error('Failed to remove track')
     }
 }
 
@@ -78,8 +75,6 @@ export const updateTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
         newTrackRoles = [...removedManagers, ...newManagers]
     }
 
-
-
     const props = {
         auth_token: params.authToken,
         track_id: params.track.id,
@@ -125,6 +120,7 @@ export const createTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
 
     const props = {
         auth_token: params.authToken,
+        id: params.track.group_id,
         track: {
             ...params.track,
             track_roles_attributes: newTrackRoles?.length ? newTrackRoles : undefined,
@@ -132,7 +128,7 @@ export const createTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
         }
     }
 
-    const res = await fetch(`${getSdkConfig(clientMode).api}/group/update_track`, {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/group/add_track`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
