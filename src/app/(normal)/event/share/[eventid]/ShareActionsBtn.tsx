@@ -48,7 +48,7 @@ export default function ShareActionsBtn({eventDetail, lang, groupHandle}: ShareA
     const showDownloadBtn = isSupportedDownloadCardBrowser()
     return <div className="grid grid-cols-1 gap-3 w-full">
         <div className="flex-row-item-center">
-            <Button variant="primary"
+            <Button variant="secondary"
                     onClick={handleCopyLink}
                     className="flex-1">
                 {lang['Copy Link']}
@@ -59,10 +59,16 @@ export default function ShareActionsBtn({eventDetail, lang, groupHandle}: ShareA
                         className="ml-3 flex-1">{lang['Save Image']}</Button>
             }
         </div>
-        <a className={`${buttonVariants({variant: 'secondary'})} w-full`}
-              href={`/event/detail/${eventDetail.id}`}>
-            {lang['View Event Detail']}
-        </a>
+        <div className="flex-row-item-center">
+            <a className={`${buttonVariants({variant: 'secondary'})} w-full`}
+               href={`/event/detail/${eventDetail.id}`}>
+                {lang['View Event Detail']}
+            </a>
+            <a className={`${buttonVariants({variant: 'secondary'})} w-full ml-3 `}
+               href={`/event/${groupHandle}`}>
+                {lang['Go to Event Home']}
+            </a>
+        </div>
         <a className={`${buttonVariants({variant: 'secondary'})} w-full`}
            href={`/event/${groupHandle}/create`}>
             {lang['Create an Event']}

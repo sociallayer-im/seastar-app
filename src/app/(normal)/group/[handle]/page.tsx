@@ -22,7 +22,16 @@ export async function generateMetadata(props: GroupDataProps) {
     const {group} = await GroupPageData(props)
     const lang = (await selectLang()).lang
 
-    return {title: `${displayProfileName(group)} - ${lang['Group']} | Social Layer`}
+    return {
+        title: `${displayProfileName(group)} - ${lang['Group']} | Social Layer`,
+        openGraph: {
+            title: `${displayProfileName(group)} - ${lang['Group']} | Social Layer`,
+            description: group.about || undefined,
+            type: 'website',
+            url: `https://app.sola.day/group/${group.handle}`,
+            images: getAvatar(group.id, group.image_url),
+        }
+    }
 }
 
 export default async function GroupPage(props: GroupDataProps) {

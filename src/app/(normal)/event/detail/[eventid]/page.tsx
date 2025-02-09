@@ -26,6 +26,7 @@ import EventParticipantList from '@/components/client/EventParticipantList'
 import RecurringListBtn from '@/app/(normal)/event/detail/[eventid]/RecurringListBtn'
 import GoogleMap from '@/components/client/Map'
 import ClickToCopy from '@/components/client/ClickToCopy'
+import removeMarkdown from 'markdown-to-text'
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -33,8 +34,16 @@ export async function generateMetadata({params, searchParams}: {
 }) {
     const {eventDetail} = await EventDetailPage({params, searchParams})
 
+    const description = removeMarkdown(eventDetail.content || '').slice(0, 200)
     return {
-        title: `${eventDetail.title} | Social Layer`
+        title: `${eventDetail.title} | Social Layer`,
+        openGraph: {
+            title: `${eventDetail.title} | Social Layer`,
+            description: description,
+            type: 'website',
+            url: `https://app.sola.day/event/detail/${eventDetail.id}`,
+            images: eventDetail.cover_url || 'https://app.sola.day/images/facaster_default_cover.png',
+        }
     }
 }
 

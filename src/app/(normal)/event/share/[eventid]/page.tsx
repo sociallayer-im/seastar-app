@@ -65,7 +65,9 @@ export default async function ShareEventPage(props: EventDetailDataProps) {
                                 <>
                                     <span>—</span>
                                     <div className={'end-time'}>
-                                        <DisplayDateTime dataTimeStr={eventDetail.end_time} tz={eventDetail.timezone}/>
+                                        <DisplayDateTime
+                                            dataTimeStr={eventDetail.end_time}
+                                            tz={eventDetail.timezone}/>
                                     </div>
                                 </>
                             }

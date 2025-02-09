@@ -14,23 +14,36 @@ import CopyText from "@/components/client/CopyText"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
-import {displayProfileName} from '@/utils'
+import {displayProfileName, getAvatar} from '@/utils'
 import ClickToCopy from '@/components/client/ClickToCopy'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata({params, searchParams}: { params: ProfilePageParams, searchParams: ProfilePageSearchParams }) {
+export async function generateMetadata({params, searchParams}: {
+    params: ProfilePageParams,
+    searchParams: ProfilePageSearchParams
+}) {
     const data = await ProfileData({params, searchParams, cookies: cookies()})
     if (!data.profile) {
         redirect('/error')
     } else {
         return {
-            title: `${data.profile.nickname || data.profile.handle} | Social Layer`
+            title: `${displayProfileName(data.profile)} | Social Layer`,
+            openGraph: {
+                title: `${displayProfileName(data.profile)} | Social Layer`,
+                description: data.profile.about || undefined,
+                type: 'website',
+                url: `https://app.sola.day/profile/${data.profile.handle}`,
+                images: getAvatar(data.profile.id, data.profile.image_url),
+            }
         }
     }
 }
 
-export default async function Profile({params, searchParams}: { params: ProfilePageParams, searchParams: ProfilePageSearchParams }) {
+export default async function Profile({params, searchParams}: {
+    params: ProfilePageParams,
+    searchParams: ProfilePageSearchParams
+}) {
     const {profile, currProfile, isSelf, tab} = await ProfileData({params, searchParams, cookies: cookies()})
     const lang = (await selectLang()).lang
 
@@ -56,7 +69,7 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                     </div>
 
                     <div className="px-3 mt-[-40px]">
-                        <Avatar profile={profile} size={60} />
+                        <Avatar profile={profile} size={60}/>
                         <div className="flex-row-item-center my-2">
                             <div className="font-semibold text-5">{profile.nickname || profile.handle}</div>
                             {isSelf &&
@@ -133,20 +146,20 @@ export default async function Profile({params, searchParams}: { params: ProfileP
                         }
 
                         {!!currProfile && <SelectedBadgeWannaSend
-                                lang={lang}
-                                toProfileHandle={profile.handle !== currProfile.handle ? profile.handle : undefined}
-                                profileDetail={currProfile}>
-                                <div
-                                    className={`${buttonVariants({variant: 'special'})} w-full my-4 cursor-pointer`}>
-                                    <i className="uil-message mr-1 text-xl"/>
-                                    <span>
+                            lang={lang}
+                            toProfileHandle={profile.handle !== currProfile.handle ? profile.handle : undefined}
+                            profileDetail={currProfile}>
+                            <div
+                                className={`${buttonVariants({variant: 'special'})} w-full my-4 cursor-pointer`}>
+                                <i className="uil-message mr-1 text-xl"/>
+                                <span>
                                         {currProfile.handle === profile.handle
                                             ? lang['Send a badge']
                                             : lang['Send a badge to [1]'].replace('[1]', displayProfileName(profile))
                                         }
                                     </span>
-                                </div>
-                            </SelectedBadgeWannaSend>
+                            </div>
+                        </SelectedBadgeWannaSend>
                         }
                     </div>
                 </div>
