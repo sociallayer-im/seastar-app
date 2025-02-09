@@ -1,6 +1,6 @@
 'use client'
 
-import {VenueDetail, VenueRole, VenueTimeslot, Weekday} from '@sola/sdk'
+import {VenueDetail, VenueOverride, VenueRole, VenueTimeslot, Weekday} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {Input} from '@/components/shadcn/Input'
 import {Button, buttonVariants} from '@/components/shadcn/Button'
@@ -18,6 +18,8 @@ import SearchVenueLocation from '@/components/client/SearchVenueLocation'
 import GoogleMapProvider from '@/providers/GoogleMapProvider'
 import Dayjs from '@/libs/dayjs'
 import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
+import DisplayDateTime from '@/components/client/DisplayDateTime'
+import useEditOverride from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/useEditOverride'
 
 const ROLE_OPTIONS: { value: VenueRole, label: string }[] = [
     {value: 'all', label: 'All'},
@@ -25,7 +27,8 @@ const ROLE_OPTIONS: { value: VenueRole, label: string }[] = [
     {value: 'manager', label: 'Manager'},
 ]
 
-const getTargetRole = (role: string) => {
+const getTargetRole = (role?: string) => {
+    if (!role) return ROLE_OPTIONS[0]
     return ROLE_OPTIONS.find(option => option.value === role)
 }
 
@@ -36,9 +39,12 @@ export interface VenueFormProps {
 }
 
 export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps) {
+    const {editOverride} = useEditOverride()
+
     const [draft, setDraft] = useState(venueDetail)
     const [enableTimeslots, setEnableTimeslots] = useState(!!venueDetail.venue_timeslots?.length)
     const [timeslots, setTimeslots] = useState(categorizeTimeslotByWeekDay(venueDetail.venue_timeslots || []))
+    const [overrides, setOverrides] = useState(venueDetail.venue_overrides || [])
 
     const [titleError, setTitleError] = useState('')
     const [locationError, setLocationError] = useState('')
@@ -46,6 +52,7 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
     useEffect(() => {
         console.log('draft', draft)
         console.log('timeslots', timeslots)
+        console.log('overrides', overrides)
     }, [draft, timeslots])
 
     const toggleWeekdayTimeslotsDisable = (weekDay: Weekday) => {
@@ -62,8 +69,6 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
             }
             return timeslot
         })
-
-        console.log('updateTimeslot', index, timeslots[weekDay], newTimeslots)
 
         setTimeslots({...timeslots, [weekDay]: newTimeslots})
     }
@@ -121,7 +126,26 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
             }, [] as VenueTimeslot[])
             : []
 
-        !!onConfirm && onConfirm({...draft, venue_timeslots: plantTimeslots})
+        !!onConfirm && onConfirm({
+            ...draft,
+            venue_timeslots: plantTimeslots,
+            venue_overrides: overrides
+        })
+    }
+
+    const addNewOverride = async () => {
+        const emptyOverride = {
+            day: Dayjs().format('YYYY/MM/DD'),
+            disabled: false,
+            start_at: '00:00',
+            end_at: '23:59',
+            role: 'all'
+        } as VenueOverride
+
+        const newOverride = await editOverride(emptyOverride, lang)
+        if (!!newOverride) {
+            setOverrides([...overrides, newOverride])
+        }
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
@@ -382,11 +406,32 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
                 </div>
                 <div className="grid grid-cols-1 gap-3">
                     {
-                        new Array(3).fill('').map((_, index) => {
+                        overrides.map((override, index) => {
                             return <div key={index} className="flex-row-item-center w-full">
-                                <div
-                                    className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 justify-between`}>
-                                    <div className="font-normal">venue {index}</div>
+                                <div onClick={async () => {
+                                    const newOverride = await editOverride(override, lang)
+                                    if (newOverride) {
+                                        const newOverrides = [...overrides]
+                                        newOverrides[index] = newOverride
+                                        setOverrides(newOverrides)
+                                    }
+                                }}
+                                     className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 justify-between !h-auto`}>
+                                    <div className="font-normal">
+                                        <div className={"font-semibold"}>
+                                            <DisplayDateTime dataTimeStr={override.day} format={'MMMM DD, YYYY'}/>
+                                        </div>
+                                        <div className="text-sm">
+
+                                        </div>
+                                        <div className="text-xs text-gray-500 capitalize">
+                                            {!!override.start_at &&
+                                                <span className="mr-1">Form {override.start_at}</span>}
+                                            {!!override.end_at && <span className="mr-1">To {override.end_at}</span>}
+                                            <span>{override.disabled ? 'Disable' : 'Enable'} for {override.role}</span>
+                                        </div>
+                                    </div>
+
                                     <i className="uil-edit-alt"/>
                                 </div>
                                 <i className="uil-minus-circle text-3xl text-gray-500 cursor-pointer"/>
@@ -394,9 +439,9 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
                         })
                     }
                 </div>
-                <Button variant={'secondary'} className='mt-3'>
+                <Button variant={'secondary'} className='mt-3' onClick={addNewOverride}>
                     <i className="uil-plus-circle text-xl"/>
-                    Add new Override
+                    {lang['Add new Override']}
                 </Button>
             </div>
 

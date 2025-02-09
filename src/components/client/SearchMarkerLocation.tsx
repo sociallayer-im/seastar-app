@@ -36,7 +36,6 @@ export default function SearchMarkerLocation({
 
         let customAddress: google.maps.places.QueryAutocompletePrediction | null = null
         if (rex.test(keyword)) {
-            alert('is customAddress')
             const [lat, lng] = keyword.split(',')
             customAddress = {
                 description: `Use ${lat},${lng}`,

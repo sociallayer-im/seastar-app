@@ -391,4 +391,10 @@ export const zh: Dictionary = {
     'Create failed':'创建失败',
     'Remove Venue':'移除场地',
     'Are you sure you want to remove this venue?':'您确定要移除此场地吗？',
+    'Edit Override':'编辑覆盖',
+    'Create Override':'创建覆盖',
+    'Override Date':'覆盖日期',
+    'Override Time':'覆盖时间',
+    'Mark Unavailable':'标记不可用',
+    'Add new Override':'添加新覆盖',
 }

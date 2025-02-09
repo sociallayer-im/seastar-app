@@ -1,5 +1,5 @@
 import {SolaSdkFunctionParams} from '../types'
-import {VenueDetail, VenueTimeslot} from './types'
+import {VenueDetail, VenueOverride, VenueTimeslot} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
 import {GENT_VENUE_DETAIL_BY_ID} from './schemas'
 
@@ -44,10 +44,22 @@ export const updateVenue = async function ({params: {venue, authToken}, clientMo
             _destroy: '1'
         }
     })
+    const oldOverrides = venueDetail!.venue_overrides
+    const removedOverrides = oldOverrides.map(oldOverride => {
+        return {
+            ...oldOverride,
+            _destroy: '1'
+        }
+    })
 
     let newTimeslots: VenueTimeslot[]  = venue.venue_timeslots.map(timeslot => ({...timeslot,  id: undefined}))
     if (!!removedTimeslots) {
         newTimeslots = newTimeslots?.concat(removedTimeslots)
+    }
+
+    let newOverrides: VenueOverride[]  = venue.venue_overrides.map(override => ({...override,  id: undefined}))
+    if (!!removedOverrides) {
+        newOverrides = newOverrides?.concat(removedOverrides)
     }
 
     const props = {
@@ -55,7 +67,10 @@ export const updateVenue = async function ({params: {venue, authToken}, clientMo
         id: venue.id!,
         venue: {
             ...venue,
-            venue_timeslots_attributes: newTimeslots
+            venue_timeslots_attributes: newTimeslots,
+            venue_timeslots: undefined,
+            venue_overrides_attributes: newOverrides,
+            venue_overrides: undefined
         }
     }
 
@@ -79,13 +94,17 @@ export const createVenue = async function ({params: {venue, authToken}, clientMo
     authToken: string
 }>) {
     const newTimeslots: VenueTimeslot[]  = venue.venue_timeslots.map(timeslot => ({...timeslot,  id: undefined}))
+    const newOverrides: VenueOverride[]  = venue.venue_overrides.map(override => ({...override,  id: undefined}))
 
     const props = {
         auth_token: authToken,
         group_id: venue.group_id!,
         venue: {
             ...venue,
-            venue_timeslots_attributes: newTimeslots
+            venue_timeslots_attributes: newTimeslots,
+            venue_timeslots: undefined,
+            venue_overrides_attributes: newOverrides,
+            venue_overrides: undefined
         }
     }
 

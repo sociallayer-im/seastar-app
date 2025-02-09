@@ -389,6 +389,12 @@ export const en = {
     'Create failed':'Create failed',
     'Remove Venue':'Remove Venue',
     'Are you sure you want to remove this venue?':'Are you sure you want to remove this venue?',
+    'Edit Override':'Edit Override',
+    'Create Override':'Create Override',
+    'Override Date':'Override Date',
+    'Override Time':'Override Time',
+    'Mark Unavailable': 'Mark Unavailable',
+    'Add new Override':'Add new Override',
 }
 
 export type Dictionary = typeof en

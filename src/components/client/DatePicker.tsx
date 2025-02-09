@@ -91,7 +91,7 @@ export default function DatePicker(props: DatePickerProps) {
         <PopoverTrigger disabled={disabled} onClick={() => !disabled && setOpen(true)} className={props.className}>
             {children}
         </PopoverTrigger>
-        <PopoverContent align="start" className="bg-background" onInteractOutside={() => {setOpen(false)}}>
+        <PopoverContent align="start" className="bg-background" style={{zIndex: '9999'}} onInteractOutside={() => {setOpen(false)}}>
             <Calendar {...rest}  close={() => {setOpen(false)}}/>
         </PopoverContent>
     </Popover>

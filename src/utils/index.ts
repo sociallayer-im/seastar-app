@@ -345,7 +345,6 @@ export function displayProfileName(profile: Profile) {
 
 export function clientToSignIn() {
     const signInUrl = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${window.encodeURIComponent(window.location.href)}`
-    alert(signInUrl)
     window.location.href = signInUrl
 }
 

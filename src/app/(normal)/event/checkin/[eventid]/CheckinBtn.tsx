@@ -28,7 +28,7 @@ export default function CheckinBtn({eventDetail, lang}: CheckinBtnProps) {
                 return
             }
 
-            alert(profileId)
+            // todo: handle checkin
         })
     }
 

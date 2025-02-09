@@ -124,7 +124,7 @@ export default function TimePicker(props: TimePickerProps) {
             <PopoverTrigger>
                 <div className="h-12"></div>
             </PopoverTrigger>
-            <PopoverContent ref={contentRef} align="end" className="bg-background">
+            <PopoverContent ref={contentRef} align="end" className="bg-background" style={{zIndex: '9999'}}>
                 <TimeList {...props} close={() => {
                     setOpen(false)
                 }}/>
