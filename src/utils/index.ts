@@ -17,6 +17,7 @@ import {
 } from '@sola/sdk'
 import Dayjs from '@/libs/dayjs'
 import domtoimage from 'dom-to-image'
+import {Dictionary} from '@/lang'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -601,6 +602,60 @@ export const inValidStartEndTime = (start_at?: string | null, end_at?: string | 
     }
 
     return start_at >= end_at
+}
+
+export const verifyUsername =  (domain: string, lang: Dictionary) => {
+    const minLength = 6
+    const maxLength = 16
+
+    if (!domain || !domain.trim()) {
+        return lang['Please input username']
+    }
+
+    if (domain.startsWith('-')) {
+        return lang['Username cannot start with "-"']
+    }
+
+    if (domain.endsWith('-')) {
+        return lang['Username cannot end with "-"']
+    }
+
+    if (domain.match(/-{2,}/)) {
+        const char: any = domain.match(/-{2,}/)
+        return lang['Username contains invalid character'] + char[0]
+    }
+
+    if (domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)) {
+        const char: any = domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)
+        return  lang['Username contains invalid character'] + char[0]
+    }
+
+    if (!domain.match(/^[a-z0-9]+(-{1}[a-z0-9]+)*$/)) {
+        return lang['Username contains invalid character']
+    }
+
+    if (domain.length < minLength) {
+        return lang['The minimum length of username is '] + minLength
+    }
+
+    if (domain.length > maxLength) {
+        return lang['The maximum length of username is '] + maxLength
+    }
+
+    return null
+}
+
+
+export const checkDomainInput =  (domain: string) => {
+    if (domain.startsWith('-')) {
+        return false
+    }
+
+    if (domain.match(/\s/)) {
+        return false
+    }
+
+    return !domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im);
 }
 
 

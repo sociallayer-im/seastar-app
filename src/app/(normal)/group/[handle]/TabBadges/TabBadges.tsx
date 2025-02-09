@@ -20,7 +20,6 @@ export default async function TabBadges({handle, isManager, isIssuer, isMember}:
         clientMode: CLIENT_MODE
     })
 
-
     return <Tabs
         group={groupsDetail!}
         isManager={isManager}

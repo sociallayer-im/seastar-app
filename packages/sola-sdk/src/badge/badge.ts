@@ -5,7 +5,7 @@ import {
     GET_BADGE_AND_BADGE_CLASS_BY_OWNER_HANDLE,
     GET_BADGE_CLASS_DETAIL_BY_BADGE_CLASS_ID,
     GET_BADGE_DETAIL_BY_BADGE_ID,
-    GET_INVITE_DETAIL_BY_ID, GET_BADGE_CLASS_BY_GROUP_ID
+    GET_INVITE_DETAIL_BY_ID, GET_BADGE_CLASS_BY_GROUP_ID, GET_BADGE_CLASS_AND_INVITE_BY_GROUP_HANDLE
 } from "./schemas"
 import {BadgeDetail, Badge, BadgeClassDetail, Invite, InviteDetail, BadgeClass} from "./types"
 import {SolaSdkFunctionParams} from '../types'
@@ -109,9 +109,11 @@ export const getBadgeDetailByBadgeId = async ({params, clientMode}: SolaSdkFunct
 export const getBadgeClassAndInviteByGroupHandle = async ({params, clientMode}: SolaSdkFunctionParams<{groupHandle: string}>) => {
     const client = getGqlClient(clientMode)
     const response = await client.query({
-        query: GET_BADGE_AND_BADGE_CLASS_BY_OWNER_HANDLE,
+        query: GET_BADGE_CLASS_AND_INVITE_BY_GROUP_HANDLE,
         variables: {handle: params.groupHandle, now: new Date().toISOString()}
     })
+
+    console.log('response.data.group_invites', response.data.group_invites)
 
     return {
         badgeClasses: response.data.badge_classes as BadgeClassDetail[],

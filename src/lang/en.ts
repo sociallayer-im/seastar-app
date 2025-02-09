@@ -399,6 +399,13 @@ export const en = {
     'Event':'Event',
     'User':'User',
     'Badge':'Badge',
+    'Please input username':'Please input username',
+    'Username cannot start with "-"': 'Username cannot start with "-"',
+    'Username cannot end with "-"':'Username cannot end with "-"',
+    'Username contains invalid character':'Username contains invalid character',
+    'The minimum length of username is ': 'The minimum length of username is ',
+    'The maximum length of username is ': 'The maximum length of username is ',
+    'Do you want to create a group with this username ?':'Do you want to create a group this the username ?',
 }
 
 export type Dictionary = typeof en

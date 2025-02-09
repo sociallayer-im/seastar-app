@@ -401,4 +401,11 @@ export const zh: Dictionary = {
     'Event':'事件',
     'User':'用户',
     'Badge':'徽章',
+    'Please input username':'请输入用户名',
+    'Username cannot start with "-"': '用户名不能以“-”开头',
+    'Username cannot end with "-"':'用户名不能以“-”结尾',
+    'Username contains invalid character':'用户名包含无效字符',
+    'The minimum length of username is ': '用户名的最小长度为',
+    'The maximum length of username is ': '用户名的最大长度为',
+    'Do you want to create a group with this username ?':'您要使用这个用户名创建一个群组吗？',
 }

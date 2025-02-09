@@ -73,6 +73,11 @@ export default async function GroupEventHomeData({
         params: {filters: filterOpts, authToken},
         clientMode: CLIENT_MODE
     })
+
+    if (!searchParams.collection) {
+        redirect(`/event/${handle}?collection=past`)
+    }
+
     let currProfileAttends: Event[] = []
     if (!!currProfile) {
         currProfileAttends = (await getProfileEventByHandle({

@@ -339,3 +339,25 @@ export const getAvailableGroupsForEventHost = async ({params, clientMode}:SolaSd
     return response.data.groups as Group[]
 }
 
+export const createGroup = async ({params, clientMode}: SolaSdkFunctionParams<{handle: string, authToken: string}>) => {
+    const paraams = {
+        auth_token: params.authToken,
+        handle: params.handle
+    }
+
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/create`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(paraams)
+    })
+
+    if (!response.ok) {
+        throw new Error('Create group failed')
+    }
+
+    const data = await response.json()
+    return data.group as Group
+}
+

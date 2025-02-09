@@ -6,6 +6,7 @@ import {Profile, PROFILE_FRAGMENT} from './profile'
 import {Group, GROUP_FRAGMENT} from './group'
 import {BADGE_CLASS_FRAGMENT, BadgeClass} from './badge'
 import {Event} from './event'
+import {fixDate} from './uitls'
 
 export const uploadFile = async ({params, clientMode}: SolaSdkFunctionParams<{ file: Blob, authToken: string }>) => {
 
@@ -71,7 +72,7 @@ export const search = async ({params, clientMode}: SolaSdkFunctionParams<{ keywo
     })
 
     return {
-        events: response.data.events as Event[],
+        events: response.data.events.map((e: Event) => fixDate(e)),
         groups: response.data.groups as Group[],
         profiles: response.data.profiles as Profile[],
         badgeClasses: response.data.badgeClasses as BadgeClass[]
