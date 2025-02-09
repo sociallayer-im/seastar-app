@@ -31,7 +31,6 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
         location.href = `/search?keyword=${currKeyword}&tab=${currTab}`
     }
 
-
     const tabs = [{
         id: 'event',
         label: lang['Event']
