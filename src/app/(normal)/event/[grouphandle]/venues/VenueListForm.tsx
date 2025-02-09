@@ -57,7 +57,7 @@ export default function VenueListForm({groupDetail, lang}: { groupDetail: GroupD
                         return <div key={index} className="flex-row-item-center w-full">
                             <a href={`/event/${groupDetail.handle}/venues/edit/${venue.id}`}
                                className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 !h-auto justify-between`}>
-                                <div className="font-normal flex-1 whitespace-normal">{venue.location}</div>
+                                <div className="font-normal flex-1 whitespace-normal">{venue.title}</div>
                                 <i className="uil-edit-alt"/>
                             </a>
                             <i  onClick={() => handleRemove(venue.id)}
