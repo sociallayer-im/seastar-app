@@ -397,4 +397,8 @@ export const zh: Dictionary = {
     'Override Time':'覆盖时间',
     'Mark Unavailable':'标记不可用',
     'Add new Override':'添加新覆盖',
+    'Events, Groups, Badges, Users':'事件，群组，徽章，用户',
+    'Event':'事件',
+    'User':'用户',
+    'Badge':'徽章',
 }

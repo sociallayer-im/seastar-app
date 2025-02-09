@@ -68,10 +68,10 @@ async function PublicBadgeClassPage({badgeClass, badges, isOwner, groupCreator}:
                 }
             </div>
 
-            <div className="flex-1 sm:ml-8">
+            <div className="flex-1 sm:ml-8 w-full">
                 <div className="my-3">
-                    <span className="text-2xl font-semibold mr-2">{badgeClass.badges.length}</span>
-                    <span className="text-xl">{lang['Receivers']}</span>
+                    <span className="sm:text-2xl font-semibold mr-2 text-base">{badgeClass.badges.length}</span>
+                    <span className="sm:text-xl text-base">{lang['Receivers']}</span>
                 </div>
 
                 {!badges.length && <div className="p-7 bg-secondary rounded-lg mb-3 text-sm">
@@ -80,7 +80,7 @@ async function PublicBadgeClassPage({badgeClass, badges, isOwner, groupCreator}:
 
                 {
                     badges.map((badge, i) => {
-                        return <div key={i} className="p-3 bg-secondary rounded-lg mb-3 text-sm">
+                        return <div key={i} className="p-3 bg-secondary rounded-lg mb-3 text-sm w-full">
                             <div className="mb-3">
                                 <div className={"font-semibold mb-1"}>{lang['Receiver']}</div>
                                 <a href={`/profile/${badge.owner.handle}`}

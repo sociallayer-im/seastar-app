@@ -231,7 +231,7 @@ export const GET_MAP_EVENTS_BY_GROUP_HANDLE = gql`
         events(where: {
             display: {_neq: "private"},
             group: {handle: {_eq: $handle}}, 
-            status: {_neq: "cancel"},
+            status: {_neq: "cancelled"},
             geo_lat: {_is_null: false},
             geo_lng: {_is_null: false}
             start_time: {_gte: $now}

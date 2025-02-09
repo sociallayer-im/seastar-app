@@ -3,6 +3,7 @@ import Image from "next/image"
 import LangSwitcher from "@/components/client/LangSwitcher"
 import ProfileMenu from "@/components/client/ProfileMenu"
 import { headers } from "next/headers"
+import HeaderSearchBar from "@/components/client/HeaderSearchBar"
 
 export default async function Header() {
     const { type, lang } = await selectLang()
@@ -29,10 +30,8 @@ export default async function Header() {
                     {lang['My Events']}
                 </a>}
             </div>
-            <div className="flex-row-item-center text-xs">
-                <a href="/search">
-                    <i className="uil-search text-sm"/>
-                </a>
+            <div className="flex-row-item-center text-xs relative">
+                <HeaderSearchBar lang={lang} />
                 <span className="w-[0.5px] h-3 bg-gray-400 mx-2" />
                 <div className="cursor-pointer">
                     <LangSwitcher value={type} refresh={true} />

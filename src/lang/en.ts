@@ -395,6 +395,10 @@ export const en = {
     'Override Time':'Override Time',
     'Mark Unavailable': 'Mark Unavailable',
     'Add new Override':'Add new Override',
+    'Events, Groups, Badges, Users':'Events, Groups, Badges, Users',
+    'Event':'Event',
+    'User':'User',
+    'Badge':'Badge',
 }
 
 export type Dictionary = typeof en

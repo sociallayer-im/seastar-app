@@ -1,7 +1,13 @@
 import {SolaSdkFunctionParams} from './types'
-import {getSdkConfig} from './client'
+import {getGqlClient, getSdkConfig} from './client'
+import {gql} from '@apollo/client'
+import {EVENT_FRAGMENT} from './event'
+import {Profile, PROFILE_FRAGMENT} from './profile'
+import {Group, GROUP_FRAGMENT} from './group'
+import {BADGE_CLASS_FRAGMENT, BadgeClass} from './badge'
+import {Event} from './event'
 
-export  const uploadFile = async ({params, clientMode}: SolaSdkFunctionParams<{file: Blob, authToken: string}>) => {
+export const uploadFile = async ({params, clientMode}: SolaSdkFunctionParams<{ file: Blob, authToken: string }>) => {
 
     const formData = new FormData()
     formData.append('auth_token', params.authToken)
@@ -20,4 +26,54 @@ export  const uploadFile = async ({params, clientMode}: SolaSdkFunctionParams<{f
 
     const data = await response.json()
     return data.result.url as string
+}
+
+export const search = async ({params, clientMode}: SolaSdkFunctionParams<{ keyword: string }>) => {
+    const doc = gql`
+        ${EVENT_FRAGMENT}
+        ${PROFILE_FRAGMENT}
+        ${GROUP_FRAGMENT}
+        ${BADGE_CLASS_FRAGMENT}
+        query Search($keyword: String!) {
+             events: events(where: {
+                    status: {_in: ["open", "published", "normal"]}, 
+                    display: {_neq: "private"}, 
+                    title: {_regex: $keyword}}, limit: 100, order_by: {id: desc}) 
+                    {
+                        ...EventFragment
+                    },
+                groups: groups(where: {
+                    _or: [{handle: {_regex: $keyword}},{nickname: {_regex: $keyword}}]
+                    }, limit: 100, order_by: {id: desc}) 
+                    {
+                        ...GroupFragment
+                    },
+                profiles: profiles(where: {
+                    _or: [{handle: {_regex: $keyword}},{nickname: {_regex: $keyword}}]
+                    }, limit: 100, order_by: {id: desc}) 
+                    {
+                        ...ProfileFragment
+                    },
+                badgeClasses: badge_classes(where: {
+                    badge_type: {_neq: "private"},
+                    _or: [{name: {_regex: $keyword}},{title: {_regex: $keyword}}]
+                    }, limit: 100, order_by: {id: desc}) 
+                    {
+                        ...BadgeClassFragment
+                    }
+        }
+    `
+
+    const client = getGqlClient(clientMode)
+    const response = await client.query({
+        query: doc,
+        variables: {keyword: params.keyword}
+    })
+
+    return {
+        events: response.data.events as Event[],
+        groups: response.data.groups as Group[],
+        profiles: response.data.profiles as Profile[],
+        badgeClasses: response.data.badgeClasses as BadgeClass[]
+    }
 }
