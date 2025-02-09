@@ -56,7 +56,9 @@ export default async function ShareEventPage(props: EventDetailDataProps) {
                         <div className="flex flex-row text-xs font-normal">
                             <i className="uil-calendar-alt mr-1"/>
                             <div className={'start-time'}>
-                                <DisplayDateTime dataTimeStr={eventDetail.start_time} tz={eventDetail.timezone}/>
+                                <DisplayDateTime
+                                    dataTimeStr={eventDetail.start_time}
+                                    tz={eventDetail.timezone}/>
                             </div>
                             {
                                 eventDetail.end_time &&
@@ -64,7 +66,6 @@ export default async function ShareEventPage(props: EventDetailDataProps) {
                                     <span>—</span>
                                     <div className={'end-time'}>
                                         <DisplayDateTime dataTimeStr={eventDetail.end_time} tz={eventDetail.timezone}/>
-                                        {getGmtOffset(eventDetail.timezone)}
                                     </div>
                                 </>
                             }
@@ -72,7 +73,7 @@ export default async function ShareEventPage(props: EventDetailDataProps) {
                     }
                     {!!eventDetail.timezone &&
                         <div className="flex flex-row text-xs font-normal">
-                            <div className="pl-4">{eventDetail.timezone}</div>
+                            <div className="pl-4">{eventDetail.timezone}  {getGmtOffset(eventDetail.timezone)}</div>
                         </div>
                     }
                     {

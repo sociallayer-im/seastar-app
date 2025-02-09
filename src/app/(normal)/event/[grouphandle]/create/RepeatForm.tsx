@@ -1,6 +1,6 @@
 import useModal from "@/components/client/Modal/useModal"
 import DropdownMenu from "@/components/client/DropdownMenu"
-import {useMemo, useState} from "react"
+import {useEffect, useMemo, useState} from "react"
 import {Input} from "@/components/shadcn/Input"
 import {Button} from "@/components/shadcn/Button"
 import dayjs from "@/libs/dayjs"
@@ -102,7 +102,7 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
     const preview = useMemo(() => {
         if (!repeatForm.interval
             || !repeatForm.event_count
-            && (!!repeatForm.event_count && repeatForm.event_count < 1)) {
+            || (!!repeatForm.event_count && repeatForm.event_count < 1)) {
             return []
         }
 
@@ -130,6 +130,10 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
     }
 
     const RepeatInterval = getRepeatInterval(lang)
+
+    useEffect(() => {
+        setError('')
+    }, [repeatForm])
 
     return <div className="shadow rounded-lg bg-white p-4 w-80">
         <div className="max-h-[60svh] overflow-auto">

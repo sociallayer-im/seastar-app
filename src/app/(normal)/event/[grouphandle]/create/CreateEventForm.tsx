@@ -3,7 +3,7 @@
 import EventForm from '@/app/(normal)/event/[grouphandle]/create/EventForm'
 import {Dictionary} from '@/lang'
 import {CreateEventPageDataType} from '@/app/(normal)/event/[grouphandle]/create/data'
-import {createEvent, createRecurringEvent, EventDraftType} from '@sola/sdk'
+import {createEvent, createRecurringEvent, EventDraftType, getEventByRecurringId} from '@sola/sdk'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
@@ -39,7 +39,7 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
         const authToken = getAuth()
         const loading = showLoading()
         try {
-             await createRecurringEvent({
+            const recurring = await createRecurringEvent({
                 params: {
                     eventDraft,
                     authToken: authToken!,
@@ -47,7 +47,13 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
                     interval: repeatForm.interval!
                 }, clientMode: CLIENT_MODE
             })
-            // window.location.href = `/event/share/${event.id}`
+
+            const events = await getEventByRecurringId({
+                params: {recurringId: recurring.id},
+                clientMode: CLIENT_MODE
+            })
+
+            window.location.href = `/event/share/${events[0]?.id}`
         } catch (e: unknown) {
             console.error(e)
             toast({

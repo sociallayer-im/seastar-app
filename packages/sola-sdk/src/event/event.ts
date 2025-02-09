@@ -376,6 +376,8 @@ export const createRecurringEvent = async ({params, clientMode}: SolaSdkFunction
     if (data.result === 'error') {
         throw new Error(data.message)
     }
+
+    return data.recurring as Recurring
 }
 
 export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
