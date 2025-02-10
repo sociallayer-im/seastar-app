@@ -59,7 +59,7 @@ export interface IframeSchedulePageDataEvent {
     } | null
     geo_lat: string | null,
     geo_lng: string | null,
-    owner: Solar.ProfileSample,
+    profile: Solar.ProfileSample,
     track_id: number | null,
     track: Solar.Track | null,
     recurring_id: number | null,

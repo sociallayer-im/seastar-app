@@ -58,7 +58,7 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
             handle: groupHostRole.nickname!,
             id: groupHostRole.item_id!
         }
-        : event.owner
+        : event.profile
 
     const bgColor = event.pinned ? '#FFF7E8' : '#fff'
     const mainThemColor = event.tags[0] ? getLabelColor(event.tags[0]) : bgColor
