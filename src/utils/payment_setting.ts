@@ -411,7 +411,7 @@ export interface PaymentsType {
 export const Payments: PaymentsType[] = [
     {
         label: 'Daimo(OP)',
-        chain: 'optimism',
+        chain: 'op',
         id: 'daimo_op',
         protocol: 'daimo',
         chainId: 42161,

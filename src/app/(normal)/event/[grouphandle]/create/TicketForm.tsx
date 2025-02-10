@@ -8,23 +8,32 @@ import {Input} from "@/components/shadcn/Input"
 import {getLabelColor} from "@/utils/label_color"
 import {Button} from "@/components/shadcn/Button"
 import {Dictionary} from "@/lang"
-import {useEffect, useState} from "react"
+import {useEffect, useMemo, useState} from "react"
 import DatePicker from "@/components/client/DatePicker"
 import TimePicker from "@/components/client/TimePicker"
 import dayjs from "@/libs/dayjs"
 import useSelectBadgeClass from "@/hooks/useSelectBadgeClass"
 import useModal from "@/components/client/Modal/useModal"
-import {getBadgeClassDetailById, getGroupBadgeClasses} from "@/service/solar"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {Payments, PaymentSettingToken, PaymentsType} from "@/utils/payment_setting"
 import DropdownMenu from "@/components/client/DropdownMenu"
-import {Track, BadgeClass, EventDraftType, TicketDraft, PaymentMethod, EventRole} from '@sola/sdk'
+import {
+    Track,
+    BadgeClass,
+    EventDraftType,
+    TicketDraft,
+    PaymentMethod,
+    EventRole,
+    getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerHandle, getBadgeClassDetailByBadgeClassId
+} from '@sola/sdk'
+import {isAvailablePaymentType} from '@/utils'
+import {CLIENT_MODE} from '@/app/config'
 
 export interface TicketFormProps {
     state: {event: EventDraftType, setEvent: (event: EventDraftType) => void}
     tracks: Track[]
-    profileBadgeClasses: BadgeClass[]
     lang: Dictionary
+    currProfile: ProfileDetail
     checker?: Checker,
 }
 
@@ -41,7 +50,7 @@ export interface Checker {
     check: undefined | null | (() => boolean)
 }
 
-export default function TicketForm({state: {event, setEvent}, tracks, checker, profileBadgeClasses, lang} : TicketFormProps) {
+export default function TicketForm({state: {event, setEvent}, tracks, checker, lang, currProfile} : TicketFormProps) {
     const [tickets, setTickets] = useState<TicketDraft[]>(event.tickets || [])
     const [ticketErrors, setTicketErrors] = useState<TicketErrMsg[]>([])
 
@@ -112,7 +121,7 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, p
             .map((t, index) => {
                 return <TicketItem
                     lang={lang}
-                    profileBadgeClasses={profileBadgeClasses}
+                    currProfile={currProfile}
                     key={index}
                     index={index + 1}
                     ticket={t}
@@ -142,13 +151,13 @@ export interface TicketItemProps {
     onChange: (ticket: TicketDraft) => void,
     onRemove: () => void,
     tracks: Track[],
-    profileBadgeClasses: BadgeClass[],
+    currProfile: ProfileDetail,
     eventRoles: EventRole[],
     itemChecker?: {check: () => boolean}
     errors?: TicketErrMsg
 }
 
-function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileBadgeClasses, lang, eventRoles}: TicketItemProps) {
+function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProfile, lang, eventRoles}: TicketItemProps) {
     const {selectBadgeClass} = useSelectBadgeClass()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -157,12 +166,15 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
     const [enablePayment, setEnablePayment] = useState(!!ticket.payment_methods?.length)
     const [enableQuantity, setEnableQuantity] = useState(!!ticket.quantity)
     const [enableEndTime, setEnableEndTime] = useState(!!ticket.end_time)
-    const [badgeClass, setBadgeClass] = useState<Solar.BadgeClass | null>(null)
+    const [badgeClass, setBadgeClass] = useState<BadgeClass | null>(null)
 
     useEffect(() => {
         ;(async () => {
             if (!!ticketDraft.check_badge_class_id) {
-                setBadgeClass(await getBadgeClassDetailById(ticketDraft.check_badge_class_id))
+                setBadgeClass(await getBadgeClassDetailByBadgeClassId({
+                    params: {badgeClassId: ticketDraft.check_badge_class_id},
+                    clientMode: CLIENT_MODE
+                }))
             }
         })()
     }, [ticketDraft.check_badge_class_id])
@@ -187,16 +199,32 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
     const handleSelectBadge = async () => {
         const loading = showLoading()
         try {
-            let groupBadgeClasses: Solar.BadgeClass[] = []
+            const profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle({
+                params: {handle: currProfile.handle},
+                clientMode: CLIENT_MODE
+            })).badgeClasses
+            let groupHostBadgeClasses: Solar.BadgeClass[] = []
             const groupHost = eventRoles.find(r => r.role === 'group_host')
             if (groupHost) {
-                groupBadgeClasses = await getGroupBadgeClasses(groupHost.item_id!, 20)
+                if (groupHost) {
+                    groupHostBadgeClasses = await getBadgeClassByGroupId({
+                        params: {
+                            groupId: groupHost.item_id!
+                        },
+                        clientMode: CLIENT_MODE
+                    })
+                }
             }
             closeModal(loading)
-           /* selectBadgeClass(lang, profileBadgeClasses, groupBadgeClasses, (badgeClass) => {
-                setTicketDraft({...ticketDraft, check_badge_class_id: badgeClass.id})
-                closeModal()
-            })*/
+            selectBadgeClass({
+                lang,
+                profileBadgeClasses,
+                groupBadgeClasses: groupHostBadgeClasses,
+                onSelect: (b) => {
+                    setTicketDraft({...ticketDraft, check_badge_class_id: b.id})
+                    closeModal()
+                }
+            })
         } catch (e: unknown) {
             closeModal(loading)
             console.error(e)
@@ -219,16 +247,17 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
                 className="text-red-500">*</span></div>
             <Input type="text" 
                 className="w-full" 
-                value={ticket.title}
+                value={ticketDraft.title}
                 onChange={e => setTicketDraft({...ticket, title: e.target.value})}
             />
-            <div className="err-msg text-red-400 mt-2 text-xs">{errors?.title}</div>
+            {!!errors?.title && <div className="err-msg text-red-400 mt-2 text-xs">{errors?.title}</div>}
+
         </div>
         <div className="my-3">
             <div className="text-sm mb-1">{lang['Ticket description']}</div>
             <Input type="text" 
                 className="w-full" 
-                value={ticket.content || ''}
+                value={ticketDraft.content || ''}
                 onChange={e => setTicketDraft({...ticket, content: e.target.value})}
             />
         </div>
@@ -338,7 +367,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, profileB
                     value={ticket.quantity || ''}/>
             }
 
-            <div className="err-msg text-red-400 mt-2 text-xs">{errors?.quantity}</div>
+            {!!errors?.quantity && <div className="err-msg text-red-400 mt-2 text-xs">{errors?.quantity}</div>}
         </div>
 
         <div className="my-3">
@@ -440,15 +469,17 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(props.paymentMethods)
     const {toast} = useToast()
 
+    const AvailablePaymentMethods = Payments.filter(p => isAvailablePaymentType(p))
+
     useEffect(() => {
         if (!paymentMethods.length) {
             setPaymentMethods([{
                 ...emptyPaymentMethod,
-                chain: Payments[0].chain,
-                token_name: Payments[0].tokenList[0].name,
-                token_address: Payments[0].tokenList[0].contract,
-                protocol: Payments[0].protocol,
-                price: 10 ** Payments[0].tokenList[0].decimals
+                chain: AvailablePaymentMethods[0].chain,
+                token_name: AvailablePaymentMethods[0].tokenList[0].name,
+                token_address: AvailablePaymentMethods[0].tokenList[0].contract,
+                protocol: AvailablePaymentMethods[0].protocol,
+                price: 10 ** AvailablePaymentMethods[0].tokenList[0].decimals
             }])
         }
     }, [paymentMethods])
@@ -469,8 +500,8 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
     const getAvailablePaymentProtocalList = (currOpt: PaymentMethod) => {
         const protocals: PaymentsType[] = []
         let index = 0
-        while (index < Payments.length) {
-            const c = Payments[index]
+        while (index < AvailablePaymentMethods.length) {
+            const c = AvailablePaymentMethods[index]
             if (c.chain === currOpt.chain && c.protocol === currOpt.protocol) {
                 protocals.push(c)
             } else {
@@ -511,8 +542,8 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         let token: PaymentSettingToken | undefined
 
         let index = 0
-        while ((!chain || !token) && index < Payments.length) {
-            const c = Payments[index]
+        while ((!chain || !token) && index < AvailablePaymentMethods.length) {
+            const c = AvailablePaymentMethods[index]
             const hasUsedChain = props.paymentMethods.filter(payment_method => c.chain === payment_method.chain && payment_method.protocol === c.protocol && payment_method._destroy !== '1')
             if ((!hasUsedChain || !hasUsedChain.length) && !token && !chain) {
                 // 没有使用过的支付方式, 使用该支付方式并使用第一个token
@@ -544,7 +575,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             token_name: token.name,
             token_address: token.contract,
             protocol: chain.protocol,
-            price: 1
+            price: 10**token.decimals
         }])
     }
     
@@ -648,7 +679,9 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                         } : p))}
                                         className="ml-2"/>
                                 </div>
-                                <div className="err-msg text-red-400 mb-2 text-xs">{props.errors?.[index]?.price}</div>
+                                {!!props.errors?.[index]?.price &&
+                                    <div className="err-msg text-red-400 mb-2 text-xs">{props.errors?.[index]?.price}</div>
+                                }
 
                                 <div className="flex-row-item-center flex-1 text-sm">
                                     <div className="whitespace-nowrap">{lang['Receiving wallet']}</div>
@@ -666,8 +699,10 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                         alt=""/>}
                                         className="ml-2 flex-1"/>
                                 </div>
-                                <div
-                                    className="err-msg text-red-400 mt-2 text-xs">{props.errors?.[index]?.receiver_address}</div>
+                                {!!props.errors?.[index]?.receiver_address &&
+                                    <div
+                                        className="err-msg text-red-400 mt-2 text-xs">{props.errors?.[index]?.receiver_address}</div>
+                                }
                             </div>
                             {index === paymentMethods.length - 1 &&
                                 <i onClick={addNewPaymentMethod}

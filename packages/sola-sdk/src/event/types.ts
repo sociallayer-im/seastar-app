@@ -150,3 +150,31 @@ export interface Recurring {
     event_count: number,
 }
 
+export interface TicketItem {
+    id: number,
+    status: string,
+    profile_id: number,
+    ticket_id: number,
+    event_id: number,
+    chain: string | null,
+    txhash: string | null,
+    amount: number | null,
+    ticket_price: number | null,
+    discount_value: string | null,
+    discount_data: string |null,
+    order_number: string | null,
+    participant_id: number,
+    ticket_type: string,
+    group_id: number | null,
+    tracks_allowed: null | string[],
+    payment_method_id: number | null,
+    token_address: string | null,
+    receiver_address: string | null,
+    coupon_id: number | null,
+    sender_address: string | null,
+    selector_type: string | null,
+    selector_address: string | null,
+    original_price: number | null,
+    protocol: string | null,
+}
+

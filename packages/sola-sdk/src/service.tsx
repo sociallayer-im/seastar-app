@@ -9,7 +9,6 @@ import {Event} from './event'
 import {fixDate} from './uitls'
 
 export const uploadFile = async ({params, clientMode}: SolaSdkFunctionParams<{ file: Blob, authToken: string }>) => {
-
     const formData = new FormData()
     formData.append('auth_token', params.authToken)
     formData.append('uploader', 'user')
@@ -76,5 +75,34 @@ export const search = async ({params, clientMode}: SolaSdkFunctionParams<{ keywo
         groups: response.data.groups as Group[],
         profiles: response.data.profiles as Profile[],
         badgeClasses: response.data.badgeClasses as BadgeClass[]
+    }
+}
+
+export const genDaimoLink = async ({params, clientMode}: SolaSdkFunctionParams<{
+    ticketItemId: number,
+    authToken: string,
+    redirectUri?: string
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/ticket/daimo_create_payment_link`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            auth_token: params.authToken,
+            ticket_item_id: params.ticketItemId,
+            redirect_uri: params.redirectUri
+        })
+    })
+
+    if (!res.ok) {
+        throw new Error('Failed to generate payment link')
+    }
+
+    const data = await res.json()
+
+    return data as {
+        id: string,
+        url: string,
     }
 }

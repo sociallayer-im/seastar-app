@@ -10,7 +10,7 @@ import {
     GroupDetail,
     Membership,
     Track,
-    EventDraftType, VenueDetail, getAvailableGroupsForEventHost, Recurring
+    EventDraftType, VenueDetail, getAvailableGroupsForEventHost, Recurring, ProfileDetail
 } from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 
@@ -23,7 +23,7 @@ export interface CreateEventDataProps {
 }
 
 export interface CreateEventPageDataType {
-    currProfile: Profile
+    currProfile: ProfileDetail
     eventDraft: EventDraftType
     groupDetail: GroupDetail
     memberships: Membership[]

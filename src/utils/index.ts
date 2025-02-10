@@ -3,7 +3,7 @@ import {getProfileByToken} from '@/service/solar'
 import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
-import {paymentTokenList} from "@/utils/payment_setting"
+import {Payments, PaymentsType, paymentTokenList} from "@/utils/payment_setting"
 import {
     Profile,
     Event,
@@ -13,11 +13,12 @@ import {
     VenueDetail,
     Track,
     EventDraftType,
-    VenueTimeslot, Weekday
+    VenueTimeslot, Weekday, PaymentMethod
 } from '@sola/sdk'
 import Dayjs from '@/libs/dayjs'
 import domtoimage from 'dom-to-image'
 import {Dictionary} from '@/lang'
+import {AVAILABLE_PAYMENT_TYPES} from '@/app/config'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -295,10 +296,10 @@ export function displayTicketPrice(ticket: Ticket) {
     }
 
     const prices = ticket.payment_methods.map(item => {
-        const targetToken = paymentTokenList.find(chain => chain.id === item.chain)
-        const targetTokenDetail = targetToken?.tokenList.find(token => token.id === item.token_name)
+        const type = Payments.find(type => type.chain === item.chain && type.protocol === item.protocol)
+        const targetToken = type?.tokenList.find(token => token.name === item.token_name)
 
-        return BigNumber(item.price).dividedBy(BigNumber(10).pow(targetTokenDetail?.decimals || 0)).toNumber()
+        return BigNumber(item.price).dividedBy(BigNumber(10).pow(targetToken?.decimals || 0)).toNumber()
     })
 
     const maxPrice = Math.max(...prices)
@@ -537,7 +538,7 @@ export const checkTrackSuitable = (event: EventDraftType, track?: Track): string
 }
 
 
-export function categorizeTimeslotByWeekDay (timeslots: VenueTimeslot[]): Record<Weekday, VenueTimeslot[]> {
+export function categorizeTimeslotByWeekDay(timeslots: VenueTimeslot[]): Record<Weekday, VenueTimeslot[]> {
     let categorizedTimeslots: Record<Weekday, VenueTimeslot[]> = {
         monday: [],
         tuesday: [],
@@ -565,7 +566,7 @@ export function categorizeTimeslotByWeekDay (timeslots: VenueTimeslot[]): Record
     // if some weekdays have no timeslots, add an empty array
     categorizedTimeslots = Object.keys(categorizedTimeslots).reduce((acc, key) => {
         if (!categorizedTimeslots[key as Weekday].length) {
-            const emptyTimeslot:VenueTimeslot = {
+            const emptyTimeslot: VenueTimeslot = {
                 day_of_week: key as Weekday,
                 disabled: false,
                 start_at: '08:00',
@@ -575,7 +576,7 @@ export function categorizeTimeslotByWeekDay (timeslots: VenueTimeslot[]): Record
             acc[key as Weekday] = [emptyTimeslot]
         }
         return acc
-    } , categorizedTimeslots)
+    }, categorizedTimeslots)
 
     return categorizedTimeslots
 }
@@ -598,13 +599,13 @@ export const checkTimeSlotOverlapInWeekDay = (timeslots: VenueTimeslot[]) => {
 
 export const inValidStartEndTime = (start_at?: string | null, end_at?: string | null) => {
     if (!start_at || !end_at) {
-        return  false
+        return false
     }
 
     return start_at >= end_at
 }
 
-export const verifyUsername =  (domain: string, lang: Dictionary) => {
+export const verifyUsername = (domain: string, lang: Dictionary) => {
     const minLength = 6
     const maxLength = 16
 
@@ -627,7 +628,7 @@ export const verifyUsername =  (domain: string, lang: Dictionary) => {
 
     if (domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)) {
         const char: any = domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)
-        return  lang['Username contains invalid character'] + char[0]
+        return lang['Username contains invalid character'] + char[0]
     }
 
     if (!domain.match(/^[a-z0-9]+(-{1}[a-z0-9]+)*$/)) {
@@ -646,7 +647,7 @@ export const verifyUsername =  (domain: string, lang: Dictionary) => {
 }
 
 
-export const checkDomainInput =  (domain: string) => {
+export const checkDomainInput = (domain: string) => {
     if (domain.startsWith('-')) {
         return false
     }
@@ -656,6 +657,33 @@ export const checkDomainInput =  (domain: string) => {
     }
 
     return !domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im);
+}
+
+export const getPaymentMethodIcon = (payment: PaymentMethod) => {
+    const paymentType = Payments.find(p => p.protocol === payment.protocol)
+    return paymentType?.protocolIcon || '/images/unknown.png'
+}
+
+
+export const isAvailablePaymentType = (paymentType: PaymentsType) => {
+    return AVAILABLE_PAYMENT_TYPES.includes(paymentType.id)
+}
+
+export const isAvailablePaymentMethod = (payment: PaymentMethod) => {
+    const type = Payments.find(p => p.protocol === payment.protocol && p.chain === payment.chain)
+    if (!type) return false
+
+    return isAvailablePaymentType(type)
+}
+
+export const displayMethodPrice = (payment: PaymentMethod) => {
+    const type = Payments.find(p => p.protocol === payment.protocol && p.chain === payment.chain)
+    if (!type) return 'Unknown'
+
+    const targetToken = type.tokenList.find(token => token.name === payment.token_name)
+    if (!targetToken) return 'Unknown'
+
+    return BigNumber(payment.price).dividedBy(BigNumber(10).pow(targetToken.decimals)).toNumber()
 }
 
 

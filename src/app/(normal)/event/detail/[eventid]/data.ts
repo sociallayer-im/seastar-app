@@ -5,9 +5,9 @@ import {
     Event,
     getEventByRecurringId,
     getEventDetailById,
-    getGroupDetailByHandle, getRecurringById,
+    getGroupDetailByHandle, getPurchasedTicketItemsByProfileHandleAndEventId, getRecurringById,
     Participant,
-    Recurring
+    Recurring, Ticket
 } from '@sola/sdk'
 import {AVNeeds, SeatingStyle} from '@/app/configForSpecifyGroup'
 import {CLIENT_MODE} from '@/app/config'
@@ -56,7 +56,6 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
 
     const groupHost = eventDetail.event_roles?.find(r => r.role === 'group_host')
 
-    const showParticipants = !eventDetail?.tickets?.length
     let filteredParticipants: Participant[]
     if (!eventDetail?.tickets?.length) {
         filteredParticipants = eventDetail.participants || []
@@ -91,6 +90,9 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
             || eventDetail.event_roles?.some(role => role.role === 'speaker' && role.item_id === currProfile.id)
         )
 
+
+    const showParticipants = !eventDetail?.tickets?.length || isEventOperator
+
     // check if the current user can access the event
     const canAccess = isEventOperator || canJoinEvent
 
@@ -101,6 +103,18 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
     if (!!eventDetail.recurring_id) {
         recurring = await getRecurringById({params:{recurringId: eventDetail.recurring_id}, clientMode: CLIENT_MODE})
     }
+
+    let ticketsPurchased: Ticket[] = []
+    if (!!currProfile && !!eventDetail.tickets?.length) {
+        const ticketItems = await getPurchasedTicketItemsByProfileHandleAndEventId({
+            params: {profileHandle: currProfile.handle, eventId: eventDetail.id},
+            clientMode: CLIENT_MODE
+        })
+
+        ticketsPurchased = eventDetail.tickets.filter(ticket => ticketItems.some(item => item.ticket_id === ticket.id))
+    }
+
+
 
     return {
         currProfile,
@@ -125,6 +139,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         participants: filteredParticipants,
         showParticipants,
         canAccess,
+        ticketsPurchased,
 
         seatingStyle,
         avNeeds

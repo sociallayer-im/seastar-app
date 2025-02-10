@@ -12,7 +12,6 @@ import {
 } from "@/utils"
 import {selectLang} from "@/app/actions"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
-import {getChainIconById} from "@/utils/payment_setting"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import NoData from "@/components/NoData"
 import {Textarea} from "@/components/shadcn/Textarea"
@@ -27,6 +26,8 @@ import RecurringListBtn from '@/app/(normal)/event/detail/[eventid]/RecurringLis
 import GoogleMap from '@/components/client/Map'
 import ClickToCopy from '@/components/client/ClickToCopy'
 import removeMarkdown from 'markdown-to-text'
+import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
+import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -59,7 +60,6 @@ export default async function EventDetail({params, searchParams}: {
         owner,
         tab,
         isEventCreator,
-        isGroupManager,
         isEventOperator,
         canAccess,
         currProfileAttended,
@@ -70,7 +70,8 @@ export default async function EventDetail({params, searchParams}: {
         showParticipants,
         avNeeds,
         seatingStyle,
-        recurring
+        recurring,
+        ticketsPurchased
     } = await EventDetailPage({
         params,
         searchParams
@@ -134,7 +135,7 @@ export default async function EventDetail({params, searchParams}: {
                     <>
                         {currProfile ?
                             <div className="border-gray-200 border rounded-lg p-4 mt-6">
-                                <div className="flex-row-item-center text-xs">
+                                <div className="flex-row-item-center text-sm">
                                     <Avatar profile={currProfile!} size={24} className="mr-1"/>
                                     <span>{displayProfileName(currProfile!)}</span>
                                 </div>
@@ -181,12 +182,12 @@ export default async function EventDetail({params, searchParams}: {
                                 }
 
                                 {!currProfileCheckedIn && currProfileAttended &&
-                                         <div className="flex-row-item-center mt-2">
-                                            <a className={`${buttonVariants({variant: 'primary'})} text-xs flex-1`}
-                                               href={`/event/checkin/${eventDetail.id}`}>
-                                                <span>{lang['Check-In']}</span>
-                                            </a>
-                                        </div>
+                                    <div className="flex-row-item-center mt-2">
+                                        <a className={`${buttonVariants({variant: 'primary'})} text-xs flex-1`}
+                                           href={`/event/checkin/${eventDetail.id}`}>
+                                            <span>{lang['Check-In']}</span>
+                                        </a>
+                                    </div>
                                 }
 
                                 {currProfileCheckedIn &&
@@ -195,6 +196,12 @@ export default async function EventDetail({params, searchParams}: {
                                                 className="text-xs flex-1">
                                             {lang['Checked']}
                                         </Button>
+                                    </div>
+                                }
+
+                                {ticketsPurchased.length &&
+                                    <div className="mt-3">
+                                        <MyTicketList tickets={ticketsPurchased} lang={lang}/>
                                     </div>
                                 }
                             </div>
@@ -336,12 +343,12 @@ export default async function EventDetail({params, searchParams}: {
                                         lat: eventDetail.geo_lat
                                     }}
                                     markers={[{
-                                    title: eventDetail.title,
-                                    position: {
-                                        lng: eventDetail.geo_lng,
-                                        lat: eventDetail.geo_lat
-                                    }
-                                }]} />
+                                        title: eventDetail.title,
+                                        position: {
+                                            lng: eventDetail.geo_lng,
+                                            lat: eventDetail.geo_lat
+                                        }
+                                    }]}/>
                             </div>
                         </div>
                     }
@@ -362,7 +369,7 @@ export default async function EventDetail({params, searchParams}: {
                 <div className="flex-row-item-center font-semibold mt-6">
                     <a href={'?tab=content'}
                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 relative">
-                        <span className="z-10">Content</span>
+                        <span className="z-10">{lang['Content']}</span>
                         {(tab === 'content' || tab === '') &&
                             <img width={90} height={12}
                                  className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
@@ -371,7 +378,10 @@ export default async function EventDetail({params, searchParams}: {
                     </a>
                     {isTicketEvent && <a href={'?tab=tickets'}
                                          className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
-                        <span className="z-10">Tickets</span>
+                        <div className="z-10">
+                            {lang['Tickets']}
+                            <span className="text-xs">({eventDetail.tickets?.length})</span>
+                        </div>
                         {tab === 'tickets' &&
                             <img width={90} height={12}
                                  className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
@@ -390,7 +400,10 @@ export default async function EventDetail({params, searchParams}: {
                     {/*</a>*/}
                     {showParticipants && <a href={'?tab=participants'}
                                             className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
-                        <span className="z-10">Participants</span>
+                        <div className="z-10">
+                            {lang['Participants']}
+                            <span className="text-xs">({eventDetail.participants?.length})</span>
+                        </div>
                         {tab === 'participants' &&
                             <img width={90} height={12}
                                  className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
@@ -452,52 +465,10 @@ export default async function EventDetail({params, searchParams}: {
                 }
 
                 {tab === 'tickets' &&
-                    <div>
-                        <div className="border-gray-200 p-4">
-                            {!!eventDetail.tickets && eventDetail.tickets.length === 0 && <NoData/>}
-                            {eventDetail.tickets?.map(ticket => {
-
-                                return <div key={ticket.id} className="bg-gray-100 p-4 rounded-lg mb-3 cursor-pointer">
-                                    <div className="font-semibold">{ticket.title}</div>
-                                    <div className="text-xs my-2 break-words text-gray-500">
-                                        {ticket.content}
-                                    </div>
-                                    {!!ticket.check_badge_class &&
-                                        <div>
-                                            <div className="text-sm text-gray-500 mb-2">Need to have badge</div>
-                                            <div className="flex-row-item-center">
-                                                <img className="w-6 h-6 mr-2 rounded-full"
-                                                     src={ticket.check_badge_class.image_url!} alt=""/>
-                                                <div>{ticket.check_badge_class.title}</div>
-                                            </div>
-                                        </div>
-                                    }
-
-                                    {ticket.payment_methods?.length === 0 ?
-                                        <div className="flex flex-row items-center justify-between mt-3">
-                                            <div className="font-semibold text-pink-500 text-xl">Free</div>
-                                        </div>
-                                        : <div className="flex flex-row items-center justify-between mt-3">
-                                            <div className="font-semibold text-pink-500 text-xl">
-                                                {displayTicketPrice(ticket)}
-                                            </div>
-                                            <div className="flex flex-row items-center">
-                                                {
-                                                    ticket.payment_methods.map((method, index) => {
-                                                        return <img key={index}
-                                                                    className="shadow min-w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                                                    src={getChainIconById(method.chain)}
-                                                                    alt="" width={20} height={20}/>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            })
-                            }
-                        </div>
-                    </div>
+                    <TicketList
+                        eventDetail={eventDetail}
+                        lang={lang}
+                        currProfile={currProfile}/>
                 }
 
                 {tab === 'comments' && <div>

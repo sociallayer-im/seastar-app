@@ -408,6 +408,14 @@ export const en = {
     'Do you want to create a group with this username ?':'Do you want to create a group this the username ?',
     'Go to Event Home': 'Go to Event Home',
     'Events of [{1}]': 'Events of [{1}]',
+    'Content':'Content',
+    'Ticket Detail':'Ticket Detail',
+    'Ticket Type':'Ticket Type',
+    'Badge Needed':'Badge Needed',
+    'Payment Methods': 'Payment Methods',
+    'Pay':'Pay',
+    'Copy Payment Link':'Copy Payment Link',
+    'Your Tickets':'Your Tickets',
 }
 
 export type Dictionary = typeof en

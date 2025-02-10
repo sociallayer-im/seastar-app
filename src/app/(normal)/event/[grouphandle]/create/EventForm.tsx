@@ -21,6 +21,7 @@ import TracksFilter from '@/components/client/TracksFilter'
 import TagsFilter from '@/components/client/TagsFilter'
 import {getOccupiedTimeEvent, Event, EventDraftType} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
+import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -112,9 +113,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
     const handleConfirm = async () => {
         if (!draft.title) {
             setTitleError(lang['Event Name is required'])
-            setTimeout(() => {
-                document.querySelector('.err-msg')?.scrollIntoView({behavior: 'smooth', block: 'center'})
-            }, 200)
+            scrollToErrMsg()
             return
         } else {
             setTitleError('')
@@ -125,9 +124,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
             || !!occupiedEvent
             || !!trackDayError
             || (ticketCheckerRef.current.check && !ticketCheckerRef.current.check())) {
-            setTimeout(() => {
-                document.querySelector('.err-msg')?.scrollIntoView({behavior: 'smooth', block: 'center'})
-            }, 200)
+            scrollToErrMsg()
             return
         }
 
@@ -344,7 +341,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
 
                         {enableTicket && <>
                             <TicketForm
-                                profileBadgeClasses={[]}
+                                currProfile={data.currProfile}
                                 lang={lang}
                                 state={{event: draft, setEvent: setDraft}}
                                 tracks={data.tracks}

@@ -20,23 +20,6 @@ export const EVENT_ROLE_FRAGMENT = gql`
         image_url
     }`
 
-export const PARTICIPANT_FRAGMENT = gql`
-    ${PROFILE_FRAGMENT}
-    fragment ParticipantFragment on participants {
-        id
-        event_id
-        profile_id
-        role
-        status
-        created_at
-        ticket_id
-        payment_status
-        profile {
-            ...ProfileFragment
-            email
-        }
-    }`
-
 export const EVENT_FRAGMENT = gql`
     ${PROFILE_FRAGMENT}
     ${EVENT_ROLE_FRAGMENT}
@@ -172,6 +155,108 @@ export const TICKET_FRAGMENT = gql`
         }
     }`
 
+export const GET_MAP_EVENTS_BY_GROUP_HANDLE = gql`
+    ${EVENT_FRAGMENT}
+    query GetMapEventsByGroupHandle($handle: String!, $now: timestamp!) {
+        events(where: {
+            display: {_neq: "private"},
+            group: {handle: {_eq: $handle}}, 
+            status: {_neq: "cancelled"},
+            geo_lat: {_is_null: false},
+            geo_lng: {_is_null: false}
+            start_time: {_gte: $now}
+            }, limit: 10, order_by: {start_time: asc}) {
+                ...EventFragment
+        }
+    }
+`
+
+
+export const GET_EVENTS_BY_RECURRING_ID = gql`
+    ${EVENT_FRAGMENT}
+    query GetEventsByRecurringId($recurringId: Int!) {
+        events(where: {recurring_id: {_eq: $recurringId}}) {
+            ...EventFragment
+        }
+    }
+`
+
+export const GET_RECURRING_BY_ID = gql`
+    query GetRecurringById($id: bigint!) {
+        recurrings(where: {id: {_eq: $id}}) {
+            id
+            start_time
+            end_time
+            timezone
+            interval
+            event_count
+        }
+    }`
+
+export const TICKET_ITEM_FRAGMENT = gql`
+    fragment TicketItemFragment on ticket_items {
+        id
+        status
+        ticket_id
+        profile_id
+        event_id
+        chain
+        txhash
+        amount
+        amount
+        ticket_price
+        discount_value
+        discount_data
+        order_number
+        participant_id
+        ticket_type
+        group_id
+        tracks_allowed
+        payment_method_id
+        token_address
+        receiver_address
+        coupon_id
+        sender_address
+        selector_type
+        selector_address
+        original_price
+        protocol
+    }`
+
+export const GET_PURCHASED_TICKET_ITEMS_BY_PROFILE_HANDLE_AND_EVENT_ID = gql`
+    ${TICKET_ITEM_FRAGMENT}
+    query GetPurchasedTicketItemsByProfileHandleAndEventId($profileHandle: String!, $eventId: Int!) {
+        ticket_items(where: {
+            profile: {handle: {_eq: $profileHandle}},
+            event_id: {_eq: $eventId}
+            status: {_eq: "succeeded"}
+        }, order_by: {id: asc}) {
+            ...TicketItemFragment
+        }
+    }
+`
+
+export const PARTICIPANT_FRAGMENT = gql`
+    ${PROFILE_FRAGMENT}
+    ${TICKET_FRAGMENT}
+    fragment ParticipantFragment on participants {
+        id
+        event_id
+        profile_id
+        role
+        status
+        created_at
+        ticket_id
+        payment_status
+        ticket {
+            ...TicketFragment
+        }
+        profile {
+            ...ProfileFragment
+            email
+        }
+    }`
+
 export const EVENT_DETAIL_FRAGMENT = gql`
     ${EVENT_FRAGMENT}
     ${PARTICIPANT_FRAGMENT}
@@ -224,41 +309,3 @@ export const GET_EVENT_DETAIL_BY_ID = gql`
         }
     }
 `
-
-export const GET_MAP_EVENTS_BY_GROUP_HANDLE = gql`
-    ${EVENT_FRAGMENT}
-    query GetMapEventsByGroupHandle($handle: String!, $now: timestamp!) {
-        events(where: {
-            display: {_neq: "private"},
-            group: {handle: {_eq: $handle}}, 
-            status: {_neq: "cancelled"},
-            geo_lat: {_is_null: false},
-            geo_lng: {_is_null: false}
-            start_time: {_gte: $now}
-            }, limit: 10, order_by: {start_time: asc}) {
-                ...EventFragment
-        }
-    }
-`
-
-
-export const GET_EVENTS_BY_RECURRING_ID = gql`
-    ${EVENT_FRAGMENT}
-    query GetEventsByRecurringId($recurringId: Int!) {
-        events(where: {recurring_id: {_eq: $recurringId}}) {
-            ...EventFragment
-        }
-    }
-`
-
-export const GET_RECURRING_BY_ID = gql`
-    query GetRecurringById($id: bigint!) {
-        recurrings(where: {id: {_eq: $id}}) {
-            id
-            start_time
-            end_time
-            timezone
-            interval
-            event_count
-        }
-    }`

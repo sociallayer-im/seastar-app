@@ -41,7 +41,7 @@ export default function ListViewEventItem({event, timezone}: {
     }, [event.id, timezone])
 
     const bgColor = event.pinned ? '#FFF7E8' : '#fff'
-    const themeColor = event.tags[0] ? getLabelColor(event.tags[0]) : bgColor
+    const themeColor = event.tags?.[0] ? getLabelColor(event.tags[0]) : bgColor
 
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
         <div className="w-12 sm:w-[100px] flex-shrink-0 text-right pr-3 pt-2">

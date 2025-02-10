@@ -410,4 +410,12 @@ export const zh: Dictionary = {
     'Do you want to create a group with this username ?':'您要使用这个用户名创建一个群组吗？',
     'Go to Event Home':'前往活动主页',
     'Events of [{1}]': '「{1}」的活动',
+    'Content':'内容',
+    'Ticket Detail':'门票详情',
+    'Ticket Type':'门票类型',
+    'Badge Needed':'所需徽章',
+    'Payment Methods': '支付方式',
+    'Pay':'支付',
+    'Copy Payment Link':'复制支付链接',
+    'Your Tickets':'你的门票',
 }
