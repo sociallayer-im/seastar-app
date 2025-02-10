@@ -58,10 +58,15 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
             handle: groupHostRole.nickname!,
             id: groupHostRole.item_id!
         }
-        : event.owner
+        : event.profile
+
+
+    const filteredTags= event.tags && event.tags.length > 0
+        ? event.tags.filter(tag => !tag.startsWith(':'))
+        : []
 
     const bgColor = event.pinned ? '#FFF7E8' : '#fff'
-    const mainThemColor = event.tags[0] ? getLabelColor(event.tags[0]) : bgColor
+    const mainThemColor = filteredTags[0] ? getLabelColor(filteredTags[0]) : bgColor
 
     return <div
         className="bg-white p-2 h-[210px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
@@ -87,10 +92,7 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
             }
         </div>
         <div className="text-xs my-1">
-            {
-                event.tags
-                    .filter(tag => !tag.startsWith(':'))
-                    .slice(0, event.tagDisplayAmount).map((tag, index) => {
+            {filteredTags.slice(0, event.tagDisplayAmount).map((tag, index) => {
                         const themColor = getLabelColor(tag)
                         const maxWidth = event.tagDisplayAmount !== 3 ? '110px' : 'auto'
 
@@ -106,11 +108,11 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
                     })
             }
             {
-                event.tags.length > event.tagDisplayAmount ?
+                filteredTags.length > event.tagDisplayAmount ?
                     <div
                         className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0">
                         <span
-                            className="overflow-ellipsis overflow-hidden whitespace-nowrap">+{event.tags.length - event.tagDisplayAmount}</span>
+                            className="overflow-ellipsis overflow-hidden whitespace-nowrap">+{filteredTags.length - event.tagDisplayAmount}</span>
                     </div>
                     : null
             }

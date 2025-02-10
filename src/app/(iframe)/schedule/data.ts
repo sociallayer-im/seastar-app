@@ -51,7 +51,7 @@ export interface IframeSchedulePageDataEvent {
     meeting_url: null | string,
     location: string,
     cover_url: string,
-    tags: string[],
+    tags: string[] | null,
     external_url: null | string,
     host_info: {
         speaker?: Solar.ProfileSample[]
@@ -60,7 +60,7 @@ export interface IframeSchedulePageDataEvent {
     } | null
     geo_lat: string | null,
     geo_lng: string | null,
-    owner: Solar.ProfileSample,
+    profile: Solar.ProfileSample,
     track_id: number | null,
     track: Solar.Track | null,
     recurring_id: number | null,
