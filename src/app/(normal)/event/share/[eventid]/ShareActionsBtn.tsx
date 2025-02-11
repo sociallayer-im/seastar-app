@@ -62,11 +62,11 @@ export default function ShareActionsBtn({eventDetail, lang, groupHandle}: ShareA
         <div className="flex-row-item-center">
             <a className={`${buttonVariants({variant: 'secondary'})} w-full`}
                href={`/event/detail/${eventDetail.id}`}>
-                {lang['View Event Detail']}
+                {lang['Event Detail']}
             </a>
             <a className={`${buttonVariants({variant: 'secondary'})} w-full ml-3 `}
                href={`/event/${groupHandle}`}>
-                {lang['Go to Event Home']}
+                {lang['Event Home']}
             </a>
         </div>
         <a className={`${buttonVariants({variant: 'secondary'})} w-full`}

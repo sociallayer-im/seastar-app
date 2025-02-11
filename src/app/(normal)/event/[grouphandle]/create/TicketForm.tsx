@@ -8,7 +8,7 @@ import {Input} from "@/components/shadcn/Input"
 import {getLabelColor} from "@/utils/label_color"
 import {Button} from "@/components/shadcn/Button"
 import {Dictionary} from "@/lang"
-import {useEffect, useMemo, useState} from "react"
+import {useEffect, useState} from "react"
 import DatePicker from "@/components/client/DatePicker"
 import TimePicker from "@/components/client/TimePicker"
 import dayjs from "@/libs/dayjs"
@@ -584,8 +584,12 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             paymentMethods
                 .filter(p => !p._destroy)
                 .map((p, index) => {
-                    const currProtocal = Payments.find(c => c.chain === p.chain && c.protocol === p.protocol)
-                    const currToken = currProtocal!.tokenList.find(t => t.name === p.token_name)
+                    const currType = Payments.find(c => c.chain === p.chain && c.protocol === p.protocol)
+
+                    // unsupported payment method
+                    if (!currType) return null
+
+                    const currToken = currType!.tokenList.find(t => t.name === p.token_name)
 
                     return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
                         <div className="mb-2 text-sm font-semibold">{lang['Payment']} {index + 1}</div>
@@ -597,7 +601,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                     <div className="ml-2">
                                         <DropdownMenu
                                             options={getAvailablePaymentProtocalList(p)}
-                                            value={[currProtocal!]}
+                                            value={[currType!]}
                                             onSelect={(option) => {
                                                 if (option[0].chain === p.chain) return
                                                 const targetToken = option[0].tokenList.find((t: PaymentSettingToken) => {
@@ -627,13 +631,13 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                             <Input
                                                 type="text"
                                                 readOnly
-                                                value={currProtocal!.label}
+                                                value={currType!.label}
                                                 inputSize={'md'}
                                                 className="cursor-pointer"
                                                 endAdornment={<i className="uil-angle-down text-lg"/>}
                                                 startAdornment={<img
                                                     className="w-5 h-5 rounded-full"
-                                                    src={currProtocal!.protocolIcon}/>}
+                                                    src={currType!.protocolIcon}/>}
                                             />
                                         </DropdownMenu>
                                     </div>

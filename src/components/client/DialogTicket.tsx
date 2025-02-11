@@ -1,4 +1,12 @@
-import {ProfileDetail, Ticket, EventDetail, genDaimoLink, createDaimoOrder} from '@sola/sdk'
+import {
+    ProfileDetail,
+    Ticket,
+    EventDetail,
+    genDaimoLink,
+    createDaimoOrder,
+    checkBadgeOwnership,
+    createTicketPayment
+} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {
     clientToSignIn,
@@ -29,6 +37,39 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
     const [paymentError, setPaymentError] = useState<string>('')
+
+    const [badgeCollected, setBadgeCollected] = useState<boolean>(false)
+    const [checkingBadgeCollected, setCheckingCheckBadgeCollected] = useState<boolean>(false)
+    const [buying, setBuying] = useState<boolean>(false)
+
+    useEffect(() => {
+        ;(async () => {
+            if (!ticket.check_badge_class) {
+                setBadgeCollected(true)
+            } else if (currProfile) {
+                setCheckingCheckBadgeCollected(true)
+                try {
+                    const collected = await checkBadgeOwnership({
+                        params: {handle: currProfile.handle, badgeId: ticket.check_badge_class.id},
+                        clientMode: CLIENT_MODE
+                    })
+                    setBadgeCollected(collected)
+                } catch (e: unknown) {
+                    console.error(e)
+                    toast({
+                        description: e instanceof Error ? e.message : 'Failed to check badge ownership',
+                        variant: 'destructive'
+                    })
+                } finally {
+                    setCheckingCheckBadgeCollected(false)
+                }
+            }
+        })()
+    }, [ticket.check_badge_class, currProfile])
+
+    const soldOut = ticket.quantity === 0
+
+    const stopSelling = ticket.end_time && new Date(ticket.end_time).getTime() < new Date().getTime()
 
     const paymentTypes = useMemo(() => {
         if (!ticket.payment_methods) return []
@@ -80,6 +121,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         if (!currProfile) return
 
         const loading = showLoading()
+        setBuying(true)
         try {
             const authToken = getAuth()
             const res = await createDaimoOrder({
@@ -101,6 +143,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         } catch (e: unknown) {
             console.error(e)
             setPaymentError(e instanceof Error ? e.message : 'Failed to create payment')
+            setBuying(false)
         } finally {
             closeModal(loading)
         }
@@ -126,6 +169,39 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                     variant: 'success'
                 })
             })
+    }
+
+    const handlePurchaseForFree = async () => {
+        if (!currProfile) return
+        setPaymentError('')
+
+        const loading = showLoading()
+        setBuying(true)
+        try {
+            const authToken = getAuth()
+            const res = await createTicketPayment({
+                params: {
+                    eventId: eventDetail.id,
+                    authToken: authToken!,
+                    ticketId: ticket.id,
+                },
+                clientMode: CLIENT_MODE
+            })
+
+            toast({
+                description: lang['Purchase Successful'],
+                variant: 'success'
+            })
+            setTimeout(() => {
+                window.location.reload()
+            }, 2000)
+        } catch (e: unknown) {
+            console.error(e)
+            setBuying(false)
+            setPaymentError(e instanceof Error ? e.message : 'Failed to purchase')
+        } finally {
+            closeModal(loading)
+        }
     }
 
     return <div
@@ -174,22 +250,34 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             {ticket.content || ''}
         </div>
 
-        {!!ticket.check_badge_class &&
+        {checkingBadgeCollected && <div>
             <div className="my-3 border-t pt-2">
-                <div className="font-semibold mb-1">{lang['Badge Needed']}</div>
+                <div className="font-semibold mb-2">{lang['Badge Needed']}</div>
+                <div className="loading-bg h-4 w-full mb-2"></div>
+                <div className="loading-bg h-4 w-[80%]"></div>
+            </div>
+        </div>}
+
+
+        {!!ticket.check_badge_class && !checkingBadgeCollected &&
+            <div className="my-3 border-t pt-2">
+                <div className="font-semibold mb-2">{lang['Badge Needed']}</div>
                 <div className="flex-row-item-center">
                     <img src={ticket.check_badge_class.image_url!}
                          className="w-12 h-12 rounded-full bg-gray-50 mr-3" alt=""/>
                     <div>
                         <div className="font-semibold">{ticket.check_badge_class.title}</div>
-                        <div className="text-sm text-red-400 flex-row-item-center">
-                            <i className="uil-info-circle text-lg mr-1"/>
-                            <div>Not Collected</div>
-                        </div>
-                        {/*<div className="text-sm text-green-500 flex-row-item-center">*/}
-                        {/*    <i className="uil-check-circle text-lg mr-1" />*/}
-                        {/*    <div>Collected</div>*/}
-                        {/*</div>*/}
+
+                        {badgeCollected
+                            ? <div className="text-sm text-green-500 flex-row-item-center">
+                                <i className="uil-check-circle text-lg mr-1"/>
+                                <div>Collected</div>
+                            </div>
+                            : <div className="text-sm text-red-400 flex-row-item-center">
+                                <i className="uil-info-circle text-lg mr-1"/>
+                                <div>Not Collected</div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -256,18 +344,39 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
         {!currProfile && <Button
             onClick={clientToSignIn}
-            variant={'special'} className="text-sm">{lang['Sign In']}</Button>
+            variant={'special'} className="text-sm w-full">{lang['Sign In']}</Button>
         }
 
-        {selectedPaymentType?.protocol === 'daimo' && !!currProfile &&
+        {selectedPaymentType?.protocol === 'daimo' && !!currProfile && !soldOut && !stopSelling &&
             <div className="grid grid-cols-2 gap-2 mt-6">
                 <Button variant={'secondary'}
+                        disabled={!badgeCollected || checkingBadgeCollected || buying}
                         onClick={handleCopyPaymentLink}
                         className="text-sm">{lang['Copy Payment Link']}</Button>
                 <Button variant={'special'}
+                        disabled={!badgeCollected || checkingBadgeCollected}
                         onClick={() => handleDaimoPayment(true)}
                         className="text-sm">{lang['Pay']}</Button>
             </div>
+        }
+
+        {!ticket.payment_methods.length && !!currProfile && !soldOut && !stopSelling &&
+            <Button variant={'special'}
+                    disabled={!badgeCollected || checkingBadgeCollected || buying}
+                    onClick={() => handlePurchaseForFree()}
+                    className="text-sm w-full">{lang['Purchase for Free']}</Button>
+        }
+
+        {soldOut &&
+            <Button variant={'secondary'}
+                    disabled
+                    className="text-sm w-full">{lang['Sold Out']}</Button>
+        }
+
+        {stopSelling &&
+            <Button variant={'secondary'}
+                                disabled
+                                className="text-sm w-full">{lang['Stop Selling']}</Button>
         }
 
         {!!paymentError && <div className="mt-3 text-red-400 text-sm">{paymentError}</div>}

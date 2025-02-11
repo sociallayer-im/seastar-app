@@ -199,7 +199,7 @@ export default async function EventDetail({params, searchParams}: {
                                     </div>
                                 }
 
-                                {ticketsPurchased.length &&
+                                {!!ticketsPurchased.length &&
                                     <div className="mt-3">
                                         <MyTicketList tickets={ticketsPurchased} lang={lang}/>
                                     </div>

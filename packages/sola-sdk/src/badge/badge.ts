@@ -5,7 +5,10 @@ import {
     GET_BADGE_AND_BADGE_CLASS_BY_OWNER_HANDLE,
     GET_BADGE_CLASS_DETAIL_BY_BADGE_CLASS_ID,
     GET_BADGE_DETAIL_BY_BADGE_ID,
-    GET_INVITE_DETAIL_BY_ID, GET_BADGE_CLASS_BY_GROUP_ID, GET_BADGE_CLASS_AND_INVITE_BY_GROUP_HANDLE
+    GET_INVITE_DETAIL_BY_ID,
+    GET_BADGE_CLASS_BY_GROUP_ID,
+    GET_BADGE_CLASS_AND_INVITE_BY_GROUP_HANDLE,
+    CHECK_BADGE_OWNERSHIP
 } from "./schemas"
 import {BadgeDetail, Badge, BadgeClassDetail, Invite, InviteDetail, BadgeClass} from "./types"
 import {SolaSdkFunctionParams} from '../types'
@@ -184,4 +187,14 @@ export const createBadgeClass = async ({params, clientMode}:SolaSdkFunctionParam
     }
 
     return data.badge_class as BadgeClass
+}
+
+export const checkBadgeOwnership = async ({params, clientMode}: SolaSdkFunctionParams<{badgeId: number, handle: string}>) => {
+    const client = getGqlClient(clientMode)
+    const response = await client.query({
+        query: CHECK_BADGE_OWNERSHIP,
+        variables: {badgeId: params.badgeId, handle: params.handle}
+    })
+
+    return response.data.badges.length > 0
 }

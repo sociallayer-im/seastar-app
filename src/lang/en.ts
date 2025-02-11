@@ -333,7 +333,7 @@ export const en = {
     'Scan the code': 'Scan the code',
     'and attend the event': 'and attend the event',
     'Save Image': 'Save Image',
-    'View Event Detail':'View Event Detail',
+    'Event Detail':'Event Detail',
     'Copied':'Copied',
     'Cancel Event': 'Cancel Event',
     'Event Canceled': 'Event Canceled',
@@ -406,7 +406,7 @@ export const en = {
     'The minimum length of username is ': 'The minimum length of username is ',
     'The maximum length of username is ': 'The maximum length of username is ',
     'Do you want to create a group with this username ?':'Do you want to create a group this the username ?',
-    'Go to Event Home': 'Go to Event Home',
+    'Event Home': 'Event Home',
     'Events of [{1}]': 'Events of [{1}]',
     'Content':'Content',
     'Ticket Detail':'Ticket Detail',
@@ -416,6 +416,10 @@ export const en = {
     'Pay':'Pay',
     'Copy Payment Link':'Copy Payment Link',
     'Your Tickets':'Your Tickets',
+    'Purchase for Free':'Purchase for Free',
+    'Purchase Successful':'Purchase Successful',
+    'Sold Out':'Sold Out',
+    'Stop Selling':'Stop Selling',
 }
 
 export type Dictionary = typeof en

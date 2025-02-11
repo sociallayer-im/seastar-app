@@ -206,3 +206,12 @@ export const GET_INVITE_DETAIL_BY_ID = gql`
         }
     }
 `
+
+export const CHECK_BADGE_OWNERSHIP = gql`
+    ${BADGE_FRAGMENT}
+    query CheckBadgeOwnership($handle: String!, $badgeId: Int!) {
+        badges(where: {owner: {handle: {_eq: $handle}}, badge_class_id: {_eq: $badgeId}}, order_by: {id: desc}) {
+            ...BadgeFragment
+        }
+    }
+`

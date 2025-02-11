@@ -111,7 +111,10 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
             clientMode: CLIENT_MODE
         })
 
-        ticketsPurchased = eventDetail.tickets.filter(ticket => ticketItems.some(item => item.ticket_id === ticket.id))
+        ticketItems.forEach(item => {
+            const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
+            !!ticket && ticketsPurchased.push(ticket)
+        })
     }
 
 
