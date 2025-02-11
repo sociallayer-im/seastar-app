@@ -422,4 +422,5 @@ export const zh: Dictionary = {
     'Purchase Successful':'购买成功',
     'Sold Out':'售罄',
     'Stop Selling':'停止销售',
+    'You can add a badge after creating an event':'您可以在创建活动后添加徽章',
 }

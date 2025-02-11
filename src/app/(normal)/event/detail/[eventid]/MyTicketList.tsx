@@ -9,8 +9,8 @@ export default function MyTicketList({tickets, lang}: {
     return <div>
         <div className="font-semibold mt-3 mb-1">{lang['Your Tickets']}</div>
         <div className="border-gray-200 grid grid-cols-1 gap-3">
-            {tickets?.map(ticket => {
-                return <a key={ticket.id}
+            {tickets?.map((ticket, i) => {
+                return <a key={i}
                           href={`/event/detail/${ticket.event_id}`}
                           className="bg-gray-100 px-4 py-2 rounded-lg cursor-pointer border-2 hover:border-[#baffad] hover:bg-[#effff9]">
                     <div className="font-semibold">{ticket.title}</div>

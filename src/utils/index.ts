@@ -297,7 +297,7 @@ export function displayTicketPrice(ticket: Ticket) {
 
     const prices = ticket.payment_methods.map(item => {
         const type = Payments.find(type => type.chain === item.chain && type.protocol === item.protocol)
-        const targetToken = type?.tokenList.find(token => token.name === item.token_name)
+        const targetToken = type?.tokenList.find(token => token.name === item.token_name || token.id === item.token_name)
 
         return BigNumber(item.price).dividedBy(BigNumber(10).pow(targetToken?.decimals || 0)).toNumber()
     })
@@ -660,7 +660,7 @@ export const checkDomainInput = (domain: string) => {
 }
 
 export const getPaymentMethodIcon = (payment: PaymentMethod) => {
-    const paymentType = Payments.find(p => p.protocol === payment.protocol)
+    const paymentType = Payments.find(p => p.protocol === payment.protocol && p.chain === payment.chain)
     return paymentType?.protocolIcon || '/images/unknown.png'
 }
 

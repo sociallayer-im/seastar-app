@@ -197,6 +197,15 @@ export const getEventDetailById = async ({params: {eventId}, clientMode}: SolaSd
         return null
     }
 
+    if (response.data.events[0].tickets) {
+        response.data.events[0].tickets = response.data.events[0].tickets.map((t: any) => {
+            return {
+                ...t,
+                end_time: t.end_time ? t.end_time + 'Z' : null,
+            }
+        })
+    }
+
     return fixDate(response.data.events[0]) as EventDetail
 }
 
@@ -388,6 +397,29 @@ export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
         auth_token: params.authToken,
         id: params.eventDraft.id,
         event: buildSaveEventProps(params.eventDraft)
+    }
+
+    if (params.eventDraft.badge_class_id) {
+        const setBadge = await fetch(`${getSdkConfig(clientMode).api}/event/set_badge`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: params.eventDraft.id,
+                badge_class_id: params.eventDraft.badge_class_id,
+                auth_token: params.authToken,
+            })
+        })
+
+        if (!setBadge.ok) {
+            throw new Error('Failed to set badge ' + 'code: ' + setBadge.status)
+        }
+        const badgeData = await setBadge.json()
+
+        if (badgeData.result === 'error') {
+            throw new Error(badgeData.message)
+        }
     }
 
     const response = await fetch(`${getSdkConfig(clientMode).api}/event/update`, {
@@ -590,7 +622,10 @@ export const updateRecurringEvent = async ({
 
 export type CancelRecurringEventProps = Omit<UpdateRecurringEventProps, 'eventDraft' | 'endTimeDiff' | 'startTimeDiff'>
 
-export const cancelRecurringEvent = async ({params: {recurringId, afterEventId, authToken}, clientMode}: SolaSdkFunctionParams<CancelRecurringEventProps>) => {
+export const cancelRecurringEvent = async ({
+                                               params: {recurringId, afterEventId, authToken},
+                                               clientMode
+                                           }: SolaSdkFunctionParams<CancelRecurringEventProps>) => {
     const props = {
         auth_token: authToken,
         recurring_id: recurringId,

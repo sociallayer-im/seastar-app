@@ -22,6 +22,7 @@ import TagsFilter from '@/components/client/TagsFilter'
 import {getOccupiedTimeEvent, Event, EventDraftType} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
+import dayjs from '@/libs/dayjs'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 
@@ -341,6 +342,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
 
                         {enableTicket && <>
                             <TicketForm
+                                timezone={draft.timezone || dayjs.tz.guess()}
                                 currProfile={data.currProfile}
                                 lang={lang}
                                 state={{event: draft, setEvent: setDraft}}
@@ -376,12 +378,22 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                                 className={`transition-all overflow-hidden duration-500 ${enableMoreSetting ? 'max-h-[1000px]' : 'max-h-0'}`}>
                                 <div className="p-4">
                                     <div className="font-semibold mb-1 text-sm">{lang['Event Badge']}</div>
-                                    <div
-                                        className="text-gray-500 text-xs">{lang['When an event participant checks in, he or she automatically receives a badge at the end of the event']}</div>
-                                    <SelectedEventBadge
-                                        currProfile={data.currProfile}
-                                        lang={lang}
-                                        state={{event: draft, setEvent: setDraft}}/>
+                                    {
+                                        !!draft.id
+                                            ? <>
+                                                <div
+                                                    className="text-gray-500 text-xs">{lang['When an event participant checks in, he or she automatically receives a badge at the end of the event']}</div>
+                                                <SelectedEventBadge
+                                                    currProfile={data.currProfile}
+                                                    lang={lang}
+                                                    state={{event: draft, setEvent: setDraft}}/>
+                                            </>
+                                            : <div className="text-gray-500 text-xs">
+                                                {lang['You can add a badge after creating an event']}
+                                            </div>
+                                    }
+
+
                                     <div className="flex-row-item-center justify-between mt-8">
                                         <div
                                             className="font-semibold mb-1 text-sm">{lang['Maximum participants']}</div>

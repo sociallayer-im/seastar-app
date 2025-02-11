@@ -33,6 +33,7 @@ export interface TicketFormProps {
     state: {event: EventDraftType, setEvent: (event: EventDraftType) => void}
     tracks: Track[]
     lang: Dictionary
+    timezone: string,
     currProfile: ProfileDetail
     checker?: Checker,
 }
@@ -50,7 +51,7 @@ export interface Checker {
     check: undefined | null | (() => boolean)
 }
 
-export default function TicketForm({state: {event, setEvent}, tracks, checker, lang, currProfile} : TicketFormProps) {
+export default function TicketForm({state: {event, setEvent}, tracks, checker, lang, currProfile, timezone} : TicketFormProps) {
     const [tickets, setTickets] = useState<TicketDraft[]>(event.tickets || [])
     const [ticketErrors, setTicketErrors] = useState<TicketErrMsg[]>([])
 
@@ -121,6 +122,7 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, l
             .map((t, index) => {
                 return <TicketItem
                     lang={lang}
+                    timezone={timezone}
                     currProfile={currProfile}
                     key={index}
                     index={index + 1}
@@ -147,6 +149,7 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, l
 export interface TicketItemProps {
     index: number
     lang: Dictionary
+    timezone: string
     ticket: TicketDraft
     onChange: (ticket: TicketDraft) => void,
     onRemove: () => void,
@@ -157,7 +160,7 @@ export interface TicketItemProps {
     errors?: TicketErrMsg
 }
 
-function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProfile, lang, eventRoles}: TicketItemProps) {
+function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProfile, lang, eventRoles, timezone}: TicketItemProps) {
     const {selectBadgeClass} = useSelectBadgeClass()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -190,7 +193,11 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
 
     const handleRemoveTicket = () => {
         if (ticketDraft.id) {
-            onChange({...ticketDraft, _destroy: '1'})
+            toast({
+                title: 'Cannot remove existing ticket',
+                variant: 'destructive'
+            })
+            // onChange({...ticketDraft, _destroy: '1'})
         } else {
             onRemove()
         }
@@ -379,7 +386,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                             setEnableEndTime(false)
                             setTicketDraft({...ticketDraft, end_time: null})
                         }}>
-                        <div>No limit</div>
+                        <div>{lang['No limit']}</div>
                         {
                             !enableEndTime
                                 ? <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
@@ -391,7 +398,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                             setEnableEndTime(true)
                             const initDataTime = dayjs().hour(23).minute(59).toDate().toISOString()
                             setTicketDraft({...ticketDraft, end_time:initDataTime})}}>
-                        <div>Limit</div>
+                        <div>{lang['Limit']}</div>
                         {
                             enableEndTime
                                 ? <i className="uil-check-circle ml-2 text-2xl text-green-500"/>
@@ -408,26 +415,27 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                             ? dayjs(new Date(ticket.end_time).getTime()).format('YYYY/MM/DD')
                             : dayjs().format('YYYY/MM/DD')}
                         onChange={(dateStr)=> {
-                            const value = dayjs(dateStr).hour(23).minute(59).toDate().toISOString()
+                            const value = dayjs.tz(`${dateStr} 23:59`, timezone).toDate().toISOString()
                             setTicketDraft({...ticketDraft, end_time: value})
                         }}>
                         <Input type="text"
                             placeholder={'Set Date'}
                             className="w-full"
                             readOnly
-                            value={ticketDraft.end_time ? dayjs(new Date(ticketDraft.end_time).getTime()).format('YYYY/MM/DD'): '' }
+                            value={ticketDraft.end_time ? dayjs.tz(new Date(ticketDraft.end_time).getTime(), timezone).format('YYYY/MM/DD'): '' }
                             startAdornment={<i className="uil-calender text-lg"/>}/>
                     </DatePicker>
 
                     <TimePicker
                         initTime={ticketDraft.end_time
-                            ? dayjs(new Date(ticketDraft.end_time).getTime()).format('HH:mm')
+                            ? dayjs.tz(new Date(ticketDraft.end_time).getTime(), timezone).format('HH:mm')
                             : dayjs().format('HH:mm')}
                         onChange={(timeStr) => {
-                            const dateStr = dayjs(ticket.end_time ? new Date(ticketDraft.end_time!).getTime() : new Date().getTime()).format('YYYY/MM/DD')
-                            const value = dayjs(`${dateStr} ${timeStr}`).toDate().toISOString()
+                            const dateStr = dayjs.tz(ticket.end_time ? new Date(ticketDraft.end_time!).getTime() : new Date().getTime(), timezone).format('YYYY/MM/DD')
+                            const value = dayjs.tz(`${dateStr} ${timeStr}`, timezone).toDate().toISOString()
                             setTicketDraft({...ticketDraft, end_time: value})
                         }}/>
+                    <div>{ticketDraft.end_time}</div>
                 </div>
             }
         </div>
@@ -478,7 +486,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                 chain: AvailablePaymentMethods[0].chain,
                 token_name: AvailablePaymentMethods[0].tokenList[0].name,
                 token_address: AvailablePaymentMethods[0].tokenList[0].contract,
-                protocol: AvailablePaymentMethods[0].protocol,
+                protocol: AvailablePaymentMethods[0].protocol!,
                 price: 10 ** AvailablePaymentMethods[0].tokenList[0].decimals
             }])
         }
@@ -574,22 +582,22 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             chain: chain.chain,
             token_name: token.name,
             token_address: token.contract,
-            protocol: chain.protocol,
+            protocol: chain.protocol!,
             price: 10**token.decimals
         }])
     }
     
     return <div>
+        <div>{ paymentMethods.length}</div>
         {
             paymentMethods
                 .filter(p => !p._destroy)
                 .map((p, index) => {
                     const currType = Payments.find(c => c.chain === p.chain && c.protocol === p.protocol)
-
                     // unsupported payment method
                     if (!currType) return null
 
-                    const currToken = currType!.tokenList.find(t => t.name === p.token_name)
+                    const currToken = currType!.tokenList.find(t => t.name === p.token_name || p.token_name == t.id)
 
                     return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
                         <div className="mb-2 text-sm font-semibold">{lang['Payment']} {index + 1}</div>
@@ -616,7 +624,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                                     chain: option[0].chain,
                                                     token_name: targetToken!.name,
                                                     token_address: targetToken!.contract,
-                                                    protocol: option[0].protocol,
+                                                    protocol: option[0].protocol!,
                                                     price: 1
                                                 } : p))
                                             }}

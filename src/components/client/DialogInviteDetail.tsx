@@ -18,10 +18,6 @@ export default function DialogInviteDetail({inviteDetail, lang, close}: DialogIn
     const {showLoading, closeModal} = useModal()
     const [error, setError] = useState('')
 
-    useEffect(() => {
-        console.log('inviteDetail')
-    }, []);
-
     const handleAccept = async () => {
         const loading = showLoading()
         try {

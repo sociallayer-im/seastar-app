@@ -420,6 +420,7 @@ export const en = {
     'Purchase Successful':'Purchase Successful',
     'Sold Out':'Sold Out',
     'Stop Selling':'Stop Selling',
+    'You can add a badge after creating an event':'You can add a badge after creating an event',
 }
 
 export type Dictionary = typeof en

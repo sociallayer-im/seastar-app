@@ -48,8 +48,6 @@ export default async function GroupPageData({params, searchParams}: GroupDataPro
         clientMode: CLIENT_MODE
     })
 
-    console.log('groupsDetail', groupsDetail?.handle)
-
     if (!groupsDetail) {
         redirect('/error')
     }

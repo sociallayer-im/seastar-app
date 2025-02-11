@@ -49,18 +49,14 @@ function DialogCropper(props: DialogCropperProps) {
             let offsetY = imageInfo2.top
             if (imageInfo2.left >= 48) {
                 offsetX = 48
-                console.log(1, 48)
             } else if (imageInfo2.left + imageInfo.width - 48 < cropBoxInitSize) {
                 offsetX = (imageInfo.width - cropBoxInitSize) * -1 + 48
-                console.log(2, offsetX)
             }
 
             if (imageInfo2.top > 0) {
                 offsetY = 0
-                console.log(11, offsetY)
             } else if (imageInfo2.top + imageInfo.height < cropBoxInitSize) {
                 offsetY = (imageInfo.height - cropBoxInitSize) * -1
-                console.log(22, offsetY)
             }
 
             if (offsetX !== imageInfo2.left || offsetY !== imageInfo2.top) {

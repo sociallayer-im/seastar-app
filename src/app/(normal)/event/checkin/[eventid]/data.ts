@@ -8,7 +8,6 @@ export default async function CheckInData(props: EventDetailDataProps) {
     }
 
     if (!data.currProfileAttended) {
-        console.log(data.eventDetail)
         redirect('/event/detail/' + data.eventDetail.id)
     }
 

@@ -101,6 +101,10 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
     const [selectedToken, setSelectedToken] = useState<PaymentSettingToken | undefined>(tokens[0])
 
+    useEffect(() => {
+        setSelectedToken(tokens[0])
+    }, [tokens])
+
     const selectedMethod = useMemo(() => {
         if (!selectedPaymentType || !selectedToken) return undefined
 
@@ -110,11 +114,6 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             method.token_name === selectedToken.name
         )
     }, [selectedPaymentType, selectedToken, ticket.payment_methods])
-
-    useEffect(() => {
-        setSelectedToken(tokens[0])
-    }, [tokens])
-
 
     const [dimoLink, setDaimoLink] = useState<string | undefined>(undefined)
     const handleDaimoPayment = async (redirect: boolean) => {
@@ -326,19 +325,21 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             </div>
         }
 
-        {!!selectedMethod &&
+        {!!selectedPaymentType &&
             <div className="my-3 border-t pt-6">
                 <div className="flex-row-item-center mb-3 justify-between">
                     <div className="mr-4 text-gray-500">{lang['Price']}</div>
                     <div className="font-bold flex-row-item-center text-pink-500 text-xl">
-                        <img src={selectedToken!.icon}
-                             alt=""
-                             className="w-5 h-5 rounded-full mr-1"/>
-                        {displayMethodPrice(selectedMethod)} {selectedToken!.name}
+                        {!!selectedMethod ? <>
+                            <img src={selectedToken!.icon}
+                                 alt=""
+                                 className="w-5 h-5 rounded-full mr-1"/>
+                            {displayMethodPrice(selectedMethod)} {selectedToken!.name}
+                        </> : "--"}
                     </div>
                 </div>
                 <div className="text-sm">Payments will be sent
-                    to: {shortWalletAddress(selectedMethod.receiver_address!)}</div>
+                    to: {selectedMethod ? shortWalletAddress(selectedMethod.receiver_address!) : '--'}</div>
             </div>
         }
 
@@ -375,8 +376,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
         {stopSelling &&
             <Button variant={'secondary'}
-                                disabled
-                                className="text-sm w-full">{lang['Stop Selling']}</Button>
+                    disabled
+                    className="text-sm w-full">{lang['Stop Selling']}</Button>
         }
 
         {!!paymentError && <div className="mt-3 text-red-400 text-sm">{paymentError}</div>}

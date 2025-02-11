@@ -400,7 +400,7 @@ export interface PaymentsType {
     label: string,
     chain: string,
     id: string,
-    protocol: string,
+    protocol: string | null,
     chainId: number,
     protocolIcon: string,
     chainIcon: string,
@@ -475,6 +475,166 @@ export const Payments: PaymentsType[] = [
             }
         ]
     },
-]
+    // deprecatedType
 
+    {
+        label: 'EVM(Ethereum)',
+        chain: 'ethereum',
+        id: 'ethereum',
+        protocol: null,
+        chainId: 1,
+        protocolIcon: '/images/payment_icon/ethereum-icon.webp',
+        chainIcon: '/images/payment_icon/ethereum-icon.webp',
+        payHub: '0xa17DA9562a4331669Fd2FBb9c607c409Ae190957',
+        tokenList: [
+            {
+                name: 'USDT',
+                id: 'usdt',
+                contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                icon: '/images/payment_icon/tether_32.webp',
+                decimals: 6
+            }
+        ]
+    },
+    {
+        label: 'EVM(Polygon)',
+        chain: 'polygon',
+        id: 'polygon',
+        protocol: null,
+        chainId: 137,
+        protocolIcon: '/images/payment_icon/polygon.svg',
+        chainIcon: '/images/payment_icon/polygon.svg',
+        payHub: '0xA73405D59e136f574a2FD690079B240f6fbff0a8',
+        tokenList: [
+            {
+                name: 'USDT',
+                id: 'usdt',
+                contract: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+                icon: '/images/payment_icon/tether_32.webp',
+                decimals: 6
+            },
+            {
+                name: 'USDC',
+                id: 'usdc',
+                contract: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+                icon: '/images/payment_icon/usdc_32.webp',
+                decimals: 6
+            }
+        ]
+    },
+    {
+        label: 'EVM(Optimism)',
+        chain: 'optimism',
+        id: 'evm-polygon',
+        protocol: null,
+        chainId: 10,
+        protocolIcon: '/images/payment_icon/op.png',
+        chainIcon: '/images/payment_icon/op.png',
+        payHub: '0xA73405D59e136f574a2FD690079B240f6fbff0a8',
+        tokenList: [
+            {
+                name: 'USDT',
+                id: 'usdt',
+                contract: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
+                icon: '/images/payment_icon/tether_32.webp',
+                decimals: 6
+            }
+        ]
+    },
+    {
+        label: 'EVM(Arbitrum)',
+        chain: 'arbitrum',
+        id: 'arbitrum',
+        protocol: null,
+        chainId: 42161,
+        protocolIcon: '/images/payment_icon/arbitrum.png',
+        chainIcon: '/images/payment_icon/arbitrum.png',
+        payHub: '0xA73405D59e136f574a2FD690079B240f6fbff0a8',
+        tokenList: [
+            {
+                name: 'USDT',
+                id: 'usdt',
+                contract: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+                icon: '/images/payment_icon/tether_32.webp',
+                decimals: 6
+            }
+        ]
+    },
+    {
+        label: 'EVM(Base)',
+        chain: 'base',
+        id: 'base',
+        protocol: null,
+        chainId: 8453,
+        protocolIcon: '/images/payment_icon/base_chain.png',
+        chainIcon: '/images/payment_icon/base_chain.png',
+        payHub: '0xA73405D59e136f574a2FD690079B240f6fbff0a8',
+        tokenList: [
+            {
+                name: 'USDC',
+                id: 'usdc',
+                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                icon: '/images/payment_icon/usdc_32.webp',
+                decimals: 6
+            }
+        ]
+    },
+    {
+        label: 'EVM(Optimism)',
+        chain: 'optimism',
+        id: 'optimism',
+        protocol: null,
+        chainId: 8453,
+        protocolIcon: '/images/payment_icon/op.png',
+        chainIcon: '/images/payment_icon/op.png',
+        payHub: '0xA73405D59e136f574a2FD690079B240f6fbff0a8',
+        tokenList: [
+            {
+                name: 'USDT',
+                id: 'usdt',
+                contract: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
+                icon: '/images/payment_icon/tether_32.webp',
+                decimals: 6
+            }
+        ]
+    },
+    {
+        label: 'Daimo(OP)',
+        chain: 'daimo',
+        id: 'daimo',
+        protocol: null,
+        chainId: 8453,
+        protocolIcon: 'images/payment_icon/daimo.jpg',
+        chainIcon: '/images/payment_icon/op.png',
+        payHub: '',
+        tokenList: [
+            {
+                name: 'USDC',
+                id: 'usdc',
+                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+                icon: '/images/payment_icon/usdc_32.webp',
+                decimals: 6
+            }
+        ]
+    },
+    {
+        label: 'Stripe',
+        chain: 'stripe',
+        id: 'stripe',
+        protocol: null,
+        chainId: 0,
+        protocolIcon: '/images/payment_icon/stripe.png',
+        chainIcon: '/images/payment_icon/stripe.png',
+        payHub: '',
+        tokenList: [
+            {
+                name: 'USD',
+                id: 'usd',
+                contract: '',
+                icon: '/images/payment_icon/usd.png',
+                decimals: 2
+            }
+        ]
+    }
+]
 

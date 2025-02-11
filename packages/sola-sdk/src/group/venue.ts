@@ -74,7 +74,7 @@ export const updateVenue = async function ({params: {venue, authToken}, clientMo
         }
     }
 
-    console.log('props', props)
+    // console.log('props', props)
 
     const res = await fetch(`${getSdkConfig(clientMode).api}/venue/update`, {
         method: 'POST',
@@ -108,7 +108,7 @@ export const createVenue = async function ({params: {venue, authToken}, clientMo
         }
     }
 
-    console.log('props', props)
+    // console.log('props', props)
 
     const res = await fetch(`${getSdkConfig(clientMode).api}/venue/create`, {
         method: 'POST',

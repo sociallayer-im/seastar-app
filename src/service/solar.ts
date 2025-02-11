@@ -97,7 +97,7 @@ export const getOccupiedTimeEvent = async (startTime: string, endTime: string, t
 
     const {events} = await request<{ events: Solar.Event[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
 
-    console.log('events', events)
+    // console.log('events', events)
 
     return events.find((e) => {
         const eventStartTime = new Date(e.start_time!).getTime()

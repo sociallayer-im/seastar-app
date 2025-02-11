@@ -48,7 +48,6 @@ export const getLabelColor = (label?: string, light?: number) => {
     if (light) {
         // hex to rgb
         res = getLightColor(res, light)
-        console.log(res)
         return res
     } else {
         return res
