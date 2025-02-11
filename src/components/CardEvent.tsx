@@ -25,7 +25,7 @@ export default function CardEvent({event, className, id, style}: {
               id={id}
               style={style}
               className={`relative shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className}`}>
-        <DynamicEventCardStarBtn event={event}/>
+        <DynamicEventCardStarBtn eventId={event.id} starred={event.isStarred}/>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
@@ -34,7 +34,6 @@ export default function CardEvent({event, className, id, style}: {
                 {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">Ongoing</Badge>}
                 {eventProcess === 'past' && <Badge variant='past' className="mr-1">Past</Badge>}
                 {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">Upcoming</Badge>}
-
 
                 {event.isCreator && <Badge variant='hosting' className="mr-1">Hosting</Badge>}
                 {event.isJoined && <Badge variant='joining' className="mr-1">Joining</Badge>}

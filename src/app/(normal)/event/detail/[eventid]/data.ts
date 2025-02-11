@@ -1,11 +1,16 @@
-import {analyzeGroupMembershipAndCheckProfilePermissions, checkProcess, pickSearchParam} from "@/utils"
+import {
+    analyzeGroupMembershipAndCheckProfilePermissions,
+    checkProcess,
+    EventWithJoinStatus,
+    pickSearchParam
+} from "@/utils"
 import {redirect} from "next/navigation"
-import {getCurrProfile} from '@/app/actions'
+import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
     Event,
     getEventByRecurringId,
     getEventDetailById,
-    getGroupDetailByHandle, getPurchasedTicketItemsByProfileHandleAndEventId, getRecurringById,
+    getGroupDetailByHandle, getPurchasedTicketItemsByProfileHandleAndEventId, getRecurringById, getStaredEvent,
     Participant,
     Recurring, Ticket
 } from '@sola/sdk'
@@ -101,7 +106,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
 
     let recurring: Recurring | null = null
     if (!!eventDetail.recurring_id) {
-        recurring = await getRecurringById({params:{recurringId: eventDetail.recurring_id}, clientMode: CLIENT_MODE})
+        recurring = await getRecurringById({params: {recurringId: eventDetail.recurring_id}, clientMode: CLIENT_MODE})
     }
 
     let ticketsPurchased: Ticket[] = []
@@ -117,7 +122,15 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         })
     }
 
-
+    let currProfileStarred = false
+    if (!!currProfile) {
+        const token = await getServerSideAuth()
+        const starredEvents = await getStaredEvent({
+            params: {authToken: token!},
+            clientMode: CLIENT_MODE
+        })
+        currProfileStarred = !!starredEvents.find(e => e.id === eventDetail.id)
+    }
 
     return {
         currProfile,
@@ -135,6 +148,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         isTicketEvent: !!eventDetail.tickets?.length,
         currProfileAttended,
         currProfileCheckedIn,
+        currProfileStarred,
         isOwner: eventDetail.owner.id === currProfile?.id,
         owner: eventDetail.owner,
         groupHost,

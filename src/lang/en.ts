@@ -302,7 +302,7 @@ export const en = {
     'See all Communities': 'See all Communities',
     'Attended': 'Attended',
     'Hosting': 'Hosting',
-    'Stared': 'Stared',
+    'Starred': 'Starred',
     'Send a Badge': 'Send a Badge',
     'Setting': 'Setting',
     'Sign in to participate in a fun event': 'Sign in to participate in a fun event',

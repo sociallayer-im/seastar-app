@@ -4,7 +4,6 @@ import EventDetailPage, {
 } from "@/app/(normal)/event/detail/[eventid]/data"
 import {
     displayProfileName,
-    displayTicketPrice,
     eventCoverTimeStr,
     genGoogleMapLinkByEvent,
     getAvatar,
@@ -28,6 +27,9 @@ import ClickToCopy from '@/components/client/ClickToCopy'
 import removeMarkdown from 'markdown-to-text'
 import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
+import dynamic from 'next/dynamic'
+
+const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -71,7 +73,8 @@ export default async function EventDetail({params, searchParams}: {
         avNeeds,
         seatingStyle,
         recurring,
-        ticketsPurchased
+        ticketsPurchased,
+        currProfileStarred
     } = await EventDetailPage({
         params,
         searchParams
@@ -102,6 +105,11 @@ export default async function EventDetail({params, searchParams}: {
                         <i className="uil-edit-alt" />
                         <span className="sm:inline hidden ml-1 ">{lang['Edit']}</span>
                     </a>}
+                <DynamicEventCardStarBtn
+                    label={lang['Star']}
+                    eventId={eventDetail.id}
+                    starred={currProfileStarred}
+                    compact={false} />
                 <a href={`/event/share/${eventDetail.id}`}
                    className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
                     <i className="uil-external-link-alt " />

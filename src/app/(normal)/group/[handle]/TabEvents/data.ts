@@ -10,16 +10,20 @@ export const GroupEventListData = async function (handle: string, currProfile?: 
     })
 
     let currProfileAttends: Event[] = []
+    let currProfileStarred: Event[] = []
     if (currProfile) {
-        currProfileAttends = (await getProfileEventByHandle({
+        const {attends, starred}  = await getProfileEventByHandle({
             params: {handle: handle},
             clientMode: CLIENT_MODE
-        })).attends
+        })
+        currProfileAttends = attends
+        currProfileStarred = starred
     }
 
     return setEventAttendedStatus({
         events: groupEvents,
         currProfileAttends,
+        currProfileStarred,
         currProfile
     })
 }

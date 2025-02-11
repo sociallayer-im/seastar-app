@@ -304,7 +304,7 @@ export const zh: Dictionary = {
     'See all Communities': '查看所有社区',
     'Attended': '已参加',
     'Hosting': '发起',
-    'Stared': '已关注',
+    'Starred': '已关注',
     'Send a Badge':'发送徽章',
     'Setting':'设置',
     'Sign in to participate in a fun event': '登录以参加有趣的活动',

@@ -25,7 +25,7 @@ export default async function MyEvents({events, tab}: { events: EventWithJoinSta
                     <a
                         className={`${buttonVariants({size: 'sm', variant: tab === 'stared' ? 'normal' : 'ghost'})}`}
                         href="/my-events/stared">
-                        {lang['Stared']}
+                        {lang['Starred']}
                     </a>
                     <a
                         className={`${buttonVariants({
