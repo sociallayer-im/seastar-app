@@ -423,4 +423,6 @@ export const zh: Dictionary = {
     'Sold Out':'售罄',
     'Stop Selling':'停止销售',
     'You can add a badge after creating an event':'您可以在创建活动后添加徽章',
+    'Generated Promo Code':'生成优惠码',
+    'Promo Code Detail':'优惠码详情',
 }

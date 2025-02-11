@@ -34,7 +34,7 @@ export const getStaredEvent = async ({params: {authToken}, clientMode}: SolaSdkF
                 geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
                 geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
             }
-        }) as Event[]
+        }).reverse() as Event[]
     } catch (e: unknown) {
         console.error(e)
         return []
@@ -56,7 +56,7 @@ export const getMyPendingApprovalEvent = async ({params: {authToken}, clientMode
         }
 
         const data = await res.json()
-        return data.events.map((e: any) => {
+        return data.events.slice(0, 30).map((e: any) => {
             return {
                 ...e,
                 owner: e.profile,
@@ -82,7 +82,8 @@ export const getProfileEventByHandle = async ({params: {handle}, clientMode}: So
     return {
         attends: response.data.attends.map((a: { event: Event }) => fixDate(a.event)) as Event[],
         hosting: response.data.hosting.map((e: Event) => fixDate(e)) as Event[],
-        coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event)) as Event[]
+        coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event)) as Event[],
+        starred: response.data.starred.map((a: { event: Event }) => fixDate(a.event)) as Event[]
     }
 }
 
@@ -643,6 +644,42 @@ export const cancelRecurringEvent = async ({
 
     if (!response.ok) {
         throw new Error('Cancel failed')
+    }
+}
+
+export const starEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{eventId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/comment/star`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            item_id: eventId,
+            auth_token: authToken,
+            item_type:'Event'
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to star event')
+    }
+}
+
+export const unstarEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{eventId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/comment/unstar`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            item_id: eventId,
+            auth_token: authToken,
+            item_type:'Event'
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to star event')
     }
 }
 

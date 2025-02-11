@@ -36,24 +36,28 @@ export const ProfileEventListData = async function (handle: string, currProfile?
     const hosting = setEventAttendedStatus({
         events: profileEvents.hosting,
         currProfileAttends,
+        currProfileStarred: staredEvents,
         currProfile
     })
 
     const attends = setEventAttendedStatus({
         events: profileEvents.attends,
         currProfileAttends,
+        currProfileStarred: staredEvents,
         currProfile
     })
 
     const stared = setEventAttendedStatus({
         events: staredEvents,
         currProfileAttends,
+        currProfileStarred: staredEvents,
         currProfile
     })
 
     const coHosting = setEventAttendedStatus({
         events: profileEvents.coHosting,
         currProfileAttends,
+        currProfileStarred: staredEvents,
         currProfile
     })
 

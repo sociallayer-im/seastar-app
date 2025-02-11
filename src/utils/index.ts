@@ -367,22 +367,26 @@ export function getGroupSubdomain(url?: string | null) {
 export interface EventWithJoinStatus extends Event {
     isCreator: boolean
     isJoined: boolean
+    isStarred: boolean
 }
 
 export type SetEventAttendedStatusParams = {
     events: Event[]
     currProfileAttends: Event[]
+    currProfileStarred: Event[]
     currProfile?: Profile | null
 }
 
-export const setEventAttendedStatus = ({events, currProfileAttends, currProfile}: SetEventAttendedStatusParams) => {
+export const setEventAttendedStatus = ({events, currProfileAttends, currProfileStarred, currProfile}: SetEventAttendedStatusParams) => {
     return events.map(e => {
         const isCreator = e.owner.handle === currProfile?.handle
         const isJoined = !!currProfileAttends.find(h => h.id === e.id)
+        const isStarred = !!currProfileStarred.find(h => h.id === e.id)
         return {
             ...e,
             isCreator,
-            isJoined
+            isJoined,
+            isStarred,
         } as EventWithJoinStatus
     })
 }

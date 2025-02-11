@@ -178,3 +178,20 @@ export interface TicketItem {
     protocol: string | null,
 }
 
+export interface Coupon {
+    id?: number
+    event_id?: number
+    selector_type: string,
+    code: string
+    label: string,
+    receiver_address: string | null,
+    discount_type: string,
+    discount: number,
+    applicable_ticket_ids: number[] | null,
+    ticket_item_ids: number[] | null,
+    expires_at: string,
+    max_allowed_usages: number
+    order_usage_count: number
+    _destroy?: string
+}
+

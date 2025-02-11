@@ -51,16 +51,20 @@ export default async function GroupEventMapData({params, searchParams}: GroupEve
     })
 
     let currProfileAttends: Event[] = []
+    let currProfileStarred: Event[] = []
     if (!!currProfile) {
-        currProfileAttends = (await getProfileEventByHandle({
+        const {attends, starred} = await getProfileEventByHandle({
             params: {handle: currProfile.handle},
             clientMode: CLIENT_MODE
-        })).attends
+        })
+        currProfileAttends = attends
+        currProfileStarred = starred
     }
 
     const eventWithStatus = setEventAttendedStatus({
         events: filteredEvents,
         currProfileAttends,
+        currProfileStarred,
         currProfile
     })
 

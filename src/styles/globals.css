@@ -66,6 +66,14 @@ body {
     box-shadow: 0 2px 12px rgba(0, 0, 0, .1);
 }
 
+.text-shadow {
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+.text-shadow:before {
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
 .flex-row-item-center {
     display: flex;
     flex-flow: row nowrap;

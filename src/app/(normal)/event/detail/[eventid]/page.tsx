@@ -89,16 +89,23 @@ export default async function EventDetail({params, searchParams}: {
             </a>
 
             <div className="flex-row-item-center">
+                { !!eventDetail.tickets?.length &&
+                    <a href={`/event/detail/${eventDetail.id}/promo-code`}
+                       className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
+                        <i className="uil-ticket text-lg" />
+                        <span className="sm:inline hidden ml-1 ">{lang['Promo Code']}</span>
+                    </a>
+                }
                 {isEventOperator &&
                     <a href={`/event/edit/${eventDetail.id}`}
-                       className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-4 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
-                        <i className="uil-edit-alt mr-1"></i>
-                        <span>{lang['Edit']}</span>
+                       className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
+                        <i className="uil-edit-alt" />
+                        <span className="sm:inline hidden ml-1 ">{lang['Edit']}</span>
                     </a>}
                 <a href={`/event/share/${eventDetail.id}`}
-                   className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-4 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
-                    <i className="uil-external-link-alt mr-1"></i>
-                    <span>{lang['Share']}</span>
+                   className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
+                    <i className="uil-external-link-alt " />
+                    <span className="sm:inline hidden ml-1 ">{lang['Share']}</span>
                 </a>
             </div>
         </div>

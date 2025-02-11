@@ -37,14 +37,18 @@ export default async function SearchPageData({searchParams}: SearchPageProps) {
 
     const currProfile = await getCurrProfile()
 
-    const profileEvents = currProfile ? (await getProfileEventByHandle({
+    const profileEvents = currProfile ? await getProfileEventByHandle({
         params: {handle: currProfile?.handle},
         clientMode: CLIENT_MODE
-    })).attends : []
+    }) : {
+        attends: [],
+        starred: []
+    }
 
     const eventWithJoinStatus = setEventAttendedStatus({
         events: data.events,
-        currProfileAttends: profileEvents,
+        currProfileAttends: profileEvents.attends,
+        currProfileStarred: profileEvents.starred,
         currProfile
     })
 

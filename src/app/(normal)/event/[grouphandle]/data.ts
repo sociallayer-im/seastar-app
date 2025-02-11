@@ -1,7 +1,7 @@
 import {
     getGroupDetailByHandle,
     getProfileEventByHandle,
-    Event, EventFilters, getEvents, EventListFilterProps, getMapEvents
+    Event, getEvents, EventListFilterProps, getMapEvents
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
@@ -74,21 +74,26 @@ export default async function GroupEventHomeData({
         clientMode: CLIENT_MODE
     })
 
-    if (!searchParams.collection) {
+    if (!searchParams.collection && filteredEvents.length === 0) {
         redirect(`/event/${handle}?collection=past`)
     }
 
     let currProfileAttends: Event[] = []
+    let currProfileStarred: Event[] = []
     if (!!currProfile) {
-        currProfileAttends = (await getProfileEventByHandle({
-            params: {handle: handle},
+        const {attends, starred} = await getProfileEventByHandle({
+            params: {handle: currProfile.handle},
             clientMode: CLIENT_MODE
-        })).attends
+        })
+
+        currProfileAttends = attends
+        currProfileStarred = starred
     }
 
     const eventWithStatus = setEventAttendedStatus({
         events: filteredEvents,
         currProfileAttends,
+        currProfileStarred,
         currProfile
     })
 

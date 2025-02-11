@@ -421,6 +421,8 @@ export const en = {
     'Sold Out':'Sold Out',
     'Stop Selling':'Stop Selling',
     'You can add a badge after creating an event':'You can add a badge after creating an event',
+    'Generated Promo Code': 'Generated Promo Code',
+    'Promo Code Detail':'Promo Code Detail',
 }
 
 export type Dictionary = typeof en

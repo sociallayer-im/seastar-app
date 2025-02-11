@@ -20,6 +20,7 @@ export default async function MyEventsHostingPageData() {
     const hosting = setEventAttendedStatus({
         events: profileEvents.hosting,
         currProfileAttends: profileEvents.attends,
+        currProfileStarred: profileEvents.starred,
         currProfile
     })
 

@@ -1,10 +1,17 @@
 import {getLabelColor} from "@/utils/label_color"
 import {checkProcess, EventWithJoinStatus, formatEventTime} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
-import Dayjs from "@/libs/dayjs"
 import {CSSProperties} from "react"
+import dynamic from 'next/dynamic'
 
-export default function CardEvent({event, className, id, style}: {event: EventWithJoinStatus, className?: string, id?: string, style?: CSSProperties}) {
+const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
+
+export default function CardEvent({event, className, id, style}: {
+    event: EventWithJoinStatus,
+    className?: string,
+    id?: string,
+    style?: CSSProperties
+}) {
     const eventProcess = checkProcess(event.start_time, event.end_time)
     const status = event.status
 
@@ -15,9 +22,10 @@ export default function CardEvent({event, className, id, style}: {event: EventWi
     const startTime = formatEventTime(event.start_time, event.timezone)
 
     return <a href={`/event/detail/${event.id}`}
-        id={id}
-        style={style}
-        className={`shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className}`}>
+              id={id}
+              style={style}
+              className={`relative shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className}`}>
+        <DynamicEventCardStarBtn event={event}/>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
@@ -40,7 +48,7 @@ export default function CardEvent({event, className, id, style}: {event: EventWi
                     event.tags?.filter(tag => !tag.startsWith(':'))
                         .map((tag, i) => {
                             return <div key={i} className="flex-row-item-center mr-2 shrink-0">
-                                <i className="w-2 h-2 rounded-full mr-1" style={{background: getLabelColor(tag)}} />
+                                <i className="w-2 h-2 rounded-full mr-1" style={{background: getLabelColor(tag)}}/>
                                 <span>{tag}</span>
                             </div>
                         })
@@ -50,19 +58,21 @@ export default function CardEvent({event, className, id, style}: {event: EventWi
                 host by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}
             </div>
             <div className="h-6 flex-row-item-center text-xs sm:text-sm sm:my-1">
-                <i className="uil-calendar-alt mr-1 sm:text-lg text-sm" />
+                <i className="uil-calendar-alt mr-1 sm:text-lg text-sm"/>
                 {startTime}
             </div>
-            { !!event.location &&
+            {!!event.location &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm sm:my-1">
                     <i className="uil-location-point mr-1 sm:text-lg text-sm"/>
-                    <span className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{event.location}</span>
+                    <span
+                        className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{event.location}</span>
                 </div>
             }
-            { !!event.meeting_url &&
+            {!!event.meeting_url &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm sm:my-1">
                     <i className="uil-link mr-1 sm:text-lg text-sm"/>
-                    <span className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis"> {event.meeting_url}</span>
+                    <span
+                        className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis"> {event.meeting_url}</span>
                 </div>
             }
         </div>
@@ -73,7 +83,8 @@ export default function CardEvent({event, className, id, style}: {event: EventWi
                 </div>
                 : <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px]">
                     <div className="default-cover w-[452px] h-[452px] sm:scale-[0.309] scale-[0.22]">
-                        <div className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
+                        <div
+                            className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                             {event.title}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">

@@ -24,6 +24,7 @@ export default async function MyEventsStaredPageData() {
     const stared = setEventAttendedStatus({
         events: startedEvents,
         currProfileAttends: profileEvents.attends,
+        currProfileStarred: profileEvents.starred,
         currProfile
     })
 

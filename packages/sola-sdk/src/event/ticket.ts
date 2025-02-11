@@ -1,8 +1,8 @@
 import {SolaSdkFunctionParams} from '../types'
 import {getGqlClient, getSdkConfig} from '../client'
-import {Participant, PaymentMethod, TicketItem} from './types'
+import {Coupon, Participant, PaymentMethod, TicketItem} from './types'
 import {
-    genDaimoLink,
+    genDaimoLink, GET_COUPON_BY_EVENT_ID,
     GET_EVENT_DETAIL_BY_ID,
     GET_PURCHASED_TICKET_ITEMS_BY_PROFILE_HANDLE_AND_EVENT_ID
 } from '@sola/sdk'
@@ -90,4 +90,19 @@ export const getPurchasedTicketItemsByProfileHandleAndEventId = async ({params, 
     })
 
     return response.data.ticket_items as TicketItem[]
+}
+
+export const getCouponByEventId = async ({params, clientMode}: SolaSdkFunctionParams<{eventId: number}>) => {
+    const client = getGqlClient(clientMode)
+
+    const response = await client.query({
+        query: GET_COUPON_BY_EVENT_ID,
+        variables: {eventId: params.eventId}
+    })
+
+    return response.data.coupons as Coupon[]
+}
+
+export const getCouponById = async ({params, clientMode}: SolaSdkFunctionParams<{couponId: number}>) => {
+   // const res = fetch(`${getSdkConfig(clientMode).api}/coupon/${params.couponId}`, {
 }

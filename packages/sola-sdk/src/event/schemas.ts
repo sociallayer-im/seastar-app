@@ -94,6 +94,11 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
             event {
                 ...EventFragment
              }
+        },
+        starred: comments(where: {profile:{handle: {_eq: $handle}}, item_type: {_eq: "Event"}, comment_type: {_eq: "star"}}, order_by: {id: desc}) {
+            event {
+                ...EventFragment
+             }
         }
     }
 `
@@ -306,6 +311,25 @@ export const GET_EVENT_DETAIL_BY_ID = gql`
     query GetEventDetailById($id: bigint!) {
         events(where: {id: {_eq: $id}}) {
             ...EventDetailFragment
+        }
+    }
+`
+
+export const GET_COUPON_BY_EVENT_ID = gql`
+    query GetCouponByEventId($eventId: Int!) {
+        coupons(where: {event_id: {_eq: $eventId}}) {
+            id
+            event_id
+            selector_type
+            label
+            receiver_address
+            discount_type
+            discount
+            applicable_ticket_ids
+            ticket_item_ids
+            expires_at
+            max_allowed_usages
+            order_usage_count
         }
     }
 `

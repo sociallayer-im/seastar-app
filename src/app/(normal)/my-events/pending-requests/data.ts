@@ -24,6 +24,7 @@ export default async function MyEventsPendingRequestPageData() {
     const pendingRequests = setEventAttendedStatus({
         events: pendingRequestEvents,
         currProfileAttends: profileEvents.attends,
+        currProfileStarred: profileEvents.starred,
         currProfile
     })
 
