@@ -423,6 +423,11 @@ export const en = {
     'You can add a badge after creating an event':'You can add a badge after creating an event',
     'Generated Promo Code': 'Generated Promo Code',
     'Promo Code Detail':'Promo Code Detail',
+    'Input comment':'Input comment',
+    'Sign in to send a comment':'Sign in to send a comment',
+    'Send a Comment':'Send a Comment',
+    'Comments':'Comments',
+    'Comment sent':'Comment sent',
 }
 
 export type Dictionary = typeof en

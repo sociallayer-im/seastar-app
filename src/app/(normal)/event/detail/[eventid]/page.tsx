@@ -28,6 +28,7 @@ import removeMarkdown from 'markdown-to-text'
 import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
 import dynamic from 'next/dynamic'
+import CommentPanel from '@/components/client/CommentPanel'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
@@ -404,15 +405,15 @@ export default async function EventDetail({params, searchParams}: {
                         }
                     </a>
                     }
-                    {/*<a href={'?tab=comments'}*/}
-                    {/*   className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">*/}
-                    {/*    <span className="z-10">Comments</span>*/}
-                    {/*    {tab === 'comments' &&*/}
-                    {/*        <img width={90} height={12}*/}
-                    {/*             className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"*/}
-                    {/*             src="/images/tab_bg.png" alt=""/>*/}
-                    {/*    }*/}
-                    {/*</a>*/}
+                    <a href={'?tab=comments'}
+                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
+                        <span className="z-10">Comments</span>
+                        {tab === 'comments' &&
+                            <img width={90} height={12}
+                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
+                                 src="/images/tab_bg.png" alt=""/>
+                        }
+                    </a>
                     {showParticipants && <a href={'?tab=participants'}
                                             className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <div className="z-10">
@@ -488,14 +489,10 @@ export default async function EventDetail({params, searchParams}: {
 
                 {tab === 'comments' && <div>
                     <div className="py-4">
-                        {!!currProfile &&
-                            <div className="flex flex-row  w-full !items-start">
-                                <img className="w-9 h-9 rounded-full mr-2"
-                                     src={getAvatar(currProfile.id, currProfile.image_url)} alt=""/>
-                                <Textarea className="flex-1" placeholder={'Input comment'}/>
-                            </div>
-                        }
-                        <NoData/>
+                        <CommentPanel lang={lang}
+                                      currProfile={currProfile}
+                                      itemType={'Event'}
+                                      itemId={eventDetail.id} />
                     </div>
                 </div>}
 

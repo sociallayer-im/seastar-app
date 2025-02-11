@@ -425,4 +425,9 @@ export const zh: Dictionary = {
     'You can add a badge after creating an event':'您可以在创建活动后添加徽章',
     'Generated Promo Code':'生成优惠码',
     'Promo Code Detail':'优惠码详情',
+    'Input comment':'输入评论',
+    'Sign in to send a comment':'登录以发送评论',
+    'Send a Comment':'发送评论',
+    'Comments':'评论',
+    'Comment sent':'评论已发送',
 }
