@@ -435,7 +435,6 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                             const value = dayjs.tz(`${dateStr} ${timeStr}`, timezone).toDate().toISOString()
                             setTicketDraft({...ticketDraft, end_time: value})
                         }}/>
-                    <div>{ticketDraft.end_time}</div>
                 </div>
             }
         </div>

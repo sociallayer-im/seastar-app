@@ -198,7 +198,7 @@ export const en = {
     'Display on the schedule page':'Display on the schedule page',
     'Manager Setting':'Manager Setting',
     'Generate Promo Code':'Generate Promo Code',
-    'Valid date':'Valid date',
+    'Valid Date':'Valid Date',
     'Generate':'Generate',
     'Can be used':'Can be used',
     'Times':'Times',
@@ -428,6 +428,11 @@ export const en = {
     'Send a Comment':'Send a Comment',
     'Comments':'Comments',
     'Comment sent':'Comment sent',
+    'Amount Off':'Amount Off',
+    'Percentage Off':'Percentage Off',
+    'Usage Record':'Usage Record',
+    'Input discount':'Input discount',
+    'Unlimited':'Unlimited',
 }
 
 export type Dictionary = typeof en

@@ -178,6 +178,9 @@ export interface TicketItem {
     protocol: string | null,
 }
 
+
+export type DiscountType = 'ratio' | 'amount'
+
 export interface Coupon {
     id?: number
     event_id?: number
@@ -185,7 +188,7 @@ export interface Coupon {
     code: string
     label: string,
     receiver_address: string | null,
-    discount_type: string,
+    discount_type: DiscountType,
     discount: number,
     applicable_ticket_ids: number[] | null,
     ticket_item_ids: number[] | null,
@@ -194,4 +197,5 @@ export interface Coupon {
     order_usage_count: number
     _destroy?: string
 }
+
 

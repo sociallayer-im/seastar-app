@@ -10,7 +10,7 @@ export default function CopyText(props: {value?: string | null, className?: stri
     const handleCopy = () => {
         if (!!props.value) {
             copy(props.value)
-            toast({title: 'Copied !', variant: 'default'})
+            toast({title: 'Copied !', variant: 'success'})
         }
     }
 

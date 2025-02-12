@@ -1,11 +1,14 @@
 import {SolaSdkFunctionParams} from '../types'
 import {getGqlClient, getSdkConfig} from '../client'
-import {Coupon, Participant, PaymentMethod, TicketItem} from './types'
+import {Coupon, DiscountType, Participant, PaymentMethod, TicketItem} from './types'
+import {genDaimoLink} from '../service'
+import {Profile} from '../profile'
 import {
-    genDaimoLink, GET_COUPON_BY_EVENT_ID,
-    GET_EVENT_DETAIL_BY_ID,
+    GET_COUPON_BY_EVENT_ID,
+    GET_COUPON_BY_ID,
+    GET_TICKET_ITEM_BY_COUPON,
     GET_PURCHASED_TICKET_ITEMS_BY_PROFILE_HANDLE_AND_EVENT_ID
-} from '@sola/sdk'
+} from './schemas'
 
 export interface TicketPayment {
     authToken: string,
@@ -81,7 +84,10 @@ export const createDaimoOrder = async ({params, clientMode}: SolaSdkFunctionPara
     }
 }
 
-export const getPurchasedTicketItemsByProfileHandleAndEventId = async ({params, clientMode}: SolaSdkFunctionParams<{profileHandle: string, eventId: number}>) => {
+export const getPurchasedTicketItemsByProfileHandleAndEventId = async ({params, clientMode}: SolaSdkFunctionParams<{
+    profileHandle: string,
+    eventId: number
+}>) => {
     const client = getGqlClient(clientMode)
 
     const response = await client.query({
@@ -92,7 +98,7 @@ export const getPurchasedTicketItemsByProfileHandleAndEventId = async ({params, 
     return response.data.ticket_items as TicketItem[]
 }
 
-export const getCouponByEventId = async ({params, clientMode}: SolaSdkFunctionParams<{eventId: number}>) => {
+export const getCouponByEventId = async ({params, clientMode}: SolaSdkFunctionParams<{ eventId: number }>) => {
     const client = getGqlClient(clientMode)
 
     const response = await client.query({
@@ -103,6 +109,88 @@ export const getCouponByEventId = async ({params, clientMode}: SolaSdkFunctionPa
     return response.data.coupons as Coupon[]
 }
 
-export const getCouponById = async ({params, clientMode}: SolaSdkFunctionParams<{couponId: number}>) => {
-   // const res = fetch(`${getSdkConfig(clientMode).api}/coupon/${params.couponId}`, {
+export const getCouponCodeById = async ({params, clientMode}: SolaSdkFunctionParams<{
+    couponId: number,
+    authToken: string
+}>) => {
+    const url = `${getSdkConfig(clientMode).api}/ticket/get_coupon?auth_token=${params.authToken}&id=${params.couponId}`
+    const res = await fetch(url)
+
+    if (!res.ok) {
+        throw new Error('Failed to get coupon: ' + res.statusText)
+    }
+
+    const data = await res.json()
+
+    return data as { coupon_id: number, code: string }
+}
+
+export const getCouponById = async ({params, clientMode}: SolaSdkFunctionParams<{
+    couponId: number,
+}>) => {
+    const client = getGqlClient(clientMode)
+    const response = await client.query({
+        query: GET_COUPON_BY_ID,
+        variables: {id: params.couponId}
+    })
+
+    if (response.data.coupons[0]) {
+        if (response.data.coupons[0].expires_at) {
+            response.data.coupons[0].expires_at = response.data.coupons[0].expires_at + 'Z'
+        }
+        return response.data.coupons[0] as Coupon
+    } else {
+        return null
+    }
+}
+
+export interface CouponUsageRecord extends TicketItem {
+    profile: Profile
+}
+
+export const getCouponUsageRecord = async ({params, clientMode}: SolaSdkFunctionParams<{ couponId: number }>) => {
+    const client = getGqlClient(clientMode)
+    const response = await client.query({
+        query: GET_TICKET_ITEM_BY_COUPON,
+        variables: {couponId: params.couponId}
+    })
+
+    return response.data.ticket_items as CouponUsageRecord []
+}
+
+export interface CouponDraft {
+    discount: number,
+    eventId: number
+    times?: number,
+    validDate?: string,
+    discountType: DiscountType,
+    label?: string,
+    authToken: string
+}
+
+export const setCoupon = async ({params, clientMode}: SolaSdkFunctionParams<CouponDraft>) => {
+    const props = {
+        auth_token: params.authToken,
+        event_id: params.eventId,
+        coupon: {
+            discount: params.discountType === 'ratio' ? (100 - params.discount) * 100 : params.discount * 100,
+            discount_type: params.discountType,
+            selector_type: 'code',
+            max_allowed_usages: params.times || undefined,
+            expires_at: params.validDate || undefined,
+            label: params.label || undefined
+        }
+    }
+
+    const res = await fetch(`${getSdkConfig(clientMode).api}/ticket/set_coupon`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(props)
+    })
+
+    if (!res.ok) {
+        throw new Error('Failed to set coupon')
+    }
 }

@@ -200,7 +200,7 @@ export const zh: Dictionary = {
     'Display on the schedule page':'在日程页面上显示',
     'Manager Setting':'管理员设置',
     'Generate Promo Code':'生成优惠码',
-    'Valid date':'有效日期',
+    'Valid Date':'有效日期',
     'Generate':'生成',
     'Can be used':'可使用',
     'Times':'次',
@@ -430,4 +430,9 @@ export const zh: Dictionary = {
     'Send a Comment':'发送评论',
     'Comments':'评论',
     'Comment sent':'评论已发送',
+    'Amount Off':'减免金额',
+    'Percentage Off':'折扣百分比',
+    'Usage Record':'使用记录',
+    'Input discount':'输入折扣',
+    'Unlimited':'无限制',
 }

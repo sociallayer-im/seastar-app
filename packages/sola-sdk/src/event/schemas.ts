@@ -226,6 +226,7 @@ export const TICKET_ITEM_FRAGMENT = gql`
         selector_address
         original_price
         protocol
+        created_at
     }`
 
 export const GET_PURCHASED_TICKET_ITEMS_BY_PROFILE_HANDLE_AND_EVENT_ID = gql`
@@ -330,6 +331,38 @@ export const GET_COUPON_BY_EVENT_ID = gql`
             expires_at
             max_allowed_usages
             order_usage_count
+        }
+    }
+`
+
+export const GET_COUPON_BY_ID = gql`
+    query GetCouponByEventId($id: bigint!) {
+        coupons(where: {id: {_eq: $id}}) {
+            id
+            event_id
+            selector_type
+            label
+            receiver_address
+            discount_type
+            discount
+            applicable_ticket_ids
+            ticket_item_ids
+            expires_at
+            max_allowed_usages
+            order_usage_count
+        }
+    }
+`
+
+export const GET_TICKET_ITEM_BY_COUPON = gql`
+    ${TICKET_ITEM_FRAGMENT}
+    ${PROFILE_FRAGMENT}
+    query GetTicketItemByCoupon($couponId: bigint!) {
+        ticket_items(where: {coupon: {id: {_eq: $couponId}}}) {
+            ...TicketItemFragment
+            profile {
+                ...ProfileFragment
+            }
         }
     }
 `

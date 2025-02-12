@@ -1,8 +1,19 @@
 import {selectLang} from "@/app/actions"
 import {Button} from "@/components/shadcn/Button"
+import PromoCodeDetailData, {
+    PromoCodeDetailPageProps
+} from '@/app/(normal)/event/detail/[eventid]/promo-code/[promocodeid]/data'
+import React from 'react'
+import DisplayDateTime from '@/components/client/DisplayDateTime'
+import NoData from '@/components/NoData'
+import CopyText from '@/components/client/CopyText'
 
-export default async function PromoCodeDetail() {
+export default async function PromoCodeDetail(props: PromoCodeDetailPageProps) {
     const {lang} = await selectLang()
+    const {couponDetail, currProfile, code, records} = await PromoCodeDetailData(props)
+
+    const label = couponDetail.discount_type === 'amount' ? lang['Amount Off'] : lang['Percentage Off']
+    const value = couponDetail.discount_type === 'amount' ? `${couponDetail.discount / 100} USD` : `${100 - couponDetail.discount / 100}%`
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-sm min-h-[calc(100svh-48px) px-3 !pb-12 pt-0">
@@ -11,27 +22,38 @@ export default async function PromoCodeDetail() {
             <div className="mb-4 flex-row-item-center justify-center">
                 <div className="mr-3">{lang['Code']}</div>
                 <div className="text-2xl flex-1 font-semibold w-[200px] shadow rounded-lg text-center py-3">
-                    PROMO123
+                    {code}
                 </div>
-                <Button variant="secondary" className='ml-3'>
-                    <i className="uil-copy text-2xl text-green-500"/>
-                </Button>
+                <CopyText value={code}>
+                    <Button variant="secondary" className='ml-3'>
+                        <i className="uil-copy text-2xl text-green-500"/>
+                    </Button>
+                </CopyText>
             </div>
 
             <div className="flex-row-item-center justify-between bg-secondary rounded-lg px-3 py-2 mb-0.5">
-                <div>Amount Off</div>
-                <div className="font-semibold">1 USD</div>
+                <div>{label}</div>
+                <div className="font-semibold">{value}</div>
             </div>
             <div className="flex-row-item-center justify-between bg-secondary rounded-lg px-3 py-2 mb-0.5">
                 <div>{lang['Valid date']}</div>
-                <div className="font-semibold">123/12/112</div>
+                <div className="font-semibold">
+                    {couponDetail?.expires_at ? <DisplayDateTime dataTimeStr={couponDetail?.expires_at}/> : 'Unlimited'}
+                </div>
             </div>
             <div className="flex-row-item-center justify-between bg-secondary rounded-lg px-3 py-2 mb-0.5">
                 <div>{lang['Remaining uses']}</div>
-                <div className="font-semibold">1</div>
+                <div className="font-semibold">
+                    {
+                        couponDetail.max_allowed_usages
+                            ? couponDetail.max_allowed_usages - couponDetail.order_usage_count
+                            : 'Unlimited'
+                    }
+                </div>
             </div>
 
-            <div className="font-semibold mt-6">Usage history</div>
+            <div className="font-semibold mt-6">{lang['Usage Record']}</div>
+            {!records.length && <NoData/>}
         </div>
     </div>
 }
