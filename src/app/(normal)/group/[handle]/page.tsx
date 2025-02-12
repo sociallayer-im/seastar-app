@@ -15,6 +15,7 @@ import NoData from "@/components/NoData"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import ClickToCopy from '@/components/client/ClickToCopy'
+import CommentPanel from '@/components/client/CommentPanel'
 
 export const dynamic = 'force-dynamic'
 
@@ -135,18 +136,10 @@ export default async function GroupPage(props: GroupDataProps) {
                             <span className="font-normal">{lang['Sending']}</span>
                         </a>
                     }
-                    {false &&
-                        <a className={`${buttonVariants({variant: tab === 'chat' ? 'normal' : 'ghost'})} flex-1`}
-                           href={`/group/${group.handle}?tab=chat`}>
-                            <span className="font-normal">{lang['Chat']}</span>
-                        </a>
-                    }
-                    {false &&
-                        <a className={`${buttonVariants({variant: tab === 'votes' ? 'normal' : 'ghost'})} flex-1`}
-                           href={`/group/${group.handle}?tab=votes`}>
-                            <span className="font-normal">{lang['Votes']}</span>
-                        </a>
-                    }
+                    <a className={`${buttonVariants({variant: tab === 'commend' ? 'normal' : 'ghost'})} flex-1`}
+                       href={`/group/${group.handle}?tab=commend`}>
+                        <span className="font-normal">{lang['Comments']}</span>
+                    </a>
                     <a className={`${buttonVariants({variant: tab === 'members' ? 'normal' : 'ghost'})} flex-1`}
                        href={`/group/${group.handle}?tab=members`}>
                         <span className="font-normal">{lang['Members']}</span>
@@ -191,13 +184,13 @@ export default async function GroupPage(props: GroupDataProps) {
                 }
 
                 {
-                    tab === 'chat' && <div className="py-4 w-full">
-                        <div className="flex flex-row  w-full !items-start">
-                            <img className="w-9 h-9 rounded-full mr-2"
-                                 src='/images/default_avatar/avatar_1.png' alt=""/>
-                            <Textarea className="flex-1" placeholder={'Input comment'}/>
-                        </div>
-                        <NoData/>
+                    tab === 'commend' && <div className="py-4 w-full">
+                        <CommentPanel
+                            lang={lang}
+                            currProfile={currProfile}
+                            itemType="Group"
+                            itemId={group.id}
+                        />
                     </div>
                 }
             </div>
