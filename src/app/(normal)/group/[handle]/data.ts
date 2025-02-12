@@ -29,7 +29,7 @@ export interface GroupDataProps {
 
 export interface GroupData {
     group: GroupDetail,
-    currProfile: Profile | null,
+    currProfile: ProfileDetail | null,
     currUserIsManager: boolean,
     currUserIsMember: boolean,
     currUserIsIssuer: boolean,

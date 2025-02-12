@@ -10,8 +10,6 @@ import TabEvents from './TabEvents/TabEvents'
 import TabBadges from "@/app/(normal)/group/[handle]/TabBadges/TabBadges"
 import TabMembers from "@/app/(normal)/group/[handle]/TabMembers/TabMembers"
 import TabVouchers from "@/app/(normal)/group/[handle]/TabVouchers/TabVouchers"
-import {Textarea} from "@/components/shadcn/Textarea"
-import NoData from "@/components/NoData"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import ClickToCopy from '@/components/client/ClickToCopy'
