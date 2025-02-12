@@ -382,9 +382,9 @@ export default async function EventDetail({params, searchParams}: {
                     }
                 </div>
 
-                <div className="flex-row-item-center font-semibold mt-6">
+                <div className="grid sm:grid-cols-4 grid-cols-2 font-semibold mt-6">
                     <a href={'?tab=content'}
-                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 relative">
+                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 relative">
                         <span className="z-10">{lang['Content']}</span>
                         {(tab === 'content' || tab === '') &&
                             <img width={90} height={12}
@@ -393,7 +393,7 @@ export default async function EventDetail({params, searchParams}: {
                         }
                     </a>
                     {isTicketEvent && <a href={'?tab=tickets'}
-                                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
+                                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2  mr-0 relative border-l-[1px] border-gray-200">
                         <div className="z-10">
                             {lang['Tickets']}
                             <span className="text-xs">({eventDetail.tickets?.length})</span>
@@ -406,7 +406,7 @@ export default async function EventDetail({params, searchParams}: {
                     </a>
                     }
                     <a href={'?tab=comments'}
-                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
+                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2  mr-0 relative border-l-[1px] border-gray-200">
                         <span className="z-10">Comments</span>
                         {tab === 'comments' &&
                             <img width={90} height={12}

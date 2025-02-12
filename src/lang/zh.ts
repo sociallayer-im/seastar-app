@@ -435,4 +435,6 @@ export const zh: Dictionary = {
     'Usage Record':'使用记录',
     'Input discount':'输入折扣',
     'Unlimited':'无限制',
+    'Apply':'应用',
+    'Promo Code Required':'需要优惠码',
 }

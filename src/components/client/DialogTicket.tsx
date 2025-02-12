@@ -2,10 +2,9 @@ import {
     ProfileDetail,
     Ticket,
     EventDetail,
-    genDaimoLink,
     createDaimoOrder,
     checkBadgeOwnership,
-    createTicketPayment
+    createTicketPayment, validateCoupon
 } from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {
@@ -24,6 +23,7 @@ import {Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
 import {CLIENT_MODE} from '@/app/config'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {Switch} from '@/components/shadcn/Switch'
 
 export interface DialogTicketProps {
     ticket: Ticket
@@ -41,6 +41,10 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const [badgeCollected, setBadgeCollected] = useState<boolean>(false)
     const [checkingBadgeCollected, setCheckingCheckBadgeCollected] = useState<boolean>(false)
     const [buying, setBuying] = useState<boolean>(false)
+
+    const [usePromoCode, setUsePromoCode] = useState<boolean>(false)
+    const [promoCode, setPromoCode] = useState<string>('')
+    const [promoCodeError, setPromoCodeError] = useState<string>('')
 
     useEffect(() => {
         ;(async () => {
@@ -203,6 +207,28 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         }
     }
 
+    const handleCheckPromoCode = async () => {
+        setPromoCodeError('')
+        if (!promoCode) {
+            setPromoCodeError(lang['Promo Code Required'])
+            return
+        }
+        const loading = showLoading()
+        try {
+            const authToken = getAuth()
+            const {coupon, price} = await validateCoupon({
+                params: {coupon: promoCode, eventId: eventDetail.id, authToken: authToken!},
+                clientMode: CLIENT_MODE})
+            console.log(coupon, price)
+            // Check promo code
+        } catch (e: unknown) {
+            console.error(e)
+            setPromoCodeError(e instanceof Error ? e.message : 'Failed to check promo code')
+        } finally {
+            closeModal(loading)
+        }
+    }
+
     return <div
         className="bg-background sm:p-4 p-3 rounded-lg shadow max-h-[100svh] overflow-y-auto w-[96vw] sm:w-[400px]">
         <div className="flex-row-item-center justify-between mb-6">
@@ -322,6 +348,32 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                                                  className="w-6 h-6 rounded-full mr-1"/>}/>
                     </DropdownMenu>
                 </div>
+            </div>
+        }
+
+        {!!selectedPaymentType &&
+            <div className="my-3 border-t pt-3">
+                <div className="flex-row-item-center justify-between">
+                    <div className="font-semibold">{lang['Promo Code']}</div>
+                    <Switch checked={usePromoCode} onClick={() => {
+                        setUsePromoCode(!usePromoCode)
+                        setPromoCode('')
+                        setPromoCodeError('')
+                    }}/>
+                </div>
+                {usePromoCode &&
+                    <div className="flex-row-item-center gap-2 mt-2">
+                        <Input placeholder={lang['Promo Code']}
+                               value={promoCode}
+                               inputSize={'md'}
+                               className={'flex-1'}
+                               onChange={(e) => setPromoCode(e.target.value)}/>
+                        <Button variant={'normal'} size={'sm'}
+                                onClick={handleCheckPromoCode}
+                                className="text-sm !h-[38px]">{lang['Apply']}</Button>
+                    </div>
+                }
+                {!!promoCodeError && <div className="mt-2 text-red-400 text-sm">{promoCodeError}</div>}
             </div>
         }
 

@@ -433,6 +433,8 @@ export const en = {
     'Usage Record':'Usage Record',
     'Input discount':'Input discount',
     'Unlimited':'Unlimited',
+    'Apply':'Apply',
+    'Promo Code Required':'Promo Code Required',
 }
 
 export type Dictionary = typeof en

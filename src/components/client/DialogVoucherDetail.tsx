@@ -172,7 +172,7 @@ export default function DialogVoucherDetail({
                 </div>
 
                 <div className="font-semibold mb-1">
-                    {lang['Valid date']}
+                    {lang['Valid Date']}
                 </div>
                 <div className="capitalize">
                     <DynamicDisplayDateTime dataTimeStr={voucherDetail.expires_at!}/>

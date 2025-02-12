@@ -106,7 +106,7 @@ export default function DialogInviteDetail({inviteDetail, lang, close}: DialogIn
                 </div>
 
                 <div className="font-semibold mb-1">
-                    {lang['Valid date']}
+                    {lang['Valid Date']}
                 </div>
                 <div className="capitalize">
                     <DisplayDateTime dataTimeStr={inviteDetail.expires_at}/>

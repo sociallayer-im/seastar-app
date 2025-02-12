@@ -36,7 +36,8 @@ export const createTicketPayment = async ({params, clientMode}: SolaSdkFunctionP
     })
 
     if (!res.ok) {
-        throw new Error('Failed to create ticket payment')
+        const data = await res.json()
+        throw new Error(data.message || 'Failed to create ticket payment')
     }
 
     const data = await res.json()
@@ -173,6 +174,7 @@ export const setCoupon = async ({params, clientMode}: SolaSdkFunctionParams<Coup
         auth_token: params.authToken,
         event_id: params.eventId,
         coupon: {
+            event_id: params.eventId,
             discount: params.discountType === 'ratio' ? (100 - params.discount) * 100 : params.discount * 100,
             discount_type: params.discountType,
             selector_type: 'code',
@@ -192,5 +194,35 @@ export const setCoupon = async ({params, clientMode}: SolaSdkFunctionParams<Coup
 
     if (!res.ok) {
         throw new Error('Failed to set coupon')
+    }
+}
+
+export const validateCoupon = async ({params, clientMode}: SolaSdkFunctionParams<{
+    coupon: string,
+    eventId: number,
+    authToken: string
+}>) => {
+    const res1 = await fetch(`${getSdkConfig(clientMode).api}/ticket/check_coupon?code=${params.coupon}&event_id=${params.eventId}&auth_token=${params.authToken}`)
+    if (!res1.ok) {
+        throw new Error('Failed to check coupon')
+    }
+
+    const data1 = await res1.json()
+
+    const coupon = data1.coupon as Coupon
+    if (!coupon) {
+        throw new Error('Invalid coupon')
+    }
+
+    const res2 = await fetch(`${getSdkConfig(clientMode).api}/ticket/coupon_price?code=${params.coupon}&event_id=${params.eventId}&auth_token=${params.authToken}`)
+    if (!res2.ok) {
+        throw new Error('Failed to check coupon')
+    }
+
+    const data2 = await res2.json()
+
+    return {
+        coupon,
+        price: data2.amount as number
     }
 }

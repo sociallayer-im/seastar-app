@@ -36,7 +36,7 @@ export default async function PromoCodeDetail(props: PromoCodeDetailPageProps) {
                 <div className="font-semibold">{value}</div>
             </div>
             <div className="flex-row-item-center justify-between bg-secondary rounded-lg px-3 py-2 mb-0.5">
-                <div>{lang['Valid date']}</div>
+                <div>{lang['Valid Date']}</div>
                 <div className="font-semibold">
                     {couponDetail?.expires_at ? <DisplayDateTime dataTimeStr={couponDetail?.expires_at}/> : 'Unlimited'}
                 </div>
