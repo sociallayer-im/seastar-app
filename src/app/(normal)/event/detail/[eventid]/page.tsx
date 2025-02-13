@@ -421,7 +421,7 @@ export default async function EventDetail({params, searchParams}: {
                     }
                     <a href={'?tab=comments'}
                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2  mr-0 relative border-l-[1px] border-gray-200">
-                        <span className="z-10">Comments</span>
+                        <span className="z-10">{lang['Comments']}</span>
                         {tab === 'comments' &&
                             <img width={90} height={12}
                                  className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"

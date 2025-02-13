@@ -441,7 +441,9 @@ export const en = {
     'Sign Out':'Sign Out',
     'Invites':'Invites',
     'Send you a badge':'Send you a badge',
-    'Registration for the event, upon completion, will be rewarded with POAP*1':'Registration for the event, upon completion, will be rewarded with POAP*1'
+    'Registration for the event, upon completion, will be rewarded with POAP*1':'Registration for the event, upon completion, will be rewarded with POAP*1',
+    'Discount':'Discount',
+    'Total':'Total',
 }
 
 export type Dictionary = typeof en

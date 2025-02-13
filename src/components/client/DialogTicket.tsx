@@ -42,9 +42,19 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const [checkingBadgeCollected, setCheckingCheckBadgeCollected] = useState<boolean>(false)
     const [buying, setBuying] = useState<boolean>(false)
 
-    const [usePromoCode, setUsePromoCode] = useState<boolean>(false)
+    const [enablePromoCode, setEnablePromoCode] = useState<boolean>(false)
     const [promoCode, setPromoCode] = useState<string>('')
+    const [validPromoCode, setValidPromoCode] = useState<string | undefined>(undefined)
+    const [discountedPrice, setDiscountedPrice] = useState<number | null>(500000)
     const [promoCodeError, setPromoCodeError] = useState<string>('')
+
+    const toggleEnablePromoCode = () => {
+        setPromoCode('')
+        setValidPromoCode(undefined)
+        setDiscountedPrice(null)
+        setPromoCodeError('')
+        setEnablePromoCode(!enablePromoCode)
+    }
 
     useEffect(() => {
         ;(async () => {
@@ -105,6 +115,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
     const [selectedToken, setSelectedToken] = useState<PaymentSettingToken | undefined>(tokens[0])
 
+
     useEffect(() => {
         setSelectedToken(tokens[0])
     }, [tokens])
@@ -132,7 +143,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                     eventId: eventDetail.id,
                     authToken: authToken!,
                     paymentMethod: selectedMethod!,
-                    redirectUri: window.location.href
+                    redirectUri: window.location.href,
+                    coupon: validPromoCode,
                 },
                 clientMode: CLIENT_MODE
             })
@@ -217,10 +229,17 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         try {
             const authToken = getAuth()
             const {coupon, price} = await validateCoupon({
-                params: {coupon: promoCode, eventId: eventDetail.id, authToken: authToken!, price: selectedMethod?.price!},
-                clientMode: CLIENT_MODE})
+                params: {
+                    coupon: promoCode,
+                    eventId: eventDetail.id,
+                    authToken: authToken!,
+                    price: selectedMethod?.price!
+                },
+                clientMode: CLIENT_MODE
+            })
             console.log(coupon, price)
-            // Check promo code
+            setValidPromoCode(promoCode)
+            setDiscountedPrice(price)
         } catch (e: unknown) {
             console.error(e)
             setPromoCodeError('Invalid Promo Code')
@@ -228,6 +247,11 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             closeModal(loading)
         }
     }
+
+    const priceDiff = useMemo(() => {
+        if (discountedPrice === null || !selectedMethod || !selectedToken) return 0
+        return (selectedMethod.price - discountedPrice) / 10**selectedToken.decimals
+    }, [discountedPrice, selectedMethod, selectedToken])
 
     return <div
         className="bg-background sm:p-4 p-3 rounded-lg shadow max-h-[100svh] overflow-y-auto w-[96vw] sm:w-[400px]">
@@ -355,13 +379,9 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             <div className="my-3 border-t pt-3">
                 <div className="flex-row-item-center justify-between">
                     <div className="font-semibold">{lang['Promo Code']}</div>
-                    <Switch checked={usePromoCode} onClick={() => {
-                        setUsePromoCode(!usePromoCode)
-                        setPromoCode('')
-                        setPromoCodeError('')
-                    }}/>
+                    <Switch checked={enablePromoCode} onClick={toggleEnablePromoCode}/>
                 </div>
-                {usePromoCode &&
+                {enablePromoCode &&
                     <div className="flex-row-item-center gap-2 mt-2">
                         <Input placeholder={lang['Promo Code']}
                                value={promoCode}
@@ -381,15 +401,28 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             <div className="my-3 border-t pt-6">
                 <div className="flex-row-item-center mb-3 justify-between">
                     <div className="mr-4 text-gray-500">{lang['Price']}</div>
-                    <div className="font-bold flex-row-item-center text-pink-500 text-xl">
+                    <div className="font-bold text-pink-500 text-xl">
                         {!!selectedMethod ? <>
-                            <img src={selectedToken!.icon}
-                                 alt=""
-                                 className="w-5 h-5 rounded-full mr-1"/>
                             {displayMethodPrice(selectedMethod)} {selectedToken!.name}
                         </> : "--"}
                     </div>
                 </div>
+                {!!priceDiff &&
+                    <>
+                        <div className="flex-row-item-center mb-3 justify-between">
+                            <div className="mr-4 text-gray-500">{lang['Discount']}</div>
+                            <div>
+                              -{priceDiff} {selectedToken!.name}
+                            </div>
+                        </div>
+                        <div className="flex-row-item-center mb-3 justify-between">
+                            <div className="mr-4 text-gray-500">{lang['Total']}</div>
+                            <div className="font-bold text-pink-500 text-xl">
+                                {discountedPrice! / 10**selectedToken!.decimals} {selectedToken!.name}
+                            </div>
+                        </div>
+                    </>
+                }
                 <div className="text-sm">Payments will be sent
                     to: {selectedMethod ? shortWalletAddress(selectedMethod.receiver_address!) : '--'}</div>
             </div>
