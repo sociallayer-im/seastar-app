@@ -305,6 +305,9 @@ export const EVENT_DETAIL_FRAGMENT = gql`
         event_roles {
             ...EventRoleDetailFragment
         }
+        badge_class {
+        ...BadgeClassFragment
+        }
     }`
 
 export const GET_EVENT_DETAIL_BY_ID = gql`

@@ -13,7 +13,6 @@ import {selectLang} from "@/app/actions"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import NoData from "@/components/NoData"
-import {Textarea} from "@/components/shadcn/Textarea"
 import Avatar from '@/components/Avatar'
 import AddSingleEventToCalendarApp from '@/components/client/AddSingleEventToCalendarAppBtn'
 import EventFeedbackBtn from '@/components/EventFeedbackBtn'
@@ -29,6 +28,7 @@ import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
 import dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
+import Image from 'next/image'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
@@ -93,27 +93,27 @@ export default async function EventDetail({params, searchParams}: {
             </a>
 
             <div className="flex-row-item-center">
-                { !!eventDetail.tickets?.length &&
+                {!!eventDetail.tickets?.length &&
                     <a href={`/event/detail/${eventDetail.id}/promo-code`}
                        className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
-                        <i className="uil-ticket text-lg" />
+                        <i className="uil-ticket text-lg"/>
                         <span className="sm:inline hidden ml-1 ">{lang['Promo Code']}</span>
                     </a>
                 }
                 {isEventOperator &&
                     <a href={`/event/edit/${eventDetail.id}`}
                        className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
-                        <i className="uil-edit-alt" />
+                        <i className="uil-edit-alt"/>
                         <span className="sm:inline hidden ml-1 ">{lang['Edit']}</span>
                     </a>}
                 <DynamicEventCardStarBtn
                     label={lang['Star']}
                     eventId={eventDetail.id}
                     starred={currProfileStarred}
-                    compact={false} />
+                    compact={false}/>
                 <a href={`/event/share/${eventDetail.id}`}
                    className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
-                    <i className="uil-external-link-alt " />
+                    <i className="uil-external-link-alt "/>
                     <span className="sm:inline hidden ml-1 ">{lang['Share']}</span>
                 </a>
             </div>
@@ -344,6 +344,20 @@ export default async function EventDetail({params, searchParams}: {
                             </div>
                         </div>
                     }
+
+                    {!!eventDetail.meeting_url &&
+                        <div className="flex-row-item-center py-4">
+                            <div
+                                className="mr-2 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
+                                <i className="uil-link text-base"></i>
+                            </div>
+                            <div>
+                                <div className="font-semibold text-base">Online meeting</div>
+                                <div className="text-gray-400 text-base">{eventDetail.meeting_url}</div>
+                            </div>
+                        </div>
+                    }
+
                     {!!eventDetail.geo_lat && !!eventDetail.geo_lng &&
                         <div className="ml-11 mt-[-12px]">
                             <div className="flex-row-item-center mb-2">
@@ -368,21 +382,21 @@ export default async function EventDetail({params, searchParams}: {
                             </div>
                         </div>
                     }
-                    {!!eventDetail.meeting_url &&
-                        <div className="flex-row-item-center py-4">
-                            <div
-                                className="mr-2 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
-                                <i className="uil-link text-base"></i>
+
+                    {!!eventDetail.badge_class &&
+                        <a className={`${buttonVariants({variant: 'secondary'})} mt-2 w-full !h-auto`}
+                           href={`/badge-class/${eventDetail.badge_class.id}`}>
+                            <div className="flex flex-row justify-between w-full items-center text-sm">
+                                <div className="flex-1 whitespace-pre-line">
+                                    {lang['Registration for the event, upon completion, will be rewarded with POAP*1']}
+                                </div>
+                                <Image className="min-w-9 min-h-9"
+                                       src={eventDetail.badge_class.image_url!} width={36} height={36} alt=""/>
                             </div>
-                            <div>
-                                <div className="font-semibold text-base">Online meeting</div>
-                                <div className="text-gray-400 text-base">{eventDetail.meeting_url}</div>
-                            </div>
-                        </div>
-                    }
+                        </a>}
                 </div>
 
-                <div className="grid sm:grid-cols-4 grid-cols-2 font-semibold mt-6">
+                <div className="grid sm:flex grid-cols-2 font-semibold mt-6">
                     <a href={'?tab=content'}
                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 relative">
                         <span className="z-10">{lang['Content']}</span>
@@ -492,7 +506,7 @@ export default async function EventDetail({params, searchParams}: {
                         <CommentPanel lang={lang}
                                       currProfile={currProfile}
                                       itemType={'Event'}
-                                      itemId={eventDetail.id} />
+                                      itemId={eventDetail.id}/>
                     </div>
                 </div>}
 

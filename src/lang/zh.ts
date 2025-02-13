@@ -443,4 +443,5 @@ export const zh: Dictionary = {
     'Sign Out':'退出登录',
     'Invites':'邀请',
     'Send you a badge':'发送给您一个徽章',
+    'Registration for the event, upon completion, will be rewarded with POAP*1':'活动注册，完成后将获得 POAP*1',
 }

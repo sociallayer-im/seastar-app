@@ -30,6 +30,7 @@ export interface EventDetail extends Event {
     min_participant: number | null,
     participants_count: number,
     badge_class_id: number | null,
+    badge_class: BadgeClass | null,
     external_url: string | null,
     notes: string | null,
     venue: string | null,
