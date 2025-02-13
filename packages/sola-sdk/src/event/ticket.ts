@@ -173,15 +173,18 @@ export const setCoupon = async ({params, clientMode}: SolaSdkFunctionParams<Coup
     const props = {
         auth_token: params.authToken,
         event_id: params.eventId,
-        coupon: {
-            event_id: params.eventId,
-            discount: params.discountType === 'ratio' ? (100 - params.discount) * 100 : params.discount * 100,
-            discount_type: params.discountType,
-            selector_type: 'code',
-            max_allowed_usages: params.times || undefined,
-            expires_at: params.validDate || undefined,
-            label: params.label || undefined
-        }
+        coupons_attributes: [
+            {
+                order_usage_count: 0,
+                event_id: params.eventId,
+                discount: params.discountType === 'ratio' ? (100 - params.discount) * 100 : params.discount * 100,
+                discount_type: params.discountType,
+                selector_type: 'code',
+                max_allowed_usages: params.times || undefined,
+                expires_at: params.validDate || undefined,
+                label: params.label || undefined,
+            }
+        ]
     }
 
     const res = await fetch(`${getSdkConfig(clientMode).api}/ticket/set_coupon`, {
@@ -200,7 +203,8 @@ export const setCoupon = async ({params, clientMode}: SolaSdkFunctionParams<Coup
 export const validateCoupon = async ({params, clientMode}: SolaSdkFunctionParams<{
     coupon: string,
     eventId: number,
-    authToken: string
+    authToken: string,
+    price: number
 }>) => {
     const res1 = await fetch(`${getSdkConfig(clientMode).api}/ticket/check_coupon?code=${params.coupon}&event_id=${params.eventId}&auth_token=${params.authToken}`)
     if (!res1.ok) {
@@ -214,7 +218,7 @@ export const validateCoupon = async ({params, clientMode}: SolaSdkFunctionParams
         throw new Error('Invalid coupon')
     }
 
-    const res2 = await fetch(`${getSdkConfig(clientMode).api}/ticket/coupon_price?code=${params.coupon}&event_id=${params.eventId}&auth_token=${params.authToken}`)
+    const res2 = await fetch(`${getSdkConfig(clientMode).api}/ticket/coupon_price?code=${params.coupon}&event_id=${params.eventId}&auth_token=${params.authToken}&amount=${params.price}`)
     if (!res2.ok) {
         throw new Error('Failed to check coupon')
     }

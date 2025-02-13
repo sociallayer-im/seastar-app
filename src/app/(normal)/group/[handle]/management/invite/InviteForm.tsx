@@ -91,6 +91,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
                 clientMode: CLIENT_MODE
             })
             closeModal(loading)
+            alert('ok')
             window.location.href = `/group/${group.handle}/management/invite/success?role=${role}`
         } catch (e: unknown) {
             console.error(e)

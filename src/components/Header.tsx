@@ -44,7 +44,7 @@ export default async function Header() {
                             <i className="uil-wallet text-base mr-1" />
                             <span>{lang['Sign In']}</span>
                         </a>
-                        :<ProfileMenu profile={profile} />
+                        :<ProfileMenu profile={profile} lang={lang} />
                 }
             </div>
         </div>

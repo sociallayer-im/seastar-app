@@ -217,13 +217,13 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         try {
             const authToken = getAuth()
             const {coupon, price} = await validateCoupon({
-                params: {coupon: promoCode, eventId: eventDetail.id, authToken: authToken!},
+                params: {coupon: promoCode, eventId: eventDetail.id, authToken: authToken!, price: selectedMethod?.price!},
                 clientMode: CLIENT_MODE})
             console.log(coupon, price)
             // Check promo code
         } catch (e: unknown) {
             console.error(e)
-            setPromoCodeError(e instanceof Error ? e.message : 'Failed to check promo code')
+            setPromoCodeError('Invalid Promo Code')
         } finally {
             closeModal(loading)
         }

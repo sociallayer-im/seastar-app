@@ -4,7 +4,7 @@ import {
     SubscriptionClient,
     SubscriptionInviteResponse,
     ProfileDetail,
-    SubscriptionVoucherResponse
+    SubscriptionVoucherResponse, SubscriptionActivityResponse
 } from '@sola/sdk'
 import {useEffect, useState} from 'react'
 import {Dictionary} from '@/lang'
@@ -22,6 +22,7 @@ import {CLIENT_MODE} from '@/app/config'
 export default function Subscription({lang, profile}: { lang: Dictionary, profile: ProfileDetail }) {
     const [invitesMsg, setInvitesMsg] = useState<SubscriptionInviteResponse>({invites: []})
     const [vouchersMsg, setVouchersMsg] = useState<SubscriptionVoucherResponse>({vouchers: []})
+    const [activityMsg, setActivityMsg] = useState<SubscriptionActivityResponse>({activities: []})
     const {openModal} = useModal()
     const {showVoucher} = useShowVoucher()
 
@@ -53,7 +54,26 @@ export default function Subscription({lang, profile}: { lang: Dictionary, profil
                 }
             })
         }
-    }, [vouchersMsg]);
+    }, [vouchersMsg])
+
+    useEffect(() => {
+        console.log('subscribe vouchers message: ', vouchersMsg)
+        if (vouchersMsg.vouchers.length > 0) {
+            vouchersMsg.vouchers.forEach((item) => {
+                if (!newVoucherDisplayed(item.id)) {
+                    addDisplayedVoucher(item.id)
+                    showVoucher(item.id, lang)
+                }
+            })
+        }
+    }, [vouchersMsg])
+
+    useEffect(() => {
+        console.log('subscribe activity message: ', activityMsg)
+        if (activityMsg.activities.length > 0) {
+            window.postMessage({type: 'has-unread-activities', data: activityMsg.activities}, window.location.origin)
+        }
+    }, [activityMsg])
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -68,6 +88,12 @@ export default function Subscription({lang, profile}: { lang: Dictionary, profil
                 profile,
                 onMessage: (message) => {
                     setVouchersMsg(message)
+                }
+            })
+            client.subscriptingActivity({
+                profile,
+                onMessage: (message) => {
+                    setActivityMsg(message)
                 }
             })
         }

@@ -435,6 +435,12 @@ export const en = {
     'Unlimited':'Unlimited',
     'Apply':'Apply',
     'Promo Code Required':'Promo Code Required',
+    'Settings':'Settings',
+    'Create Group':'Create Group',
+    'Notification':'Notification',
+    'Sign Out':'Sign Out',
+    'Invites':'Invites',
+    'Send you a badge':'Send you a badge',
 }
 
 export type Dictionary = typeof en

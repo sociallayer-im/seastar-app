@@ -437,4 +437,10 @@ export const zh: Dictionary = {
     'Unlimited':'无限制',
     'Apply':'应用',
     'Promo Code Required':'需要优惠码',
+    'Settings':'设置',
+    'Create Group':'创建群组',
+    'Notification':'消息通知',
+    'Sign Out':'退出登录',
+    'Invites':'邀请',
+    'Send you a badge':'发送给您一个徽章',
 }

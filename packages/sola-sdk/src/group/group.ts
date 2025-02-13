@@ -257,7 +257,7 @@ export const sendInvite = async (
         throw new Error(`Profile [${addressHasJoined.profile.address}] has joined`)
     }
 
-    const response = await fetch(`${getSdkConfig().api}/group/send_invite`, {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/send_invite`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

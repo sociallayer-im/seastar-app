@@ -136,10 +136,14 @@ export default function DialogVoucherDetail({
             <div className="my-3 p-3 rounded-lg border border-white text-sm"
                  style={{background: 'rgba(245,245,245,0.6)'}}>
 
-                <div className="font-semibold mb-1">
-                    {lang['Reason']}
-                </div>
-                <div className="mb-3">{voucherDetail.message}</div>
+                {!!voucherDetail.message &&
+                    <>
+                        <div className="font-semibold mb-1">
+                            {lang['Reason']}
+                        </div>
+                        <div className="mb-3">{voucherDetail.message}</div>
+                    </>
+                }
 
                 <div className="font-semibold mb-1">
                     {lang['Receivers']}
