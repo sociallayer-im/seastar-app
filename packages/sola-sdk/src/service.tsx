@@ -106,3 +106,21 @@ export const genDaimoLink = async ({params, clientMode}: SolaSdkFunctionParams<{
         url: string,
     }
 }
+
+export async function requestEmailCode({clientMode, params}:SolaSdkFunctionParams<{email: string}>): Promise<void> {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/service/send_email`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: params.email,
+        })
+    })
+
+    const data = await res.json()
+
+    if (data.result === 'error') {
+        throw new Error(data.message || 'Request fail')
+    }
+}

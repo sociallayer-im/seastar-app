@@ -1,14 +1,13 @@
 'use client'
 
 import Cookies from 'js-cookie'
-import {getAvatar} from "@/utils"
 import DropdownMenu from "@/components/client/DropdownMenu"
-import Image from "next/image"
 import Avatar from '@/components/Avatar'
 import {useEffect, useState} from 'react'
 import {Dictionary} from '@/lang'
+import {ProfileDetail} from '@sola/sdk'
 
-export default function ProfileMenu({lang, ...props}: { profile: Solar.ProfileSample, lang: Dictionary }) {
+export default function ProfileMenu({lang, ...props}: { profile: ProfileDetail, lang: Dictionary }) {
     const handleSignOut = () => {
         const currTopDomain = window.location.hostname.split('.').slice(-2).join('.')
         Cookies.remove(process.env.NEXT_PUBLIC_AUTH_FIELD!, {domain: currTopDomain})
@@ -22,13 +21,21 @@ export default function ProfileMenu({lang, ...props}: { profile: Solar.ProfileSa
         action?: () => void
     }
 
-    const menus = [
+    let menus = [
         {id: 'Profile', label: lang['Profile'], href: `/profile/${props.profile.handle}`},
         {id: 'Settings', label: lang['Settings'], href: `/profile/${props.profile.handle}/edit`},
         {id: 'Create Group', label: lang['Create Group'], href: '/create-group'},
         {id: 'Notification', label: lang['Notification'], href: '/notifications'},
         {id: 'Sign Out', label: lang['Sign Out'], action: handleSignOut},
     ] as Menu[]
+
+    if(!props.profile.email) {
+        menus.push({
+            id: 'Bind Email',
+            label: lang['Bind Email'],
+            href: `${process.env.NEXT_PUBLIC_SIGN_IN_URL}/bind-email?return=${encodeURIComponent(window.location.href)}`
+        })
+    }
 
     const handleSelect = (opt: Menu) => {
         !!opt.action && opt.action()
