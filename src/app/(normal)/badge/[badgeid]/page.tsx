@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Avatar from '@/components/Avatar'
 import {selectLang} from '@/app/actions'
 import NoData from '@/components/NoData'
+import SwapBtn from '@/app/(normal)/badge/[badgeid]/SwapBtn'
 
 const DynamicShowTime = dynamic(
     () => import('@/app/(normal)/badge-class/[badgeclassid]/FormatTime'),
@@ -22,7 +23,7 @@ export default async function BadgePage(props: BadgePageDataProps) {
 }
 
 
-async function PublicBadge ({badge, isOwner, groupCreator}: Awaited<ReturnType<typeof BadgePageData>>) {
+async function PublicBadge({badge, isOwner, groupCreator}: Awaited<ReturnType<typeof BadgePageData>>) {
     const {lang} = await selectLang()
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
         <div className="w-full flex flex-col justify-start items-start">
@@ -83,25 +84,7 @@ async function PublicBadge ({badge, isOwner, groupCreator}: Awaited<ReturnType<t
 
             {isOwner &&
                 <div className="w-full max-w-[500px] mx-auto py-3 mb-3 text-sm">
-                    <Button variant="secondary" className='w-full text-lg'>
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             className="!w-6 !h-6"
-                             width="100" height="100"
-                             viewBox="0 0 25 24"
-                             fill="none">
-                            <path
-                                d="M15 2.96875H18C19.1046 2.96875 20 3.86418 20 4.96875V7.96875M20 7.96875L18 6.4375M20 7.96875L22 6.4375"
-                                stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                            <path
-                                d="M10 20.9688H7C5.89543 20.9688 5 20.0733 5 18.9688V15.9688M5 15.9688L7 17.4375M5 15.9688L3 17.4375"
-                                stroke="#333333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                            <rect x="4" y="1.96875" width="6" height="9" rx="2" stroke="#333333" strokeWidth="2"
-                                  strokeLinecap="round" strokeLinejoin="round"></rect>
-                            <rect x="14" y="12.9688" width="6" height="9" rx="2" stroke="#333333" strokeWidth="2"
-                                  strokeLinecap="round" strokeLinejoin="round"></rect>
-                        </svg>
-                        Swap
-                    </Button>
+                    <SwapBtn badge={badge}/>
                 </div>
             }
         </div>
@@ -143,9 +126,12 @@ async function PrivateBadge({groupCreator, badge}: Awaited<ReturnType<typeof Bad
                 <NoData/>
             </div>
 
-            <div className="mb-3 text-yellow-500 flex-row-item-center p-2 mx-auto w-full max-w-[500px] bg-amber-50 rounded-lg">
+            <div
+                className="mb-3 text-yellow-500 flex-row-item-center p-2 mx-auto w-full max-w-[500px] bg-amber-50 rounded-lg">
                 <i className="uil-info-circle text-2xl mr-2"/>
-                <div><b>{lang["Privacy Badge"]}</b>: {lang['Only the creator and the recipient of the badge can view the details']}</div>
+                <div>
+                    <b>{lang["Privacy Badge"]}</b>: {lang['Only the creator and the recipient of the badge can view the details']}
+                </div>
             </div>
 
         </div>

@@ -4,6 +4,8 @@ import LangSwitcher from "@/components/client/LangSwitcher"
 import ProfileMenu from "@/components/client/ProfileMenu"
 import { headers } from "next/headers"
 import HeaderSearchBar from "@/components/client/HeaderSearchBar"
+import dynamic from 'next/dynamic'
+
 
 export default async function Header() {
     const { type, lang } = await selectLang()
@@ -44,7 +46,7 @@ export default async function Header() {
                             <i className="uil-wallet text-base mr-1" />
                             <span>{lang['Sign In']}</span>
                         </a>
-                        :<ProfileMenu profile={profile} lang={lang} />
+                        :<ProfileMenu profile={profile} lang={lang} currentPath={currentPath!} />
                 }
             </div>
         </div>

@@ -7,7 +7,7 @@ import {useEffect, useState} from 'react'
 import {Dictionary} from '@/lang'
 import {ProfileDetail} from '@sola/sdk'
 
-export default function ProfileMenu({lang, ...props}: { profile: ProfileDetail, lang: Dictionary }) {
+export default function ProfileMenu({lang, currentPath, ...props}: { profile: ProfileDetail, lang: Dictionary, currentPath: string }) {
     const handleSignOut = () => {
         const currTopDomain = window.location.hostname.split('.').slice(-2).join('.')
         Cookies.remove(process.env.NEXT_PUBLIC_AUTH_FIELD!, {domain: currTopDomain})
@@ -33,7 +33,7 @@ export default function ProfileMenu({lang, ...props}: { profile: ProfileDetail, 
         menus.push({
             id: 'Bind Email',
             label: lang['Bind Email'],
-            href: `${process.env.NEXT_PUBLIC_SIGN_IN_URL}/bind-email?return=${encodeURIComponent(window.location.href)}`
+            href: `${process.env.NEXT_PUBLIC_SIGN_IN_URL}/bind-email?return=${encodeURIComponent(currentPath)}`
         })
     }
 

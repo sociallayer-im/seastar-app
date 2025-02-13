@@ -198,3 +198,38 @@ export const checkBadgeOwnership = async ({params, clientMode}: SolaSdkFunctionP
 
     return response.data.badges.length > 0
 }
+
+export async function swapBadge({clientMode, params}: SolaSdkFunctionParams<{ authToken: string, badgeId: number, swapToken: string }>) {
+   await fetch(`${getSdkConfig(clientMode).api}/badge/swap`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            badge_id: params.badgeId,
+            auth_token: params.authToken,
+            swap_token: params.swapToken
+        })
+    })
+
+}
+
+export async function getSwapCode({params, clientMode}: SolaSdkFunctionParams<{ authToken: string, badgeId: number }>) {
+   const response = await fetch(`${getSdkConfig(clientMode).api}/badge/swap_code`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            badge_id: params.badgeId,
+            auth_token: params.authToken,
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error(`failed code: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return data.token as string
+}
