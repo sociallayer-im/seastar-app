@@ -9,7 +9,6 @@ import {Input} from "@/components/shadcn/Input"
 import dynamic from 'next/dynamic'
 import {Switch} from "@/components/shadcn/Switch"
 import LocationInput from "@/components/client/LocationInput"
-import EventDateTimeInput from "@/components/client/EventDateTimeInput"
 import {checkTrackSuitable, eventCoverTimeStr, isEventTimeSuitable} from "@/utils"
 import SelectedEventHost from "@/components/client/SelectedEventHost"
 import useModal from "@/components/client/Modal/useModal"
@@ -25,6 +24,7 @@ import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
 import dayjs from '@/libs/dayjs'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
+const EventDateTimeInput = dynamic(() => import('@/components/client/EventDateTimeInput'), {ssr: false})
 
 export interface EventFormProps {
     lang: Dictionary
