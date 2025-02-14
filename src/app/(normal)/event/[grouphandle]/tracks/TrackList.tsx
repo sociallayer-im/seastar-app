@@ -8,6 +8,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
+import NoData from '@/components/NoData'
 
 
 export default function TrackList({groupDetail, lang}: { groupDetail: GroupDetail, lang: Dictionary }) {
@@ -49,6 +50,7 @@ export default function TrackList({groupDetail, lang}: { groupDetail: GroupDetai
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Tracks']}</div>
+            {!groupDetail.tracks?.length && <NoData/>}
             <div className="grid grid-cols-1 gap-3">
                 {
                     groupDetail.tracks?.map((track, index) => {

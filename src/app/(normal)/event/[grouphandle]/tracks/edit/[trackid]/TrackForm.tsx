@@ -215,7 +215,7 @@ export default function TrackForm({trackDetail, lang, groupDetail, onConfirm}: T
             <div className="mt-6 flex-row-item-center justify-center">
                 <Button variant={'secondary'}
                         onClick={() => history.go(-1)}
-                        className="mr-3 flex-1">{lang['Cancel']}</Button>
+                        className="mr-3 flex-1">{lang['Back']}</Button>
                 <Button variant={'primary'}
                         onClick={handleConfirm}
                         className="mr-3 flex-1">

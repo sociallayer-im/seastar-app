@@ -313,14 +313,14 @@ export function getEventDetailPageTimeStr(event: Event) {
     const endTime = dayjs.tz(new Date(event.end_time!).getTime(), event.timezone)
     const offset = startTime.utcOffset() / 60
 
-    const startDateStr = startTime.format('ddd, MMM MM,YYYY')
-    const endDateStr = endTime.format('ddd, MMM MM,YYYY')
+    const startDateStr = startTime.format('ddd, MMM DD, YYYY')
+    const endDateStr = endTime.format('ddd, MMM DD, YYYY')
 
     let dateStr = ''
     if (startDateStr !== endDateStr) {
-        dateStr = startTime.format('ddd, MMM MM') + ' - ' + endTime.format('ddd, MMM MM')
+        dateStr = startTime.format('ddd, MMM DD') + ' - ' + endTime.format('ddd, MMM DD') + ', ' + startTime.format('YYYY')
     } else {
-        dateStr = startTime.format('ddd, MMM MM,YYYY')
+        dateStr = startDateStr
     }
 
     return {

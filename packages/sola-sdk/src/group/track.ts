@@ -94,7 +94,7 @@ export const updateTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
     })
 
     if (!res.ok) {
-        throw new Error('Failed to send feedback')
+        throw new Error('Failed to update')
     }
 
     const data = await res.json()
@@ -137,7 +137,7 @@ export const createTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
     })
 
     if (!res.ok) {
-        throw new Error('Failed to send feedback')
+        throw new Error('Failed to create track')
     }
 
     const data = await res.json()

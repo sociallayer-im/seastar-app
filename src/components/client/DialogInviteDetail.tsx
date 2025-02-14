@@ -35,7 +35,8 @@ export default function DialogInviteDetail({inviteDetail, lang, close}: DialogIn
                 },
                 clientMode: CLIENT_MODE
             })
-            window.location.href = `/group/${inviteDetail.group.handle}`
+            // window.location.href = `/group/${inviteDetail.group.handle}`
+            close()
         } catch (e: unknown) {
             closeModal(loading)
             console.error(e)
