@@ -354,7 +354,8 @@ export const createGroup = async ({params, clientMode}: SolaSdkFunctionParams<{h
     })
 
     if (!response.ok) {
-        throw new Error('Create group failed')
+        const data = await response.json()
+        throw new Error(data.message || 'Create group failed')
     }
 
     const data = await response.json()

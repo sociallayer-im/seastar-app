@@ -152,15 +152,15 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placehol
             </div>
         </div>
         <div className="flex-shrink-0 ml-3">
-            {showAddBtn ? <i onClick={() => {
+            {showAddBtn && <i onClick={() => {
                 !!onAdd && onAdd()
             }}
             className="uil-plus-circle text-3xl text-green-400 cursor-pointer hover:opacity-70 active:brightness-90"/>
-                : <i onClick={() => {
-                    !!onRemove && onRemove()
-                }}
-                className="uil-minus-circle text-3xl text-gray-400 cursor-pointer hover:opacity-70 active:brightness-90"/>
             }
+            <i onClick={() => {
+                !!onRemove && onRemove()
+            }}
+               className="uil-minus-circle text-3xl text-gray-400 cursor-pointer hover:opacity-70 active:brightness-90"/>
         </div>
     </div>
 }

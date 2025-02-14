@@ -53,10 +53,11 @@ export default function DropdownMenu<T>(props: {
     }, [props.align, props.fixWidth])
 
     useEffect(() => {
+        let interval:number
         if (show) {
-            const interval = window.setInterval(calculatePosition, 100)
-            return () => clearInterval(interval)
+            interval = window.setInterval(calculatePosition, 1)
         }
+        return () => clearInterval(interval)
     }, [calculatePosition, show])
 
     useEffect(() => {

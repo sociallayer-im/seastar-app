@@ -62,7 +62,7 @@ export default function ProfileMenu({lang, currentPath, ...props}: { profile: Pr
         renderOption={(opt) => {
             return <div className="text-nowrap flex-row-item-center">
                 {opt.label}
-                {hasUnreadActivities
+                {!!hasUnreadActivities
                     && opt.id === 'Notification'
                     && <span className="scale-75 text-white flex-row-item-center justify-center font-semibold text-xs  px-2 h-5 bg-red-500 rounded-full ">{hasUnreadActivities}</span>
                 }

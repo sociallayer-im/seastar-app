@@ -4,8 +4,6 @@ import LangSwitcher from "@/components/client/LangSwitcher"
 import ProfileMenu from "@/components/client/ProfileMenu"
 import { headers } from "next/headers"
 import HeaderSearchBar from "@/components/client/HeaderSearchBar"
-import dynamic from 'next/dynamic'
-
 
 export default async function Header() {
     const { type, lang } = await selectLang()

@@ -67,7 +67,11 @@ export default function InviteForm({lang, group}: InviteFormProps) {
     }
 
     const handleDownloadCsv = () => {
-        window.open('/files/invite_temp.csv', '_blank')
+        const a = document.createElement('a')
+        a.href = '/files/invite_temp.csv'
+        a.download = 'invite_temp.csv'
+        a.click()
+        // window.open('/files/invite_temp.csv', '_blank')
     }
 
     const handleSend = async () => {
@@ -91,7 +95,6 @@ export default function InviteForm({lang, group}: InviteFormProps) {
                 clientMode: CLIENT_MODE
             })
             closeModal(loading)
-            alert('ok')
             window.location.href = `/group/${group.handle}/management/invite/success?role=${role}`
         } catch (e: unknown) {
             console.error(e)

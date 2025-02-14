@@ -78,6 +78,10 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
 
 
                 {!!currProfile && <>
+                    <div>{canPublishEvent.toString()}</div>
+                    <div>{groupDetail.can_publish_event}</div>
+                    <div>{groupDetail.can_view_event}</div>
+                    <div>{groupDetail.can_join_event}</div>
                     {canPublishEvent && groupDetail.status !== 'freezed' &&
                         <a href={`/event/${groupDetail.handle}/create`}
                            className={`${buttonVariants({variant: "special"})} w-full mt-3`}

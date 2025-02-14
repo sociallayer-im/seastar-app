@@ -46,10 +46,10 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
             <div className="font-semibold mb-1">{lang['Who can create events']}</div>
             <Button variant={'secondary'}
                     className='w-full mb-3'
-                    onClick={() => setDraft({...draft, can_publish_event: 'everyone'})}>
+                    onClick={() => setDraft({...draft, can_publish_event: 'all'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>Everyone</div>
-                    {(draft.can_publish_event === 'everyone' || !draft.can_publish_event)
+                    {(draft.can_publish_event === 'all' || !draft.can_publish_event)
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -79,10 +79,10 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
 
             <div className="font-semibold mb-1 mt-4">{lang['Who can join events']}</div>
             <Button variant={'secondary'} className='w-full mb-3'
-                    onClick={() => setDraft({...draft, can_join_event: 'everyone'})}>
+                    onClick={() => setDraft({...draft, can_join_event: 'all'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>Everyone</div>
-                    {(draft.can_join_event === 'everyone' || !draft.can_join_event)
+                    {(draft.can_join_event === 'all' || !draft.can_join_event)
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -111,10 +111,10 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
 
             <div className="font-semibold mb-1 mt-4">{lang['Who can view events']}</div>
             <Button variant={'secondary'} className='w-full mb-3'
-                    onClick={() => setDraft({...draft, can_view_event: 'everyone'})}>
+                    onClick={() => setDraft({...draft, can_view_event: 'all'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>Everyone</div>
-                    {(draft.can_view_event === 'everyone' || !draft.can_view_event)
+                    {(draft.can_view_event === 'all' || !draft.can_view_event)
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }

@@ -221,7 +221,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                     }
                 </div>
             </div>
-            <div className="flex-row-item-center justify-around my-4">
+            <div className="flex-row-item-center justify-between my-4">
                 {isOwner &&
                     <Button variant={'destructive'} className="flex-1 sm:flex-grow-0 sm:min-w-36 mr-4"
                             onClick={handleFreezeGroup}>

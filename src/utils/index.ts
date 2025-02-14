@@ -402,15 +402,15 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
     const isIssuer = groupDetail.memberships.some(m => m.profile.handle === profile?.handle && m.role === 'issuer')
     const isOwner = owner?.profile.handle === profile?.handle
 
-    const canPublishEvent = (!groupDetail.can_publish_event || groupDetail.can_publish_event === 'everyone')
+    const canPublishEvent = (!groupDetail.can_publish_event || groupDetail.can_publish_event === 'all')
         || (groupDetail.can_publish_event === 'manager' && isManager)
         || (groupDetail.can_publish_event === 'member' && isMember)
 
-    const canJoinEvent = (!groupDetail.can_join_event || groupDetail.can_join_event === 'everyone')
+    const canJoinEvent = (!groupDetail.can_join_event || groupDetail.can_join_event === 'all')
         || (groupDetail.can_join_event === 'manager' && isManager)
         || (groupDetail.can_join_event === 'member' && isMember)
 
-    const canViewEvent = (!groupDetail.can_view_event || groupDetail.can_view_event === 'everyone')
+    const canViewEvent = (!groupDetail.can_view_event || groupDetail.can_view_event === 'all')
         || (groupDetail.can_view_event === 'manager' && isManager)
         || (groupDetail.can_view_event === 'member' && isMember)
 

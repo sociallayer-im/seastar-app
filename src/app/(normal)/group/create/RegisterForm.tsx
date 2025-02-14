@@ -37,7 +37,7 @@ export default function RegisterForm(props: { lang: Dictionary }) {
         showConfirmDialog({
             lang: props.lang,
             title: props.lang['Create a Group'],
-            content: `${props.lang['Do you want to create a group with this username ?']} 
+            content: `${props.lang['Do you want to create a group with this name ?']} 
                         <div style="text-align: center;margin-top: 12px"><b>${handle}</b></div>`,
             type: 'info',
             onConfig: async () => {
@@ -90,7 +90,7 @@ export default function RegisterForm(props: { lang: Dictionary }) {
                 className="my-4 w-full">
             {props.lang['Confirm']}
         </Button>
-        <div className="text-red-400 text-sm h-10">{error}</div>
-        <div className="text-red-400 text-sm h-10">{createError}</div>
+        {!!error && <div className="text-red-400 text-sm h-10">{error}</div>}
+        {!!createError && <div className="text-red-400 text-sm h-10">{createError}</div>}
     </>
 }

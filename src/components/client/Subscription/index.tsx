@@ -34,7 +34,7 @@ export default function Subscription({lang, profile}: { lang: Dictionary, profil
                     addDisplayedInvite(item.id)
                     openModal({
                         content: (close) => <DialogInviteDetail
-                            inviteDetail={invitesMsg.invites[0]}
+                            inviteDetail={item}
                             close={close!}
                             lang={lang}/>
                     })
