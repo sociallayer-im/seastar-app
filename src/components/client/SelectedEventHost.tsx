@@ -25,7 +25,7 @@ export default function SelectedEventHost({
     const handleSelectedHost = (host: Solar.ProfileSample | Solar.GroupSample) => {
         const eventRole: Solar.EventRole = {
             item_id : host.id,
-            nickname: host.nickname,
+            nickname: host.nickname || host.handle,
             image_url: host.image_url,
             role: 'group_host' as Solar.EventRoleType,
             item_type: 'Group',

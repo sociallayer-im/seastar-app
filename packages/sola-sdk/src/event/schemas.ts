@@ -47,6 +47,7 @@ export const EVENT_FRAGMENT = gql`
         geo_lat
         geo_lng
         formatted_address
+        display
     }`
 
 export const EVENT_ROLE_DETAIL_FRAGMENT = gql`
@@ -295,7 +296,6 @@ export const EVENT_DETAIL_FRAGMENT = gql`
         }
         location_data
         venue_id
-        display
         participants (where: {status: {_neq: "cancelled"}}) {
             ...ParticipantFragment
         }

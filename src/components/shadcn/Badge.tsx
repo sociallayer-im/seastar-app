@@ -22,6 +22,7 @@ const badgeVariants = cva(
                 pending: 'border-transparent bg-[#fff7e8] text-[#e7c54e]',
                 cancel: 'border-transparent bg-[#bdbdbd] text-[#fff]',
                 joining: 'border-transparent bg-[#feeeee] text-[#f26692]',
+                private: 'border-transparent bg-[#f8f2ff] text-[#c863ff]',
             },
         },
         defaultVariants: {

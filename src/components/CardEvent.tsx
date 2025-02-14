@@ -28,6 +28,7 @@ export default function CardEvent({event, className, id, style}: {
         <DynamicEventCardStarBtn eventId={event.id} starred={event.isStarred}/>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
+                {event.display === 'private' && <Badge variant='private' className="mr-1">Private</Badge>}
                 {status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
                 {status === 'cancel' && <Badge variant='cancel' className="mr-1">Canceled</Badge>}
 

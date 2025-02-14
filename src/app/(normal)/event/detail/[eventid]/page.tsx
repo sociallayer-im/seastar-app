@@ -233,6 +233,7 @@ export default async function EventDetail({params, searchParams}: {
                 </div>
 
                 <div className="flex-row-item-center my-3">
+                    {eventDetail.display === 'private' && <Badge variant='private' className="mr-1">Private</Badge>}
                     {eventDetail.status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
                     {eventDetail.status === 'cancel' && <Badge variant='cancel' className="mr-1">Canceled</Badge>}
                     {isEventClosed && <Badge variant='cancel' className="mr-1">Closed</Badge>}
@@ -243,6 +244,7 @@ export default async function EventDetail({params, searchParams}: {
 
 
                     {isEventCreator && <Badge variant='hosting' className="mr-1">Hosting</Badge>}
+                    {currProfileAttended && <Badge variant='joining' className="mr-1">Joining</Badge>}
                     {currProfileAttended && <Badge variant='joining' className="mr-1">Joining</Badge>}
                 </div>
 

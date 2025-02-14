@@ -22,6 +22,7 @@ export interface Event {
     geo_lat: number | null,
     geo_lng: number | null,
     formatted_address: string | null
+    display: string | null
 }
 
 export interface EventDetail extends Event {
