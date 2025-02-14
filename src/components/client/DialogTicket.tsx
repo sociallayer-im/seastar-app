@@ -57,6 +57,13 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     }
 
     useEffect(() => {
+        setPromoCode('')
+        setValidPromoCode(undefined)
+        setDiscountedPrice(null)
+        setPromoCodeError('')
+    }, [])
+
+    useEffect(() => {
         ;(async () => {
             if (!ticket.check_badge_class) {
                 setBadgeCollected(true)
@@ -149,6 +156,18 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 clientMode: CLIENT_MODE
             })
 
+            // zero price ticket, no need to redirect
+            if (res.ticketItem.status === 'succeeded') {
+                toast({
+                    description: lang['Purchase Successful'],
+                    variant: 'success'
+                })
+
+                setTimeout(() => {
+                    window.location.reload()
+                })
+            }
+
             if (redirect) {
                 window.location.href = res.url
             } else {
@@ -233,10 +252,12 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                     coupon: promoCode,
                     eventId: eventDetail.id,
                     authToken: authToken!,
-                    price: selectedMethod?.price!
+                    price: selectedMethod!.price!,
+                    methodId: selectedMethod!.id!
                 },
                 clientMode: CLIENT_MODE
             })
+
             console.log(coupon, price)
             setValidPromoCode(promoCode)
             setDiscountedPrice(price)
@@ -250,7 +271,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
     const priceDiff = useMemo(() => {
         if (discountedPrice === null || !selectedMethod || !selectedToken) return 0
-        return (selectedMethod.price - discountedPrice) / 10**selectedToken.decimals
+        return (selectedMethod.price - discountedPrice) / 10 ** selectedToken.decimals
     }, [discountedPrice, selectedMethod, selectedToken])
 
     return <div
@@ -412,13 +433,13 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                         <div className="flex-row-item-center mb-3 justify-between">
                             <div className="mr-4 text-gray-500">{lang['Discount']}</div>
                             <div>
-                              -{priceDiff} {selectedToken!.name}
+                                -{priceDiff} {selectedToken!.name}
                             </div>
                         </div>
                         <div className="flex-row-item-center mb-3 justify-between">
                             <div className="mr-4 text-gray-500">{lang['Total']}</div>
                             <div className="font-bold text-pink-500 text-xl">
-                                {discountedPrice! / 10**selectedToken!.decimals} {selectedToken!.name}
+                                {discountedPrice! / 10 ** selectedToken!.decimals} {selectedToken!.name}
                             </div>
                         </div>
                     </>
@@ -434,15 +455,17 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         }
 
         {selectedPaymentType?.protocol === 'daimo' && !!currProfile && !soldOut && !stopSelling &&
-            <div className="grid grid-cols-2 gap-2 mt-6">
-                <Button variant={'secondary'}
-                        disabled={!badgeCollected || checkingBadgeCollected || buying}
-                        onClick={handleCopyPaymentLink}
-                        className="text-sm">{lang['Copy Payment Link']}</Button>
+            <div className="flex flex-row mt-6">
+                {(!!validPromoCode && !!discountedPrice) || (!validPromoCode && !!selectedMethod?.price) &&
+                    <Button variant={'secondary'}
+                            disabled={!badgeCollected || checkingBadgeCollected || buying}
+                            onClick={handleCopyPaymentLink}
+                            className="text-sm flex-1 mr-3">{lang['Copy Payment Link']}</Button>
+                }
                 <Button variant={'special'}
                         disabled={!badgeCollected || checkingBadgeCollected}
                         onClick={() => handleDaimoPayment(true)}
-                        className="text-sm">{lang['Pay']}</Button>
+                        className="text-sm flex-1">{lang['Pay']}</Button>
             </div>
         }
 

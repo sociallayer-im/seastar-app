@@ -20,9 +20,8 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
 
     const handleScan = () => {
         scanQrcode(async (res) => {
-            const searchParams = new URLSearchParams(res)
-
-            const token = searchParams.get('code')
+            const url = new URL(res)
+            const token = url.searchParams.get('code')
 
             if (!token) {
                 toast({
@@ -50,6 +49,7 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
                         description: 'Swap success',
                         variant: 'success'
                     })
+                    setSuccess(true)
                     setTimeout(() => {
                         props.close?.()
                         window.location.href = `/profile/${user.handle}?tab=badges`
@@ -115,7 +115,7 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
             </div>
             <div className={styles['white']}>
                 <div className={styles['border']}>
-                    <QRcode size={[114, 114]} text={`${window.location.href}?code=${props.code}`}/>
+                    <QRcode size={[160, 160]} text={`${window.location.href}?code=${props.code}`}/>
                     <div className={styles['des']}>Please select a card to swap with me</div>
                 </div>
             </div>

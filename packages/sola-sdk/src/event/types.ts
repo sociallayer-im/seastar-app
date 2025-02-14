@@ -178,6 +178,7 @@ export interface TicketItem {
     selector_address: string | null,
     original_price: number | null,
     protocol: string | null,
+    created_at: string | null,
 }
 
 

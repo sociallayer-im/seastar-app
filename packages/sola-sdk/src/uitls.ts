@@ -22,7 +22,7 @@ export const checkAndGetProfileByHandlesOrAddresses = async (handlesOrAddresses:
 
 const NeedToFixFields = ['created_at', 'start_time', 'end_time', 'start_at', ''] as const
 type FieldsToFix = typeof NeedToFixFields[number]
-export type NeedToFixObject = Partial<Record<FieldsToFix, string>>
+export type NeedToFixObject = Partial<Record<FieldsToFix, string | null>>
 
 
 export function fixDate(target: NeedToFixObject):NeedToFixObject{

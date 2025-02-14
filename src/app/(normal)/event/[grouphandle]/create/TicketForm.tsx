@@ -30,7 +30,7 @@ import {isAvailablePaymentType} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
 export interface TicketFormProps {
-    state: {event: EventDraftType, setEvent: (event: EventDraftType) => void}
+    state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
     tracks: Track[]
     lang: Dictionary
     timezone: string,
@@ -51,7 +51,14 @@ export interface Checker {
     check: undefined | null | (() => boolean)
 }
 
-export default function TicketForm({state: {event, setEvent}, tracks, checker, lang, currProfile, timezone} : TicketFormProps) {
+export default function TicketForm({
+                                       state: {event, setEvent},
+                                       tracks,
+                                       checker,
+                                       lang,
+                                       currProfile,
+                                       timezone
+                                   }: TicketFormProps) {
     const [tickets, setTickets] = useState<TicketDraft[]>(event.tickets || [])
     const [ticketErrors, setTicketErrors] = useState<TicketErrMsg[]>([])
 
@@ -62,7 +69,7 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, l
 
         setEvent({...event, tickets: tickets})
     }, [tickets])
-    
+
     const handleAddTicket = () => {
         setTickets([...tickets, {...emptyTicket}])
     }
@@ -75,15 +82,15 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, l
                 allTicketValid = false
                 errors.title = 'Ticket name is required'
             }
-            
+
             if (t.quantity && t.quantity < 0) {
                 allTicketValid = false
                 errors.quantity = 'Quantity must be greater than 0'
             }
-            
+
             if (t.payment_methods && t.payment_methods.length) {
                 errors.payment_methods = t.payment_methods.map((p) => {
-                    const errMsg: {price?: string, receiver_address?: string} = {}
+                    const errMsg: { price?: string, receiver_address?: string } = {}
                     if (!p.price && p.price !== 0) {
                         allTicketValid = false
                         errMsg.price = 'Price is required'
@@ -104,15 +111,15 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, l
                     return errMsg
                 })
             }
-            
+
             return errors
         }))
-        
-        
+
+
         return allTicketValid
     }
 
-    if (checker){
+    if (checker) {
         checker.check = handleCheckTickets
     }
 
@@ -138,9 +145,9 @@ export default function TicketForm({state: {event, setEvent}, tracks, checker, l
                     }}
                 />
             })}
-        <Button variant={'secondary'} 
-            onClick={handleAddTicket}>
-            <i className="uil-plus-circle text-lg" />
+        <Button variant={'secondary'}
+                onClick={handleAddTicket}>
+            <i className="uil-plus-circle text-lg"/>
             {lang['Add a Ticket Type']}
         </Button>
     </div>
@@ -156,11 +163,22 @@ export interface TicketItemProps {
     tracks: Track[],
     currProfile: ProfileDetail,
     eventRoles: EventRole[],
-    itemChecker?: {check: () => boolean}
+    itemChecker?: { check: () => boolean }
     errors?: TicketErrMsg
 }
 
-function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProfile, lang, eventRoles, timezone}: TicketItemProps) {
+function TicketItem({
+                        index,
+                        ticket,
+                        onChange,
+                        tracks,
+                        onRemove,
+                        errors,
+                        currProfile,
+                        lang,
+                        eventRoles,
+                        timezone
+                    }: TicketItemProps) {
     const {selectBadgeClass} = useSelectBadgeClass()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -246,64 +264,68 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                 <div>{lang['Ticket']} {index}</div>
             </div>
             <i className="uil-times-circle text-2xl cursor-pointer"
-                onClick={handleRemoveTicket}
+               onClick={handleRemoveTicket}
             />
         </div>
         <div className="my-3">
             <div className="text-sm mb-1">{lang['Name of Tickets']} <span
                 className="text-red-500">*</span></div>
-            <Input type="text" 
-                className="w-full" 
-                value={ticketDraft.title}
-                onChange={e => setTicketDraft({...ticket, title: e.target.value})}
+            <Input type="text"
+                   className="w-full"
+                   value={ticketDraft.title}
+                   onChange={e => setTicketDraft({...ticket, title: e.target.value})}
             />
             {!!errors?.title && <div className="err-msg text-red-400 mt-2 text-xs">{errors?.title}</div>}
 
         </div>
         <div className="my-3">
             <div className="text-sm mb-1">{lang['Ticket description']}</div>
-            <Input type="text" 
-                className="w-full" 
-                value={ticketDraft.content || ''}
-                onChange={e => setTicketDraft({...ticket, content: e.target.value})}
+            <Input type="text"
+                   className="w-full"
+                   value={ticketDraft.content || ''}
+                   onChange={e => setTicketDraft({...ticket, content: e.target.value})}
             />
         </div>
-        <div className="my-3">
-            <div className="text-sm mb-1">{lang['Event Track']}</div>
-            <div className="flex-row flex flex-wrap items-center mb-4">
-                {tracks.map(t => {
-                    const color = getLabelColor(t.title)
-                    const themeStyle = ticket.tracks_allowed?.includes(t.id) ? {
-                        color: color,
-                        borderColor: color
-                    } : {borderColor: '#ededed'}
-                    return <Button
-                        onClick={() => {
-                            const tracks = ticket.tracks_allowed || []
-                            if (tracks.includes(t.id)) {
-                                setTicketDraft({...ticketDraft, tracks_allowed: tracks.filter(id => id !== t.id)})
-                            } else {
-                                setTicketDraft({...ticketDraft, tracks_allowed: [...tracks, t.id]})
-                            }
-                        }}
-                        variant="outline"
-                        className="mr-2"
-                        style={themeStyle}
-                        key={t.id}>
-                        <div className="text-xs font-normal">
-                            <div className="font-semibold">{t.title}</div>
-                            <div>{t.kind}</div>
-                        </div>
-                    </Button>
-                })}
+        {!!tracks.length &&
+            <div className="my-3">
+                <div className="text-sm mb-1">{lang['Event Track']}</div>
+                <div className="flex-row flex flex-wrap items-center mb-4">
+                    {tracks.map(t => {
+                        const color = getLabelColor(t.title)
+                        const themeStyle = ticket.tracks_allowed?.includes(t.id) ? {
+                            color: color,
+                            borderColor: color
+                        } : {borderColor: '#ededed'}
+                        return <Button
+                            onClick={() => {
+                                const tracks = ticket.tracks_allowed || []
+                                if (tracks.includes(t.id)) {
+                                    setTicketDraft({...ticketDraft, tracks_allowed: tracks.filter(id => id !== t.id)})
+                                } else {
+                                    setTicketDraft({...ticketDraft, tracks_allowed: [...tracks, t.id]})
+                                }
+                            }}
+                            variant="outline"
+                            className="mr-2"
+                            style={themeStyle}
+                            key={t.id}>
+                            <div className="text-xs font-normal">
+                                <div className="font-semibold">{t.title}</div>
+                                <div>{t.kind}</div>
+                            </div>
+                        </Button>
+                    })}
+                </div>
             </div>
-        </div>
+        }
         <div className="my-3">
             <div className="flex-row-item-center">
                 <div className="text-sm mr-6">{lang['Price']}</div>
                 <div className="flex-row-item-center text-sm font-semibold">
-                    <div className="flex-row-item-center cursor-pointer" 
-                        onClick={() => {setEnablePayment(false)}}>
+                    <div className="flex-row-item-center cursor-pointer"
+                         onClick={() => {
+                             setEnablePayment(false)
+                         }}>
                         <div>{lang['Free']}</div>
                         {
                             !enablePayment
@@ -312,7 +334,9 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                         }
                     </div>
                     <div className="flex-row-item-center ml-3 cursor-pointer"
-                        onClick={() => {setEnablePayment(true)}}>
+                         onClick={() => {
+                             setEnablePayment(true)
+                         }}>
                         <div>{lang['Payment']}</div>
                         {
                             enablePayment
@@ -323,7 +347,7 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                 </div>
             </div>
 
-            { enablePayment &&
+            {enablePayment &&
                 <PaymentMethodForm
                     errors={errors?.payment_methods}
                     lang={lang}
@@ -339,10 +363,10 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                 <div className="text-sm mr-6">{lang['Ticket amount']}</div>
                 <div className="flex-row-item-center text-sm font-semibold">
                     <div className="flex-row-item-center cursor-pointer"
-                        onClick={() => {
-                            setEnableQuantity(false)
-                            setTicketDraft({...ticketDraft, quantity: null})
-                        }}>
+                         onClick={() => {
+                             setEnableQuantity(false)
+                             setTicketDraft({...ticketDraft, quantity: null})
+                         }}>
                         <div>{lang['No limit']}</div>
                         {
                             !enableQuantity
@@ -351,9 +375,9 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                         }
                     </div>
                     <div className="flex-row-item-center ml-3 cursor-pointer"
-                        onClick={() => {
-                            setEnableQuantity(true)
-                        }}>
+                         onClick={() => {
+                             setEnableQuantity(true)
+                         }}>
                         <div>{lang['Limit']}</div>
                         {
                             enableQuantity
@@ -366,12 +390,12 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
             {
                 enableQuantity &&
                 <Input type="number"
-                    onWheel={e => {
-                        e.currentTarget.blur()
-                    }}
-                    onChange={e => setTicketDraft({...ticketDraft, quantity: parseInt(e.target.value)})}
-                    className="w-full"
-                    value={ticket.quantity || ''}/>
+                       onWheel={e => {
+                           e.currentTarget.blur()
+                       }}
+                       onChange={e => setTicketDraft({...ticketDraft, quantity: parseInt(e.target.value)})}
+                       className="w-full"
+                       value={ticket.quantity || ''}/>
             }
 
             {!!errors?.quantity && <div className="err-msg text-red-400 mt-2 text-xs">{errors?.quantity}</div>}
@@ -382,10 +406,10 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                 <div className="text-sm mr-6">{lang['Ticket sales end time']}</div>
                 <div className="flex-row-item-center text-sm font-semibold">
                     <div className="flex-row-item-center cursor-pointer"
-                        onClick={() => {
-                            setEnableEndTime(false)
-                            setTicketDraft({...ticketDraft, end_time: null})
-                        }}>
+                         onClick={() => {
+                             setEnableEndTime(false)
+                             setTicketDraft({...ticketDraft, end_time: null})
+                         }}>
                         <div>{lang['No limit']}</div>
                         {
                             !enableEndTime
@@ -393,11 +417,12 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                                 : <i className="uil-circle ml-2 text-2xl text-gray-500"/>
                         }
                     </div>
-                    <div className="flex-row-item-center ml-3 cursor-pointer"  
-                        onClick={() => {
-                            setEnableEndTime(true)
-                            const initDataTime = dayjs().hour(23).minute(59).toDate().toISOString()
-                            setTicketDraft({...ticketDraft, end_time:initDataTime})}}>
+                    <div className="flex-row-item-center ml-3 cursor-pointer"
+                         onClick={() => {
+                             setEnableEndTime(true)
+                             const initDataTime = dayjs().hour(23).minute(59).toDate().toISOString()
+                             setTicketDraft({...ticketDraft, end_time: initDataTime})
+                         }}>
                         <div>{lang['Limit']}</div>
                         {
                             enableEndTime
@@ -414,16 +439,16 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                         initDate={ticket.end_time
                             ? dayjs(new Date(ticket.end_time).getTime()).format('YYYY/MM/DD')
                             : dayjs().format('YYYY/MM/DD')}
-                        onChange={(dateStr)=> {
+                        onChange={(dateStr) => {
                             const value = dayjs.tz(`${dateStr} 23:59`, timezone).toDate().toISOString()
                             setTicketDraft({...ticketDraft, end_time: value})
                         }}>
                         <Input type="text"
-                            placeholder={'Set Date'}
-                            className="w-full"
-                            readOnly
-                            value={ticketDraft.end_time ? dayjs.tz(new Date(ticketDraft.end_time).getTime(), timezone).format('YYYY/MM/DD'): '' }
-                            startAdornment={<i className="uil-calender text-lg"/>}/>
+                               placeholder={'Set Date'}
+                               className="w-full"
+                               readOnly
+                               value={ticketDraft.end_time ? dayjs.tz(new Date(ticketDraft.end_time).getTime(), timezone).format('YYYY/MM/DD') : ''}
+                               startAdornment={<i className="uil-calender text-lg"/>}/>
                     </DatePicker>
 
                     <TimePicker
@@ -444,14 +469,15 @@ function TicketItem({index, ticket, onChange, tracks, onRemove, errors, currProf
                 {lang['People possessing the badge you select have the privilege to make payments at this price.']}
             </div>
             {!!badgeClass &&
-                <div className="mb-3 relative w-[114px] h-[114px] rounded-lg bg-[#ecf2ee] flex flex-col justify-center items-center">
+                <div
+                    className="mb-3 relative w-[114px] h-[114px] rounded-lg bg-[#ecf2ee] flex flex-col justify-center items-center">
                     <img className="w-[60px] h-[60px] rounded-full mb-2" src={badgeClass.image_url!} alt=""/>
                     <div className="text-xs w-[80%] mx-auto webkit-box-clamp-1 text-center">{badgeClass.title}</div>
                     <i onClick={() => {
                         setBadgeClass(null)
                         setTicketDraft({...ticketDraft, check_badge_class_id: null})
                     }}
-                    className="uil-times cursor-pointer opacity-50 hover:opacity-100 text-lg right-2 top-1 absolute" />
+                       className="uil-times cursor-pointer opacity-50 hover:opacity-100 text-lg right-2 top-1 absolute"/>
                 </div>
 
             }
@@ -467,8 +493,8 @@ export interface PaymentMethodForm {
     paymentMethods: PaymentMethod[]
     lang: Dictionary
     onChange: (paymentMethods: PaymentMethod[]) => void
-    checker?: {check: undefined | null | (() => boolean)}
-    errors?: {price?: string, receiver_address?: string}[]
+    checker?: { check: undefined | null | (() => boolean) }
+    errors?: { price?: string, receiver_address?: string }[]
 }
 
 
@@ -513,8 +539,8 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                 protocals.push(c)
             } else {
                 const hasUsedChain = props.paymentMethods
-                    .filter(payment_method => c.chain === payment_method.chain 
-                        && payment_method.protocol === c.protocol 
+                    .filter(payment_method => c.chain === payment_method.chain
+                        && payment_method.protocol === c.protocol
                         && payment_method._destroy !== '1')
                 if (!hasUsedChain.length) {
                     // 没有使用过的支付方式
@@ -538,9 +564,9 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
     const getAvailableTokenList = (currOpt: PaymentMethod) => {
         return Payments
             .find(c => currOpt.chain === c.chain && currOpt.protocol === c.protocol)!.tokenList
-            .filter(t => t.contract === currOpt.token_address 
+            .filter(t => t.contract === currOpt.token_address
                 || !paymentMethods.find(p => p.chain === currOpt.chain
-                    && p.protocol === currOpt.protocol 
+                    && p.protocol === currOpt.protocol
                     && p.token_address === t.contract))
     }
 
@@ -582,12 +608,11 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             token_name: token.name,
             token_address: token.contract,
             protocol: chain.protocol!,
-            price: 10**token.decimals
+            price: 10 ** token.decimals
         }])
     }
-    
+
     return <div>
-        <div>{ paymentMethods.length}</div>
         {
             paymentMethods
                 .filter(p => !p._destroy)
@@ -630,7 +655,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                             renderOption={(option) => {
                                                 return <div className="flex-row-item-center">
                                                     <img src={option.protocolIcon} className="w-5 h-5 rounded-full mr-2"
-                                                        alt=""/>
+                                                         alt=""/>
                                                     <div>{option.label}</div>
                                                 </div>
                                             }}
@@ -662,7 +687,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                             renderOption={(option) => {
                                                 return <div className="flex-row-item-center">
                                                     <img src={option.icon} className="w-5 h-5 rounded-full mr-2"
-                                                        alt=""/>
+                                                         alt=""/>
                                                     <div>{option.name}</div>
                                                 </div>
                                             }}
@@ -675,23 +700,24 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                                 className="cursor-pointer"
                                                 endAdornment={<i className="uil-angle-down text-lg"/>}
                                                 startAdornment={<img src={currToken!.icon}
-                                                className="w-5 h-5 rounded-full"
-                                                alt=""/>}
+                                                                     className="w-5 h-5 rounded-full"
+                                                                     alt=""/>}
                                             />
                                         </DropdownMenu>
                                     </div>
                                     <Input type="number"
-                                        value={!!p.price || Number(p.price) === 0 ? p.price / 10**currToken!.decimals : ''}
-                                        onWheel={e => e.currentTarget.blur()}
-                                        inputSize={'md'}
-                                        onChange={e => setPaymentMethods(paymentMethods.map((p, i) => i === index ? {
-                                            ...p,
-                                            price: parseInt(e.target.value) * 10**currToken!.decimals
-                                        } : p))}
-                                        className="ml-2"/>
+                                           value={!!p.price || Number(p.price) === 0 ? p.price / 10 ** currToken!.decimals : ''}
+                                           onWheel={e => e.currentTarget.blur()}
+                                           inputSize={'md'}
+                                           onChange={e => setPaymentMethods(paymentMethods.map((p, i) => i === index ? {
+                                               ...p,
+                                               price: parseInt(e.target.value) * 10 ** currToken!.decimals
+                                           } : p))}
+                                           className="ml-2"/>
                                 </div>
                                 {!!props.errors?.[index]?.price &&
-                                    <div className="err-msg text-red-400 mb-2 text-xs">{props.errors?.[index]?.price}</div>
+                                    <div
+                                        className="err-msg text-red-400 mb-2 text-xs">{props.errors?.[index]?.price}</div>
                                 }
 
                                 <div className="flex-row-item-center flex-1 text-sm">
@@ -706,8 +732,8 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                         inputSize={'md'}
                                         startAdornment={<img src={Payments
                                             .find(c => c.chain === p.chain && p.protocol === c.protocol)?.chainIcon}
-                                        className="w-5 h-5 rounded-full"
-                                        alt=""/>}
+                                                             className="w-5 h-5 rounded-full"
+                                                             alt=""/>}
                                         className="ml-2 flex-1"/>
                                 </div>
                                 {!!props.errors?.[index]?.receiver_address &&
@@ -717,12 +743,12 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                             </div>
                             {index === paymentMethods.length - 1 &&
                                 <i onClick={addNewPaymentMethod}
-                                    className="uil-plus-circle text-2xl text-green-500 cursor-pointer"/>
+                                   className="uil-plus-circle text-2xl text-green-500 cursor-pointer"/>
                             }
                             <i onClick={() => {
                                 handleRemovePaymentMethod(index)
                             }}
-                            className="uil-minus-circle text-2xl text-gray-500 cursor-pointer"/>
+                               className="uil-minus-circle text-2xl text-gray-500 cursor-pointer"/>
                         </div>
                     </div>
                 })

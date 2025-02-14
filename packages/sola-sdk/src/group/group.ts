@@ -86,7 +86,10 @@ export const updateGroup = async ({params: {group, authToken}, clientMode}:SolaS
         body: JSON.stringify({
             id: group.id,
             auth_token: authToken,
-            group
+            group: {
+                ...group,
+                event_tags: group.event_tags ? group.event_tags.join(',') : undefined,
+            }
         })
     })
 

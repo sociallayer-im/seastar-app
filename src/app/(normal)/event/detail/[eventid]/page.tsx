@@ -26,11 +26,12 @@ import ClickToCopy from '@/components/client/ClickToCopy'
 import removeMarkdown from 'markdown-to-text'
 import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
-import dynamic from 'next/dynamic'
+import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
 
-const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
+const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
+
 
 export async function generateMetadata({params, searchParams}: {
     params: EventDetailPageDataProps,
@@ -180,6 +181,15 @@ export default async function EventDetail({params, searchParams}: {
                                     </div>
                                 }
 
+                                {isTicketEvent && !currProfileAttended &&
+                                    <div className="flex-row-item-center mt-2">
+                                        <a  href={`/event/detail/${eventDetail.id}?tab=tickets`}
+                                            className={`${buttonVariants({variant: 'special'})} text-xs flex-1`}>
+                                            {lang['Join Event']}
+                                        </a>
+                                    </div>
+                                }
+
                                 {isEventOperator ?
                                     eventDetail.badge_class_id
                                         ? <div className="flex-row-item-center mt-2">
@@ -197,7 +207,7 @@ export default async function EventDetail({params, searchParams}: {
                                     : null
                                 }
 
-                                {!currProfileCheckedIn && currProfileAttended &&
+                                {!currProfileCheckedIn && currProfileAttended && !isEventOperator &&
                                     <div className="flex-row-item-center mt-2">
                                         <a className={`${buttonVariants({variant: 'primary'})} text-xs flex-1`}
                                            href={`/event/checkin/${eventDetail.id}`}>
@@ -233,19 +243,18 @@ export default async function EventDetail({params, searchParams}: {
                 </div>
 
                 <div className="flex-row-item-center my-3">
-                    {eventDetail.display === 'private' && <Badge variant='private' className="mr-1">Private</Badge>}
-                    {eventDetail.status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
-                    {eventDetail.status === 'cancel' && <Badge variant='cancel' className="mr-1">Canceled</Badge>}
+                    {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
+                    {eventDetail.display === 'private' && <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
+                    {eventDetail.status === 'pending' && <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
+                    {eventDetail.status === 'cancel' && <Badge variant='cancel' className="mr-1">{lang['Canceled']}</Badge>}
                     {isEventClosed && <Badge variant='cancel' className="mr-1">Closed</Badge>}
 
-                    {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">Ongoing</Badge>}
-                    {eventProcess === 'past' && <Badge variant='past' className="mr-1">Past</Badge>}
-                    {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">Upcoming</Badge>}
+                    {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">{lang['Ongoing']}</Badge>}
+                    {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">{lang['Upcoming']}</Badge>}
 
 
-                    {isEventCreator && <Badge variant='hosting' className="mr-1">Hosting</Badge>}
-                    {currProfileAttended && <Badge variant='joining' className="mr-1">Joining</Badge>}
-                    {currProfileAttended && <Badge variant='joining' className="mr-1">Joining</Badge>}
+                    {isEventCreator && <Badge variant='hosting' className="mr-1">{lang['Hosting']}</Badge>}
+                    {currProfileAttended && <Badge variant='joining' className="mr-1">{lang['Attended']}</Badge>}
                 </div>
 
                 <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">

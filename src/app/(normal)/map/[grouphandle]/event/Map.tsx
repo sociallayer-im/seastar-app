@@ -94,6 +94,7 @@ export default function EventMap(props: EventMapProps) {
                     return <CardEvent key={index}
                                       id={`event_${event.id}`}
                                       event={event}
+                                      lang={props.lang}
                                       className="mr-3 h-[230px] max-w-[630px] w-[calc(100vw-24px)] flex-shrink-0 flex-grow-0"/>
                 })
             }

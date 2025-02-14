@@ -19,6 +19,7 @@ function QrCode(props: QRcodeProps) {
         QRCode.toDataURL(
             props.text,
             {
+                errorCorrectionLevel: 'L',
                 width: props.size[0],
                 margin: 0,
                 color: {

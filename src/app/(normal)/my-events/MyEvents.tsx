@@ -45,6 +45,7 @@ export default async function MyEvents({events, tab}: { events: EventWithJoinSta
                 <div className="grid gap-4">
                     {events.map((event) => (
                         <CardEvent
+                            lang={lang}
                             key={event.id}
                             event={event}
                             className="hover:shadow-md"

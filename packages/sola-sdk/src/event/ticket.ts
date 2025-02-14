@@ -9,6 +9,7 @@ import {
     GET_TICKET_ITEM_BY_COUPON,
     GET_PURCHASED_TICKET_ITEMS_BY_PROFILE_HANDLE_AND_EVENT_ID
 } from './schemas'
+import {fixDate} from '../uitls'
 
 export interface TicketPayment {
     authToken: string,
@@ -156,7 +157,7 @@ export const getCouponUsageRecord = async ({params, clientMode}: SolaSdkFunction
         variables: {couponId: params.couponId}
     })
 
-    return response.data.ticket_items as CouponUsageRecord []
+    return response.data.ticket_items.map((t: CouponUsageRecord) =>fixDate(t)) as CouponUsageRecord[]
 }
 
 export interface CouponDraft {
@@ -204,7 +205,8 @@ export const validateCoupon = async ({params, clientMode}: SolaSdkFunctionParams
     coupon: string,
     eventId: number,
     authToken: string,
-    price: number
+    price: number,
+    methodId: number
 }>) => {
     const res1 = await fetch(`${getSdkConfig(clientMode).api}/ticket/check_coupon?code=${params.coupon}&event_id=${params.eventId}&auth_token=${params.authToken}`)
     if (!res1.ok) {
@@ -218,7 +220,7 @@ export const validateCoupon = async ({params, clientMode}: SolaSdkFunctionParams
         throw new Error('Invalid coupon')
     }
 
-    const res2 = await fetch(`${getSdkConfig(clientMode).api}/ticket/coupon_price?code=${params.coupon}&event_id=${params.eventId}&auth_token=${params.authToken}&amount=${params.price}`)
+    const res2 = await fetch(`${getSdkConfig(clientMode).api}/ticket/coupon_price?code=${params.coupon}&event_id=${params.eventId}&auth_token=${params.authToken}&amount=${params.price}&payment_method_id=${params.methodId}`)
     if (!res2.ok) {
         throw new Error('Failed to check coupon')
     }

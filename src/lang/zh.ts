@@ -303,7 +303,7 @@ export const zh: Dictionary = {
     'View events': '查看活动',
     'See all Communities': '查看所有社区',
     'Attended': '已参加',
-    'Hosting': '发起',
+    'Hosting': '我发起的',
     'Starred': '已关注',
     'Send a Badge':'发送徽章',
     'Setting':'设置',
@@ -446,4 +446,8 @@ export const zh: Dictionary = {
     'Registration for the event, upon completion, will be rewarded with POAP*1':'活动注册，完成后将获得 POAP*1',
     'Discount':'折扣',
     'Total':'总计',
+    'Pending':'待审核',
+    'Canceled':'已取消',
+    'Closed':'已关闭',
+    'Ongoing':'进行中',
 }

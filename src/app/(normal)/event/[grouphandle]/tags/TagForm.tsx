@@ -11,7 +11,7 @@ import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
 export default function TagForm({groupDetail, lang}: { groupDetail: GroupDetail, lang: Dictionary }) {
-    const [draft, setDraft] = useState(groupDetail.event_tags || [""])
+    const [draft, setDraft] = useState(groupDetail.event_tags?.length? groupDetail.event_tags : [""])
 
     const addTag = () => {
         setDraft([...draft, ""])

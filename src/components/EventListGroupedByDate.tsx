@@ -4,8 +4,10 @@ import {useMemo} from 'react'
 import CardEvent from '@/components/CardEvent'
 import {EventWithJoinStatus} from '@/utils'
 import NoData from '@/components/NoData'
+import {Dictionary} from '@/lang'
 
-export default function EventListGroupedByDate({group, events}: {
+export default function EventListGroupedByDate({group, events, lang}: {
+    lang: Dictionary,
     group?: GroupDetail,
     events: EventWithJoinStatus[]
 }) {
@@ -42,7 +44,7 @@ export default function EventListGroupedByDate({group, events}: {
                 <div className="text-lg font-semibold mb-2">{item.date}</div>
                 {
                     item.events.map((event, index) => {
-                        return <CardEvent className="mb-3" key={index} event={event}/>
+                        return <CardEvent className="mb-3" key={index} event={event} lang={lang}/>
                     })
                 }
             </div>

@@ -94,7 +94,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                 <div className="grid grid-cols-1 gap-3">
                     <div>{result.events.length} Results</div>
                     {result.events.map((event, index) => {
-                        return <CardEvent event={event} key={index}/>
+                        return <CardEvent event={event} key={index} lang={lang}/>
                     })}
                 </div>
             }

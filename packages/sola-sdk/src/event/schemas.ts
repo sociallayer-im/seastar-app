@@ -74,6 +74,7 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
     query GetProfileEventsByHandle($handle: String!) {
         attends: participants(where: {
             status: {_neq: "cancel"}, 
+            _or:[ {payment_status: {_is_null: true}},  {payment_status: {_eq: "succeeded"}}],
             profile: {handle: {_eq: $handle}}, 
             event: {status: {_neq: "cancel"}}
             }, order_by: {id: desc}) {
@@ -296,7 +297,7 @@ export const EVENT_DETAIL_FRAGMENT = gql`
         }
         location_data
         venue_id
-        participants (where: {status: {_neq: "cancelled"}}) {
+        participants (where: {status: {_neq: "cancelled"}, _or:[ {payment_status: {_is_null: true}},  {payment_status: {_eq: "succeeded"}}]}) {
             ...ParticipantFragment
         }
         track{

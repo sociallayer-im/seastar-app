@@ -45,7 +45,7 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
                                  groupDetail={groupDetail} isManager={isManager} lang={lang}/>
 
                 <div className="my-3">
-                    <EventListGroupedByDate events={events} group={groupDetail}/>
+                    <EventListGroupedByDate events={events} group={groupDetail} lang={lang}/>
                 </div>
             </div>
 

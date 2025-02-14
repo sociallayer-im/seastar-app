@@ -444,6 +444,10 @@ export const en = {
     'Registration for the event, upon completion, will be rewarded with POAP*1':'Registration for the event, upon completion, will be rewarded with POAP*1',
     'Discount':'Discount',
     'Total':'Total',
+    'Pending':'Pending',
+    'Canceled':'Canceled',
+    'Closed':'Closed',
+    'Ongoing':'Ongoing',
 }
 
 export type Dictionary = typeof en

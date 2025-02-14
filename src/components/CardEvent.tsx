@@ -3,11 +3,13 @@ import {checkProcess, EventWithJoinStatus, formatEventTime} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import {CSSProperties} from "react"
 import dynamic from 'next/dynamic'
+import {Dictionary} from '@/lang'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
-export default function CardEvent({event, className, id, style}: {
+export default function CardEvent({event, className, id, style, lang}: {
     event: EventWithJoinStatus,
+    lang: Dictionary,
     className?: string,
     id?: string,
     style?: CSSProperties
@@ -28,16 +30,16 @@ export default function CardEvent({event, className, id, style}: {
         <DynamicEventCardStarBtn eventId={event.id} starred={event.isStarred}/>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
-                {event.display === 'private' && <Badge variant='private' className="mr-1">Private</Badge>}
-                {status === 'pending' && <Badge variant='pending' className="mr-1">Pending</Badge>}
-                {status === 'cancel' && <Badge variant='cancel' className="mr-1">Canceled</Badge>}
+                {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
+                {event.display === 'private' && <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
+                {status === 'pending' && <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
+                {status === 'cancel' && <Badge variant='cancel' className="mr-1">{lang['Canceled']}</Badge>}
 
-                {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">Ongoing</Badge>}
-                {eventProcess === 'past' && <Badge variant='past' className="mr-1">Past</Badge>}
-                {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">Upcoming</Badge>}
+                {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">{lang['Ongoing']}</Badge>}
+                {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">{lang['Upcoming']}</Badge>}
 
-                {event.isCreator && <Badge variant='hosting' className="mr-1">Hosting</Badge>}
-                {event.isJoined && <Badge variant='joining' className="mr-1">Joining</Badge>}
+                {event.isCreator && <Badge variant='hosting' className="mr-1">{lang['Hosting']}</Badge>}
+                {event.isJoined && <Badge variant='joining' className="mr-1">{lang['Attended']}</Badge>}
 
             </div>
             <div className="my-1 flex-row-item-center font-semibold text-sm sm:text-base webkit-box-clamp-2">

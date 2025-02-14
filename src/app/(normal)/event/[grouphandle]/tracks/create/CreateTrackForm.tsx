@@ -31,6 +31,9 @@ export default function CreateTrackForm({trackDetail, lang, groupDetail}: TrackF
                 clientMode: CLIENT_MODE
             })
             toast({title: lang['Create successful'], variant: 'success'})
+            // setTimeout(() => {
+            //     window.location.href = `/event/${groupDetail.handle}/tracks`
+            // }, 2000)
         } catch (e: unknown) {
             console.error(e)
             toast({

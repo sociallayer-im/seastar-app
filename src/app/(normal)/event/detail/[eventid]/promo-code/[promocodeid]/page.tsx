@@ -4,9 +4,13 @@ import PromoCodeDetailData, {
     PromoCodeDetailPageProps
 } from '@/app/(normal)/event/detail/[eventid]/promo-code/[promocodeid]/data'
 import React from 'react'
-import DisplayDateTime from '@/components/client/DisplayDateTime'
 import NoData from '@/components/NoData'
 import CopyText from '@/components/client/CopyText'
+import Avatar from '@/components/Avatar'
+import {displayProfileName} from '@/utils'
+import dynamic from 'next/dynamic'
+
+const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTime'))
 
 export default async function PromoCodeDetail(props: PromoCodeDetailPageProps) {
     const {lang} = await selectLang()
@@ -52,8 +56,19 @@ export default async function PromoCodeDetail(props: PromoCodeDetailPageProps) {
                 </div>
             </div>
 
-            <div className="font-semibold mt-6">{lang['Usage Record']}</div>
+            <div className="font-semibold mt-8 mb-2">{lang['Usage Record']}</div>
             {!records.length && <NoData/>}
+            {
+                records.map((record, i) => {
+                    return <div className="flex-row-item-center border-b-[1px] py-3 justify-between">
+                        <div className="flex-row-item-center mr-2">
+                            <Avatar profile={record.profile} size={24} className="mr-2"/>
+                            {displayProfileName(record.profile)}
+                        </div>
+                        <DisplayDateTime dataTimeStr={record.created_at!}/>
+                    </div>
+                })
+            }
         </div>
     </div>
 }

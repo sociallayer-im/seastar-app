@@ -42,6 +42,8 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         redirect('/404')
     }
 
+    console.log('eventDetail', eventDetail.participants?.[0]?.payment_status)
+
     const groupDetail = await getGroupDetailByHandle({
         params: {groupHandle: eventDetail.group.handle},
         clientMode: CLIENT_MODE

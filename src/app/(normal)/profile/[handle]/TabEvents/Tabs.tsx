@@ -5,16 +5,18 @@ import {Button} from "@/components/shadcn/Button"
 import CardEvent from "@/components/CardEvent"
 import NoData from "@/components/NoData"
 import {EventWithJoinStatus} from '@/utils'
+import {Dictionary} from '@/lang'
 
 
 export interface EventTabProps {
+    lang: Dictionary,
     attends: EventWithJoinStatus[]
     hosting: EventWithJoinStatus[]
     stared: EventWithJoinStatus[]
     labels?: {attended?: string, created?: string, star?: string}
 }
 
-export default function Tabs({attends, hosting, stared, labels}: EventTabProps) {
+export default function Tabs({attends, hosting, stared, labels, lang}: EventTabProps) {
     const [tab, setTab] = useState<'attended' | 'created' | 'star'>('attended')
     return <div className="py-4">
         <div className="flex flex-row-item-center">
@@ -43,7 +45,7 @@ export default function Tabs({attends, hosting, stared, labels}: EventTabProps) 
             <div className="grid grid-cols-1 gap-3 py-4">
                 {
                     attends.map((event, i) => {
-                        return <CardEvent key={i} event={event} />
+                        return <CardEvent key={i} event={event} lang={lang} />
                     })
                 }
             </div>
@@ -53,7 +55,7 @@ export default function Tabs({attends, hosting, stared, labels}: EventTabProps) 
             <div className="grid grid-cols-1 gap-3 py-4">
                 {
                     hosting.map((event, i) => {
-                        return <CardEvent key={i} event={event} />
+                        return <CardEvent key={i} event={event} lang={lang} />
                     })
                 }
             </div>
@@ -63,7 +65,7 @@ export default function Tabs({attends, hosting, stared, labels}: EventTabProps) 
             <div className="grid grid-cols-1 gap-3 py-4">
                 {
                     stared.map((event, i) => {
-                        return <CardEvent key={i} event={event} />
+                        return <CardEvent key={i} event={event} lang={lang} />
                     })
                 }
             </div>

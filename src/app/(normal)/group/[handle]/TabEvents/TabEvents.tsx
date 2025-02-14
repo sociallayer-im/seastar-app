@@ -4,6 +4,7 @@ import CardEvent from "@/components/CardEvent"
 import {selectLang} from "@/app/actions"
 import {buttonVariants} from "@/components/shadcn/Button"
 import {Profile} from '@sola/sdk'
+import {Dictionary} from '@/lang'
 
 export default async function GroupEvents({handle, currProfile, canPublishEvent}: {
     handle: string,
@@ -33,7 +34,7 @@ export default async function GroupEvents({handle, currProfile, canPublishEvent}
 
         <div className="grid grid-cols-1 gap-3 pt-4">
             {events.map((event, i) => {
-                return <CardEvent key={i} event={event}/>
+                return <CardEvent key={i} event={event} lang={lang}/>
             })}
 
             {!events.length && <NoData/>}
