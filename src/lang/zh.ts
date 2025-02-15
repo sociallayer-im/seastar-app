@@ -450,4 +450,9 @@ export const zh: Dictionary = {
     'Canceled':'已取消',
     'Closed':'已关闭',
     'Ongoing':'进行中',
+    'Publish':'发布',
+    'Approve Event':'批准活动',
+    'Are you sure to approve this event ?':'您确定要批准此活动吗？',
+    'Reject Event':'拒绝活动',
+    'Are you sure you want to reject this event?':'您确定要拒绝此活动吗？',
 }

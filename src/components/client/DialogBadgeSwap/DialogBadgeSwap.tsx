@@ -115,8 +115,8 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
             </div>
             <div className={styles['white']}>
                 <div className={styles['border']}>
-                    <QRcode size={[160, 160]} text={`${window.location.href}?code=${props.code}`}/>
-                    <div className={styles['des']}>Please select a card to swap with me</div>
+                    <QRcode size={[180, 180]} text={`${window.location.href}?code=${props.code}`}/>
+                    <div className={styles['des']}>Select badge to swap</div>
                 </div>
             </div>
         </div>

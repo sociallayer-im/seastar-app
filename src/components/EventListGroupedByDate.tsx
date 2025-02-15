@@ -11,6 +11,8 @@ export default function EventListGroupedByDate({group, events, lang}: {
     group?: GroupDetail,
     events: EventWithJoinStatus[]
 }) {
+
+    const pinnedEvents = events.filter(e => e.pinned)
     const listGroupedByDate = useMemo(() => {
         let res: {
             date: string,
@@ -37,6 +39,15 @@ export default function EventListGroupedByDate({group, events, lang}: {
 
     return <div className="grid grid-cols-1 gap-3">
         {!listGroupedByDate.length && <NoData/>}
+        {!!pinnedEvents.length && <div className="relative">
+            {
+                pinnedEvents.map((event, index) => {
+                    return <CardEvent className="mb-3" key={index} event={event} lang={lang} highlight={true}/>
+                })
+            }
+        </div>
+
+        }
         {listGroupedByDate.map((item, index) => {
             return <div className="pl-4 mb-5 relative" key={index}>
                 <i className="block w-4 h-4 border-4 z-10 absolute rounded-full left-0 top-1.5 bg-background translate-x-[-7px]"/>

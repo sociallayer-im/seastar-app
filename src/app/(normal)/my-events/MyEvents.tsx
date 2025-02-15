@@ -2,6 +2,7 @@ import {buttonVariants} from "@/components/shadcn/Button"
 import CardEvent from "@/components/CardEvent"
 import {selectLang} from "@/app/actions"
 import {EventWithJoinStatus} from '@/utils'
+import NoData from '@/components/NoData'
 
 export default async function MyEvents({events, tab}: { events: EventWithJoinStatus[], tab: string }) {
     const {lang} = await selectLang()
@@ -43,12 +44,14 @@ export default async function MyEvents({events, tab}: { events: EventWithJoinSta
                 </div>
 
                 <div className="grid gap-4">
+                    {!events.length && <NoData />}
                     {events.map((event) => (
                         <CardEvent
                             lang={lang}
                             key={event.id}
                             event={event}
                             className="hover:shadow-md"
+                            additionalElement={<div>123</div>}
                         />
                     ))}
                 </div>

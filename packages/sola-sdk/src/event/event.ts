@@ -683,4 +683,21 @@ export const unstarEvent = async ({params: {eventId, authToken}, clientMode}: So
     }
 }
 
+export const approveEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{eventId: number, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/approve_event`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: eventId,
+            auth_token: authToken
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to approve event')
+    }
+}
+
 

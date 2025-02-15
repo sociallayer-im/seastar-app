@@ -448,6 +448,11 @@ export const en = {
     'Canceled':'Canceled',
     'Closed':'Closed',
     'Ongoing':'Ongoing',
+    'Publish':'Publish',
+    'Approve Event':'Approve Event',
+    'Are you sure to approve this event ?':'Are you sure to approve this event ?',
+    'Reject Event':'Reject Event',
+    'Are you sure you want to reject this event?':'Are you sure you want to reject this event?',
 }
 
 export type Dictionary = typeof en

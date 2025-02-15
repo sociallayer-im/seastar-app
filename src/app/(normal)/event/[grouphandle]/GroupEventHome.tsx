@@ -27,8 +27,7 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
     const {lang, type} = await selectLang()
 
     return <div style={{background: '#fff url(/images/event_home_bg.png) top center repeat-x'}}>
-        <div className="page-width min-h-[100svh] !pt-3 !sm:pt-6 flex-col flex md:flex-row">
-
+        <div className="page-width min-h-[100svh] sm:pt-8 pt-3 flex-col flex md:flex-row">
             <div className="flex-1 md:max-w-[648px] order-2 md:order-1">
                 {groupDetail.map_enabled && !!mapMarkers.length && <div className="w-full h-[260px] mb-6 relative">
                     <GoogleMap markers={mapMarkers} center={mapMarkers[0].position} langType={type}/>

@@ -1,17 +1,19 @@
 import {getLabelColor} from "@/utils/label_color"
 import {checkProcess, EventWithJoinStatus, formatEventTime} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
-import {CSSProperties} from "react"
+import {CSSProperties, ReactElement} from "react"
 import dynamic from 'next/dynamic'
 import {Dictionary} from '@/lang'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
-export default function CardEvent({event, className, id, style, lang}: {
+export default function CardEvent({event, className, id, style, lang, highlight, additionalElement}: {
     event: EventWithJoinStatus,
     lang: Dictionary,
     className?: string,
+    highlight?: boolean,
     id?: string,
+    additionalElement?: ReactElement
     style?: CSSProperties
 }) {
     const eventProcess = checkProcess(event.start_time, event.end_time)
@@ -23,10 +25,15 @@ export default function CardEvent({event, className, id, style, lang}: {
 
     const startTime = formatEventTime(event.start_time, event.timezone)
 
+    const customStyle = {
+        ...style,
+        background: highlight ? '#fff7e9' : '#fff',
+    }
+
     return <a href={`/event/detail/${event.id}`}
               id={id}
-              style={style}
-              className={`relative shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className}`}>
+              style={customStyle}
+              className={`relative shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
         <DynamicEventCardStarBtn eventId={event.id} starred={event.isStarred}/>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
@@ -77,6 +84,10 @@ export default function CardEvent({event, className, id, style, lang}: {
                         className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis"> {event.meeting_url}</span>
                 </div>
             }
+            {!!additionalElement &&
+                <div className="flex-row-item-center text-xs sm:my-1">
+                {additionalElement}
+            </div>}
         </div>
         {
             !!event.cover_url ?
