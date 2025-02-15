@@ -40,6 +40,10 @@ export const getCurrProfile = async function () {
         clientMode: CLIENT_MODE
     })
 
+    if (!profile?.handle) {
+        return null
+    }
+
     Cache.set(authToken, profile, 2)
 
     return  profile
