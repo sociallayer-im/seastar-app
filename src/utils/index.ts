@@ -18,7 +18,7 @@ import {
 import Dayjs from '@/libs/dayjs'
 import domtoimage from 'dom-to-image'
 import {Dictionary} from '@/lang'
-import {AVAILABLE_PAYMENT_TYPES} from '@/app/config'
+import {AVAILABLE_PAYMENT_TYPES, SOLA_APP_SUBDOMAINS} from '@/app/config'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -354,7 +354,7 @@ export function getGroupSubdomain(url?: string | null) {
     if (!url) return null
     try {
         const parts = url.split('.')
-        if (parts.length > 2 && !['app', 'www', 'seastar-dev', 'auth', 'beta'].includes(parts[0])) {
+        if (parts.length > 2 && !SOLA_APP_SUBDOMAINS.includes(parts[0])) {
             return parts[0]
         }
         return null
