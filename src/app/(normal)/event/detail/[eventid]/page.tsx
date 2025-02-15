@@ -94,7 +94,7 @@ export default async function EventDetail({params, searchParams}: {
             </a>
 
             <div className="flex-row-item-center">
-                {!!eventDetail.tickets?.length &&
+                {!!eventDetail.tickets?.length && isEventOperator &&
                     <a href={`/event/detail/${eventDetail.id}/promo-code`}
                        className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
                         <i className="uil-ticket text-lg"/>
@@ -146,7 +146,6 @@ export default async function EventDetail({params, searchParams}: {
                             </div>
                         </div>
                 }
-
 
                 {canAccess &&
                     <>

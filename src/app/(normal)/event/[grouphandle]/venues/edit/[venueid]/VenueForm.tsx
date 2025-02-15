@@ -239,7 +239,7 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
                         variant={'secondary'} className="w-full mb-3">
                     <div className="flex-row-item-center justify-between w-full">
                         <div className="font-normal">Everyone</div>
-                        {(draft.visibility === 'all' || !draft.visibility)
+                        {(draft.visibility === 'all' || draft.visibility === 'everyone' || !draft.visibility)
                             ? <i className="uil-check-circle text-green-400 text-2xl"/>
                             : <i className="uil-circle text-gray-300 text-2xl"/>
                         }

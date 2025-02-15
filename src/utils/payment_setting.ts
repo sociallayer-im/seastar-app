@@ -604,7 +604,7 @@ export const Payments: PaymentsType[] = [
         id: 'daimo',
         protocol: null,
         chainId: 8453,
-        protocolIcon: 'images/payment_icon/daimo.jpg',
+        protocolIcon: '/images/payment_icon/daimo.jpg',
         chainIcon: '/images/payment_icon/op.png',
         payHub: '',
         tokenList: [
@@ -613,6 +613,13 @@ export const Payments: PaymentsType[] = [
                 id: 'usdc',
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
                 icon: '/images/payment_icon/usdc_32.webp',
+                decimals: 6
+            },
+            {
+                name: 'USDT',
+                id: 'usdt',
+                contract: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
+                icon: '/images/payment_icon/tether_32.webp',
                 decimals: 6
             }
         ]

@@ -66,26 +66,26 @@ export default function CardEvent({event, className, id, style, lang, highlight,
             <div className="flex-row-item-center text-xs sm:text-sm sm:my-1">
                 host by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}
             </div>
-            <div className="h-6 flex-row-item-center text-xs sm:text-sm sm:my-1">
-                <i className="uil-calendar-alt mr-1 sm:text-lg text-sm"/>
+            <div className="h-6 flex-row-item-center text-xs sm:text-sm">
+                <i className="uil-calendar-alt mr-1 text-sm"/>
                 {startTime}
             </div>
             {!!event.location &&
-                <div className="h-6 flex-row-item-center text-xs sm:text-sm sm:my-1">
-                    <i className="uil-location-point mr-1 sm:text-lg text-sm"/>
+                <div className="h-6 flex-row-item-center text-xs sm:text-sm">
+                    <i className="uil-location-point mr-1 text-sm"/>
                     <span
                         className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{event.location}</span>
                 </div>
             }
             {!!event.meeting_url &&
-                <div className="h-6 flex-row-item-center text-xs sm:text-sm sm:my-1">
-                    <i className="uil-link mr-1 sm:text-lg text-sm"/>
+                <div className="h-6 flex-row-item-center text-xs sm:text-sm">
+                    <i className="uil-link mr-1 text-sm"/>
                     <span
                         className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis"> {event.meeting_url}</span>
                 </div>
             }
             {!!additionalElement &&
-                <div className="flex-row-item-center text-xs sm:my-1">
+                <div className="flex-row-item-center text-xs">
                 {additionalElement}
             </div>}
         </div>
