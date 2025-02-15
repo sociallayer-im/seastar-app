@@ -57,7 +57,7 @@ export interface GroupWithOwner extends Group {
 export interface Venue {
     id: number,
     title: string,
-    visibility: null | 'all' | 'manager' | 'member',
+    visibility: null | 'all' | 'manager' | 'member' | 'everyone',
 }
 
 export interface VenueDetail extends Venue {
