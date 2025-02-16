@@ -99,9 +99,8 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                     </a>
                 }
             </div>
-            <a href={`${referer}event/detail/${event.id}`}
+            <a href={`/event/detail/${event.id}`}
                 className={`${buttonVariants({variant: 'normal'})}  font-semibold`}
-                target="_blank"
                 rel="nofollow">View Detail</a>
         </div>
     </div>

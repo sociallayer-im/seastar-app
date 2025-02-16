@@ -129,7 +129,7 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
             lang: props.lang,
             title: props.lang['Cancel Event'],
             type: 'danger',
-            content: 'Are you sure you want to cancel these events?',
+            content: props.lang['Are you sure you want to cancel these events?'],
             onConfig: async () => {
                 const authToken = getAuth()
                 const loading = showLoading()

@@ -202,7 +202,7 @@ export async function IframeSchedulePageData({
         || filters.skipMultiDay
 
 
-    const eventHomeUrl = `${cookies.get('referer')?.value || process.env.NEXT_PUBLIC_APP_URL || ''}/event/${data.group.handle || data.group.username}`
+    const eventHomeUrl = `/event/${data.group.handle || data.group.username}`
 
     return {
         ...data,

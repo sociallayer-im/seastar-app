@@ -455,6 +455,7 @@ export const en = {
     'Are you sure you want to reject this event?':'Are you sure you want to reject this event?',
     'Seating Arrangement Style':'Seating Arrangement Style',
     'AV Needed':'AV needed',
+    'Are you sure you want to cancel these events?':'Are you sure you want to cancel these events?',
 }
 
 export type Dictionary = typeof en

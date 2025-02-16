@@ -457,4 +457,5 @@ export const zh: Dictionary = {
     'Are you sure you want to reject this event?':'您确定要拒绝此活动吗？',
     'Seating Arrangement Style':'座位排列风格',
     'AV Needed':'AV 需求',
+    'Are you sure you want to cancel these events?':'您确定要取消这些活动吗？',
 }
