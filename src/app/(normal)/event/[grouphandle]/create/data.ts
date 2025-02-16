@@ -64,6 +64,7 @@ export const emptyEvent: EventDraftType = {
     badge_class_id: null,
     tickets: [],
     recurring_id: null,
+    requirement_tags: [],
 }
 
 export const emptyPaymentMethod: PaymentMethod = {

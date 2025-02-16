@@ -453,6 +453,8 @@ export const en = {
     'Are you sure to approve this event ?':'Are you sure to approve this event ?',
     'Reject Event':'Reject Event',
     'Are you sure you want to reject this event?':'Are you sure you want to reject this event?',
+    'Seating Arrangement Style':'Seating Arrangement Style',
+    'AV Needed':'AV needed',
 }
 
 export type Dictionary = typeof en

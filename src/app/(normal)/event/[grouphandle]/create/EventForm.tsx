@@ -22,6 +22,7 @@ import {getOccupiedTimeEvent, Event, EventDraftType} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
 import dayjs from '@/libs/dayjs'
+import {AVNeeds, isEdgeCityGroup, SeatingStyle} from '@/app/configForSpecifyGroup'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 const EventDateTimeInput = dynamic(() => import('@/components/client/EventDateTimeInput'), {ssr: false})
@@ -141,6 +142,14 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
         onCancel?.(draft, repeatForm)
     }
 
+    const updateRequirementTags = (tag: string) => {
+        if (draft.requirement_tags?.includes(tag)) {
+            setDraft({...draft, requirement_tags: draft.requirement_tags.filter(t => t !== tag)})
+        } else {
+            setDraft({...draft, requirement_tags: [...(draft.requirement_tags || []), tag]})
+        }
+    }
+
     return <div className="min-h-[100svh] w-full">
         <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">
             <div
@@ -253,6 +262,39 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                             venues={data.venues}
                             state={{event: draft, setEvent: setDraft}}/>
                     </div>
+
+                    {!!draft.venue_id && isEdgeCityGroup(draft.group_id) &&
+                        <>
+                            <div className="mb-8">
+                                <div className="font-semibold mb-1">{lang['Seating Arrangement Style']}</div>
+                                <div className="flex-row-item-center">
+                                    {SeatingStyle.map((s, i) => {
+                                        return <Button
+                                            size={'sm'}
+                                            onClick={() => updateRequirementTags(s)}
+                                            className="text-sm mr-1"
+                                            variant={draft.requirement_tags?.includes(s) ? 'normal' : 'outline'}
+                                            key={i}>{s}</Button>
+                                    })
+                                    }
+                                </div>
+                            </div>
+                            <div className="mb-8">
+                                <div className="font-semibold mb-1">{lang['AV Needed']}</div>
+                                <div className="flex-row-item-center">
+                                    {AVNeeds.map((a, i) => {
+                                        return <Button
+                                            size={'sm'}
+                                            onClick={() => updateRequirementTags(a)}
+                                            className="text-sm mr-1"
+                                            variant={draft.requirement_tags?.includes(a) ? 'normal' : 'outline'}
+                                            key={i}>{a}</Button>
+                                    })
+                                    }
+                                </div>
+                            </div>
+                        </>
+                    }
 
                     <div className="mb-8">
                         <div className="font-semibold mb-1">{lang['When will it happen']}</div>

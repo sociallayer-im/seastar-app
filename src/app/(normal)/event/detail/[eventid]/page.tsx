@@ -455,25 +455,25 @@ export default async function EventDetail({params, searchParams}: {
 
                 {!tab || tab === "content" &&
                     <div>
-                        {!!seatingStyle?.length && isEventOperator &&
-                            <div className="my-3 text-sm">
+                        {!!seatingStyle?.length && isEventOperator && isEventOperator &&
+                            <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
                                 <div className="font-semibold">
-                                    Seating arrangement style
+                                    {lang['Seating Arrangement Style']}
                                 </div>
                                 <div>{seatingStyle.join(', ')}</div>
                             </div>
                         }
-                        {!!avNeeds?.length && isEventOperator &&
-                            <div className="my-3 text-sm">
+                        {!!avNeeds?.length && isEventOperator && isEventOperator &&
+                            <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
                                 <div className="font-semibold">
-                                    AV needed
+                                    {lang['AV Needed']}
                                 </div>
                                 <div>{avNeeds.join(', ')}</div>
                             </div>
                         }
 
                         {!eventDetail.content && !eventDetail.notes && <NoData/>}
-                        <div className="editor-wrapper display py-3">
+                        <div className="editor-wrapper display my-3">
                             <RichTextDisplayer markdownStr={eventDetail.content || ''}/>
                         </div>
 
