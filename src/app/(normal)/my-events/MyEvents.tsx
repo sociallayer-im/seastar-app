@@ -51,7 +51,6 @@ export default async function MyEvents({events, tab}: { events: EventWithJoinSta
                             key={event.id}
                             event={event}
                             className="hover:shadow-md"
-                            additionalElement={<div>123</div>}
                         />
                     ))}
                 </div>

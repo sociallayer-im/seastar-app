@@ -137,7 +137,7 @@ export default function EventParticipantList({
                 eventDetail.participants?.map(participant => {
                     return <div key={participant.id}
                                 className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
-                        <div className="flex-row-item-center">
+                        <a className="flex-row-item-center" href={`/profile/${participant.profile.handle}`}>
                             <Avatar profile={participant.profile} className="mr-2" size={32}/>
                             <div className="text-xs">
                                 <div>{participant.profile.nickname || participant.profile.handle}</div>
@@ -148,7 +148,7 @@ export default function EventParticipantList({
                                         className="text-xs text-gray-400 line-clamp-1 max-w-24">{participant.ticket.title}</div>
                                 }
                             </div>
-                        </div>
+                        </a>
 
                         <div className="flex-row-item-center">
                             <div className="flex-col sm:flex-row items-end flex">

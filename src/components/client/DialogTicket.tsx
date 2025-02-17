@@ -278,7 +278,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         className="bg-background sm:p-4 p-3 rounded-lg shadow max-h-[100svh] overflow-y-auto w-[96vw] sm:w-[400px]">
         <div className="flex-row-item-center justify-between mb-6">
             <div className="font-semibold text-xl">{lang['Ticket Detail']}</div>
-            <i className="uil-times-circle text-2xl text-gray-500 cursor-pointer" onClick={close}/>
+            <i className="uil-times-circle cursor-pointer text-xl text-gray-400" onClick={close}/>
         </div>
 
         <div className="flex-row-item-center !items-start">

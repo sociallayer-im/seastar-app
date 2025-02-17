@@ -75,7 +75,7 @@ export default function DialogInviteDetail({inviteDetail, lang, close}: DialogIn
         <div className="max-h-[80svh] overflow-auto">
             <div className="font-semibold flex-row-item-center justify-between">
                 <div> {lang['Invite Detail']}</div>
-                <i className="uil-times-circle cursor-pointer text-xl"
+                <i className="uil-times-circle cursor-pointer text-xl text-gray-400"
                    onClick={close}/>
             </div>
 

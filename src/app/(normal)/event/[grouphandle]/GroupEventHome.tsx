@@ -128,7 +128,9 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
                                           key={index}>
                                     <Avatar size={32} profile={member.profile} className="mr-2"/>
                                     <span className="text-sm mr-2">{displayProfileName(member.profile)}</span>
-                                    <Badge variant="past">{member.role}</Badge>
+                                    {member.role !== 'member' &&  <Badge variant="past" className="capitalize">
+                                        {member.role}
+                                    </Badge>}
                                 </a>
                             })
                         }

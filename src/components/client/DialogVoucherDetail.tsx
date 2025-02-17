@@ -56,6 +56,8 @@ export default function DialogVoucherDetail({
             && !currProfileHasAccepted
     }
 
+    let canSendAgain = voucherDetail.strategy !== 'remember'
+
     const handleAccept = async () => {
         const loading = showLoading()
         try {
@@ -116,9 +118,9 @@ export default function DialogVoucherDetail({
     return <div className="max-w-[90vw] w-[440px] bg-background rounded-lg shadow p-3">
         <div className="max-h-[80svh] overflow-auto">
             <div className="font-semibold flex-row-item-center justify-between">
-                <div> {lang['Voucher Detail']}</div>
+                <div> {lang['Badge Detail']}</div>
                 {!!close
-                    ? <i className="uil-times-circle cursor-pointer text-xl"
+                    ? <i className="uil-times-circle cursor-pointer text-xl text-gray-400"
                          onClick={close}/>
                     : <div/>
                 }
@@ -131,6 +133,15 @@ export default function DialogVoucherDetail({
 
             <div className="font-semibold text-center my-3">
                 {voucherDetail.badge_class.title}
+            </div>
+
+            <div className="text-center">
+                <a href={`/profile/${voucherDetail.sender.handle}`}
+                   className="!inline-flex whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-6">
+                    <div className="font-semibold">{lang['Creator']}</div>
+                    <Avatar profile={voucherDetail.sender} size={24} className="mx-2"/>
+                    <div>{displayProfileName(voucherDetail.sender)}</div>
+                </a>
             </div>
 
             <div className="my-3 p-3 rounded-lg border border-white text-sm"
@@ -169,7 +180,7 @@ export default function DialogVoucherDetail({
                 </div>
 
                 <div className="font-semibold mb-1">
-                    {lang['Time']}
+                    {lang['Issuance Time']}
                 </div>
                 <div className="mb-3 capitalize">
                     <DynamicDisplayDateTime dataTimeStr={voucherDetail.created_at}/>
@@ -193,7 +204,7 @@ export default function DialogVoucherDetail({
             <div className="text-red-500 text-sm my-3">{error}</div>
 
             <div className="flex-row-item-center gap-2">
-                {canSandAgain &&
+                {canSandAgain && canSendAgain &&
                     <a href={`/voucher/${voucherDetail.id}/share`}
                        className={`${buttonVariants({variant: "secondary"})} flex-1`}>
                         {lang['Sand Again']}

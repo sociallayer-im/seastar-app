@@ -117,25 +117,25 @@ export default async function GroupPage(props: GroupDataProps) {
         <div className="page-width pl-0 pr-0 pb-12 pt-0">
             <div className="flex flex-col items-start max-w-[640px]">
                 <div className="tab-titles w-full flex-row-item-center overflow-auto">
-                    <a className={`${buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})} flex-1`}
+                    <a className={`${buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})} flex-1 mr-3`}
                        href={`/group/${group.handle}?tab=events`}>
                         <span className="font-normal">{lang['Events']}</span>
                     </a>
-                    <a className={`${buttonVariants({variant: tab === 'badges' ? 'normal' : 'ghost'})} flex-1`}
+                    <a className={`${buttonVariants({variant: tab === 'badges' ? 'normal' : 'ghost'})} flex-1 mr-3`}
                        href={`/group/${group.handle}?tab=badges`}>
                         <span className="font-normal"> {lang['Badges']}</span>
                     </a>
                     {(currUserIsManager || currUserIsIssuer) &&
-                        <a className={`${buttonVariants({variant: tab === 'sending' ? 'normal' : 'ghost'})} flex-1`}
+                        <a className={`${buttonVariants({variant: tab === 'sending' ? 'normal' : 'ghost'})} flex-1 mr-3`}
                            href={`/group/${group.handle}?tab=sending`}>
                             <span className="font-normal">{lang['Sending']}</span>
                         </a>
                     }
-                    <a className={`${buttonVariants({variant: tab === 'commend' ? 'normal' : 'ghost'})} flex-1`}
+                    <a className={`${buttonVariants({variant: tab === 'commend' ? 'normal' : 'ghost'})} flex-1 mr-3`}
                        href={`/group/${group.handle}?tab=commend`}>
                         <span className="font-normal">{lang['Comments']}</span>
                     </a>
-                    <a className={`${buttonVariants({variant: tab === 'members' ? 'normal' : 'ghost'})} flex-1`}
+                    <a className={`${buttonVariants({variant: tab === 'members' ? 'normal' : 'ghost'})} flex-1 mr-3`}
                        href={`/group/${group.handle}?tab=members`}>
                         <span className="font-normal">{lang['Members']}</span>
                     </a>

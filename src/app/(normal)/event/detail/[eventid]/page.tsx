@@ -388,8 +388,11 @@ export default async function EventDetail({params, searchParams}: {
                                 <i className="uil-link text-base"></i>
                             </div>
                             <div>
-                                <div className="font-semibold text-base">Online meeting</div>
-                                <div className="text-gray-400 text-base">{eventDetail.meeting_url}</div>
+                                <div className="font-semibold text-base">{lang['Online Meeting']}</div>
+                                <a href={eventDetail.meeting_url} target={'_blank'}
+                                    className="text-gray-400 text-base hover:text-blue-400">
+                                    {eventDetail.meeting_url}
+                                </a>
                             </div>
                         </div>
                     }

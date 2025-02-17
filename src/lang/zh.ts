@@ -468,4 +468,7 @@ export const zh: Dictionary = {
     'Everyone': '所有人',
     'Member, Manager, Owner':'成员，管理员，群组所有者',
     'Manager, Owner':'管理员，群组所有者',
+    'Badge Detail':'徽章详情',
+    'Issuance Time':'颁发时间',
+    'Online Meeting':'在线会议',
 }

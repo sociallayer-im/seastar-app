@@ -11,7 +11,7 @@ export interface Voucher {
     badge_class: BadgeClass,
     code?: string
     message: string | null
-    strategy: 'account' | 'code' | 'event' | 'address' | 'email'
+    strategy: 'account' | 'code' | 'event' | 'address' | 'email' | 'remember'
     receiver_id: number | null
 }
 

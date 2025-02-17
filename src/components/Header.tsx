@@ -22,11 +22,11 @@ export default async function Header() {
                     <Image src="/images/header_logo.svg" width={32} height={32} alt="Social Layer"/>
                 </a>
                 <a href="/discover"
-                   className={`ml-3 text-xs font-semibold ${currentPath?.includes('discover') ? 'text-primary' : ''}`}>
+                   className={`ml-3 text-xs font-semibold ${currentPath?.includes('discover') ? 'text-primary-foreground' : ''}`}>
                     {lang['Discover']}
                 </a>
                 {!!profile && <a href="/my-events/attended"
-                                 className={`ml-3 text-xs font-semibold ${currentPath?.includes('/my-events/') ? 'text-primary' : ''}`}>
+                                 className={`ml-3 text-xs font-semibold ${currentPath?.includes('/my-events/') ? 'text-primary-foreground' : ''}`}>
                     {lang['My Events']}
                 </a>}
             </div>

@@ -27,7 +27,7 @@ export default function DialogPresetAvatar({close, lang, onSelect}: DialogPreset
     return <div className="w-[360px] rounded-lg shadow p-4 grid grid-cols-1 gap-3 bg-background">
         <div className="font-semibold flex-row-item-center justify-between">
             <div>{lang['Choose a image for badge']}</div>
-            <i className="uil-times-circle cursor-pointer text-xl"
+            <i className="uil-times-circle cursor-pointer text-xl text-gray-400"
                onClick={close}/>
         </div>
 
