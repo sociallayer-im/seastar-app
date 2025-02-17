@@ -298,7 +298,7 @@ export default async function EventDetail({params, searchParams}: {
                                         <div className="font-semibold text-sm text-nowrap">
                                             {role.nickname}
                                         </div>
-                                        <div className="text-xs text-gray-400">Co-Host</div>
+                                        <div className="text-xs text-gray-400">{lang['Co-Host']}</div>
                                     </div>
                                 </a>
                             })
@@ -317,7 +317,7 @@ export default async function EventDetail({params, searchParams}: {
                                         <div className="font-semibold text-sm text-nowrap">
                                             {role.nickname}
                                         </div>
-                                        <div className="text-xs text-gray-400">Speaker</div>
+                                        <div className="text-xs text-gray-400">{lang['Speaker']}</div>
                                     </div>
                                 </a>
                             })
@@ -326,7 +326,7 @@ export default async function EventDetail({params, searchParams}: {
                 </div>
 
                 <div>
-                    <div className="flex-row-item-center py-4">
+                    <div className="flex-row-item-center my-4">
                         <div
                             className="mr-2 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
                             <i className="uil-calendar-alt text-base"></i>
@@ -340,7 +340,7 @@ export default async function EventDetail({params, searchParams}: {
                         </div>
                     </div>
                     {!!eventDetail.location &&
-                        <div className="flex-row-item-center py-4">
+                        <div className="flex-row-item-center my-4">
                             <div
                                 className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
                                 <i className="uil-location-point text-base"></i>
@@ -356,7 +356,7 @@ export default async function EventDetail({params, searchParams}: {
                         </div>
                     }
                     {!!eventDetail.geo_lat && !!eventDetail.geo_lng &&
-                        <div className="ml-11 mt-[-12px]">
+                        <div className="ml-11 -mt-1">
                             <div className="flex-row-item-center mb-2">
                                 <a className="text-xs text-blue-400 cursor-pointer mr-3"
                                    target={'_blank'}
@@ -388,7 +388,7 @@ export default async function EventDetail({params, searchParams}: {
                     }
 
                     {!!eventDetail.meeting_url &&
-                        <div className="flex-row-item-center py-4">
+                        <div className="flex-row-item-center my-4">
                             <div
                                 className="mr-2 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
                                 <i className="uil-link text-base"></i>

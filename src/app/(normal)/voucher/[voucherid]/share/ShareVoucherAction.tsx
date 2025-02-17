@@ -29,7 +29,7 @@ export default function ShareVoucherAction(props: ShareVoucherActionProps) {
     }
     
     const toProfile = () => {
-        window.history.go(-1)
+        window.location.href = `/profile/${props.profileHandle}`
     }
     
     return <div className="flex flex-col w-[330px] mx-auto">

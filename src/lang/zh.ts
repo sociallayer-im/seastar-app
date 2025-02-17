@@ -460,4 +460,6 @@ export const zh: Dictionary = {
     'Are you sure you want to cancel these events?':'您确定要取消这些活动吗？',
     'Submit your feedback for this event':'提交您对此活动的反馈',
     'Copy Address':'复制地址',
+    'Speaker':'演讲者',
+    'Co-Host':'共同主持',
 }

@@ -2,7 +2,6 @@
 
 import {Dictionary} from "@/lang"
 import {Button} from "@/components/shadcn/Button"
-import {Checkbox} from "@/components/shadcn/Checkbox"
 import {useEffect, useState} from "react"
 import ProfileInput from "@/components/client/ProfileInput"
 import {Input} from "@/components/shadcn/Input"
@@ -11,6 +10,7 @@ import {BadgeClassDetail, Profile, sendAccountVoucher, sendCodeVoucher} from '@s
 import {getAuth} from '@/utils'
 import useModal from '@/components/client/Modal/useModal'
 import {CLIENT_MODE} from '@/app/config'
+import Radio from '@/components/client/Radio'
 
 export interface SendBadgeFormProps {
     badgeClass: BadgeClassDetail
@@ -116,14 +116,13 @@ export default function SendBadgeForm({badgeClass, lang, toProfile, isPrivate}: 
                     <div className={`${isCodeVoucher ? 'border' : ''} p-3 rounded-lg`}>
                         <div className="flex-row-item-center justify-between">
                             <div className="font-semibold">{lang['Badge amount']}</div>
-                            <Checkbox checked={isCodeVoucher}
-                                      className="mr-1"
-                                      onClick={() => setIsCodeVoucher(true)}/>
+                            <Radio checked={isCodeVoucher} className="mr-1"
+                                   onChange={() => {setIsCodeVoucher(true)}} />
                         </div>
                         <div className="max-h-0 overflow-auto mt-3"
                              style={isCodeVoucher ? {maxHeight: 'initial'} : undefined}>
                             <Input
-                                placeholder={'Unlimited'}
+                                placeholder={lang['Unlimited']}
                                 type="number"
                                 onWheel={(e) => e.currentTarget.blur()}
                                 className="w-full"
@@ -139,9 +138,8 @@ export default function SendBadgeForm({badgeClass, lang, toProfile, isPrivate}: 
                 <div className={`${!isCodeVoucher ? 'border' : ''} p-3 rounded-lg`}>
                     <div className="flex-row-item-center justify-between">
                         <div className="font-semibold">{lang['Select receivers']}</div>
-                        <Checkbox checked={!isCodeVoucher}
-                                  className="mr-1"
-                                  onClick={() => setIsCodeVoucher(false)}/>
+                        <Radio checked={!isCodeVoucher} className="mr-1"
+                               onChange={() => setIsCodeVoucher(false)} />
                     </div>
                     <div className="max-h-0 overflow-auto mt-3"
                          style={!isCodeVoucher ? {maxHeight: 'initial'} : undefined}>

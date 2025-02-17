@@ -458,6 +458,8 @@ export const en = {
     'Are you sure you want to cancel these events?':'Are you sure you want to cancel these events?',
     'Submit your feedback for this event':'Submit your feedback for this event',
     'Copy Address':'Copy Address',
+    'Speaker':'Speaker',
+    'Co-Host':'Co-Host',
 }
 
 export type Dictionary = typeof en

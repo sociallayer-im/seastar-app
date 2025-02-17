@@ -73,9 +73,6 @@ export default async function GroupPage(props: GroupDataProps) {
                     <div className="flex-row-item-center my-2">
                         <div className="font-semibold text-5">{group.nickname || group.handle}</div>
                         <Badge variant="outline" className="ml-1 text-xs italic">Group</Badge>
-                        <BtnGroupQrcode group={group}>
-                            <i className="uil-qrcode-scan h-5 px-2 bg-gray-100 rounded-lg flex-row-item-center ml-2 cursor-pointer hover:bg-gray-200"/>
-                        </BtnGroupQrcode>
                     </div>
                     {!!group.location &&
                         <div className="flex-row-item-center my-2 text-sm">
