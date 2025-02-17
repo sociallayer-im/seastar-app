@@ -13,6 +13,10 @@ import {buttonVariants} from '@/components/shadcn/Button'
 export async function generateMetadata() {
     return {
         title: 'Discover | Social Layer',
+        openGraph: {
+            title: 'Discover | Social Layer',
+            images: 'https://app.sola.day/images/facaster_default_cover.png',
+        }
     }
 }
 
