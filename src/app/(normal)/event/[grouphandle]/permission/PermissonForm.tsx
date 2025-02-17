@@ -48,7 +48,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
                     className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_publish_event: 'all'})}>
                 <div className="flex-row-item-center justify-between w-full">
-                    <div className='font-normal'>Everyone</div>
+                    <div className='font-normal'>{lang['Everyone']}</div>
                     {(draft.can_publish_event === 'all' || draft.can_publish_event === 'everyone' || !draft.can_publish_event)
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
@@ -59,7 +59,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
                     className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_publish_event: 'member'})}>
                 <div className="flex-row-item-center justify-between w-full">
-                    <div className='font-normal'>Member, Manager, Owner</div>
+                    <div className='font-normal'>{lang['Member, Manager, Owner']}</div>
                     {(draft.can_publish_event === 'member')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
@@ -69,7 +69,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
             <Button variant={'secondary'} className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_publish_event: 'manager'})}>
                 <div className="flex-row-item-center justify-between w-full">
-                    <div className='font-normal'>Manager, Owner</div>
+                    <div className='font-normal'>{lang['Manager, Owner']}</div>
                     {(draft.can_publish_event === 'manager')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
@@ -81,7 +81,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
             <Button variant={'secondary'} className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_join_event: 'all'})}>
                 <div className="flex-row-item-center justify-between w-full">
-                    <div className='font-normal'>Everyone</div>
+                    <div className='font-normal'>{lang['Everyone']}</div>
                     {(draft.can_join_event === 'all' || draft.can_join_event === 'everyone' || !draft.can_join_event)
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
@@ -91,7 +91,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
             <Button variant={'secondary'} className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_join_event: 'member'})}>
                 <div className="flex-row-item-center justify-between w-full">
-                    <div className='font-normal'>Member, Manager, Owner</div>
+                    <div className='font-normal'>{lang['Member, Manager, Owner']}</div>
                     {(draft.can_join_event === 'member')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
@@ -101,7 +101,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
             <Button variant={'secondary'} className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_join_event: 'manager'})}>
                 <div className="flex-row-item-center justify-between w-full">
-                    <div className='font-normal'>Manager, Owner</div>
+                    <div className='font-normal'>{lang['Manager, Owner']}</div>
                     {(draft.can_join_event === 'manager')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
@@ -113,7 +113,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
             <Button variant={'secondary'} className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_view_event: 'all'})}>
                 <div className="flex-row-item-center justify-between w-full">
-                    <div className='font-normal'>Everyone</div>
+                    <div className='font-normal'>{lang['Everyone']}</div>
                     {(draft.can_view_event === 'all' || draft.can_view_event === 'everyone' || !draft.can_view_event)
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
@@ -123,7 +123,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
             <Button variant={'secondary'} className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_view_event: 'member'})}>
                 <div className="flex-row-item-center justify-between w-full">
-                    <div className='font-normal'>Member, Manager, Owner</div>
+                    <div className='font-normal'>{lang['Member, Manager, Owner']}</div>
                     {(draft.can_view_event === 'member')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
@@ -133,7 +133,7 @@ export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: D
             <Button variant={'secondary'} className='w-full mb-3'>
                 <div className="flex-row-item-center justify-between w-full"
                         onClick={() => setDraft({...draft, can_view_event: 'manager'})}>
-                    <div className='font-normal'>Manager, Owner</div>
+                    <div className='font-normal'>{lang['Manager, Owner']}</div>
                     {(draft.can_view_event === 'manager')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>

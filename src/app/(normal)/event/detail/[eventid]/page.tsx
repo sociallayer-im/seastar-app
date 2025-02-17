@@ -147,92 +147,86 @@ export default async function EventDetail({params, searchParams}: {
                         </div>
                 }
 
-                {canAccess &&
-                    <>
-                        {currProfile ?
-                            <div className="border-gray-200 border rounded-lg p-4 mt-6">
-                                <div className="flex-row-item-center text-sm">
-                                    <Avatar profile={currProfile!} size={24} className="mr-1"/>
-                                    <span>{displayProfileName(currProfile!)}</span>
-                                </div>
+                {currProfile ?
+                    <div className="border-gray-200 border rounded-lg p-4 mt-6">
+                        <div className="flex-row-item-center text-sm">
+                            <Avatar profile={currProfile!} size={24} className="mr-1"/>
+                            <span>{displayProfileName(currProfile!)}</span>
+                        </div>
 
-                                {currProfileAttended
-                                    ? <div className="my-2">{lang['You have registered for the event.']}</div>
-                                    :
-                                    <div
-                                        className="my-2">{lang['Welcome! To join the event, please register below.']}</div>
-                                }
+                        {currProfileAttended && <div className="my-2">{lang['You have registered for the event.']}</div>}
+                        {!currProfileAttended && canAccess && <div className="my-2">{lang['Welcome! To join the event, please register below.']}</div>}
+                        {!canAccess && <div className="my-2">{lang['This event is only for {}'].replace('{}', groupDetail.can_join_event === 'member' ? lang['members'] : lang['managers'])}</div>}
 
-                                <div className="flex-row-item-center">
-                                    <AddSingleEventToCalendarApp
-                                        event={eventDetail}
-                                        lang={lang}
-                                        className="text-xs flex-1"/>
-                                    <EventFeedbackBtn eventId={eventDetail.id}
-                                                      lang={lang}
-                                                      className="text-xs flex-1 ml-2"/>
-                                </div>
 
-                                {!isTicketEvent && !currProfileAttended &&
-                                    <div className="flex-row-item-center mt-2">
-                                        <AttendEventBtn eventId={eventDetail.id} lang={lang}
-                                                        className="text-xs flex-1"/>
-                                    </div>
-                                }
+                        <div className="flex-row-item-center">
+                            <AddSingleEventToCalendarApp
+                                event={eventDetail}
+                                lang={lang}
+                                className="text-xs flex-1"/>
+                            <EventFeedbackBtn eventId={eventDetail.id}
+                                              lang={lang}
+                                              className="text-xs flex-1 ml-2"/>
+                        </div>
 
-                                {isTicketEvent && !currProfileAttended &&
-                                    <div className="flex-row-item-center mt-2">
-                                        <a href={`/event/detail/${eventDetail.id}?tab=tickets`}
-                                           className={`${buttonVariants({variant: 'special'})} text-xs flex-1`}>
-                                            {lang['Join Event']}
-                                        </a>
-                                    </div>
-                                }
-
-                                {isEventOperator ?
-                                    eventDetail.badge_class_id
-                                        ? <div className="flex-row-item-center mt-2">
-                                            <a className={`${buttonVariants({variant: 'secondary'})} text-xs flex-1`}
-                                               href={`/event/checkin-for-participants/${eventDetail.id}`}>
-                                                <span>{lang['Check-In And Send POAP']}</span>
-                                            </a>
-                                        </div>
-                                        : <div className="flex-row-item-center mt-2">
-                                            <a className={`${buttonVariants({variant: 'secondary'})} text-xs flex-1`}
-                                               href={`/event/checkin-for-participants/${eventDetail.id}`}>
-                                                <span>{lang['Check-In For Participants']}</span>
-                                            </a>
-                                        </div>
-                                    : null
-                                }
-
-                                {!currProfileCheckedIn && currProfileAttended && !isEventOperator &&
-                                    <div className="flex-row-item-center mt-2">
-                                        <a className={`${buttonVariants({variant: 'primary'})} text-xs flex-1`}
-                                           href={`/event/checkin/${eventDetail.id}`}>
-                                            <span>{lang['Check-In']}</span>
-                                        </a>
-                                    </div>
-                                }
-
-                                {currProfileCheckedIn &&
-                                    <div className="flex-row-item-center mt-2">
-                                        <Button disabled={true} variant={'secondary'}
-                                                className="text-xs flex-1">
-                                            {lang['Checked']}
-                                        </Button>
-                                    </div>
-                                }
-
-                                {!!ticketsPurchased.length &&
-                                    <div className="mt-3">
-                                        <MyTicketList tickets={ticketsPurchased} lang={lang}/>
-                                    </div>
-                                }
+                        {!isTicketEvent && !currProfileAttended && canAccess &&
+                            <div className="flex-row-item-center mt-2">
+                                <AttendEventBtn eventId={eventDetail.id} lang={lang}
+                                                className="text-xs flex-1"/>
                             </div>
-                            : <SignInPanel lang={lang}/>
                         }
-                    </>
+
+                        {isTicketEvent && !currProfileAttended && canAccess &&
+                            <div className="flex-row-item-center mt-2">
+                                <a href={`/event/detail/${eventDetail.id}?tab=tickets`}
+                                   className={`${buttonVariants({variant: 'special'})} text-xs flex-1`}>
+                                    {lang['Join Event']}
+                                </a>
+                            </div>
+                        }
+
+                        {isEventOperator ?
+                            eventDetail.badge_class_id
+                                ? <div className="flex-row-item-center mt-2">
+                                    <a className={`${buttonVariants({variant: 'secondary'})} text-xs flex-1`}
+                                       href={`/event/checkin-for-participants/${eventDetail.id}`}>
+                                        <span>{lang['Check-In And Send POAP']}</span>
+                                    </a>
+                                </div>
+                                : <div className="flex-row-item-center mt-2">
+                                    <a className={`${buttonVariants({variant: 'secondary'})} text-xs flex-1`}
+                                       href={`/event/checkin-for-participants/${eventDetail.id}`}>
+                                        <span>{lang['Check-In For Participants']}</span>
+                                    </a>
+                                </div>
+                            : null
+                        }
+
+                        {!currProfileCheckedIn && currProfileAttended && !isEventOperator &&
+                            <div className="flex-row-item-center mt-2">
+                                <a className={`${buttonVariants({variant: 'primary'})} text-xs flex-1`}
+                                   href={`/event/checkin/${eventDetail.id}`}>
+                                    <span>{lang['Check-In']}</span>
+                                </a>
+                            </div>
+                        }
+
+                        {currProfileCheckedIn &&
+                            <div className="flex-row-item-center mt-2">
+                                <Button disabled={true} variant={'secondary'}
+                                        className="text-xs flex-1">
+                                    {lang['Checked']}
+                                </Button>
+                            </div>
+                        }
+
+                        {!!ticketsPurchased.length &&
+                            <div className="mt-3">
+                                <MyTicketList tickets={ticketsPurchased} lang={lang}/>
+                            </div>
+                        }
+                    </div>
+                    : <SignInPanel lang={lang}/>
                 }
             </div>
 
@@ -407,7 +401,7 @@ export default async function EventDetail({params, searchParams}: {
                                 <div className="flex-1 whitespace-pre-line">
                                     {lang['Registration for the event, upon completion, will be rewarded with POAP*1']}
                                 </div>
-                                <Image className="min-w-9 min-h-9"
+                                <Image className="min-w-9 min-h-9 rounded-full"
                                        src={eventDetail.badge_class.image_url!} width={36} height={36} alt=""/>
                             </div>
                         </a>}

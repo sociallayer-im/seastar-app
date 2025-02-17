@@ -460,6 +460,12 @@ export const en = {
     'Copy Address':'Copy Address',
     'Speaker':'Speaker',
     'Co-Host':'Co-Host',
+    'This event is only for {}': 'This event is only for {}.',
+    'members':'members',
+    'managers':'managers',
+    'Everyone': 'Everyone',
+    'Member, Manager, Owner':'Member, Manager, Owner',
+    'Manager, Owner':'Manager, Owner',
 }
 
 export type Dictionary = typeof en

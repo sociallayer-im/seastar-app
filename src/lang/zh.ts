@@ -461,5 +461,11 @@ export const zh: Dictionary = {
     'Submit your feedback for this event':'提交您对此活动的反馈',
     'Copy Address':'复制地址',
     'Speaker':'演讲者',
-    'Co-Host':'共同主持',
+    'Co-Host':'共同发起',
+    'This event is only for {}':'此活动仅限{}。',
+    'members':'成员',
+    'managers':'管理员',
+    'Everyone': '所有人',
+    'Member, Manager, Owner':'成员，管理员，群组所有者',
+    'Manager, Owner':'管理员，群组所有者',
 }
