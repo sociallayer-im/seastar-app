@@ -182,8 +182,8 @@ export default async function EventDetail({params, searchParams}: {
 
                                 {isTicketEvent && !currProfileAttended &&
                                     <div className="flex-row-item-center mt-2">
-                                        <a  href={`/event/detail/${eventDetail.id}?tab=tickets`}
-                                            className={`${buttonVariants({variant: 'special'})} text-xs flex-1`}>
+                                        <a href={`/event/detail/${eventDetail.id}?tab=tickets`}
+                                           className={`${buttonVariants({variant: 'special'})} text-xs flex-1`}>
                                             {lang['Join Event']}
                                         </a>
                                     </div>
@@ -243,13 +243,17 @@ export default async function EventDetail({params, searchParams}: {
 
                 <div className="flex-row-item-center my-3">
                     {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
-                    {eventDetail.display === 'private' && <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
-                    {eventDetail.status === 'pending' && <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
-                    {eventDetail.status === 'cancel' && <Badge variant='cancel' className="mr-1">{lang['Canceled']}</Badge>}
+                    {eventDetail.display === 'private' &&
+                        <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
+                    {eventDetail.status === 'pending' &&
+                        <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
+                    {eventDetail.status === 'cancel' &&
+                        <Badge variant='cancel' className="mr-1">{lang['Canceled']}</Badge>}
                     {isEventClosed && <Badge variant='cancel' className="mr-1">Closed</Badge>}
 
                     {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">{lang['Ongoing']}</Badge>}
-                    {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">{lang['Upcoming']}</Badge>}
+                    {eventProcess === 'upcoming' &&
+                        <Badge variant='upcoming' className="mr-1">{lang['Upcoming']}</Badge>}
 
 
                     {isEventCreator && <Badge variant='hosting' className="mr-1">{lang['Hosting']}</Badge>}
@@ -346,34 +350,24 @@ export default async function EventDetail({params, searchParams}: {
                                 {!!eventDetail.formatted_address &&
                                     <div className="text-gray-400 text-base">
                                         {eventDetail.formatted_address}
-                                        <ClickToCopy text={eventDetail.formatted_address}>
-                                            <i className="cursor-pointer uil-copy ml-1 text-lg text-foreground"/>
-                                        </ClickToCopy>
                                     </div>
                                 }
                             </div>
                         </div>
                     }
-
-                    {!!eventDetail.meeting_url &&
-                        <div className="flex-row-item-center py-4">
-                            <div
-                                className="mr-2 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
-                                <i className="uil-link text-base"></i>
-                            </div>
-                            <div>
-                                <div className="font-semibold text-base">Online meeting</div>
-                                <div className="text-gray-400 text-base">{eventDetail.meeting_url}</div>
-                            </div>
-                        </div>
-                    }
-
                     {!!eventDetail.geo_lat && !!eventDetail.geo_lng &&
                         <div className="ml-11 mt-[-12px]">
                             <div className="flex-row-item-center mb-2">
-                                <a className="text-xs text-blue-400 cursor-pointer"
+                                <a className="text-xs text-blue-400 cursor-pointer mr-3"
                                    target={'_blank'}
                                    href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
+
+                                {!!eventDetail.formatted_address &&
+                                    <ClickToCopy text={eventDetail.formatted_address}
+                                                 className={'text-xs text-blue-400 cursor-pointer mr-3'}>
+                                        {lang['Copy Address']}
+                                    </ClickToCopy>
+                                }
                             </div>
                             <div className="h-40">
                                 <GoogleMap
@@ -389,6 +383,19 @@ export default async function EventDetail({params, searchParams}: {
                                             lat: eventDetail.geo_lat
                                         }
                                     }]}/>
+                            </div>
+                        </div>
+                    }
+
+                    {!!eventDetail.meeting_url &&
+                        <div className="flex-row-item-center py-4">
+                            <div
+                                className="mr-2 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
+                                <i className="uil-link text-base"></i>
+                            </div>
+                            <div>
+                                <div className="font-semibold text-base">Online meeting</div>
+                                <div className="text-gray-400 text-base">{eventDetail.meeting_url}</div>
                             </div>
                         </div>
                     }

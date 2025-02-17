@@ -70,7 +70,7 @@ function DialogFeedback({lang, ...props}: { close: () => void, event_id: number,
     return (
         <div className="bg-background w-[350px] p-3 shadow rounded-lg">
             <div className="text-lg font-semibold mb-3">{lang['Feedback']}</div>
-            <Textarea placeholder={'Input your feedback for this event'}
+            <Textarea placeholder={lang['Submit your feedback for this event']}
                       value={feedback}
                       onChange={e => setFeedback(e.target.value)}/>
             <div className="grid grid-cols-2 gap-2">

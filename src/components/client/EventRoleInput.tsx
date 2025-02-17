@@ -2,11 +2,11 @@ import {Dictionary} from "@/lang"
 import {Input} from "@/components/shadcn/Input"
 import {ChangeEvent, useCallback, useEffect, useRef, useState} from "react"
 import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
-import {SearchProfile} from "@/service/solar"
 import {getAvatar} from "@/utils"
 import {debounce} from 'lodash'
 import useUploadAvatar from "@/hooks/useUploadAvatar"
-import {EventDraftType, EventRole, EventRoleType} from '@sola/sdk'
+import {EventDraftType, EventRole, EventRoleType, searchProfile} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
 interface EventRoleInputProps {
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
@@ -111,14 +111,26 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange}: RoleOpt
     const {uploadAvatar} = useUploadAvatar()
     const [searchResult, setSearchResult] = useState<Solar.ProfileSample[]>([])
     const {current: dropDownTrigger} = useRef<DropdownTrigger>({trigger: null})
+    const searchIdentifier = useRef<number>(0)
 
     const handleSearch = useCallback(debounce(async (keyword: string) => {
         const _keyword = keyword.trim()
+        const identifier = ++searchIdentifier.current
+
         if (_keyword.length < 3) {
             dropDownTrigger.trigger && dropDownTrigger.trigger(false)
             return
         }
-        const res = await SearchProfile(_keyword)
+        const res = await searchProfile({
+            params: {
+                query: _keyword
+            },
+            clientMode: CLIENT_MODE
+        })
+        if (identifier !== searchIdentifier.current) {
+            console.log('Search result expired, keyword:', keyword)
+            return
+        }
         setSearchResult(res)
         dropDownTrigger.trigger && dropDownTrigger.trigger(!!res.length)
     }, 500), [dropDownTrigger])

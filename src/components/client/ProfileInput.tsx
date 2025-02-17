@@ -91,9 +91,12 @@ export interface RoleOptionProps {
 function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placeholder}: RoleOptionProps) {
     const [searchResult, setSearchResult] = useState<Profile[]>([])
     const {current: dropDownTrigger} = useRef<DropdownTrigger>({trigger: null})
+    const searchIdentifier = useRef(0)
 
     const handleSearch = useCallback(debounce(async (keyword: string) => {
         const _keyword = keyword.trim()
+        const identifier = ++searchIdentifier.current
+
         if (_keyword.length < 3) {
             dropDownTrigger.trigger && dropDownTrigger.trigger(false)
             return
@@ -104,6 +107,12 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placehol
             },
             clientMode: CLIENT_MODE
         })
+
+        if (identifier !== searchIdentifier.current) {
+            console.log('Search result expired, keyword:', keyword)
+            return
+        }
+
         setSearchResult(res)
         dropDownTrigger.trigger && dropDownTrigger.trigger(!!res.length)
     }, 500), [dropDownTrigger])
