@@ -44,8 +44,8 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
         const loading = showLoading()
 
         try {
-            const startTimeSecondDiff = parseInt(((new Date(props.data.eventDraft.start_time).getTime() - new Date(eventDraft.start_time).getTime()) / 1000).toString())
-            const endTimeSecondDiff = parseInt(((new Date(props.data.eventDraft.end_time).getTime() - new Date(eventDraft.end_time).getTime()) / 1000).toString())
+            const startTimeSecondDiff = parseInt(((new Date(eventDraft.start_time).getTime() - new Date(props.data.eventDraft.start_time).getTime()) / 1000).toString())
+            const endTimeSecondDiff = parseInt(((new Date(eventDraft.end_time).getTime() - new Date(props.data.eventDraft.end_time).getTime()) / 1000).toString())
 
             await updateRecurringEvent({
                 params: {

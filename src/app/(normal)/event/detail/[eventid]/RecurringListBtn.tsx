@@ -64,7 +64,7 @@ function DialogRecurringList({events, lang, currEventId, close}: DialogRecurring
         </div>
         <div className="grid grid-cols-1 gap-1">
             {events.map((event) => {
-                const color = currEventId === event.id ? '!text-primary' : '!text-foreground'
+                const color = currEventId === event.id ? '!text-primary-foreground' : '!text-foreground'
                 return <a className={`${buttonVariants({variant: 'secondary'})} ${color}`}
                           href={`/event/detail/${event.id}`}
                           key={event.id}>

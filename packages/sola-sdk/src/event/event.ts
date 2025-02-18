@@ -278,8 +278,8 @@ export const createEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
 }>) => {
     const eventProps = {
         auth_token: params.authToken,
+        ...buildSaveEventProps(params.eventDraft),
         group_id: params.eventDraft.group_id,
-        event: buildSaveEventProps(params.eventDraft)
     }
 
     const response = await fetch(`${getSdkConfig(clientMode).api}/event/create`, {
@@ -362,11 +362,11 @@ export interface CreateRecurringEventParams {
 export const createRecurringEvent = async ({params, clientMode}: SolaSdkFunctionParams<CreateRecurringEventParams>) => {
     const eventProps = {
         auth_token: params.authToken,
-        group_id: params.eventDraft.group_id,
         event_count: params.eventCount,
+        ...buildSaveEventProps(params.eventDraft),
+        group_id: params.eventDraft.group_id,
         timezone: params.eventDraft.timezone,
         interval: params.interval,
-        event: buildSaveEventProps(params.eventDraft)
     }
 
     const response = await fetch(`${getSdkConfig(clientMode).api}/recurring/create`, {
@@ -396,8 +396,8 @@ export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
 }>) => {
     const eventProps = {
         auth_token: params.authToken,
+        ...buildSaveEventProps(params.eventDraft),
         id: params.eventDraft.id,
-        event: buildSaveEventProps(params.eventDraft)
     }
 
     if (params.eventDraft.badge_class_id) {
@@ -599,11 +599,13 @@ export const updateRecurringEvent = async ({
                                                }, clientMode
                                            }: SolaSdkFunctionParams<UpdateRecurringEventProps>) => {
     const props = {
+        ...eventDraft,
         auth_token: authToken,
         recurring_id: recurringId,
         after_event_id: afterEventId,
         selector: afterEventId ? 'after' : 'all',
-        event: eventDraft,
+        start_time: undefined,
+        end_time: undefined,
         start_time_diff: startTimeDiff,
         end_time_diff: endTimeDiff
     }
