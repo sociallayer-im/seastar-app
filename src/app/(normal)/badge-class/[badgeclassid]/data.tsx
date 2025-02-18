@@ -17,14 +17,14 @@ export interface BadgeClassPageDataProps {
     searchParams: BadgeClassPageSearchParams
 }
 
-export default async function BadgeClassPageData({params, searchParams}: BadgeClassPageDataProps) {
+export default async function BadgeClassPageData(badgeclassid: string, to?: string) {
     const badgeClassDetail = await getBadgeClassDetailByBadgeClassId({
-        params: {badgeClassId: parseInt(params.badgeclassid)},
+        params: {badgeClassId: parseInt(badgeclassid)},
         clientMode: CLIENT_MODE
     })
     const currProfile = await getCurrProfile()
 
-    const toProfileHandle = pickSearchParam(searchParams.to)
+    const toProfileHandle = to
 
     if (!badgeClassDetail) {
         redirect('/404')

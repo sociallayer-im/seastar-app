@@ -7,7 +7,7 @@ import {
     eventCoverTimeStr,
     genGoogleMapLinkByEvent,
     getAvatar,
-    getEventDetailPageTimeStr
+    getEventDetailPageTimeStr, pickSearchParam
 } from "@/utils"
 import {selectLang} from "@/app/actions"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
@@ -29,15 +29,17 @@ import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
 import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
+import {cache} from 'react'
 
 const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
+const cachedEventDetailPage = cache(EventDetailPage)
 
-export async function generateMetadata({params, searchParams}: {
+export async function generateMetadata({params: {eventid}, searchParams: {tab}}: {
     params: EventDetailPageDataProps,
     searchParams: EventDetailPageSearchParams
 }) {
-    const {eventDetail} = await EventDetailPage({params, searchParams})
+    const {eventDetail} = await cachedEventDetailPage(eventid, pickSearchParam(tab))
 
     const description = removeMarkdown(eventDetail.content || '').slice(0, 200)
     return {
@@ -52,7 +54,7 @@ export async function generateMetadata({params, searchParams}: {
     }
 }
 
-export default async function EventDetail({params, searchParams}: {
+export default async function EventDetail({params: {eventid}, searchParams: {tab: _tab}}: {
     params: EventDetailPageDataProps,
     searchParams: EventDetailPageSearchParams
 }) {
@@ -77,10 +79,7 @@ export default async function EventDetail({params, searchParams}: {
         recurring,
         ticketsPurchased,
         currProfileStarred
-    } = await EventDetailPage({
-        params,
-        searchParams
-    })
+    } = await cachedEventDetailPage(eventid, pickSearchParam(_tab))
     const {lang} = await selectLang()
 
     return <div className="page-width !pt-4 !pb-12">
@@ -154,9 +153,12 @@ export default async function EventDetail({params, searchParams}: {
                             <span>{displayProfileName(currProfile!)}</span>
                         </div>
 
-                        {currProfileAttended && <div className="my-2">{lang['You have registered for the event.']}</div>}
-                        {!currProfileAttended && canAccess && <div className="my-2">{lang['Welcome! To join the event, please register below.']}</div>}
-                        {!canAccess && <div className="my-2">{lang['This event is only for {}'].replace('{}', groupDetail.can_join_event === 'member' ? lang['members'] : lang['managers'])}</div>}
+                        {currProfileAttended &&
+                            <div className="my-2">{lang['You have registered for the event.']}</div>}
+                        {!currProfileAttended && canAccess &&
+                            <div className="my-2">{lang['Welcome! To join the event, please register below.']}</div>}
+                        {!canAccess && <div
+                            className="my-2">{lang['This event is only for {}'].replace('{}', groupDetail.can_join_event === 'member' ? lang['members'] : lang['managers'])}</div>}
 
 
                         <div className="flex-row-item-center">
@@ -390,7 +392,7 @@ export default async function EventDetail({params, searchParams}: {
                             <div>
                                 <div className="font-semibold text-base">{lang['Online Meeting']}</div>
                                 <a href={eventDetail.meeting_url} target={'_blank'}
-                                    className="text-gray-400 text-base hover:text-blue-400">
+                                   className="text-gray-400 text-base hover:text-blue-400">
                                     {eventDetail.meeting_url}
                                 </a>
                             </div>

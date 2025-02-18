@@ -1,13 +1,11 @@
 import {
     analyzeGroupMembershipAndCheckProfilePermissions,
     AUTH_FIELD,
-    pickSearchParam
 } from "@/utils"
 import {redirect} from "next/navigation"
 import {cookies} from 'next/headers'
 import {
     GroupDetail,
-    Profile,
     Membership,
     getGroupDetailByHandle,
     ProfileDetail, getProfileDetailByAuth
@@ -39,9 +37,7 @@ export interface GroupData {
     canPublishEvent: boolean
 }
 
-export default async function GroupPageData({params, searchParams}: GroupDataProps) {
-    const handle = params.handle
-    const tab = pickSearchParam(searchParams.tab)
+export default async function GroupPageData(handle: string, tab='events'): Promise<GroupData> {
 
     const groupsDetail = await getGroupDetailByHandle({
         params: {groupHandle: handle},

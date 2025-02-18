@@ -1,20 +1,23 @@
-import GroupEditPageData, {GroupDataProps} from "@/app/(normal)/group/[handle]/data"
+import GroupPageData, {GroupDataProps} from "@/app/(normal)/group/[handle]/data"
 import {selectLang} from "@/app/actions"
 import {displayProfileName} from '@/utils'
 import Avatar from '@/components/Avatar'
 import RemoveManagerBtn from '@/app/(normal)/group/[handle]/management/manager/RemoveManagerBtn'
+import {cache} from 'react'
 
 export const fetchCache = 'force-no-store'
 
-export async function generateMetadata(props: GroupDataProps) {
-    const {group} = await GroupEditPageData(props)
+const cachedGroupPageData = cache(GroupPageData)
+
+export async function generateMetadata({params:{handle}}: GroupDataProps) {
+    const {group} = await cachedGroupPageData(handle)
     return {
         title: `Manager Management | ${group.nickname || group.handle}`
     }
 }
 
-export default async function ManagerManagementPage(props: GroupDataProps) {
-    const {members, group} = await GroupEditPageData(props)
+export default async function ManagerManagementPage({params:{handle}}: GroupDataProps) {
+    const {members, group} = await cachedGroupPageData(handle)
     const lang = (await selectLang()).lang
 
     const managers = members.filter(member => member.role === 'manager')

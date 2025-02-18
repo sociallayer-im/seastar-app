@@ -1,5 +1,7 @@
-import {ProfileData, ProfilePageParams, ProfilePageSearchParams} from "@/app/(normal)/profile/[handle]/data"
-import {cookies} from 'next/headers'
+import {
+    ProfileData,
+    ProfileDataProps,
+} from "@/app/(normal)/profile/[handle]/data"
 import {redirect} from "next/navigation"
 import BtnShowAddress from "@/app/(normal)/profile/[handle]/BtnShowAddress"
 import {selectLang} from "@/app/actions"
@@ -14,16 +16,16 @@ import CopyText from "@/components/client/CopyText"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
-import {displayProfileName, getAvatar} from '@/utils'
+import {displayProfileName, getAvatar, pickSearchParam} from '@/utils'
 import ClickToCopy from '@/components/client/ClickToCopy'
+import {cache} from 'react'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata({params, searchParams}: {
-    params: ProfilePageParams,
-    searchParams: ProfilePageSearchParams
-}) {
-    const data = await ProfileData({params, searchParams, cookies: cookies()})
+const cachedProfileData = cache(ProfileData)
+
+export async function generateMetadata({params: {handle}, searchParams: {tab}}: ProfileDataProps) {
+    const data = await cachedProfileData(handle, pickSearchParam(tab))
     if (!data.profile) {
         redirect('/error')
     } else {
@@ -40,15 +42,12 @@ export async function generateMetadata({params, searchParams}: {
     }
 }
 
-export default async function Profile({params, searchParams}: {
-    params: ProfilePageParams,
-    searchParams: ProfilePageSearchParams
-}) {
-    const {profile, currProfile, isSelf, tab} = await ProfileData({params, searchParams, cookies: cookies()})
+export default async function Profile({params: {handle}, searchParams: {tab: _tab}}: ProfileDataProps) {
+    const {profile, currProfile, isSelf, tab} = await cachedProfileData(handle, pickSearchParam(_tab))
     const lang = (await selectLang()).lang
 
     return <div className="bg-[#f8f8f8] min-h-[100svh] w-full">
-        <div className="page-width bg-[#f8f8f8] min-h-[100svh] !pl-0 !pr-0 pb-12 pt-0 sm:pt-6 !pb-16">
+        <div className="page-width bg-[#f8f8f8] min-h-[100svh] !pl-0 !pr-0 pt-0 sm:pt-6 !pb-16">
             <div className="flex flex-col items-start sm:flex-row">
                 <div className="bg-white w-full sm:w-[375px] mb-3 relative">
                     <img src="/images/profile_bg.png" className="w-full h-[140px]"/>

@@ -53,6 +53,7 @@ export const getProfileDetailById = async ({params, clientMode}:SolaSdkFunctionP
  * @param authToken - auth token
  */
 export const getProfileDetailByAuth = async ({params, clientMode}:SolaSdkFunctionParams<{authToken: string}>) => {
+    console.trace('getProfileDetailByAuth ===>')
     if (!params.authToken) {
         throw new Error('No auth token provided')
     }

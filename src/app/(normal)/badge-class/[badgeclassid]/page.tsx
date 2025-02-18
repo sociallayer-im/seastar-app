@@ -7,14 +7,17 @@ import {selectLang} from '@/app/actions'
 import {buttonVariants} from '@/components/shadcn/Button'
 import Avatar from '@/components/Avatar'
 import NoData from '@/components/NoData'
+import {cache} from 'react'
+
+const cachedBadgeClassPageData = cache(BadgeClassPageData)
 
 const DynamicShowTime = dynamic(
     () => import('./FormatTime'),
     {ssr: false}
 )
 
-export async function generateMetadata(props: BadgeClassPageDataProps) {
-    const {badgeClass, isOwner, isPrivate} = await BadgeClassPageData(props)
+export async function generateMetadata({params:{badgeclassid}, searchParams:{to}}: BadgeClassPageDataProps) {
+    const {badgeClass, isOwner, isPrivate} = await cachedBadgeClassPageData(badgeclassid, to)
     badgeClass.badge_type
     const title = isPrivate && !isOwner ? 'Private Badge' : badgeClass.title
     return {
@@ -22,8 +25,8 @@ export async function generateMetadata(props: BadgeClassPageDataProps) {
     }
 }
 
-export default async function BadgeClassPage(props: BadgeClassPageDataProps) {
-    const data = await BadgeClassPageData(props)
+export default async function BadgeClassPage({params:{badgeclassid}, searchParams:{to}}: BadgeClassPageDataProps) {
+    const data = await cachedBadgeClassPageData(badgeclassid, to)
 
     return data.isPrivate && !data.isOwner
         ? <PrivateBadgeClassPage {...data} />

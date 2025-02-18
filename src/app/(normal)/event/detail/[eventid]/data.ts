@@ -31,11 +31,11 @@ export interface EventDetailDataProps {
     searchParams: EventDetailPageSearchParams
 }
 
-export default async function EventDetailPage({params, searchParams}: EventDetailDataProps) {
+export default async function EventDetailPage(eventid: string, tab='content'){
     const currProfile = await getCurrProfile()
 
     const eventDetail = await getEventDetailById({
-        params: {eventId: parseInt(params.eventid)},
+        params: {eventId: parseInt(eventid)},
         clientMode: CLIENT_MODE
     })
     if (!eventDetail) {
@@ -152,7 +152,7 @@ export default async function EventDetailPage({params, searchParams}: EventDetai
         isOwner: eventDetail.owner.id === currProfile?.id,
         owner: eventDetail.owner,
         groupHost,
-        tab: pickSearchParam(searchParams.tab) || 'content',
+        tab,
         participants: filteredParticipants,
         showParticipants,
         canAccess,

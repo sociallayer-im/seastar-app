@@ -1,5 +1,5 @@
 import GroupPageData, {GroupDataProps} from "@/app/(normal)/group/[handle]/data"
-import {displayProfileName, getAvatar} from "@/utils"
+import {displayProfileName, getAvatar, pickSearchParam} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import BtnGroupQrcode from "@/app/(normal)/group/[handle]/BtnGroupQrcode"
 import {Media_Meta} from "@/utils/social_media_meta"
@@ -14,11 +14,14 @@ import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import ClickToCopy from '@/components/client/ClickToCopy'
 import CommentPanel from '@/components/client/CommentPanel'
+import { cache} from 'react'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(props: GroupDataProps) {
-    const {group} = await GroupPageData(props)
+const cachedGroupPageData = cache(GroupPageData)
+
+export async function generateMetadata({params:{handle}, searchParams:{tab}}: GroupDataProps) {
+    const {group} = await cachedGroupPageData(handle, pickSearchParam(tab))
     const lang = (await selectLang()).lang
 
     return {
@@ -33,7 +36,7 @@ export async function generateMetadata(props: GroupDataProps) {
     }
 }
 
-export default async function GroupPage(props: GroupDataProps) {
+export default async function GroupPage({params:{handle}, searchParams:{tab:_tab}}: GroupDataProps) {
     const {
         group,
         tab,
@@ -44,7 +47,7 @@ export default async function GroupPage(props: GroupDataProps) {
         currUserIsOwner,
         members,
         canPublishEvent
-    } = await GroupPageData(props)
+    } = await cachedGroupPageData(handle, pickSearchParam(_tab))
     const lang = (await selectLang()).lang
 
     return <div className="bg-white min-h-[100svh] w-full !pb-16">

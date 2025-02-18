@@ -4,15 +4,15 @@ import GroupPageData, {GroupDataProps} from '@/app/(normal)/group/[handle]/data'
 
 export const fetchCache = 'force-no-store'
 
-export async function generateMetadata(props: GroupDataProps) {
-    const {group} = await GroupPageData(props)
+export async function generateMetadata({params:{handle}}: GroupDataProps) {
+    const {group} = await GroupPageData(handle)
     return {
         title: `${group.nickname || group.handle} | Edit Group | Social Layer`
     }
 }
 
-export default async function EditGroupPage(props: GroupDataProps) {
-    const {group, currUserIsManager, members, currUserIsOwner} = await GroupPageData(props)
+export default async function EditGroupPage({params: {handle}}: GroupDataProps) {
+    const {group, currUserIsManager, members, currUserIsOwner} = await GroupPageData(handle)
     const lang = (await selectLang()).lang
 
     return <EditGroup

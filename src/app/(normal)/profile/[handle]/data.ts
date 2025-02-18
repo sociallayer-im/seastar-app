@@ -17,7 +17,6 @@ export interface ProfilePageSearchParams {
 export interface ProfileDataProps {
     params: ProfilePageParams,
     searchParams: ProfilePageSearchParams,
-    cookies: ReadonlyRequestCookies
 }
 
 export interface ProfileData {
@@ -27,9 +26,7 @@ export interface ProfileData {
     tab: string,
 }
 
-export async function ProfileData(props: ProfileDataProps): Promise<ProfileData> {
-    const handle = props.params.handle
-    const tab = pickSearchParam(props.searchParams.tab)
+export async function ProfileData(handle: string, tab='groups'): Promise<ProfileData> {
     const profileDetail = await getProfileDetailByHandle({
         params: {handle: handle},
         clientMode: CLIENT_MODE

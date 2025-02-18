@@ -3,13 +3,16 @@ import {selectLang} from '@/app/actions'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import QrCode from '@/components/client/QRcode'
 import {headers} from 'next/headers'
-import {eventCoverTimeStr, getGmtOffset} from '@/utils'
+import {eventCoverTimeStr, getGmtOffset, pickSearchParam} from '@/utils'
 import dynamic from 'next/dynamic'
+import {cache} from 'react'
 
 const DynamicShareActionsBtn = dynamic(() => import('@/app/(normal)/event/share/[eventid]/ShareActionsBtn'), {ssr: false})
 
-export async function generateMetadata(props: EventDetailDataProps) {
-    const {eventDetail} = await EventDetailPage(props)
+const cachedEventDetailPage = cache(EventDetailPage)
+
+export async function generateMetadata({params:{eventid},searchParams:{tab}}: EventDetailDataProps) {
+    const {eventDetail} = await cachedEventDetailPage(eventid, pickSearchParam(tab))
     const {lang} = await selectLang()
 
     return {
@@ -17,8 +20,8 @@ export async function generateMetadata(props: EventDetailDataProps) {
     }
 }
 
-export default async function ShareEventPage(props: EventDetailDataProps) {
-    const {eventDetail, groupDetail} = await EventDetailPage(props)
+export default async function ShareEventPage({params:{eventid},searchParams:{tab}}: EventDetailDataProps) {
+    const {eventDetail, groupDetail} = await cachedEventDetailPage(eventid, pickSearchParam(tab))
     const {lang} = await selectLang()
     const shareUrl = `${new URL(headers().get('x-current-path')!).origin}/event/detail/${eventDetail.id}`
 
