@@ -18,11 +18,11 @@ export type CreateBadgePageDataProps = {
 export default async function CreateBadgePageData({searchParams} : CreateBadgePageDataProps) {
     const badgeType = pickSearchParam(searchParams.badge_type) || 'badge'
     const returnPage = pickSearchParam(searchParams.return)
-    const groupSenderId = pickSearchParam(searchParams.group)
+    // const groupSenderId = pickSearchParam(searchParams.group)
 
     const currProfile = await getCurrProfile()
     if (!currProfile) {
-        redirect('/404')
+        redirect('/')
     }
 
     const availableGroupCreator = await getAvailableGroupsForBadgeClassCreator({
@@ -31,14 +31,17 @@ export default async function CreateBadgePageData({searchParams} : CreateBadgePa
     })
 
     // If groupSenderId is provided, check if the group is in the availableGroupCreator list
-    if (!!groupSenderId && !availableGroupCreator.find(group => group.id === parseInt(groupSenderId))) {
-        redirect('/404')
-    }
+    // console.log('groupSenderId', groupSenderId)
+    // console.log('availableGroupCreator', availableGroupCreator)
+    // if (!!groupSenderId && !availableGroupCreator.find(group => group.id === parseInt(groupSenderId))) {
+    //     console.log('this one2')
+    //     redirect('/404')
+    // }
 
     return {
         badgeType,
         returnPage,
-        groupSenderId: groupSenderId ? parseInt(groupSenderId) : undefined,
+        groupSenderId: undefined,
         currProfile,
         availableGroupCreator
     }
