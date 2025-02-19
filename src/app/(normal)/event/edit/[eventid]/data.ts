@@ -12,17 +12,24 @@ import {CLIENT_MODE} from '@/app/config'
 
 export interface EditEventProps {
     params: { eventid: number }
+    searchParams: { event_badge?: string }
 }
 
-export default async function EditEventData({params: {eventid}}: EditEventProps) {
+export default async function EditEventData({params: {eventid}, searchParams: {event_badge}}: EditEventProps) {
     const currProfile = await getCurrProfile()
     if (!currProfile) {
         redirect('/')
     }
 
-    const eventDetail = await getEventDetailById({params: {eventId: eventid}, clientMode: CLIENT_MODE})
+    let eventDetail = await getEventDetailById({params: {eventId: eventid}, clientMode: CLIENT_MODE})
     if (!eventDetail) {
         redirect('/404')
+    }
+    if (event_badge) {
+        eventDetail = {
+            ...eventDetail,
+            badge_class_id: parseInt(event_badge)
+        }
     }
 
     const groupDetail = await getGroupDetailByHandle({

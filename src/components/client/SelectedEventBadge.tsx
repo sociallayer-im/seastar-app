@@ -2,14 +2,13 @@ import {Dictionary} from "@/lang"
 import {Button} from "@/components/shadcn/Button"
 import useModal from "@/components/client/Modal/useModal"
 import {useEffect, useState} from "react"
-import {getBadgeClassDetailById} from "@/service/solar"
 import useSelectBadgeClass from "@/hooks/useSelectBadgeClass"
 import {
     EventDraftType,
     BadgeClass,
     Profile,
     getBadgeAndBadgeClassByOwnerHandle,
-    getBadgeClassByGroupId
+    getBadgeClassByGroupId, getBadgeClassDetailByBadgeClassId
 } from '@sola/sdk'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {CLIENT_MODE} from '@/app/config'
@@ -37,9 +36,13 @@ export default function SelectedEventBadge({
 
     useEffect(() => {
         ;(async () => {
-            if (!!event.badge_class_id && badgeClass?.id !== event.badge_class_id) {
+            if (!!event.badge_class_id && event.badge_class_id !== badgeClass?.id) {
                 setLoading(true)
-                setBadgeClass(await getBadgeClassDetailById(event.badge_class_id))
+                const newBadgeClass = await getBadgeClassDetailByBadgeClassId({
+                    params: {badgeClassId: event.badge_class_id},
+                    clientMode: CLIENT_MODE
+                })
+                setBadgeClass(newBadgeClass)
                 setLoading(false)
             }
         })()
@@ -88,7 +91,7 @@ export default function SelectedEventBadge({
     }
 
     return !!event.id ?
-        <div className="mt-2">
+        <div className="mt-2" test-id="selected-event-badge">
             {loading && <div className="loading-bg h-[114px] w-[114px] rounded-lg"/>}
 
             {!!badgeClass &&

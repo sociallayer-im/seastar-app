@@ -14,7 +14,7 @@ import {cookies} from 'next/headers'
 import {selectLang} from "@/app/actions"
 
 export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
-    const data = await IframeSchedulePageData({params, searchParams, view: 'week', cookies: cookies()})
+    const data = await IframeSchedulePageData({params, searchParams, view: 'week'})
     if (!data.group) {
         redirect('/error')
     } else {
@@ -28,7 +28,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams
 }) {
-    const data = await IframeSchedulePageData({params, searchParams, view: 'week', cookies: cookies()})
+    const data = await IframeSchedulePageData({params, searchParams, view: 'week'})
     if (!data.group) {
         redirect('/error')
     }

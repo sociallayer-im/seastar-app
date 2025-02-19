@@ -123,11 +123,13 @@ export default function CreateBadgeForm({
 
             window.setTimeout(() => {
                 if (returnPage) {
-                    window.location.href = returnPage
+                    const url = new URL(returnPage)
+                    url.searchParams.set('event_badge', badgeClass.id.toString())
+                    window.location.href = url.toString()
                 } else {
                     window.location.href = `/badge-class/${badgeClass.id}/send-badge${window.location.search}`
                 }
-            }, 2000)
+            }, 1000)
         } catch (e: unknown) {
             console.error(e)
             setCreateError('Failed to create badge')

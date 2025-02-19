@@ -89,7 +89,6 @@ export interface IframeSchedulePageDataProps {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
     view: 'week' | 'day' | 'list',
-    cookies: ReadonlyRequestCookies
 }
 
 function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []) {
@@ -113,7 +112,6 @@ export async function IframeSchedulePageData({
     params,
     searchParams,
     view,
-    cookies
 }: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
     const groupName = params.grouphandle
     const filters: Filter = {

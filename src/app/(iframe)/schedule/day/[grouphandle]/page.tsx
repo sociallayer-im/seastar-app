@@ -13,7 +13,6 @@ import {
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[grouphandle]/DailyViewAllDayEventItem"
-import {cookies} from 'next/headers'
 import {selectLang} from "@/app/actions"
 
 export async function generateMetadata({params, searchParams}: {
@@ -24,7 +23,6 @@ export async function generateMetadata({params, searchParams}: {
         params,
         searchParams,
         view: 'day',
-        cookies: cookies()
     })
 
     if (!data.group) {
@@ -44,7 +42,6 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
         params,
         searchParams,
         view: 'day',
-        cookies: cookies()
     })
 
     const hourLabels = await getHourLabel()

@@ -70,6 +70,19 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
     }, [draft, repeatForm])
 
     useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const currUrl = new URL(window.location.href)
+            const preset_event_badge = currUrl.searchParams.get('event_badge')
+            if (preset_event_badge) {
+                setEnableMoreSetting(true)
+                setTimeout(() => {
+                    document.querySelector('div[test-id="selected-event-badge"]')?.scrollIntoView({behavior: 'smooth', block: "center"})
+                }, 400)
+            }
+        }
+    }, [])
+
+    useEffect(() => {
         ;(async () => {
             const venue = data.venues.find(v => v.id === draft.venue_id)
             const errorMsg = isEventTimeSuitable(
