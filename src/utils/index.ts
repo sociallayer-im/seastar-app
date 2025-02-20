@@ -3,19 +3,20 @@ import {getProfileByToken} from '@/service/solar'
 import {sha3_256} from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
-import {Payments, PaymentsType, paymentTokenList} from "@/utils/payment_setting"
+import {Payments, PaymentsType} from "@/utils/payment_setting"
 import {
-    Profile,
     Event,
-    GroupDetail,
     EventDetail,
-    Ticket,
-    VenueDetail,
-    Track,
     EventDraftType,
-    VenueTimeslot, Weekday, PaymentMethod
+    GroupDetail,
+    PaymentMethod,
+    Profile,
+    Ticket,
+    Track,
+    VenueDetail,
+    VenueTimeslot,
+    Weekday
 } from '@sola/sdk'
-import Dayjs from '@/libs/dayjs'
 import domtoimage from 'dom-to-image'
 import {Dictionary} from '@/lang'
 import {AVAILABLE_PAYMENT_TYPES, SOLA_APP_SUBDOMAINS} from '@/app/config'
@@ -346,12 +347,13 @@ export function displayProfileName(profile: Profile) {
 }
 
 export function clientToSignIn() {
-    const signInUrl = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${window.encodeURIComponent(window.location.href)}`
-    window.location.href = signInUrl
+    window.location.href = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${window.encodeURIComponent(window.location.href)}`
 }
 
 export function getGroupSubdomain(url?: string | null) {
     if (!url) return null
+    if (url.includes('.vercel.app')) return null
+
     try {
         const parts = url.split('.')
         if (parts.length > 2 && !SOLA_APP_SUBDOMAINS.includes(parts[0])) {
