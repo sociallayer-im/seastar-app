@@ -1,18 +1,20 @@
 'use client'
 
-import {Activity, ActivityDetail} from '@sola/sdk'
+import {ActivityDetail} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import NoData from '@/components/NoData'
 import {Button} from '@/components/shadcn/Button'
 import {useState} from 'react'
 import Avatar from '@/components/Avatar'
 import {displayProfileName, getAuth} from '@/utils'
-import DisplayDateTime from '@/components/client/DisplayDateTime'
 import useShowVoucher from '@/hooks/useShowVoucher'
 import {setActivityRead} from '@sola/sdk/src/activity/activity'
 import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import DialogInviteDetail from '@/components/client/DialogInviteDetail'
+import Dynamic from 'next/dynamic'
+
+const DynamicDisplayDateTime = Dynamic(() => import('@/components/client/DisplayDateTime'), {ssr: false})
 
 export default function Notifications({activities, lang}: { activities: ActivityDetail[], lang: Dictionary }) {
     const {openModal} = useModal()
@@ -86,7 +88,7 @@ export default function Notifications({activities, lang}: { activities: Activity
                             <div className="text-sm">
                                 <span>{displayProfileName(a.initiator)}</span>
                                 <span className="text-gray-500 ml-2">
-                                    <DisplayDateTime dataTimeStr={a.created_at}/></span>
+                                    <DynamicDisplayDateTime dataTimeStr={a.created_at}/></span>
                             </div>
                         </div>
                         {!a.has_read && <i className="bg-red-400 w-3 h-3 rounded-full"/>}
@@ -104,7 +106,7 @@ export default function Notifications({activities, lang}: { activities: Activity
                             <div className="text-sm">
                                 <span>{displayProfileName(a.initiator)}</span>
                                 <span className="text-gray-500 ml-2">
-                                    <DisplayDateTime dataTimeStr={a.created_at}/></span>
+                                    <DynamicDisplayDateTime dataTimeStr={a.created_at}/></span>
                             </div>
                         </div>
                         {!a.has_read && <i className="bg-red-400 w-3 h-3 rounded-full"/>}
