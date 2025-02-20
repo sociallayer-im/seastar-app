@@ -27,15 +27,6 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
         }
         : event.owner
 
-    let referer = process.env.NEXT_PUBLIC_APP_URL + '/'
-    if (Cookies.get('referer')) {
-        try {
-            referer = new URL(Cookies.get('referer')!).href
-        } catch (e){
-            console.log(e)
-        }
-    }
-
     return <div className="max-h-[90svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap">
             <div className="flex-1">
