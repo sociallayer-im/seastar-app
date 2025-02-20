@@ -46,7 +46,8 @@ export interface EventDetail extends Event {
     extra: number[] | null,
     operators: number[] | null
     event_roles: EventRoleDetail[] | null
-    recurring_id: number | null
+    recurring_id: number | null,
+    ticket_items: TicketItem[]
 }
 
 export interface Ticket {
@@ -179,6 +180,10 @@ export interface TicketItem {
     original_price: number | null,
     protocol: string | null,
     created_at: string | null,
+    profile: Profile,
+    ticket: {
+        title: string
+    }
 }
 
 

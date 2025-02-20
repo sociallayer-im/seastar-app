@@ -98,12 +98,11 @@ export default function EventParticipantList({
     }
 
     const downloadCSV = () => {
-        const title = ['Username', 'Nickname', 'Email', 'Payment wallet address', 'Status', 'Register time']
+        const title = ['Username', 'Nickname', 'Email', 'Status', 'Register time']
         const rows = eventDetail.participants?.map((item, index) => {
             return [item.profile.handle,
                 item.profile.nickname || '',
                 (item.profile as any).email || '',
-                item.ticket_item?.sender_address || '',
                 item.status,
                 item.created_at + 'Z'
             ]

@@ -207,6 +207,15 @@ export const getEventDetailById = async ({params: {eventId}, clientMode}: SolaSd
         })
     }
 
+    if (response.data.events[0].ticket_items) {
+        response.data.events[0].ticket_items = response.data.events[0].ticket_items.map((t: any) => {
+            return {
+                ...t,
+                create_at: t.create_at ? t.create_at + 'Z' : null,
+            }
+        })
+    }
+
     return fixDate(response.data.events[0]) as EventDetail
 }
 

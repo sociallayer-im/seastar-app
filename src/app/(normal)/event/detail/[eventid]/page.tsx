@@ -30,6 +30,7 @@ import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
 import {cache} from 'react'
+import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventParticipantTab'
 
 const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
@@ -448,7 +449,6 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                                             className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <div className="z-10">
                             {lang['Participants']}
-                            <span className="text-xs">({eventDetail.participants?.length})</span>
                         </div>
                         {tab === 'participants' &&
                             <img width={90} height={12}
@@ -502,7 +502,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                 }
 
                 {tab === 'participants' &&
-                    <EventParticipantList
+                    <EventParticipantTab
                         lang={lang}
                         eventDetail={eventDetail}
                         currProfile={currProfile}

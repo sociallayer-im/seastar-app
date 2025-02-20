@@ -471,4 +471,6 @@ export const zh: Dictionary = {
     'Badge Detail':'徽章详情',
     'Issuance Time':'颁发时间',
     'Online Meeting':'在线会议',
+    'Orders':'订单',
+    'Download the list of order':'下载订单列表',
 }

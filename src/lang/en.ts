@@ -469,6 +469,8 @@ export const en = {
     'Badge Detail':'Badge Detail',
     'Issuance Time': 'Issuance Time',
     'Online Meeting':'Online Meeting',
+    'Orders':'Orders',
+    'Download the list of order':'Download the list of order',
 }
 
 export type Dictionary = typeof en

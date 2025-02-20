@@ -3,11 +3,6 @@ import {PROFILE_FRAGMENT} from '../profile'
 import {BADGE_CLASS_FRAGMENT} from '../badge'
 import {TRACK_FRAGMENT, GROUP_FRAGMENT} from '../group'
 
-console.log('PROFILE_FRAGMENT', !!PROFILE_FRAGMENT)
-console.log('GROUP_FRAGMENT', !!GROUP_FRAGMENT)
-console.log('BADGE_CLASS_FRAGMENT', !!BADGE_CLASS_FRAGMENT)
-
-
 export const EVENT_ROLE_FRAGMENT = gql`
     fragment EventRoleFragment on event_roles {
         id
@@ -201,6 +196,7 @@ export const GET_RECURRING_BY_ID = gql`
     }`
 
 export const TICKET_ITEM_FRAGMENT = gql`
+    ${PROFILE_FRAGMENT}
     fragment TicketItemFragment on ticket_items {
         id
         status
@@ -229,6 +225,13 @@ export const TICKET_ITEM_FRAGMENT = gql`
         original_price
         protocol
         created_at
+        profile {
+            ...ProfileFragment
+            email
+        }
+        ticket {
+            title
+        }
     }`
 
 export const GET_PURCHASED_TICKET_ITEMS_BY_PROFILE_HANDLE_AND_EVENT_ID = gql`
@@ -273,6 +276,7 @@ export const EVENT_DETAIL_FRAGMENT = gql`
     ${GROUP_FRAGMENT}
     ${BADGE_CLASS_FRAGMENT}
     ${TICKET_FRAGMENT}
+    ${TICKET_ITEM_FRAGMENT}
     fragment EventDetailFragment on events {
         ...EventFragment
         recurring_id
@@ -308,6 +312,9 @@ export const EVENT_DETAIL_FRAGMENT = gql`
         }
         badge_class {
         ...BadgeClassFragment
+        }
+        ticket_items(where: {status: {_eq: "succeeded"}}, order_by: {id: asc}) {
+            ...TicketItemFragment
         }
     }`
 
