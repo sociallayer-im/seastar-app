@@ -19,7 +19,7 @@ export default async function CheckinForParticipants(props: EventDetailDataProps
                 : <div className="flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
                     <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>
                         <div
-                            className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
+                            className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                             {eventDetail.title || lang['Event Name']}
                         </div>
                         <div

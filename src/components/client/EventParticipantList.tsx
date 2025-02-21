@@ -1,6 +1,5 @@
 'use client'
 
-import NoData from '@/components/NoData'
 import {getAuth, shortWalletAddress} from '@/utils'
 import {Dictionary} from '@/lang'
 import {cancelAttendEvent, EventDetail, ProfileDetail, Participant, checkInEventForParticipant} from '@sola/sdk'
@@ -128,8 +127,6 @@ export default function EventParticipantList({
                 <i className="uil-download-alt text-lg mr-1"/>
                 <span>{lang['Download the list of all participants']}</span>
             </div>}
-
-        {!eventDetail.participants || eventDetail.participants.length === 0 && <NoData/>}
 
         <div>
             {

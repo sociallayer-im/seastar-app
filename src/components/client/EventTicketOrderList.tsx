@@ -1,6 +1,5 @@
 'use client'
 
-import NoData from '@/components/NoData'
 import {displayProfileName} from '@/utils'
 import {Dictionary} from '@/lang'
 import {EventDetail} from '@sola/sdk'
@@ -54,9 +53,6 @@ export default function EventTicketOrderList({
                 <i className="uil-download-alt text-lg mr-1"/>
                 <span>{lang['Download the list of order']}</span>
             </div>}
-
-        {!eventDetail.ticket_items || eventDetail.ticket_items.length === 0 && <NoData/>}
-
         <div>
             {
                 eventDetail.ticket_items?.map(participant => {

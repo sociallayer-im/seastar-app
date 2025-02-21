@@ -3,7 +3,6 @@
 import {Dictionary} from '@/lang'
 import {CommentItemType, createComment, getCommentsByItemIdAndType, ProfileDetail, Comment} from '@sola/sdk'
 import {Textarea} from '@/components/shadcn/Textarea'
-import NoData from '@/components/NoData'
 import Avatar from '@/components/Avatar'
 import {useEffect, useState} from 'react'
 import {Button} from '@/components/shadcn/Button'
@@ -137,9 +136,5 @@ export default function CommentPanel({lang, currProfile, itemType, itemId}: Comm
             <div className="loading-bg w-full h-4 mb-3 rounded-lg"/>
             <div className="loading-bg w-1/2 h-4 mb-3 rounded-lg"/>
         </div>}
-
-        {!comments.length && !loading &&
-            <NoData/>
-        }
     </div>
 }

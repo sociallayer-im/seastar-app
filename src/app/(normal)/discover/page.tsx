@@ -9,6 +9,7 @@ import Feedback from '@/components/client/Feedback'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import GoogleMap from '@/components/client/Map'
 import {buttonVariants} from '@/components/shadcn/Button'
+import PopupCityMap from './PopupCityMap'
 
 export async function generateMetadata() {
     return {
@@ -31,19 +32,10 @@ export default async function DiscoverPage() {
         }
     })
 
-    return <div className="page-width min-h-[100svh] pt-0 sm:pt-6 !pb-16">
-        <div>
-            <h2 className="text-2xl font-semibold mb-3">{lang['Pop-up Cities']} 2025</h2>
-            <div className="w-full h-[260px] mb-6 relative">
-                <GoogleMap langType={type} markers={mapMarkers} center={mapMarkers[mapMarkers.length - 1].position} defaultZoom={1}/>
-                <a className={`${buttonVariants({variant: "secondary", size: "sm"})} absolute bottom-2 right-2 z-10 text-xs bg-white shadow`}
-                   href={`/map/popup2025/event`}>
-                    {lang['Browse on Map']} <i className="uil-expand-arrows-alt text-base"/>
-                </a>
-            </div>
-        </div>
+    return <div className="page-width min-h-[100svh] pt-4 sm:pt-6 !pb-16">
+        <PopupCityMap mapMarkers={mapMarkers} lang={lang}  langType={type}/>
 
-        <div className="mt-8">
+        <div>
             <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
                 <div>{lang['Pop-up Cities']}</div>
                 <a href="/popup-city" className="flex-row-item-center text-sm">

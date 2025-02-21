@@ -19,7 +19,6 @@ import EventFeedbackBtn from '@/components/EventFeedbackBtn'
 import AttendEventBtn from '@/components/client/AttendEventBtn'
 import {Badge} from '@/components/shadcn/Badge'
 import SignInPanel from '@/components/SignInPanel'
-import EventParticipantList from '@/components/client/EventParticipantList'
 import RecurringListBtn from '@/app/(normal)/event/detail/[eventid]/RecurringListBtn'
 import GoogleMap from '@/components/client/Map'
 import ClickToCopy from '@/components/client/ClickToCopy'
@@ -130,7 +129,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                         <div className="w-[324px] h-[324px] overflow-hidden mx-auto">
                             <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.716814)'}}>
                                 <div
-                                    className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
+                                    className="font-semibold text-[27px] webkit-box-clamp-2 max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                                     {eventDetail.title}
                                 </div>
                                 <div
@@ -354,7 +353,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                         </div>
                     }
                     {!!eventDetail.geo_lat && !!eventDetail.geo_lng &&
-                        <div className="ml-11 -mt-1">
+                        <div className="ml-11 -mt-4">
                             <div className="flex-row-item-center mb-2">
                                 <a className="text-xs text-blue-400 cursor-pointer mr-3"
                                    target={'_blank'}
@@ -367,21 +366,20 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                                     </ClickToCopy>
                                 }
                             </div>
-                            <div className="h-40">
-                                <GoogleMap
-                                    defaultZoom={3}
-                                    center={{
+                            <GoogleMap
+                                style={{height: '160px', width: '100%'}}
+                                defaultZoom={3}
+                                center={{
+                                    lng: eventDetail.geo_lng,
+                                    lat: eventDetail.geo_lat
+                                }}
+                                markers={[{
+                                    title: eventDetail.title,
+                                    position: {
                                         lng: eventDetail.geo_lng,
                                         lat: eventDetail.geo_lat
-                                    }}
-                                    markers={[{
-                                        title: eventDetail.title,
-                                        position: {
-                                            lng: eventDetail.geo_lng,
-                                            lat: eventDetail.geo_lat
-                                        }
-                                    }]}/>
-                            </div>
+                                    }
+                                }]}/>
                         </div>
                     }
 

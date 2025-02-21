@@ -1,7 +1,7 @@
 'use client'
 
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
-import {Map, AdvancedMarker, useMap, MapEvent, MapMouseEvent} from '@vis.gl/react-google-maps'
+import {Map, AdvancedMarker, useMap, MapEvent, MapMouseEvent, useMapsLibrary} from '@vis.gl/react-google-maps'
 import {Button} from '@/components/shadcn/Button'
 import {useMemo, useState, useEffect} from 'react'
 
@@ -17,16 +17,28 @@ export interface GoogleMapProps {
     defaultZoom?: number
     markers: GoogleMapMarkerProps[]
     langType?: string
+    style?: React.CSSProperties
 }
 
-export default function GoogleMap({
+export default function GoogleMap(props: GoogleMapProps) {
+    return <GoogleMapProvider langType={props.langType}>
+        <GoogleMapInner {...props}></GoogleMapInner>
+    </GoogleMapProvider>
+}
+
+export function GoogleMapInner({
                                       center = {lat: -34.397, lng: 150.644},
                                       markers,
-                                      langType,
+                                      style,
                                       defaultZoom = 15
                                   }: GoogleMapProps) {
     const [mapCenter, setMapCenter] = useState(center)
     const [pickingLocation, setPickingLocation] = useState(false)
+
+    const geocodingLib = useMapsLibrary('geocoding');
+    useEffect(() => {
+        !!geocodingLib && console.log('Map library loaded')
+    },[geocodingLib])
 
     const markersToShow = useMemo(() => {
         // set the layer of center marker to the top,
@@ -58,25 +70,24 @@ export default function GoogleMap({
         }
     }, [])
 
-    return <GoogleMapProvider langType={langType}>
-        <Map mapId="e2f9ddc0facd5a80"
-             defaultCenter={mapCenter}
-             defaultZoom={defaultZoom}
-             onClick={pickingLocation ? handleMapClick : undefined}
-             className={pickingLocation ? 'picking-location' : undefined}
-             disableDefaultUI>
-            {
-                markersToShow.map((marker, index) => {
-                    const selected = mapCenter.lat === marker.position.lat && mapCenter.lng === marker.position.lng
-                    return <MapMarker
-                        onClick={() => setMapCenter(marker.position)}
-                        marker={marker}
-                        selected={selected}
-                        key={JSON.stringify(marker.position) + index}/>
-                })
-            }
-        </Map>
-    </GoogleMapProvider>
+    return geocodingLib ? <Map mapId="e2f9ddc0facd5a80"
+                               style={style}
+                defaultCenter={mapCenter}
+                defaultZoom={defaultZoom}
+                onClick={pickingLocation ? handleMapClick : undefined}
+                className={pickingLocation ? 'picking-location' : undefined}
+                disableDefaultUI>
+        {
+            markersToShow.map((marker, index) => {
+                const selected = mapCenter.lat === marker.position.lat && mapCenter.lng === marker.position.lng
+                return <MapMarker
+                    onClick={() => setMapCenter(marker.position)}
+                    marker={marker}
+                    selected={selected}
+                    key={JSON.stringify(marker.position) + index}/>
+            })
+        }
+    </Map>: null
 }
 
 export function MapMarker({marker, selected, onClick}: {

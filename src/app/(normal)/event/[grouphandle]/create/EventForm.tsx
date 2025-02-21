@@ -186,7 +186,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         <div className="mb-4 flex-shrink-0 w-[324px] h-[324px] overflow-hidden mx-auto">
                             <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.72)'}}>
                                 <div
-                                    className="font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
+                                    className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                                     {draft.title || lang['Event Name']}
                                 </div>
                                 <div
