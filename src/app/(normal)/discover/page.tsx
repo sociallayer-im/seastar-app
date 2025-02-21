@@ -7,8 +7,6 @@ import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import Footer from '@/components/Footer'
 import Feedback from '@/components/client/Feedback'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
-import GoogleMap from '@/components/client/Map'
-import {buttonVariants} from '@/components/shadcn/Button'
 import PopupCityMap from './PopupCityMap'
 
 export async function generateMetadata() {
@@ -53,10 +51,10 @@ export default async function DiscoverPage() {
                                    src={popupCity.image_url!} alt=""/>
                         </div>
                         <div className="webkit-box-clamp-1 text-xs">
-                            <DisplayDateTime format={'ddd, MMM DD'}
+                            <DisplayDateTime format={'MMM DD'}
                                              dataTimeStr={popupCity.start_date!}/>
-                            -
-                            <DisplayDateTime format={'ddd, MMM DD'} dataTimeStr={popupCity.end_date!}/>
+                            <span className="mx-1">-</span>
+                            <DisplayDateTime format={'MMM DD'} dataTimeStr={popupCity.end_date!}/>
                         </div>
                         <div className="webkit-box-clamp-2 text-lg font-semibold leading-5 h-10 mb-4">
                             {popupCity.title}
