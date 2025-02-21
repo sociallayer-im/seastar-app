@@ -8,7 +8,7 @@ export async function generateMetadata(props: GroupEventHomeDataProps) {
     const headersList = headers()
     const eventHomeGroupHandle = headersList.get('x-event-home')
     return !!eventHomeGroupHandle
-        ? await groupGenerateMetadata(props)
+        ? await groupGenerateMetadata({...props, groupHandle: eventHomeGroupHandle})
         : await discoverGenerateMetadata()
 }
 

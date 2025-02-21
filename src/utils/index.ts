@@ -357,7 +357,6 @@ export function getGroupSubdomain(url?: string | null) {
     try {
         const parts = url.split('.')
         if (parts.length > 2 && !SOLA_APP_SUBDOMAINS.includes(parts[0])) {
-            console.log('group subdomain:', parts[0])
             return parts[0]
         }
         return null

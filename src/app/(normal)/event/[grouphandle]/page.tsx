@@ -1,5 +1,5 @@
 import GroupEventHome from '@/app/(normal)/event/[grouphandle]/GroupEventHome'
-import {GroupEventHomeDataProps} from '@/app/(normal)/event/[grouphandle]/data'
+import {GroupEventHomeDataProps, GroupEventHomeDataWithHandleProps} from '@/app/(normal)/event/[grouphandle]/data'
 import {getGroupDetailByHandle} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
@@ -7,11 +7,12 @@ import {selectLang} from '@/app/actions'
 import {displayProfileName} from '@/utils'
 
 
-export async function generateMetadata(props: GroupEventHomeDataProps) {
+export async function generateMetadata(props: GroupEventHomeDataWithHandleProps) {
     const {params: {grouphandle}} = props
+    const handle = props.groupHandle || grouphandle
     const {lang} = await selectLang()
     const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: grouphandle!},
+        params: {groupHandle: handle!},
         clientMode: CLIENT_MODE
     })
 
