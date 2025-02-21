@@ -9,6 +9,8 @@ export const TrackJS = (typeof window !== "undefined") ?
     require("trackjs-node").TrackJS;
 
 export function TrackJSInstall() {
+    if (process.env.NODE_ENV === 'development') return
+
     if (!TrackJS.isInstalled()) {
         TrackJS.install({
             token: "0152620d86db425cbb01f366b16bc1ff"
