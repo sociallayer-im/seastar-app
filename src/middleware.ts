@@ -4,7 +4,9 @@ import {getGroupSubdomain} from '@/utils'
 
 export function middleware(request: NextRequest) {
     const headers = new Headers(request.headers)
-    const groupHandle = getGroupSubdomain(request.headers.get('Host'))
+    const host = headers.get('host')
+    console.log('app host', host)
+    const groupHandle = getGroupSubdomain(host)
     headers.set("x-current-path", request.url)
     !!groupHandle && headers.set("x-event-home", groupHandle)
 
