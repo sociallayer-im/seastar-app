@@ -260,9 +260,10 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                 <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">
                     <div className="hide-scroll whitespace-nowrap overflow-auto">
                         {
-                            !!groupHost ? <a
+                            !!groupHost ?
+                                groupHost.group?  <a
                                     className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                    href={`/group/${groupHost.group!.handle}`}>
+                                    href={groupHost.group ? `/group/${groupHost.group!.handle}` : undefined}>
                                     <Avatar profile={groupHost.group!} size={44} className="mr-2"/>
                                     <div>
                                         <div className="font-semibold text-sm text-nowrap">
@@ -270,7 +271,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                                         </div>
                                         <div className="text-xs text-gray-400">{lang['Host']}</div>
                                     </div>
-                                </a>
+                                </a>: null
                                 : <a
                                     className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
                                     href={`/profile/${owner.handle}`}>
