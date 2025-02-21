@@ -50,7 +50,7 @@ export async function generateMetadata({params: {eventid}, searchParams: {tab}}:
             description: description,
             type: 'website',
             url: `https://app.sola.day/event/detail/${eventDetail.id}`,
-            images: eventDetail.cover_url || 'https://app.sola.day/images/facaster_default_cover.png',
+            images: eventDetail.cover_url || '/images/facaster_default_cover.png',
         }
     }
 }

@@ -15,7 +15,7 @@ export async function generateMetadata() {
         title: 'Discover | Social Layer',
         openGraph: {
             title: 'Discover | Social Layer',
-            images: 'https://app.sola.day/images/facaster_default_cover.png',
+            images: '/images/facaster_default_cover.png',
         }
     }
 }

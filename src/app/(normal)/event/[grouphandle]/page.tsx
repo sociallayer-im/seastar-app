@@ -24,7 +24,7 @@ export async function generateMetadata(props: GroupEventHomeDataWithHandleProps)
         title: lang['Events of [{1}]'].replace('{1}', displayProfileName(groupDetail)),
         openGraph: {
             title: lang['Events of [{1}]'].replace('{1}', displayProfileName(groupDetail)),
-            images: groupDetail.banner_image_url || 'https://app.sola.day/images/facaster_default_cover.png',
+            images: groupDetail.banner_image_url || '/images/facaster_default_cover.png',
         }
     }
 }
