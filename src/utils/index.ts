@@ -692,6 +692,16 @@ export const displayMethodPrice = (payment: PaymentMethod) => {
     return BigNumber(payment.price).dividedBy(BigNumber(10).pow(targetToken.decimals)).toNumber()
 }
 
+export const prefixUrl = (url: string) => {
+    if (!url) return undefined
+
+    if (!url.startsWith('http') || !url.startsWith('https')) {
+        return `https://${url}`
+    } else {
+        return url
+    }
+}
+
 
 
 

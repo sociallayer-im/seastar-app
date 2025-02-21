@@ -7,7 +7,7 @@ import {
     eventCoverTimeStr,
     genGoogleMapLinkByEvent,
     getAvatar,
-    getEventDetailPageTimeStr, pickSearchParam
+    getEventDetailPageTimeStr, pickSearchParam, prefixUrl
 } from "@/utils"
 import {selectLang} from "@/app/actions"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
@@ -393,7 +393,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                             </div>
                             <div>
                                 <div className="font-semibold text-base">{lang['Online Meeting']}</div>
-                                <a href={eventDetail.meeting_url} target={'_blank'}
+                                <a href={prefixUrl(eventDetail.meeting_url)} target={'_blank'}
                                    className="text-gray-400 text-base hover:text-blue-400">
                                     {eventDetail.meeting_url}
                                 </a>
