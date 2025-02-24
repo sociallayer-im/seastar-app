@@ -24,7 +24,7 @@ export default function ProfileMenu({lang, currentPath, ...props}: { profile: Pr
     let menus = [
         {id: 'Profile', label: lang['Profile'], href: `/profile/${props.profile.handle}`},
         {id: 'Settings', label: lang['Settings'], href: `/profile/${props.profile.handle}/edit`},
-        {id: 'Create Group', label: lang['Create Group'], href: '/create-group'},
+        {id: 'Create Group', label: lang['Create Group'], href: '/group/create'},
         {id: 'Notification', label: lang['Notification'], href: '/notifications'},
         {id: 'Sign Out', label: lang['Sign Out'], action: handleSignOut},
     ] as Menu[]
