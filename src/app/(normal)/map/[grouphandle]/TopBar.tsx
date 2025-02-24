@@ -140,7 +140,7 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
             })
 
             setTimeout(() => {
-                window.location.href = `/map/${groupDetail.handle}/marker`
+                window.location.href = `../../event/[grouphandle]/map/${groupDetail.handle}/marker`
             }, 2000)
         } catch (e: unknown) {
             console.error(e)
