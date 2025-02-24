@@ -117,18 +117,24 @@ export default function DialogInviteDetail({inviteDetail, lang, close}: DialogIn
 
             <div className="text-red-500 text-sm my-2">{error}</div>
 
-            <div className="flex-row-item-center">
-                <Button variant={'secondary'}
-                        onClick={handleReject}
-                        className="flex-1 mr-2">
-                    {lang['Reject']}
-                </Button>
-                <Button variant={'primary'}
-                        onClick={handleAccept}
-                        className="flex-1 mr-2">
-                    {lang['Accept']}
-                </Button>
-            </div>
+            {inviteDetail.accepted
+                ?  <div className="p-2 bg-amber-50 text-amber-500 mb-3 flex items-center rounded-lg">
+                    <i className="uil-info-circle text-lg mr-1"/>
+                    {lang['You have accepted']}
+                </div>
+                : <div className="flex-row-item-center">
+                    <Button variant={'secondary'}
+                            onClick={handleReject}
+                            className="flex-1 mr-2">
+                        {lang['Reject']}
+                    </Button>
+                    <Button variant={'primary'}
+                            onClick={handleAccept}
+                            className="flex-1 mr-2">
+                        {lang['Accept']}
+                    </Button>
+                </div>
+            }
         </div>
     </div>
 }
