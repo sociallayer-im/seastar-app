@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 import {Dictionary} from '@/lang'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
+const DynamicFormatEventTime = dynamic(() => import('./FormatEventTime'), {ssr: false})
 
 export default function CardEvent({event, className, id, style, lang, highlight, additionalElement}: {
     event: EventWithJoinStatus,
@@ -68,7 +69,9 @@ export default function CardEvent({event, className, id, style, lang, highlight,
             </div>
             <div className="h-6 flex-row-item-center text-xs sm:text-sm">
                 <i className="uil-calendar-alt mr-1 text-sm"/>
-                {startTime}
+                <DynamicFormatEventTime
+                    dateTimeStr={event.start_time}
+                    tz={event.timezone} />
             </div>
             {!!event.location &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">

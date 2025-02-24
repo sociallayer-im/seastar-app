@@ -470,7 +470,7 @@ export const getGmtOffset = (timezone: string) => {
     return utcOffset >= 0 ? `GMT+${utcOffset}` : `GMT${utcOffset}`
 }
 
-export const formatEventTime = (dateTimeStr: string, timezone?: string) => {
+export const formatEventTime = (dateTimeStr: string, timezone?: string | null) => {
     const tz = timezone || dayjs.tz.guess()
     const date = dayjs.tz(new Date(dateTimeStr).getTime(), tz)
     const utcOffset = date.utcOffset() / 60
