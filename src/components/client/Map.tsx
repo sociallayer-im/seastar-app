@@ -1,7 +1,7 @@
 'use client'
 
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
-import {Map, AdvancedMarker, useMap, MapEvent, MapMouseEvent, useMapsLibrary} from '@vis.gl/react-google-maps'
+import {Map, AdvancedMarker, useMap, MapMouseEvent, useMapsLibrary} from '@vis.gl/react-google-maps'
 import {Button} from '@/components/shadcn/Button'
 import {useMemo, useState, useEffect} from 'react'
 
@@ -41,14 +41,19 @@ export function GoogleMapInner({
     },[geocodingLib])
 
     const markersToShow = useMemo(() => {
-        // set the layer of center marker to the top,
+        // if google map lib is not loaded, just return empty array
+        if (!geocodingLib) {
+            return []
+        }
+
+        // set the layer of center marker to the top
         const centerMarker = markers.find(marker => marker.position.lat === mapCenter.lat && marker.position.lng === mapCenter.lng)
         if (centerMarker) {
             return [...markers.filter(marker => marker !== centerMarker), centerMarker]
         } else {
             return markers
         }
-    }, [mapCenter])
+    }, [mapCenter, geocodingLib])
 
     const handleMapClick = (e: MapMouseEvent) => {
         const location = e.detail.latLng
