@@ -1,7 +1,8 @@
 import {ClientMode, getGqlClient, getSdkConfig} from '../client'
-import {Event, Group, getGroupDetailById, GroupDetail, getGroupEventByHandle} from '@sola/sdk'
+import {Event, Group, getGroupDetailById, GroupDetail, getGroupEventByHandle, PopupCityDraft} from '@sola/sdk'
 import {PopupCity} from './types'
 import {GET_POPUP_CITIES} from './schemas'
+import {SolaSdkFunctionParams} from '../types'
 
 export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
     const url = `${getSdkConfig(clientMode).api}/event/discover`
@@ -39,4 +40,23 @@ export const getPopupCities = async ({clientMode}: {clientMode: ClientMode}) => 
     })
 
     return response.data.popup_cities as PopupCity[]
+}
+
+export const createPopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{popupCityDraft: PopupCityDraft, authToken: string}>) => {
+    const props = {
+        auth_token: params.authToken,
+        ...params.popupCityDraft
+    }
+
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/create_popup`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(props)
+    })
+
+    if (!response.ok) {
+        throw new Error('fail to create popup-city: ' + response.statusText)
+    }
 }
