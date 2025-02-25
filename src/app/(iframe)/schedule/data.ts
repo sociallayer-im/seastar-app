@@ -2,7 +2,6 @@
 
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {pickSearchParam} from "@/utils"
-import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import {headers} from "next/headers"
 
 const api = process.env.NEXT_PUBLIC_API_URL
@@ -150,7 +149,7 @@ export async function IframeSchedulePageData({
     })
 
     if (!response.ok) {
-        throw new Error('Fail to get schedule data: ' + response.statusText)
+        throw new Error('Fail to get schedule data: ' + response.statusText + ' api: ' + url)
     }
 
     const data = await response.json()

@@ -8,7 +8,7 @@ export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
     const response = await fetch(url)
 
     if (!response.ok) {
-        throw new Error('Failed to fetch:' + response.status)
+        throw new Error('Failed to fetch:' + response.status + ' url: ' + url)
     }
 
     const data = await response.json()
