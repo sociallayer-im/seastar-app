@@ -649,7 +649,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                                     token_name: targetToken!.name,
                                                     token_address: targetToken!.contract,
                                                     protocol: option[0].protocol!,
-                                                    price: 1
+                                                    price: 10**targetToken!.decimals
                                                 } : p))
                                             }}
                                             renderOption={(option) => {
