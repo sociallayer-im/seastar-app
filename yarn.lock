@@ -9065,11 +9065,6 @@ tough-cookie@^4.1.3:
     universalify "^0.2.0"
     url-parse "^1.5.3"
 
-trackjs-nextjs@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/trackjs-nextjs/-/trackjs-nextjs-1.0.0.tgz#eea4215d6c2568397a5e21f6415984771fe03ca0"
-  integrity sha512-fdDw+GSr02OuZeIYmYzSeeP3YWZNMOs8LEV0KZRLlsM0laAMJoAS6I66FdPCdXDzc3++ZX7QSNszqRRCalxfyg==
-
 trackjs-node@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/trackjs-node/-/trackjs-node-1.1.0.tgz#e4830c60bbdc5cf251b964013c426e44c14972ab"
