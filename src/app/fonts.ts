@@ -7,6 +7,17 @@ export const poppins = Poppins({
     subsets: ['latin'],
 })
 
+export const media_icons = localFont({
+    src: [{path: './fonts/media_icons.woff2'}],
+    display: 'block',
+    variable: '--media-icon'
+})
+
+export const editor_icons = localFont({
+    src: [{path: './fonts/editor_icons.woff'}],
+    display: 'block',
+    variable: '--editor-icon'
+})
 
 export const icon = localFont({
     src: [

@@ -1,0 +1,38 @@
+[class^=media-]:before, [class*=" media-"]:before  {
+  font-family: var(--media-icon);
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.media-discord:before {
+  content: "\eaa0";
+}
+
+.media-lens:before {
+  content: "\e62e";
+}
+
+.media-ens:before {
+  content: "\e62d";
+}
+
+.media-web:before {
+  content: "\e935";
+}
+
+.media-telegram:before {
+  content: "\e731";
+}
+
+.media-github:before {
+  content: "\ec01";
+}
+
+.media-x:before {
+  content: "\e600";
+}
+
+.media-farcaster:before {
+  content: "\eb8b";
+}
+

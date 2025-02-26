@@ -23,11 +23,12 @@ export default function ModalWrapper({clickOutsideToClose = true, ...props}: {
     }
 
     return <div data-testid="modal-wrapper"
-        className="fixed left-0 top-0 z-[9999] w-[100vw] h-[100svh] flex flex-col items-center justify-center">
+                className="fixed left-0 top-0 z-[9999] w-[100vw] h-[100svh] flex flex-col items-center justify-center">
 
         <div data-testid="modal-shell"
-            onClick={handleClickOutside}
-            className="absolute z-0 left-0 top-0 w-[100vw] h-[100svh] bg-white opacity-60 blur-2xl" />
+             onClick={handleClickOutside}
+             className="absolute z-0 left-0 top-0 w-[100vw] h-[100svh]"
+             style={{backdropFilter: 'blur(4.5px)', background: 'rgba(255,255,255,.5)'}}/>
 
         <div ref={contentRef} className="relative z-10 opacity-0 transition-all duration-300">
             {props.content(props.close)}

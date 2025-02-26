@@ -1,15 +1,21 @@
-import {selectLang} from '@/app/actions'
-import {redirect} from "next/navigation"
+import DiscoverPage, {generateMetadata as discoverGenerateMetadata} from "@/app/(normal)/discover/page"
+import GroupEventHome from '@/app/(normal)/event/[grouphandle]/GroupEventHome'
+import { headers } from "next/headers"
+import {GroupEventHomeDataProps} from '@/app/(normal)/event/[grouphandle]/data'
+import {generateMetadata as groupGenerateMetadata} from '@/app/(normal)/event/[grouphandle]/page'
 
+export async function generateMetadata(props: GroupEventHomeDataProps) {
+    const headersList = headers()
+    const eventHomeGroupHandle = headersList.get('x-event-home')
+    return !!eventHomeGroupHandle
+        ? await groupGenerateMetadata({...props, groupHandle: eventHomeGroupHandle})
+        : await discoverGenerateMetadata()
+}
 
-export default async function Home() {
-    const lang = (await selectLang()).lang
-
-    redirect('https://www.sola.day')
-
-    return <div className="w-full min-h-[calc(100svh-48px)] flex flex-row justify-center items-center relative z-10">
-        <div className="w-[360px] mx-auto p-4">
-            <div className="font-semibold mb-6 text-lg">{lang['Sign In']}</div>
-        </div>
-    </div>
+export default async function Home(props: GroupEventHomeDataProps) {
+    const headersList = headers()
+    const eventHomeGroupHandle = headersList.get('x-event-home')
+    return !!eventHomeGroupHandle
+        ? <GroupEventHome  groupHandle={eventHomeGroupHandle} {...props}/>
+        : <DiscoverPage />
 }

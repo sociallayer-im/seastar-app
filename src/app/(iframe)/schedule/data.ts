@@ -2,7 +2,7 @@
 
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {pickSearchParam} from "@/utils"
-import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
+import {headers} from "next/headers"
 
 const api = process.env.NEXT_PUBLIC_API_URL
 
@@ -19,7 +19,7 @@ export interface IframeSchedulePageSearchParams {
 }
 
 export interface IframeSchedulePageParams {
-    group: string
+    grouphandle: string
 }
 
 export interface IframeSchedulePageDataGroup {
@@ -88,7 +88,6 @@ export interface IframeSchedulePageDataProps {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
     view: 'week' | 'day' | 'list',
-    cookies: ReadonlyRequestCookies
 }
 
 function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []) {
@@ -112,9 +111,8 @@ export async function IframeSchedulePageData({
     params,
     searchParams,
     view,
-    cookies
 }: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
-    const groupName = params.group
+    const groupName = params.grouphandle
     const filters: Filter = {
         tags: searchParams.tags ? pickSearchParam(searchParams.tags)!.split(',') : [],
         trackId: searchParams.track ? Number(pickSearchParam(searchParams.track)!) : undefined,
@@ -151,7 +149,7 @@ export async function IframeSchedulePageData({
     })
 
     if (!response.ok) {
-        throw new Error('Fail to get schedule data: ' + response.statusText)
+        throw new Error('Fail to get schedule data: ' + response.statusText + ' api: ' + url)
     }
 
     const data = await response.json()
@@ -165,15 +163,25 @@ export async function IframeSchedulePageData({
         current = current.add(1, 'day')
     }
 
-    const weeklyUrl = `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
-
+    let weeklyUrl = `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
     let dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
     if (view === 'week' && dayjs.tz(new Date(), data.group.timezone).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
         // if current date is in the interval, set the daily view to the current date
         dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams, ['start_date'])}`
     }
+    let listingUrl = `/schedule/list/${groupName}?${searchParamsToString(searchParams)}`
 
-    const listingUrl = `/schedule/list/${groupName}?${searchParamsToString(searchParams)}`
+    const headersList = await headers()
+    const currPath = headersList.get('x-current-path')
+    if (currPath?.includes('/event/')) {
+        // if not in iframe
+        weeklyUrl = `/event/${groupName}/schedule/week?${searchParamsToString(searchParams)}`
+        dailyUrl = `/event/${groupName}/schedule/day?${searchParamsToString(searchParams)}`
+        if (view === 'week' && dayjs.tz(new Date(), data.group.timezone).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
+            dailyUrl = `/event/${groupName}/schedule/day?${groupName}?${searchParamsToString(searchParams, ['start_date'])}`
+        }
+        listingUrl = `/event/${groupName}/schedule/list?${searchParamsToString(searchParams)}`
+    }
 
     const events = data.events
         .map((event: IframeSchedulePageDataEvent) => {
@@ -191,7 +199,7 @@ export async function IframeSchedulePageData({
         || filters.skipMultiDay
 
 
-    const eventHomeUrl = `${cookies.get('referer')?.value || process.env.NEXT_PUBLIC_APP_URL || ''}/event/${data.group.handle || data.group.username}`
+    const eventHomeUrl = `/event/${data.group.handle || data.group.username}`
 
     return {
         ...data,

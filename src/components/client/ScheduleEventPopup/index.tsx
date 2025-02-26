@@ -27,15 +27,6 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
         }
         : event.owner
 
-    let referer = process.env.NEXT_PUBLIC_APP_URL + '/'
-    if (Cookies.get('referer')) {
-        try {
-            referer = new URL(Cookies.get('referer')!).href
-        } catch (e){
-            console.log(e)
-        }
-    }
-
     return <div className="max-h-[90svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap">
             <div className="flex-1">
@@ -48,7 +39,7 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                 <div className="sm:text-base text-sm font-semibold sm:my-2 my-1">{event.title}</div>
                 {!!event.tags &&
                     <div className="flex-row-item-center sm:my-2 my-1 sm:text-base text-xs">
-                        {event.tags.map((tag, index) => {
+                        {event.tags.filter(t => !t.startsWith(':')).map((tag, index) => {
                             return <div key={index} className="flex-row-item-center !inline-flex mr-4">
                                 <i className='mr-1 w-2 h-2 shrink-0 rounded-full'
                                     style={{background: getLabelColor(tag)}}></i>
@@ -99,9 +90,8 @@ export default function ScheduleEventPopup({event, timezone} : {event: Solar.Eve
                     </a>
                 }
             </div>
-            <a href={`${referer}event/detail/${event.id}`}
+            <a href={`/event/detail/${event.id}`}
                 className={`${buttonVariants({variant: 'normal'})}  font-semibold`}
-                target="_blank"
                 rel="nofollow">View Detail</a>
         </div>
     </div>

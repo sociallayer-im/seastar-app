@@ -164,7 +164,7 @@ export function liftListItem(itemType: NodeType): Command {
     let range = $from.blockRange($to, node => node.childCount > 0)
     if (!range) {
       console.log('range 1', range)
-      return  false
+      return false
     }
     if (!dispatch) return true
     if ($from.node(range.depth - 1)?.type == itemType) // Inside a parent list
@@ -209,7 +209,6 @@ function liftOutOfList(state: EditorState, dispatch: (tr: Transaction) => void, 
     if (!parent.canReplace(indexBefore + (atStart ? 0 : 1), indexBefore + 1,
         item.content.append(atEnd ? Fragment.empty : Fragment.from(list))))
     {
-      console.log('false ==', parent)
       return false
     }
     let start = $start.pos, end = start + item.nodeSize
@@ -233,13 +232,11 @@ export function sinkListItem(itemType: NodeType): Command {
     let {$from, $to} = state.selection
     let range = $from.blockRange($to, node => node.childCount > 0)
     if (!range) {
-      console.log('!range', $from, $to)
       return false
     }
 
     let startIndex = range.startIndex
     if (startIndex == 0){
-      console.log('startIndex == 0', range)
       return false
     }
 

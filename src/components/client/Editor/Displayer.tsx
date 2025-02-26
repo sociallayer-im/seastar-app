@@ -1,3 +1,5 @@
+'use client'
+
 import {useEffect, useRef} from 'react'
 import styles from './RichTextEditor.module.scss'
 import {EditorView,} from "prosemirror-view"

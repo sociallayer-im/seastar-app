@@ -1,5 +1,8 @@
-import {useState, useRef, useEffect, CSSProperties} from "react"
+import {useState, useRef, useEffect, CSSProperties, useCallback} from "react"
 
+export interface DropdownTrigger {
+    trigger: null | ((show: boolean) => void)
+}
 
 export default function DropdownMenu<T>(props: {
     children: React.ReactNode
@@ -7,8 +10,13 @@ export default function DropdownMenu<T>(props: {
     multiple?: boolean,
     value?: T[],
     onSelect: (values: T[]) => void,
-    renderOption: (option: T) => React.ReactNode,
+    renderOption: (option: T, index: number) => React.ReactNode,
     valueKey: keyof T
+    align?: 'left' | 'right'
+    fixWidth?: boolean,
+    trigger?: DropdownTrigger
+    optDividers?: boolean
+    disabled?: boolean
 }) {
 
     const triggerRef = useRef<HTMLDivElement>(null)
@@ -18,30 +26,39 @@ export default function DropdownMenu<T>(props: {
     const [show, setShow] = useState(false)
     const [positionStyle, setPositionStyle] = useState<CSSProperties>({})
 
-    const triggerShow = () => {
+    const trigger = (show: boolean) => {
+        calculatePosition()
+        setShow(show)
+    }
+
+    if (props.trigger) {
+        props.trigger.trigger = trigger
+    }
+
+    const calculatePosition = useCallback(() => {
         const triggerRect = triggerRef.current?.getBoundingClientRect()
         const contentRect = contentRef.current?.getBoundingClientRect()
         if (triggerRect && contentRect) {
             const contentHeight = contentRect.height
             const triggerBottomOffset = window.innerHeight - triggerRect.bottom
 
-            if(triggerBottomOffset < contentHeight) {
-                setPositionStyle({
-                    top: triggerRect.top - contentHeight,
-                    left: triggerRect.left,
-                    width: triggerRect.width
-                })
-            } else {
-                setPositionStyle({
-                    top: triggerRect.top + triggerRect.height,
-                    left: triggerRect.left,
-                    width: triggerRect.width
-                })
-            }
+            setPositionStyle({
+                top: triggerBottomOffset < contentHeight ? triggerRect.top - contentHeight : triggerRect.top + triggerRect.height,
+                left: triggerRect.left,
+                minWidth: triggerRect.width,
+                maxWidth: props.fixWidth ? triggerRect.width : undefined,
+                marginLeft: props.align === 'right' ?triggerRect.width - contentRect.width : '0'
+            })
         }
+    }, [props.align, props.fixWidth])
 
-        setShow(!show)
-    }
+    useEffect(() => {
+        let interval:number
+        if (show) {
+            interval = window.setInterval(calculatePosition, 1)
+        }
+        return () => clearInterval(interval)
+    }, [calculatePosition, show])
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -51,8 +68,12 @@ export default function DropdownMenu<T>(props: {
         }
 
         document.addEventListener('mousedown', handleClickOutside)
-        return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
+        window.addEventListener('resize', calculatePosition)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+            window.removeEventListener('resize', calculatePosition)
+        }
+    }, [calculatePosition])
 
     const handleSelect = (option: T) => {
         if (props.multiple) {
@@ -70,18 +91,18 @@ export default function DropdownMenu<T>(props: {
     return <div className="dropwdown relative" ref={dropdownRef}>
         <div className="dropdown-trigger"
             ref={triggerRef}
-            onClick={triggerShow}>
+            onClick={props.trigger || props.disabled ? undefined : () => trigger(!show)}>
             {props.children}
         </div>
         <div
             ref={contentRef}
             style={positionStyle}
-            className={`${show ? 'opacity-1 visible' : 'opacity-0 invisible'} dropdown-content max-h-[200px] overflow-auto fixed bg-background shadow rounded-lg p-2 z-[9999] decoration-2`}>
+            className={`${show ? 'opacity-1 visible' : 'opacity-0 invisible'} dropdown-content max-h-[250px] overflow-auto fixed bg-background shadow rounded-lg p-2 z-[9999] decoration-2`}>
             {props.options.map((option, index) => <div
-                className={`py-2 px-3 cursor-pointer rounded-lg hover:bg-[#F1F1F1] ${props.value?.find(v => v[props.valueKey] === option[props.valueKey]) ? 'bg-[#F1F1F1]' : ''}`}
+                className={`${props.optDividers ? 'border-gray-100 border-t-[1px]': 'rounded-lg mb-1'} last:mb-0 first:border-0 py-2 px-3 cursor-pointer hover:bg-[#F1F1F1] ${props.value?.find(v => v[props.valueKey] === option[props.valueKey]) ? 'bg-[#F1F1F1]' : ''}`}
                 key={index}
                 onClick={() => handleSelect(option)}>
-                {props.renderOption(option)}</div>)
+                {props.renderOption(option, index)}</div>)
             }
         </div>
     </div>

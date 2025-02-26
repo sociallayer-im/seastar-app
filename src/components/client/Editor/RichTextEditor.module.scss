@@ -1,5 +1,5 @@
 .editor-wrapper {
-  background: #F8F9F8;
+  background: var(--secondary);
   padding: 10px;
   border-radius: 10px;
 
@@ -28,7 +28,7 @@
       align-items: center;
       padding: 0 16px;
       height: 40px;
-      background: #EFF3F1;
+      background: #e5e5e5;
       border-radius: 4px;
       overflow: auto;
 
@@ -376,7 +376,15 @@
     }
 
     .ProseMirror ul, .ProseMirror ol {
-      padding-left: 30px;
+      padding-left: 1.5em;
+    }
+
+    .ProseMirror ul, {
+      list-style: initial;
+    }
+
+    .ProseMirror ol {
+      list-style: decimal;
     }
 
     .ProseMirror blockquote {
@@ -474,15 +482,15 @@
     }
 
     .ProseMirror p {
-      margin-bottom: 1em
+      margin-bottom: 0.5rem
     }
 
   }
 }
 
 .dialog-insert-link {
-  width: 100%;
-  height: 100%;
+  width: 320px;
+  height: auto;
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
@@ -510,6 +518,10 @@
     display: flex;
     flex-flow: row nowrap;
     margin-top: 12px;
+
+    button {
+      flex: 1;
+    }
 
     button:nth-child(2) {
       margin-left: 12px;

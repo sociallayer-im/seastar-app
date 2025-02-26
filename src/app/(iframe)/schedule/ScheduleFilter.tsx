@@ -112,10 +112,8 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                 const menu = dropdown.querySelector('.dropdown-content') as HTMLElement
                 const menuRect = menu.getBoundingClientRect()
                 if (window.innerHeight - dropdownRect.bottom <= 230) {
-                    console.log('a', top)
                     menu.style.top = `${top - menuRect.height - 6}px`
                 } else {
-                    console.log('b', top)
                     menu.style.top = `${top + 48}px`
                 }
             })

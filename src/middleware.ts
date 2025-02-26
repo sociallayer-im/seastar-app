@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import {getGroupSubdomain} from '@/utils'
 
 export function middleware(request: NextRequest) {
+    const headers = new Headers(request.headers)
+    const host = headers.get('host')
+    const groupHandle = getGroupSubdomain(host)
+    headers.set("x-current-path", request.url)
+    !!groupHandle && headers.set("x-event-home", groupHandle)
+
+    const response = NextResponse.next({ headers })
+
     const url = new URL(request.url)
     const referer = url.searchParams.get('referer')
-    const response = NextResponse.next()
     if (referer) {
         response.cookies.set('referer', referer)
     }
@@ -13,5 +21,10 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/schedule/:path*'],
+    matcher: ['/((?!api|/images|/fonts|favicon.ico|sitemap.xml|robots.txt).*)'],
 }
+
+
+
+
+
