@@ -2,7 +2,7 @@
 
 import {createPopupCity, getGroupDetailByHandle, Group, GroupDetail, PopupCityDraft, updateGroup} from '@sola/sdk'
 import {Dictionary} from '@/lang'
-import {useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {CLIENT_MODE} from '@/app/config'
@@ -85,6 +85,11 @@ export default function CreatePopupCityForm({availableGroups, lang}: CreatePopup
             closeModal(loading)
         }
     }
+
+    useEffect(() => {
+        console.log('popup city draft', draft)
+        console.log('group detail', groupDetail)
+    }, [draft, groupDetail])
 
     return <div>
         <div className="absolute left-0 top-0 w-full h-[400px] opacity-[0.3] pointer-events-none"

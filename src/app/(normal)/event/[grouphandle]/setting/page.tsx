@@ -3,7 +3,7 @@ import {selectLang} from "@/app/actions"
 import {buttonVariants} from "@/components/shadcn/Button"
 
 export default async function GroupEventSettingPage(props: GroupEventSettingDataProps) {
-    const {groupDetail, venues, tracks} = await GroupEventSettingData(props)
+    const {groupDetail, venues, tracks, popupCities} = await GroupEventSettingData(props)
     const {lang} = await selectLang()
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
@@ -27,6 +27,17 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                         <div>{lang['Tracks']}</div>
                         <div className="font-normal flex-row-item-center">
                             <div>{tracks.length}</div>
+                            <i className="uil-arrow-right text-2xl"/>
+                        </div>
+                    </div>
+                </a>
+
+                <a href={`/event/${groupDetail.handle}/popup-city`}
+                   className={`${buttonVariants({variant: 'secondary'})} w-full mb-3`}>
+                    <div className="flex-row-item-center w-full justify-between">
+                        <div>{lang['Pop-up Cities']}</div>
+                        <div className="font-normal flex-row-item-center">
+                            <div>{popupCities.length}</div>
                             <i className="uil-arrow-right text-2xl"/>
                         </div>
                     </div>

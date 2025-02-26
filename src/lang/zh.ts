@@ -496,4 +496,7 @@ export const zh: Dictionary = {
     'Set Event Permission': '设置活动权限',
     'View Event Home Page':'浏览活动主页',
     'Website (optional)':'网站（可选）',
+    'Edit Popup-City':'编辑Popup-City',
+    'Popup-City Name': 'Popup-City Name',
+    'Please input Popup-City name':'请输入Popup-City名称',
 }

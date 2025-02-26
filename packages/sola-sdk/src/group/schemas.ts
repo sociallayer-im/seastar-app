@@ -152,6 +152,16 @@ export const GROUP_DETAIL_FRAGMENT = gql`
         }
         venues(where:{visibility: {_neq: "none"}}, order_by: {id: asc}) {
             ...VenueDetailFragment
+        },
+        popup_cities: popup_cities(order_by: {id: desc}) {
+            id
+            image_url
+            location
+            start_date
+            title
+            updated_at
+            website
+            end_date
         }
     }
     ${GROUP_FRAGMENT}

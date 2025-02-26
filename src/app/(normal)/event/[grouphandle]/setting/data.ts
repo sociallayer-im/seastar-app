@@ -41,6 +41,7 @@ export default async function GroupEventSettingData(props: GroupEventSettingData
     return {
         groupDetail: groupDetail,
         venues: groupDetail.venues,
-        tracks: groupDetail.tracks
+        tracks: groupDetail.tracks,
+        popupCities: groupDetail.popup_cities
     }
 }

@@ -494,6 +494,9 @@ export const en = {
     'Set Event Permission':'Set Event Permission',
     'View Event Home Page':'View Event Home Page',
     'Website (optional)':'Website (optional)',
+    'Edit Popup-City':'Edit Popup-City',
+    'Popup-City Name':'Popup-City Name',
+    'Please input Popup-City name': 'Please input Popup-City name'
 }
 
 export type Dictionary = typeof en
