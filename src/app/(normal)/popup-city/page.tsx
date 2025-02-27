@@ -25,10 +25,10 @@ export default async function PopupCityListPage() {
                                src={popupCity.image_url!} alt=""/>
                     </div>
                     <div className="webkit-box-clamp-1 text-xs">
-                        <DisplayDateTime format={'ddd, MMM DD'}
+                        <DisplayDateTime format={'MMM DD'}
                                          dataTimeStr={popupCity.start_date!} />
-                        -
-                        <DisplayDateTime format={'ddd, MMM DD'} dataTimeStr={popupCity.end_date!} />
+                        <span className="mx-1">-</span>
+                        <DisplayDateTime format={'MMM DD'} dataTimeStr={popupCity.end_date!} />
                     </div>
                     <div className="webkit-box-clamp-2 text-lg font-semibold leading-5 h-10 mb-4">
                         {popupCity.title}

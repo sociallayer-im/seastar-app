@@ -10,6 +10,7 @@ import {CLIENT_MODE} from '@/app/config'
 interface ProfileInputProps {
     value: Array<Profile>
     lang: Dictionary
+    size?: 'md' | 'sm' | 'default'
     placeholder?: string
     onChange?: (value: Array<Profile>) => void
 }
@@ -25,7 +26,7 @@ const getEmptyRole = () => {
     } as Solar.ProfileSample
 }
 
-export default function ProfileInput({lang, value, onChange, placeholder}: ProfileInputProps) {
+export default function ProfileInput({lang, value, onChange, placeholder, size}: ProfileInputProps) {
     const [list, setList] = useState<Solar.ProfileSample[]>(value)
 
     useEffect(() => {
@@ -63,6 +64,7 @@ export default function ProfileInput({lang, value, onChange, placeholder}: Profi
     return <div>
         {
             list.map((item, i) => <RoleOption
+                size={size}
                 item={item}
                 key={i}
                 placeholder={placeholder}
@@ -86,9 +88,10 @@ export interface RoleOptionProps {
     onRemove?: () => void
     showAddBtn?: boolean
     placeholder?: string
+    size?: 'md' | 'sm' | 'default'
 }
 
-function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placeholder}: RoleOptionProps) {
+function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placeholder, size}: RoleOptionProps) {
     const [searchResult, setSearchResult] = useState<Profile[]>([])
     const {current: dropDownTrigger} = useRef<DropdownTrigger>({trigger: null})
     const searchIdentifier = useRef(0)
@@ -146,6 +149,8 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placehol
                     </div>}
                     trigger={dropDownTrigger}>
                     <Input
+                        inputSize={size}
+                        autoComplete={'off'}
                         onFocus={handleFocus}
                         onChange={handleInputName}
                         startAdornment={<div className="flex-row-item-center">

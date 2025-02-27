@@ -17,6 +17,7 @@ export default function DropdownMenu<T>(props: {
     trigger?: DropdownTrigger
     optDividers?: boolean
     disabled?: boolean
+    className?: string
 }) {
 
     const triggerRef = useRef<HTMLDivElement>(null)
@@ -89,7 +90,7 @@ export default function DropdownMenu<T>(props: {
     }
 
     return <div className="dropwdown relative" ref={dropdownRef}>
-        <div className="dropdown-trigger"
+        <div className={`$dropdown-trigger ${props.className || ''}`}
             ref={triggerRef}
             onClick={props.trigger || props.disabled ? undefined : () => trigger(!show)}>
             {props.children}

@@ -29,3 +29,12 @@ export const GET_POPUP_CITIES = gql`
         }
     }
 `
+
+export const GET_POPUP_CITIES_BY_ID = gql`
+    ${POPUP_CITY_FRAGMENT}
+    query GetPopupCitiesById($id: bigint!){
+        popup_cities(where:{id:{_eq: $id}}) {
+            ...PopupCityFragment
+        }
+    }
+`
