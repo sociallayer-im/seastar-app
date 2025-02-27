@@ -34,15 +34,6 @@ export default function useExternalEvent() {
                         start_time: data.start?.utc,
                         end_time: data.end?.utc,
                         timezone: data.start?.timezone,
-                        event_roles: data.guests ? data.guests.map((g: any) => {
-                            return {
-                                role: 'co_host',
-                                item_id: null,
-                                nickname: g.name || 'unknown',
-                                image_url: g.avatar_url
-                            }
-                        }): []
-
                     }
 
                     return eventData as EventDraftType
