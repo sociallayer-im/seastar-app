@@ -310,7 +310,7 @@ export default function RichTextEditor({initText, onChange}: {
         return () => {
             editorViewRef.current?.destroy()
         }
-    }, [])
+    }, [initText])
 
     const uploadImgCommend = () => {
         const targetCommand = editorMenuCommand.insertMenu.find(i => i.name === 'Upload Image')

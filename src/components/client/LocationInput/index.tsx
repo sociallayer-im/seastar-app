@@ -1,5 +1,5 @@
 import SelectVenue from "@/components/client/LocationInput/SelectVenue"
-import {useRef, useState} from "react"
+import {useEffect, useRef, useState} from "react"
 import SearchLocation from "@/components/client/LocationInput/SearchLocation"
 import {Dictionary} from "@/lang"
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
@@ -14,8 +14,12 @@ export interface LocationInputProps {
 }
 
 export default function LocationInput({state: {event, setEvent}, venues, lang, isManager, isMember}: LocationInputProps) {
-    const [useVenue, _setUseVenue] = useState(event.venue_id || (!event.venue_id && !event.formatted_address))
+    const [useVenue, _setUseVenue] = useState(!!event.venue_id || (!event.venue_id && !event.formatted_address))
     const venueCache = useRef<null | VenueDetail>(null)
+
+    useEffect(()=> {
+        _setUseVenue(!!event.venue_id || (!event.venue_id && !event.formatted_address))
+    }, [event.venue_id, event.formatted_address])
 
     const setUseVenue = (useVenue: boolean) => {
         if (useVenue) {

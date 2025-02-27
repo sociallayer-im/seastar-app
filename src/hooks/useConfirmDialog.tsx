@@ -2,11 +2,12 @@ import DialogConfirm from '@/components/client/DialogConfirm'
 import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 
-interface showConfirmDialogProps {
+export interface ShowConfirmDialogProps {
     lang: Dictionary,
     title: string,
     type?: 'danger' | 'info',
     content: string,
+    hiddenCancelBtn?: boolean,
     onConfig?: () => void,
     onCanceled?: () => void
 }
@@ -14,7 +15,7 @@ interface showConfirmDialogProps {
 export default function useConfirmDialog() {
     const {openModal} = useModal()
 
-    const showConfirmDialog = (props: showConfirmDialogProps) => {
+    const showConfirmDialog = (props: ShowConfirmDialogProps) => {
         openModal({
             content: (close) => <DialogConfirm
                 {...props} close={close!}

@@ -23,6 +23,8 @@ import {CLIENT_MODE} from '@/app/config'
 import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
 import dayjs from '@/libs/dayjs'
 import {AVNeeds, isEdgeCityGroup, SeatingStyle} from '@/app/configForSpecifyGroup'
+import useExternalEvent from '@/hooks/useExternalEvent'
+import useConfirmDialog from '@/hooks/useConfirmDialog'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 const EventDateTimeInput = dynamic(() => import('@/components/client/EventDateTimeInput'), {ssr: false})
@@ -38,6 +40,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
     const [draft, setDraft] = useState(data.eventDraft)
     const {uploadImage} = useUploadImage()
     const {showLoading, closeModal} = useModal()
+    const {showConfirmDialog} = useConfirmDialog()
     const ticketCheckerRef = useRef<Checker>({check: undefined})
 
     // ui
@@ -163,11 +166,39 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
         }
     }
 
+    const {getLumaEvent} = useExternalEvent()
+
+    const handleImportLumaEvent = async () => {
+        const eventData = await getLumaEvent(lang)
+        if (!eventData) {return}
+        console.log('luma event data', eventData)
+        setDraft({...draft, ...eventData})
+        showConfirmDialog({
+            lang: lang,
+            title: lang['External Event Imported Successfully'],
+            content: lang['Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details.'],
+            type: 'info',
+            hiddenCancelBtn: true
+        })
+    }
+
     return <div className="min-h-[100svh] w-full">
         <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">
             <div
-                className="pt-6 pb-10 font-semibold text-center text-xl relative">
+                className="pt-4 sm:pt-6 sm:pb-10 font-semibold text-center text-xl relative">
                 {draft.id ? lang['Edit Event'] : lang['Create Event']}
+
+                { !draft.id &&
+                    <Button variant={'ghost'}
+                            size={'xs'}
+                            onClick={handleImportLumaEvent}
+                            className="!block !sm:inline sm:absolute mt-1 sm:mt-0 right-0 top-6 text-sm !text-blue-500">
+                       <div className="flex-row-item-center">
+                           <i className="uil-plus-circle mr-1 text-base"/>
+                           <span>External Event</span>
+                       </div>
+                    </Button>
+                }
 
                 {!!draft.id && draft.status !== 'cancelled' &&
                     <Button
