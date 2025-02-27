@@ -257,7 +257,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                 </div>
 
                 <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">
-                    <div className="hide-scroll whitespace-nowrap overflow-auto">
+                    <div className="hide-scroll whitespace-nowrap overflow-auto max-w-[640px]">
                         {
                             !!groupHost ?
                                 groupHost.group?  <a
@@ -302,7 +302,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                         }
                     </div>
 
-                    <div className="hide-scroll whitespace-nowrap overflow-auto">
+                    <div className="hide-scroll whitespace-nowrap overflow-auto max-w-[640px]">
                         {
                             eventDetail.event_roles?.filter(role => role.role === 'speaker').map(role => {
                                 return <a key={role.id}
