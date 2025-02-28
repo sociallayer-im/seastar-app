@@ -2,7 +2,6 @@
 
 import HyperDX from '@hyperdx/browser'
 import {useEffect} from 'react'
-import * as process from 'node:process'
 import {getSdkConfig} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 
