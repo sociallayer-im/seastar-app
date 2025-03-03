@@ -51,8 +51,13 @@ export class SubscriptionClient {
                 onMessage && onMessage(data.data as unknown as SubscriptionInviteResponse)
             },
             error: (error) => {
-                console.error(error)
-                onError && onError(error as Error)
+                if (error instanceof Event) {
+                    console.error("subscription error:", error.type)
+                    onError && onError(new Error("subscription error:" + error.type))
+                } else {
+                    console.error(error)
+                    onError && onError(error as Error)
+                }
             },
             complete: () => {
                 console.log('subscription complete')
@@ -78,8 +83,13 @@ export class SubscriptionClient {
                 onMessage && onMessage(data.data as unknown as SubscriptionVoucherResponse)
             },
             error: (error) => {
-                console.error(error)
-                onError && onError(error as Error)
+                if (error instanceof Event) {
+                    console.error("subscription error:", error.type)
+                    onError && onError(new Error("subscription error:" + error.type))
+                } else {
+                    console.error(error)
+                    onError && onError(error as Error)
+                }
             },
             complete: () => {
                 console.log('subscription complete')
@@ -101,8 +111,13 @@ export class SubscriptionClient {
                 onMessage && onMessage(data.data as unknown as SubscriptionActivityResponse)
             },
             error: (error) => {
-                console.error(error)
-                onError && onError(error as Error)
+                if (error instanceof Event) {
+                    console.error("subscription error:", error.type)
+                    onError && onError(new Error("subscription error:" + error.type))
+                } else {
+                    console.error(error)
+                    onError && onError(error as Error)
+                }
             },
             complete: () => {
                 console.log('subscription complete')
