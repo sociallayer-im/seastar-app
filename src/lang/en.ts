@@ -496,7 +496,14 @@ export const en = {
     'Website (optional)':'Website (optional)',
     'Edit Popup-City':'Edit Popup-City',
     'Popup-City Name':'Popup-City Name',
-    'Please input Popup-City name': 'Please input Popup-City name'
+    'Please input Popup-City name': 'Please input Popup-City name',
+    'Input event URL':'Input event URL',
+    'Support URL of Luma':'Support URL of Luma',
+    'Load the Event URL':'Load the Event URL',
+    'External Event':'External Event',
+    'External Event Imported Successfully':'External Event Imported Successfully',
+    'Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details.':'Importing external event details will disregard <b>ticket information</b> and <b>online meeting</b> addresses. Please manually edit these details.',
+    'Import Event':'Import Event'
 }
 
 export type Dictionary = typeof en

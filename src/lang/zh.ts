@@ -499,4 +499,11 @@ export const zh: Dictionary = {
     'Edit Popup-City':'编辑Popup-City',
     'Popup-City Name': 'Popup-City Name',
     'Please input Popup-City name':'请输入Popup-City名称',
+    'Input event URL':'输入活动链接',
+    'Support URL of Luma':'支持 Luma 的 URL',
+    'Load the Event URL':'加载活动 URL',
+    'External Event':'外部活动',
+    'External Event Imported Successfully':'外部活动导入成功',
+    'Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details.':'导入外部活动详情将忽略<b>门票信息</b>和<b>在线会议地址</b>。请手动编辑这些详情。',
+    'Import Event':'导入活动',
 }

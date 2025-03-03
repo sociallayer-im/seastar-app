@@ -46,6 +46,10 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
 
     const [list, setList] = useState<EventRole[]>(initList())
 
+    useEffect(() => {
+        setList(initList())
+    }, [event.event_roles])
+
     const updateEventRole = (newList: EventRole[]) => {
         const _list = event.event_roles?.filter(r => r.role !== role) || []
         const __list = [..._list, ...newList.filter(r => !!r.nickname), ...listToRemove]
@@ -58,7 +62,6 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
     const handleAddNewRole = () => {
         const newList = [...list, getEmptyRole(role)]
         setList(newList)
-        updateEventRole(newList)
     }
 
     const removeItem = (item: EventRole) => {
