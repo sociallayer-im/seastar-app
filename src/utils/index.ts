@@ -31,8 +31,9 @@ export const getAuth = () => {
     return Cookies.get(AUTH_FIELD)
 }
 
-export const pickSearchParam = (param: string | string[] | undefined): string | undefined => {
-    return Array.isArray(param) ? param[0] : param
+export const pickSearchParam = (param?: string | string[]): string | undefined => {
+    const value = Array.isArray(param) ? param[0] : param;
+    return value === 'undefined' ? undefined : value;
 }
 
 export const clientRedirectToReturn = () => {
@@ -379,7 +380,12 @@ export type SetEventAttendedStatusParams = {
     currProfile?: Profile | null
 }
 
-export const setEventAttendedStatus = ({events, currProfileAttends, currProfileStarred, currProfile}: SetEventAttendedStatusParams) => {
+export const setEventAttendedStatus = ({
+                                           events,
+                                           currProfileAttends,
+                                           currProfileStarred,
+                                           currProfile
+                                       }: SetEventAttendedStatusParams) => {
     return events.map(e => {
         const isCreator = e.owner.handle === currProfile?.handle
         const isJoined = !!currProfileAttends.find(h => h.id === e.id)

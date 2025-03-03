@@ -15,6 +15,6 @@ export function TrackJSInstall() {
         TrackJS.install({
             token: "0152620d86db425cbb01f366b16bc1ff"
         });
-        console.info("TrackJS Installed");
+        console.info("TrackJS Installed" + (typeof window !== "undefined" ? window.location.href : 'server'));
     }
 }

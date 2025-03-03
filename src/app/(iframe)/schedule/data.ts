@@ -104,7 +104,9 @@ function searchParamsToString(searchParams: IframeSchedulePageSearchParams, excl
         }
     })
 
-    return params.toString()
+    const str = params.toString()
+
+    return str ? '?' + str : ''
 }
 
 export async function IframeSchedulePageData({
@@ -140,7 +142,7 @@ export async function IframeSchedulePageData({
     filters.skipMultiDay && apiSearchParams.set('skip_multiday', '1')
 
     const url = `${api}/event/list?${apiSearchParams.toString()}`
-    // console.log(url)
+    // console.log('url =>', url)
     const response = await fetch(url, {
         cache: 'no-store',
         headers: {
@@ -163,24 +165,25 @@ export async function IframeSchedulePageData({
         current = current.add(1, 'day')
     }
 
-    let weeklyUrl = `/schedule/week/${groupName}?${searchParamsToString(searchParams)}`
-    let dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams)}`
+    let weeklyUrl = `/schedule/week/${groupName}${searchParamsToString(searchParams)}`
+    let dailyUrl = `/schedule/day/${groupName}${searchParamsToString(searchParams)}`
     if (view === 'week' && dayjs.tz(new Date(), data.group.timezone).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
         // if current date is in the interval, set the daily view to the current date
-        dailyUrl = `/schedule/day/${groupName}?${searchParamsToString(searchParams, ['start_date'])}`
+        dailyUrl = `/schedule/day/${groupName}${searchParamsToString(searchParams, ['start_date'])}`
     }
-    let listingUrl = `/schedule/list/${groupName}?${searchParamsToString(searchParams)}`
+    let listingUrl = `/schedule/list/${groupName}${searchParamsToString(searchParams)}`
+
 
     const headersList = await headers()
     const currPath = headersList.get('x-current-path')
     if (currPath?.includes('/event/')) {
         // if not in iframe
-        weeklyUrl = `/event/${groupName}/schedule/week?${searchParamsToString(searchParams)}`
-        dailyUrl = `/event/${groupName}/schedule/day?${searchParamsToString(searchParams)}`
+        weeklyUrl = `/event/${groupName}/schedule/week${searchParamsToString(searchParams)}`
+        dailyUrl = `/event/${groupName}/schedule/day${searchParamsToString(searchParams)}`
         if (view === 'week' && dayjs.tz(new Date(), data.group.timezone).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
-            dailyUrl = `/event/${groupName}/schedule/day?${groupName}?${searchParamsToString(searchParams, ['start_date'])}`
+            dailyUrl = `/event/${groupName}/schedule/day${searchParamsToString(searchParams, ['start_date'])}`
         }
-        listingUrl = `/event/${groupName}/schedule/list?${searchParamsToString(searchParams)}`
+        listingUrl = `/event/${groupName}/schedule/list${searchParamsToString(searchParams)}`
     }
 
     const events = data.events
@@ -219,7 +222,13 @@ export async function IframeSchedulePageData({
 }
 
 function getInterval(startDate?: string, view: 'week' | 'day' | 'list' = 'week') {
-    const start = dayjs(startDate || undefined)
+    let start = dayjs()
+
+    try {
+        start = dayjs(startDate || undefined)
+    } catch (e: any) {
+        console.warn(e)
+    }
 
     switch (view) {
     case 'week':
