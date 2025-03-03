@@ -8,6 +8,8 @@ import Footer from '@/components/Footer'
 import Feedback from '@/components/client/Feedback'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import PopupCityMap from './PopupCityMap'
+import {Button} from '@/components/shadcn/Button'
+import ToCreatePopupCity from '@/app/(normal)/discover/ToCreatePopupCity'
 
 export async function generateMetadata() {
     return {
@@ -31,7 +33,9 @@ export default async function DiscoverPage() {
     })
 
     return <div className="page-width min-h-[100svh] pt-4 sm:pt-6 !pb-16">
-        <PopupCityMap mapMarkers={mapMarkers} lang={lang}  langType={type}/>
+        <PopupCityMap mapMarkers={mapMarkers} lang={lang} langType={type}/>
+
+        <ToCreatePopupCity lang={lang} />
 
         <div>
             <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">

@@ -13,7 +13,7 @@ import Step3 from '@/app/(normal)/popup-city/create/Step3'
 import {getAuth} from '@/utils'
 
 export interface CreatePopupCityFormProps {
-    presetGroup: Group | null,
+    presetGroup?: Group,
     availableGroups: Group[],
     lang: Dictionary
 }
