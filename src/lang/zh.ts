@@ -505,5 +505,5 @@ export const zh: Dictionary = {
     'External Event':'外部活动',
     'External Event Imported Successfully':'外部活动导入成功',
     'Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details.':'导入外部活动详情将忽略<b>门票信息</b>和<b>在线会议地址</b>。请手动编辑这些详情。',
-    'Import Event':'导入活动',
+    'Import External Event':'导入外部活动',
 }

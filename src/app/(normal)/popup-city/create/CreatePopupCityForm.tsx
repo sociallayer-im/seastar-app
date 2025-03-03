@@ -13,11 +13,12 @@ import Step3 from '@/app/(normal)/popup-city/create/Step3'
 import {getAuth} from '@/utils'
 
 export interface CreatePopupCityFormProps {
+    presetGroup: Group | null,
     availableGroups: Group[],
     lang: Dictionary
 }
 
-export default function CreatePopupCityForm({availableGroups, lang}: CreatePopupCityFormProps) {
+export default function CreatePopupCityForm({availableGroups, lang, presetGroup}: CreatePopupCityFormProps) {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
@@ -47,16 +48,26 @@ export default function CreatePopupCityForm({availableGroups, lang}: CreatePopup
     }, [draft, groupOpts])
 
     const [groupDetail, setGroupDetail] = useState<GroupDetail | null>(null)
-    const handleSetStep1 = async () => {
+    const handleSetStep1 = async (presetGroupHandle?:string) => {
         const loading = showLoading()
         const groupDetail = await getGroupDetailByHandle({
-            params: {groupHandle: selectedGroup!.handle},
+            params: {groupHandle: presetGroupHandle || selectedGroup!.handle},
             clientMode: CLIENT_MODE
         })
         setGroupDetail(groupDetail)
         closeModal(loading)
         setStep(1)
     }
+
+    useEffect(() => {
+        if (presetGroup) {
+            setDraft({
+                ...draft,
+                group_id: presetGroup.id
+            })
+            handleSetStep1(presetGroup.handle)
+        }
+    }, [presetGroup])
 
     const handleCreatePopupCity = async () => {
         const loading = showLoading()

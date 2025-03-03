@@ -58,7 +58,7 @@ export default function Step0({availableGroups, popupCityState, lang, onNext}: C
                 }}
                 onSelect={(group) => {
                     if (group[0].id === 0) {
-                        location.href = '/group/create'
+                        location.href = '/group/create?create-popup-city=1'
                     } else {
                         popupCityState[1]({
                             ...popupCityState[0],

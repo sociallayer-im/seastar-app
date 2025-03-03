@@ -503,7 +503,7 @@ export const en = {
     'External Event':'External Event',
     'External Event Imported Successfully':'External Event Imported Successfully',
     'Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details.':'Importing external event details will disregard <b>ticket information</b> and <b>online meeting</b> addresses. Please manually edit these details.',
-    'Import Event':'Import Event'
+    'Import External Event':'Import Event'
 }
 
 export type Dictionary = typeof en

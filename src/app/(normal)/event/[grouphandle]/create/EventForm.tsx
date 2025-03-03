@@ -195,7 +195,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                             className="!block !sm:inline sm:absolute mt-1 sm:mt-0 right-0 top-6 text-sm !text-blue-500">
                        <div className="flex-row-item-center">
                            <i className="uil-plus-circle mr-1 text-base"/>
-                           <span>{lang['Import Event']}</span>
+                           <span>{lang['Import External Event']}</span>
                        </div>
                     </Button>
                 }

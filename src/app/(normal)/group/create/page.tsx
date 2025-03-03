@@ -1,8 +1,10 @@
 import {selectLang} from '@/app/actions'
 import RegisterForm from './RegisterForm'
 
-export default async function Register() {
+export default async function Register({searchParams}:{searchParams: {'create-popup-city'?: string | string[]}}) {
     const lang = (await selectLang()).lang
+
+    const returnPage = searchParams['create-popup-city'] ? `/popup-city/create` : undefined
 
     return <div>
         <div className="absolute left-0 top-0 w-full h-[400px] opacity-[0.3] pointer-events-none"
@@ -18,7 +20,7 @@ export default async function Register() {
                     </ul>
                 </div>
                 <div className="my-4">
-                    <RegisterForm lang={lang}/>
+                    <RegisterForm lang={lang} returnPage={returnPage}/>
                 </div>
             </div>
         </div>
