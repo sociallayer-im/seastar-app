@@ -10,6 +10,7 @@ import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
 import Subscription from '@/components/client/Subscription'
 import { TrackJSInstall } from "@/app/trackjs_loader"
 import HyperDx from '@/components/client/HyperDx'
+import Script from 'next/script'
 
 TrackJSInstall()
 
@@ -38,6 +39,7 @@ export default async function RootLayout({
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
         </Head>
         <body className={`antialiased`}>
+        <Script src="https://analytics.wamo.club/app.sola.day" data-domain="app.sola.day" async />
         <div className="min-h-[100svh]">
             <Header/>
             <div className="relative">
