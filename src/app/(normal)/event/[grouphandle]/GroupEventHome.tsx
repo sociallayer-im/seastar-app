@@ -10,9 +10,10 @@ import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import SignInPanel from '@/components/SignInPanel'
 import EventHomeFilter from '@/components/client/EventHomeFilter'
 import EventListGroupedByDate from '@/components/EventListGroupedByDate'
-import GoogleMap from '@/components/client/Map'
+import EventHomeMap from '@/app/(normal)/event/[grouphandle]/EventHomeMap'
 
 export default async function GroupEventHome(props: GroupEventHomeDataWithHandleProps) {
+    console.time('GroupEventHome')
     const {
         groupDetail,
         events,
@@ -23,22 +24,20 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
         mapMarkers,
         canPublishEvent
     } = await GroupEventHomeData(props)
+    console.timeEnd('GroupEventHome')
 
     const {lang, type} = await selectLang()
 
     return <div style={{background: '#fff url(/images/event_home_bg.png) top center repeat-x'}}>
         <div className="page-width min-h-[100svh] sm:pt-8 pt-3 flex-col flex md:flex-row">
             <div className="flex-1 md:max-w-[648px] order-2 md:order-1">
-                {groupDetail.map_enabled && !!mapMarkers.length && <div className="w-full h-[260px] mb-6 relative">
-                    <GoogleMap markers={mapMarkers} center={mapMarkers[0].position} langType={type}/>
-                    <a className={`${buttonVariants({
-                        variant: "secondary",
-                        size: "sm"
-                    })} absolute bottom-2 right-2 z-10 text-xs bg-white shadow`}
-                       href={`/map/${groupDetail.handle}/event`}>
-                        {lang['Browse on Map']} <i className="uil-expand-arrows-alt text-base"/>
-                    </a>
-                </div>
+                {groupDetail.map_enabled && !!mapMarkers.length &&
+                    <EventHomeMap
+                        mapMarkers={mapMarkers}
+                        lang={lang}
+                        langType={type}
+                        groupHandle={groupDetail.handle}
+                    />
                 }
                 <EventHomeFilter filterOpts={filterOpts}
                                  groupDetail={groupDetail} isManager={isManager} lang={lang}/>

@@ -31,8 +31,6 @@ export default async function CreatePopupCityPageData(grouphandle?: string) {
         }
     }
 
-    console.log('presetGroup =>', grouphandle, presetGroup, groups.map(g => g.handle))
-
     return {
         availableGroups: groups,
         presetGroup

@@ -14,6 +14,7 @@ export interface GoogleMapMarkerProps {
 
 export interface GoogleMapProps {
     center?: { lat: number, lng: number }
+    onReady?: () => void
     defaultZoom?: number
     markers: GoogleMapMarkerProps[]
     langType?: string
@@ -27,18 +28,22 @@ export default function GoogleMap(props: GoogleMapProps) {
 }
 
 export function GoogleMapInner({
-                                      center = {lat: -34.397, lng: 150.644},
-                                      markers,
-                                      style,
-                                      defaultZoom = 15
-                                  }: GoogleMapProps) {
+                                   center = {lat: -34.397, lng: 150.644},
+                                   markers,
+                                   style,
+                                   onReady,
+                                   defaultZoom = 15
+                               }: GoogleMapProps) {
     const [mapCenter, setMapCenter] = useState(center)
     const [pickingLocation, setPickingLocation] = useState(false)
 
     const geocodingLib = useMapsLibrary('geocoding');
     useEffect(() => {
-        !!geocodingLib && console.log('Map library loaded')
-    },[geocodingLib])
+        if (!!geocodingLib) {
+            !!onReady && onReady()
+            console.log('Map library loaded')
+        }
+    }, [geocodingLib])
 
     const markersToShow = useMemo(() => {
         // if google map lib is not loaded, just return empty array
@@ -77,11 +82,11 @@ export function GoogleMapInner({
 
     return geocodingLib ? <Map mapId="e2f9ddc0facd5a80"
                                style={style}
-                defaultCenter={mapCenter}
-                defaultZoom={defaultZoom}
-                onClick={pickingLocation ? handleMapClick : undefined}
-                className={pickingLocation ? 'picking-location' : undefined}
-                disableDefaultUI>
+                               defaultCenter={mapCenter}
+                               defaultZoom={defaultZoom}
+                               onClick={pickingLocation ? handleMapClick : undefined}
+                               className={pickingLocation ? 'picking-location' : undefined}
+                               disableDefaultUI>
         {
             markersToShow.map((marker, index) => {
                 const selected = mapCenter.lat === marker.position.lat && mapCenter.lng === marker.position.lng
@@ -92,7 +97,7 @@ export function GoogleMapInner({
                     key={JSON.stringify(marker.position) + index}/>
             })
         }
-    </Map>: null
+    </Map> : null
 }
 
 export function MapMarker({marker, selected, onClick}: {

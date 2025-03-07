@@ -354,6 +354,7 @@ export function clientToSignIn() {
 export function getGroupSubdomain(url?: string | null) {
     if (!url) return null
     if (url.includes('.vercel.app')) return null
+    if (/^(\d{1,3}\.){3}\d{1,3}(:\d{1,5})?$/.test(url)) return null
 
     try {
         const parts = url.split('.')
