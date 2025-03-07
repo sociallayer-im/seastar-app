@@ -1,5 +1,5 @@
-import {getGroupEventByHandle, Event, getProfileEventByHandle, ClientMode, Profile} from '@sola/sdk'
-import {analyzeGroupMembershipAndCheckProfilePermissions, setEventAttendedStatus} from '@/utils'
+import {getGroupEventByHandle, Event, getProfileEventByHandle, Profile} from '@sola/sdk'
+import {setEventAttendedStatus} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
 
@@ -13,7 +13,7 @@ export const GroupEventListData = async function (handle: string, currProfile?: 
     let currProfileStarred: Event[] = []
     if (currProfile) {
         const {attends, starred}  = await getProfileEventByHandle({
-            params: {handle: handle},
+            params: {handle: currProfile.handle},
             clientMode: CLIENT_MODE
         })
         currProfileAttends = attends

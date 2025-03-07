@@ -1,7 +1,7 @@
 import {buttonVariants} from "@/components/shadcn/Button"
 import CardEvent from "@/components/CardEvent"
 import {selectLang} from "@/app/actions"
-import {EventWithJoinStatus} from '@/utils'
+import {EventWithJoinStatus} from '@sola/sdk'
 import NoData from '@/components/NoData'
 
 export default async function MyEvents({events, tab}: { events: EventWithJoinStatus[], tab: string }) {

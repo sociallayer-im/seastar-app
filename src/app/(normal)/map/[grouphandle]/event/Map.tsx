@@ -4,8 +4,7 @@ import CardEvent from "@/components/CardEvent"
 import {useEffect, useState, useRef} from 'react'
 import {Dictionary} from '@/lang'
 import GoogleMap, {GoogleMapMarkerProps} from '@/components/client/Map'
-import {EventWithJoinStatus} from '@/utils'
-import {GroupDetail} from '@sola/sdk'
+import {GroupDetail, EventWithJoinStatus} from '@sola/sdk'
 import TopBar from '@/app/(normal)/map/[grouphandle]/TopBar'
 
 interface GroupedEvents {

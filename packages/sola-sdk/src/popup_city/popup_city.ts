@@ -13,7 +13,6 @@ export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
     }
 
     const data = await response.json()
-    const mapGroup = await getGroupDetailById({params: {groupId: 3558}, clientMode})
 
     const sortedPopupCities = data.popups.sort((a: PopupCity, b: PopupCity) => {
         // if a popup city has ":featured" tag, it should be placed at the top
@@ -28,7 +27,6 @@ export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
         eventGroups: data.groups as Group[],
         popupCities: sortedPopupCities as PopupCity[],
         events: data.events as Event[],
-        mapGroup: mapGroup!,
         popupCityMap
     }
 }

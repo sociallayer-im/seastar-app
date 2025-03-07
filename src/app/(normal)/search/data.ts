@@ -1,5 +1,5 @@
-import {BadgeClass, Event, getProfileEventByHandle, Group, Profile, search} from '@sola/sdk'
-import {EventWithJoinStatus, pickSearchParam, setEventAttendedStatus} from '@/utils'
+import {BadgeClass, EventWithJoinStatus, getProfileEventByHandle, Group, Profile, search} from '@sola/sdk'
+import {pickSearchParam, setEventAttendedStatus} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 import {getCurrProfile} from '@/app/actions'
 

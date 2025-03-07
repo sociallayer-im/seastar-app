@@ -4,7 +4,7 @@ import {useState} from "react"
 import {Button} from "@/components/shadcn/Button"
 import CardEvent from "@/components/CardEvent"
 import NoData from "@/components/NoData"
-import {EventWithJoinStatus} from '@/utils'
+import {EventWithJoinStatus} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 
 

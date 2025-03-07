@@ -15,7 +15,8 @@ import {
     Track,
     VenueDetail,
     VenueTimeslot,
-    Weekday
+    Weekday,
+    EventWithJoinStatus
 } from '@sola/sdk'
 import domtoimage from 'dom-to-image'
 import {Dictionary} from '@/lang'
@@ -368,12 +369,6 @@ export function getGroupSubdomain(url?: string | null) {
     }
 }
 
-export interface EventWithJoinStatus extends Event {
-    isCreator: boolean
-    isJoined: boolean
-    isStarred: boolean
-}
-
 export type SetEventAttendedStatusParams = {
     events: Event[]
     currProfileAttends: Event[]
@@ -393,9 +388,27 @@ export const setEventAttendedStatus = ({
         const isStarred = !!currProfileStarred.find(h => h.id === e.id)
         return {
             ...e,
-            isCreator,
-            isJoined,
-            isStarred,
+            is_owner: isCreator,
+            is_attending: isJoined,
+            is_starred: isStarred,
+        } as EventWithJoinStatus
+    })
+}
+
+export type SetEventIsOwnerStatusParams = {
+    events: Event[]
+    currProfile?: Profile | null
+}
+
+export const setEventIsOwnerStatus = ({
+                                           events,
+                                           currProfile
+                                       }: SetEventIsOwnerStatusParams) => {
+    return events.map(e => {
+        const isOwner = currProfile?.handle === e.owner?.handle
+        return {
+            ...e,
+            is_owner: isOwner
         } as EventWithJoinStatus
     })
 }

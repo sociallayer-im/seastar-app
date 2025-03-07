@@ -1,13 +1,12 @@
 import {
     getGroupDetailByHandle,
-    getProfileEventByHandle,
-    Event, getEvents, EventListFilterProps, getMapEvents
+    Event, getEvents, EventListFilterProps
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
     analyzeGroupMembershipAndCheckProfilePermissions,
-    setEventAttendedStatus,
+    setEventIsOwnerStatus,
 } from '@/utils'
 import {GoogleMapMarkerProps} from '@/components/client/Map'
 import {CLIENT_MODE} from '@/app/config'
@@ -74,35 +73,14 @@ export default async function GroupEventHomeData({
         clientMode: CLIENT_MODE
     })
 
+
     if (!searchParams.collection && filteredEvents.length === 0) {
         redirect(`/event/${handle}?collection=past`)
     }
 
-    let currProfileAttends: Event[] = []
-    let currProfileStarred: Event[] = []
-    if (!!currProfile) {
-        const {attends, starred} = await getProfileEventByHandle({
-            params: {handle: currProfile.handle},
-            clientMode: CLIENT_MODE
-        })
-
-        currProfileAttends = attends
-        currProfileStarred = starred
-    }
-
-    const eventWithStatus = setEventAttendedStatus({
-        events: filteredEvents,
-        currProfileAttends,
-        currProfileStarred,
-        currProfile
-    })
-
     let mapMarkers: GoogleMapMarkerProps[] = []
     if (groupDetail.map_enabled) {
-        const mapEvents = await getMapEvents({
-            params: {groupHandle: groupDetail.handle},
-            clientMode: CLIENT_MODE
-        })
+        const mapEvents = filteredEvents.filter((e) => e.geo_lat && e.geo_lng)
         mapEvents.reverse().forEach((event: Event) => {
             if (!mapMarkers.find((m) => {
                 return m.position.lng === event.geo_lng! && m.position.lat === event.geo_lng!
@@ -123,7 +101,7 @@ export default async function GroupEventHomeData({
         filterOpts,
         groupDetail,
         currProfile,
-        events: eventWithStatus,
+        events: setEventIsOwnerStatus({events: filteredEvents, currProfile}),
         members: [owner, ...managers, ...issuers, ...members],
         isManager,
         isOwner,
