@@ -1,6 +1,6 @@
 import {
     getGroupDetailByHandle,
-    Event, getEvents, EventListFilterProps
+    Event, getEvents, EventListFilterProps, GroupDetail
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
@@ -18,28 +18,14 @@ export type GroupEventHomeParams = {
 export type GroupEventHomeSearchParams = Omit<EventListFilterProps, 'group_id' | 'timezone'>
 
 export type GroupEventHomeDataProps = {
-    params: GroupEventHomeParams
     searchParams: GroupEventHomeSearchParams
-}
-
-export interface GroupEventHomeDataWithHandleProps extends GroupEventHomeDataProps {
-    groupHandle?: string
+    groupDetail?: GroupDetail | null
 }
 
 export default async function GroupEventHomeData({
-                                                     params,
                                                      searchParams,
-                                                     groupHandle
-                                                 }: GroupEventHomeDataWithHandleProps) {
-    const handle = groupHandle || params.grouphandle
-    if (!handle) {
-        redirect('/404')
-    }
-
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: handle},
-        clientMode: CLIENT_MODE
-    })
+                                                     groupDetail
+                                                 }: GroupEventHomeDataProps) {
     if (!groupDetail) {
         redirect('/404')
     }
@@ -75,7 +61,7 @@ export default async function GroupEventHomeData({
 
 
     if (!searchParams.collection && filteredEvents.length === 0) {
-        redirect(`/event/${handle}?collection=past`)
+        redirect(`/event/${groupDetail.handle}?collection=past`)
     }
 
     let mapMarkers: GoogleMapMarkerProps[] = []

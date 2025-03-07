@@ -1,20 +1,27 @@
 import GroupEventHome from '@/app/(normal)/event/[grouphandle]/GroupEventHome'
-import {GroupEventHomeDataProps, GroupEventHomeDataWithHandleProps} from '@/app/(normal)/event/[grouphandle]/data'
+import {
+    GroupEventHomeParams,
+    GroupEventHomeSearchParams
+} from '@/app/(normal)/event/[grouphandle]/data'
 import {getGroupDetailByHandle} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
 import {selectLang} from '@/app/actions'
 import {displayProfileName} from '@/utils'
+import {cache} from 'react'
 
-
-export async function generateMetadata(props: GroupEventHomeDataWithHandleProps) {
-    const {params: {grouphandle}} = props
-    const handle = props.groupHandle || grouphandle
-    const {lang} = await selectLang()
-    const groupDetail = await getGroupDetailByHandle({
+const cachedGetGroupDetailByHandle = cache(async (handle: string) => {
+    return await getGroupDetailByHandle({
         params: {groupHandle: handle!},
         clientMode: CLIENT_MODE
     })
+})
+
+
+export async function generateMetadata(props: {params: GroupEventHomeParams}) {
+    const {params: {grouphandle}} = props
+    const {lang} = await selectLang()
+    const groupDetail = await cachedGetGroupDetailByHandle(grouphandle!)
 
     if (!groupDetail) {
         redirect('/404')
@@ -29,6 +36,13 @@ export async function generateMetadata(props: GroupEventHomeDataWithHandleProps)
     }
 }
 
-export default async function EventHome(props: GroupEventHomeDataProps) {
-    return <GroupEventHome {...props} />
+export default async function EventHome(props: {params: GroupEventHomeParams, searchParams: GroupEventHomeSearchParams}) {
+    const {params: {grouphandle}} = props
+    const groupDetail = await cachedGetGroupDetailByHandle(grouphandle!)
+
+    if (!groupDetail) {
+        redirect('/404')
+    }
+
+    return <GroupEventHome searchParams={props.searchParams} groupDetail={groupDetail} />
 }

@@ -1,8 +1,6 @@
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import {Badge} from "@/components/shadcn/Badge"
-import GroupEventHomeData, {
-    GroupEventHomeDataWithHandleProps
-} from '@/app/(normal)/event/[grouphandle]/data'
+import GroupEventHomeData, { GroupEventHomeDataProps} from '@/app/(normal)/event/[grouphandle]/data'
 import {selectLang} from '@/app/actions'
 import {displayProfileName} from '@/utils'
 import Avatar from '@/components/Avatar'
@@ -13,8 +11,7 @@ import EventListGroupedByDate from '@/components/EventListGroupedByDate'
 import EventHomeMap from '@/app/(normal)/event/[grouphandle]/EventHomeMap'
 
 
-export default async function GroupEventHome(props: GroupEventHomeDataWithHandleProps) {
-    console.time('GroupEventHome')
+export default async function GroupEventHome(props: GroupEventHomeDataProps) {
     const {
         groupDetail,
         events,
@@ -25,7 +22,6 @@ export default async function GroupEventHome(props: GroupEventHomeDataWithHandle
         mapMarkers,
         canPublishEvent
     } = await GroupEventHomeData(props)
-    console.timeEnd('GroupEventHome')
 
     const {lang, type} = await selectLang()
 
