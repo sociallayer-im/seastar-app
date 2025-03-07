@@ -112,7 +112,7 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
                     lang={lang}
                     popupCityState={[draft, setDraft]}
                     onBack={() => location.href = '/'}
-                    onNext={handleSetStep1}
+                    onNext={() => handleSetStep1()}
                 />
             }
 
