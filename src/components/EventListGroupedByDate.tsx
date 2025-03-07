@@ -1,8 +1,7 @@
-import {GroupDetail} from '@sola/sdk'
+import {GroupDetail, EventWithJoinStatus} from '@sola/sdk'
 import dayjs from '@/libs/dayjs'
 import {useMemo} from 'react'
 import CardEvent from '@/components/CardEvent'
-import {EventWithJoinStatus} from '@/utils'
 import NoData from '@/components/NoData'
 import {Dictionary} from '@/lang'
 

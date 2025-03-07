@@ -8,7 +8,6 @@ import Footer from '@/components/Footer'
 import Feedback from '@/components/client/Feedback'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import PopupCityMap from './PopupCityMap'
-import {Button} from '@/components/shadcn/Button'
 import ToCreatePopupCity from '@/app/(normal)/discover/ToCreatePopupCity'
 
 export async function generateMetadata() {

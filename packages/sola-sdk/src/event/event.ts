@@ -1,4 +1,4 @@
-import {Event, EventDetail, EventDraftType, Participant, Recurring} from './types'
+import {Event, EventDetail, EventDraftType, EventWithJoinStatus, Participant, Recurring} from './types'
 import {getGqlClient, getSdkConfig} from '../client'
 import {
     GET_EVENT_DETAIL_BY_ID,
@@ -154,6 +154,7 @@ export const getEvents = async ({params: {filters, authToken}, clientMode}: Sola
     authToken?: string
 }>) => {
     const searchParams = new URLSearchParams()
+    // searchParams.set('limit', '100')
     for (const key in filters) {
         if (filters.hasOwnProperty(key)) {
             const value = filters[key as keyof EventListFilterProps]
@@ -163,9 +164,13 @@ export const getEvents = async ({params: {filters, authToken}, clientMode}: Sola
         }
     }
 
-    !!authToken && searchParams.append("auth_token", authToken)
+    if (authToken) {
+        searchParams.set('with_stars', '1')
+        searchParams.set('with_attending', '1')
+        searchParams.set("auth_token", authToken)
+    }
 
-    const url = `${getSdkConfig(clientMode).api}/event/list?${searchParams.toString()}`
+    const url = `${getSdkConfig(clientMode).api}/api/event/list?${searchParams.toString()}`
     // console.log(url)
     const res = await fetch(url)
 
@@ -178,11 +183,10 @@ export const getEvents = async ({params: {filters, authToken}, clientMode}: Sola
     return data.events.map((e: any) => {
         return {
             ...e,
-            owner: e.profile,
             geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
             geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
         }
-    }) as Event[]
+    }) as EventWithJoinStatus[]
 }
 
 export const getEventDetailById = async ({params: {eventId}, clientMode}: SolaSdkFunctionParams<{
@@ -709,6 +713,25 @@ export const approveEvent = async ({params: {eventId, authToken}, clientMode}: S
     if (!response.ok) {
         throw new Error('Failed to approve event')
     }
+}
+
+export const getProfileAttendedEvents = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{authToken: string}>) => {
+    const searchParams = new URLSearchParams()
+    searchParams.set('with_stars', '1')
+    searchParams.set('with_attending', '1')
+    searchParams.set("auth_token", authToken)
+    const url = `${getSdkConfig(clientMode).api}/api/event/my_attending?${searchParams.toString()}`
+    // console.log('url', url)
+    const response = await fetch(url)
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch profile attended events')
+    }
+
+    const data = await response.json()
+
+    return data.events as EventWithJoinStatus[]
+
 }
 
 

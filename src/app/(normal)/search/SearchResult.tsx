@@ -1,12 +1,12 @@
 'use client'
 
 import {Dictionary} from '@/lang'
-import {BadgeClass, Group, Profile} from '@sola/sdk'
+import {BadgeClass, Group, Profile, EventWithJoinStatus} from '@sola/sdk'
 import {Input} from '@/components/shadcn/Input'
 import {useState} from 'react'
 import {Button,} from '@/components/shadcn/Button'
 import CardEvent from '@/components/CardEvent'
-import {displayProfileName, EventWithJoinStatus} from '@/utils'
+import {displayProfileName} from '@/utils'
 import Avatar from '@/components/Avatar'
 import Image from 'next/image'
 

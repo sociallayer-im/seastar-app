@@ -1,9 +1,10 @@
 import {getLabelColor} from "@/utils/label_color"
-import {checkProcess, EventWithJoinStatus, formatEventTime} from "@/utils"
+import {checkProcess, formatEventTime} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import {CSSProperties, ReactElement} from "react"
 import dynamic from 'next/dynamic'
 import {Dictionary} from '@/lang'
+import {EventWithJoinStatus} from '@sola/sdk'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 const DynamicFormatEventTime = dynamic(() => import('./FormatEventTime'), {ssr: false})
@@ -35,7 +36,7 @@ export default function CardEvent({event, className, id, style, lang, highlight,
               id={id}
               style={customStyle}
               className={`relative shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
-        <DynamicEventCardStarBtn eventId={event.id} starred={event.isStarred}/>
+        <DynamicEventCardStarBtn eventId={event.id} starred={event.is_starred}/>
         <div className="flex-1 mr-2">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
@@ -46,8 +47,8 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                 {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">{lang['Ongoing']}</Badge>}
                 {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">{lang['Upcoming']}</Badge>}
 
-                {event.isCreator && <Badge variant='hosting' className="mr-1">{lang['Hosting']}</Badge>}
-                {event.isJoined && <Badge variant='joining' className="mr-1">{lang['Attended']}</Badge>}
+                {event.is_owner && <Badge variant='hosting' className="mr-1">{lang['Hosting']}</Badge>}
+                {event.is_attending && <Badge variant='joining' className="mr-1">{lang['Attended']}</Badge>}
 
             </div>
             <div className="my-1 flex-row-item-center font-semibold text-sm sm:text-base webkit-box-clamp-2">

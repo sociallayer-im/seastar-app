@@ -1,14 +1,10 @@
 import {
     analyzeGroupMembershipAndCheckProfilePermissions,
     checkProcess,
-    EventWithJoinStatus,
-    pickSearchParam
 } from "@/utils"
 import {redirect} from "next/navigation"
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
-    Event,
-    getEventByRecurringId,
     getEventDetailById,
     getGroupDetailByHandle, getPurchasedTicketItemsByProfileHandleAndEventId, getRecurringById, getStaredEvent,
     Participant,

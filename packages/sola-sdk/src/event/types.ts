@@ -25,6 +25,12 @@ export interface Event {
     display: string | null
 }
 
+export interface EventWithJoinStatus extends Event {
+    is_attending: boolean
+    is_starred: boolean
+    is_owner: boolean
+}
+
 export interface EventDetail extends Event {
     content: string | null,
     max_participant: number | null,
