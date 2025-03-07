@@ -11,7 +11,7 @@ import {createGroup} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 
-export default function RegisterForm(props: { lang: Dictionary }) {
+export default function RegisterForm(props: { lang: Dictionary, returnPage?: string }) {
     const {showConfirmDialog} = useConfirmDialog()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -53,7 +53,7 @@ export default function RegisterForm(props: { lang: Dictionary }) {
                         variant: 'success'
                     })
                     setTimeout(() => {
-                        window.location.href = `/group/${group.handle}`
+                        window.location.href = props.returnPage ? `${ props.returnPage}?grouphandle=${handle}` : `/group/${group.handle}`
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)

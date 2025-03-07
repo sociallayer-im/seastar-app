@@ -38,6 +38,7 @@ export default async function RootLayout({
         <Head>
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
         </Head>
+        <Script src="https://analytics.wamo.club/app.sola.day" data-domain="app.sola.day" async />
         <body className={`antialiased`}>
         <Script src="https://analytics.wamo.club/app.sola.day" data-domain="app.sola.day" async />
         <div className="min-h-[100svh]">

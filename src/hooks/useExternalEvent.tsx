@@ -22,10 +22,13 @@ export default function useExternalEvent() {
                     const data = await res.json()
                     if (data.error) throw new Error(`Failed to load luma event ${data.error}`)
 
+                    // 把data.description 中单个\n 替换成2个\n
+                    const content = data.description.replace(/(?<!\n)\n(?!\n)/g, '\n\n')
+
                     const eventData = {
                         cover_url: data.cover_image || null,
                         title: data.title,
-                        content: data.description || null,
+                        content,
                         geo_lat: data.location?.coordinates?.latitude || null,
                         geo_lng: data.location?.coordinates?.longitude || null,
                         formatted_address: data.location?.venue || null,
