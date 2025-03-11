@@ -104,6 +104,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                         }} />
 
                     <ScheduleViewSwitcher
+                        compactUrl={data.compactUrl}
                         weeklyUrl={data.weeklyUrl}
                         dailyUrl={data.dailyUrl}
                         listingUrl={data.listingUrl}

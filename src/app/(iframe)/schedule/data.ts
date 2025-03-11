@@ -3,8 +3,10 @@
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {pickSearchParam} from "@/utils"
 import {headers} from "next/headers"
-
-const api = process.env.NEXT_PUBLIC_API_URL
+import {getServerSideAuth} from '@/app/actions'
+import {getGroupDetailByHandle, getSdkConfig, Track} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
+import {redirect} from 'next/navigation'
 
 export interface IframeSchedulePageSearchParams {
     start_date?: string | string[]
@@ -59,13 +61,16 @@ export interface IframeSchedulePageDataEvent {
     } | null
     geo_lat: string | null,
     geo_lng: string | null,
-    profile: Solar.ProfileSample,
+    owner: Solar.ProfileSample,
     track_id: number | null,
     track: Solar.Track | null,
     recurring_id: number | null,
     pinned: boolean,
     event_roles: Solar.EventRole[] | null,
     location_data: string | null,
+    is_attending: boolean
+    is_starred: boolean
+    is_owner: boolean
 }
 
 export interface IframeSchedulePageData {
@@ -79,6 +84,7 @@ export interface IframeSchedulePageData {
     startDate?: string,
     weeklyUrl: string,
     dailyUrl: string,
+    compactUrl: string,
     listingUrl: string,
     isFiltered: boolean,
     eventHomeUrl: string
@@ -87,7 +93,7 @@ export interface IframeSchedulePageData {
 export interface IframeSchedulePageDataProps {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
-    view: 'week' | 'day' | 'list',
+    view: 'week' | 'day' | 'list' | 'compact',
 }
 
 function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []) {
@@ -110,16 +116,24 @@ function searchParamsToString(searchParams: IframeSchedulePageSearchParams, excl
 }
 
 export async function IframeSchedulePageData({
-    params,
-    searchParams,
-    view,
-}: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
+                                                 params,
+                                                 searchParams,
+                                                 view,
+                                             }: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
     const groupName = params.grouphandle
+    const groupDetail = await getGroupDetailByHandle({
+        params: {groupHandle: groupName},
+        clientMode: CLIENT_MODE
+    })
+
+    if (!groupDetail) {
+        redirect('/404')
+    }
+
     const filters: Filter = {
         tags: searchParams.tags ? pickSearchParam(searchParams.tags)!.split(',') : [],
         trackId: searchParams.track ? Number(pickSearchParam(searchParams.track)!) : undefined,
         venueId: searchParams.venue ? Number(pickSearchParam(searchParams.venue)!) : undefined,
-        profileId: searchParams.profile ? Number(pickSearchParam(searchParams.profile)!) : undefined,
         applied: searchParams.applied === 'true',
         skipRecurring: searchParams.skip_repeat === 'true',
         skipMultiDay: searchParams.skip_multi_day === 'true'
@@ -141,7 +155,14 @@ export async function IframeSchedulePageData({
     filters.skipRecurring && apiSearchParams.set('skip_recurring', '1')
     filters.skipMultiDay && apiSearchParams.set('skip_multiday', '1')
 
-    const url = `${api}/event/list?${apiSearchParams.toString()}`
+    const authToken = await getServerSideAuth()
+    if (!!authToken) {
+        apiSearchParams.set('auth_token', authToken)
+        apiSearchParams.set('with_attending', '1')
+        apiSearchParams.set('with_stars', '1')
+    }
+
+    const url = `${getSdkConfig(CLIENT_MODE).api}/api/event/list?${apiSearchParams.toString()}`
     // console.log('url =>', url)
     const response = await fetch(url, {
         cache: 'no-store',
@@ -159,19 +180,20 @@ export async function IframeSchedulePageData({
     // console.log('---events', data.events.length)
 
     const interval = []
-    let current = dayjs.tz(start, data.group.timezone)
-    while (current.isSameOrBefore(dayjs.tz(end, data.group.timezone))) {
+    let current = dayjs.tz(start, groupDetail.timezone!)
+    while (current.isSameOrBefore(dayjs.tz(end, groupDetail.timezone!))) {
         interval.push(current.endOf('day'))
         current = current.add(1, 'day')
     }
 
     let weeklyUrl = `/schedule/week/${groupName}${searchParamsToString(searchParams)}`
     let dailyUrl = `/schedule/day/${groupName}${searchParamsToString(searchParams)}`
-    if (view === 'week' && dayjs.tz(new Date(), data.group.timezone).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
+    if (view === 'week' && dayjs.tz(new Date(), groupDetail.timezone!).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
         // if current date is in the interval, set the daily view to the current date
         dailyUrl = `/schedule/day/${groupName}${searchParamsToString(searchParams, ['start_date'])}`
     }
     let listingUrl = `/schedule/list/${groupName}${searchParamsToString(searchParams)}`
+    let compactUrl = `/schedule/compact/${groupName}${searchParamsToString(searchParams)}`
 
 
     const headersList = await headers()
@@ -180,17 +202,18 @@ export async function IframeSchedulePageData({
         // if not in iframe
         weeklyUrl = `/event/${groupName}/schedule/week${searchParamsToString(searchParams)}`
         dailyUrl = `/event/${groupName}/schedule/day${searchParamsToString(searchParams)}`
-        if (view === 'week' && dayjs.tz(new Date(), data.group.timezone).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
+        if (view === 'week' && dayjs.tz(new Date(), groupDetail.timezone!).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
             dailyUrl = `/event/${groupName}/schedule/day${searchParamsToString(searchParams, ['start_date'])}`
         }
         listingUrl = `/event/${groupName}/schedule/list${searchParamsToString(searchParams)}`
+        compactUrl = `/event/${groupName}/schedule/compact${searchParamsToString(searchParams)}`
     }
 
     const events = data.events
         .map((event: IframeSchedulePageDataEvent) => {
             return {
                 ...event,
-                track: data.group.tracks.find((track: Solar.Track) => track.id === event.track_id) || null
+                track: groupDetail.tracks.find((track: Track) => track.id === event.track_id) || null
             }
         })
 
@@ -202,26 +225,28 @@ export async function IframeSchedulePageData({
         || filters.skipMultiDay
 
 
-    const eventHomeUrl = `/event/${data.group.handle || data.group.username}`
+    const eventHomeUrl = `/event/${groupDetail.handle}`
 
     return {
         ...data,
+        group: groupDetail,
         events,
-        tags: data.group.event_tags || [],
-        tracks: data.group.tracks || [],
-        venues: data.group.venues || [],
+        tags: groupDetail.event_tags || [],
+        tracks: groupDetail.tracks || [],
+        venues: groupDetail.venues || [],
         filters: filters,
         interval,
         startDate,
         weeklyUrl,
         dailyUrl,
         listingUrl,
+        compactUrl,
         isFiltered,
         eventHomeUrl
     }
 }
 
-function getInterval(startDate?: string, view: 'week' | 'day' | 'list' = 'week') {
+function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 'compact' = 'week') {
     let start = dayjs()
 
     try {
@@ -231,20 +256,25 @@ function getInterval(startDate?: string, view: 'week' | 'day' | 'list' = 'week')
     }
 
     switch (view) {
-    case 'week':
-        return {
-            start: start.startOf('week').format('YYYY-MM-DD'),
-            end: start.endOf('week').format('YYYY-MM-DD')
-        }
-    case 'day':
-        return {
-            start: start.format('YYYY-MM-DD'),
-            end: start.format('YYYY-MM-DD')
-        }
-    case 'list':
-        return {
-            start: start.format('YYYY-MM-DD'),
-            end: start.format('YYYY-MM-DD')
-        }
+        case 'week':
+            return {
+                start: start.startOf('week').format('YYYY-MM-DD'),
+                end: start.endOf('week').format('YYYY-MM-DD')
+            }
+        case 'day':
+            return {
+                start: start.format('YYYY-MM-DD'),
+                end: start.format('YYYY-MM-DD')
+            }
+        case 'list':
+            return {
+                start: start.format('YYYY-MM-DD'),
+                end: start.format('YYYY-MM-DD')
+            }
+        case 'compact':
+            return {
+                start: start.format('YYYY-MM-DD'),
+                end: start.format('YYYY-MM-DD')
+            }
     }
 }

@@ -58,7 +58,7 @@ export default function WeeklyViewEventItem({event, timezone}: {event: IframeSch
             handle: groupHostRole.nickname!,
             id: groupHostRole.item_id!
         }
-        : event.profile
+        : event.owner
 
     
     const filteredTags= event.tags && event.tags.length > 0

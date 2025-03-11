@@ -5,6 +5,7 @@ import {Checkbox} from '@/components/shadcn/Checkbox'
 import {Button} from "@/components/shadcn/Button"
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
+import {getAuth} from '@/utils'
 
 export interface ScheduleFilterLabels {
     filters?: string
@@ -92,7 +93,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         filters.tags.length ? currSearchParams.set('tags', filters.tags.join(',')) : currSearchParams.delete('tags')
         filters.venueId ? currSearchParams.set('venue', filters.venueId.toString()) : currSearchParams.delete('venue')
         filters.trackId ? currSearchParams.set('track', filters.trackId.toString()) : currSearchParams.delete('track')
-        filters.applied && filters.profileId ? currSearchParams.set('applied', 'true') : currSearchParams.delete('applied')
+        filters.applied ? currSearchParams.set('applied', 'true') : currSearchParams.delete('applied')
         filters.skipRecurring ? currSearchParams.set('skip_repeat', 'true') : currSearchParams.delete('skip_repeat')
         filters.skipMultiDay ? currSearchParams.set('skip_multi_day', 'true') : currSearchParams.delete('skip_multi_day')
         window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
@@ -126,6 +127,8 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
             document.querySelector('.event-filter-content')?.removeEventListener('scroll', setPosition)
         }
     })
+
+    const authToken = getAuth()
 
     return <div className="filter-dialog bg-[--background] shadow rounded-lg p-5 max-w-[520px] w-[100vw]">
         <div className="flex-row-item-center justify-between">
@@ -174,7 +177,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                 }
             </div>
 
-            {!!filters.profileId &&
+            {!!authToken &&
                 <div className="flex-row-item-center justify-between font-semibold mt-6 mb-3">
                     <div>{props.labels?.joined || 'Joined'}</div>
                     <Checkbox checked={!!filters.applied} onCheckedChange={(checked) => setFilters({

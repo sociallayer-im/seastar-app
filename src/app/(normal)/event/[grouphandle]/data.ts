@@ -1,5 +1,4 @@
 import {
-    getGroupDetailByHandle,
     Event, getEvents, EventListFilterProps, GroupDetail
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'

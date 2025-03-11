@@ -30,7 +30,7 @@ export default function Error({error,reset }: {
                        </Button>
                        <Link className={`${buttonVariants({variant: 'primary'})} ml-3`} href="/">Return Home</Link>
                    </div>
-                    <div className="bg-red-50 p-3 rounded-lg overflow-auto mt-4 mx-3">
+                    <div className="bg-red-50 p-3 rounded-lg overflow-auto mt-4 mx-3 max-w-[90vw]">
                         <div className="font-semibold text-red-500">{error.message}</div>
                         <div className="whitespace-pre-wrap text-xs break-all">
                             {error.stack}

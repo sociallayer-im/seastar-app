@@ -6,6 +6,10 @@ import useModal from "@/components/client/Modal/useModal"
 import {getEventDetail} from "@/service/solar"
 import dynamic from "next/dynamic"
 import {useCallback} from "react"
+import Avatar from '@/components/Avatar'
+import {displayProfileName} from '@/utils'
+
+const DynamicFormatEventTime = dynamic(() => import('@/components/CardEvent/FormatEventTime'), {ssr: false})
 
 const DynamicScheduleEventPopup = dynamic(
     () => import('@/components/client/ScheduleEventPopup'),
@@ -40,23 +44,47 @@ export default function ListViewEventItem({event, timezone}: {
         })
     }, [event.id, timezone])
 
+    const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
+    const host: Solar.ProfileSample = groupHostRole ?
+        {
+            image_url: groupHostRole.image_url,
+            nickname: groupHostRole.nickname,
+            handle: groupHostRole.nickname!,
+            id: groupHostRole.item_id!
+        }
+        : event.owner
+
     const bgColor = event.pinned ? '#FFF7E8' : '#fff'
     const themeColor = event.tags?.[0] ? getLabelColor(event.tags[0]) : bgColor
 
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
-        <div className="w-12 sm:w-[100px] flex-shrink-0 text-right pr-3 pt-2">
-            {event.isAllDay ? 'All Day' : event.time}
-        </div>
         <div onClick={showPopup}
-            className="border-[#CECED3] border-dashed border-l pl-5 sm:pl-7 pb-2 flex-1 relative">
-            <i className="w-[6px] h-[6px] block absolute bg-[#D9D9D9] rounded-full left-0 sm:top-[17px] top-3 ml-[-3px]"/>
+            className="sm:pl-7 pb-2 flex-1 relative">
             <div style={{background: bgColor}}
-                className="flex flex-col sm:flex-row flex-nowrap !items-start bg-white py-2 px-4 shadow rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">
+                className="flex flex-col flex-nowrap !items-start bg-white py-2 px-4 shadow rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">
                 <i className="h-full w-0.5 left-0 top-0 absolute" style={{background: themeColor}}/>
-                <div className="flex-1 font-semibold mr-4">{event.title}</div>
+                <div className="flex-1 font-semibold mr-4 mb-2">{event.title}</div>
+                <div className="flex-1 text-xs text-gray-500 mb-2">
+                    <i className="uil-calender mr-1" />
+                    <DynamicFormatEventTime
+                        dateTimeStr={event.start_time}
+                        tz={timezone}/>
+                </div>
                 {event.location &&
-                    <div className="flex-1 sm:text-right">{event.location}</div>
+                    <div className="flex-1 text-xs text-gray-500 mb-2">
+                        <i className="uil-location-point mr-1" />
+                        {event.location}
+                    </div>
                 }
+                <div className="text-xs text-gray-500 flex-row-item-center">
+                    {event.track &&
+                        <div>{event.track.title}<span className="mx-1">|</span></div>
+                    }
+                    <div className="flex-row-item-center">
+                        by <Avatar profile={host} size={16}
+                                   className="mx-1"/> {displayProfileName(host)}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
