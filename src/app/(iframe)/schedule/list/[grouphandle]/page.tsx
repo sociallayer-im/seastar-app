@@ -147,7 +147,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                     <div className="">
                         {!!allDayEvents.length &&
                             <div>
-                                <div className="sm;pl-7 font-semibold mb-3">All Day</div>
+                                <div className="sm:pl-7 font-semibold mb-3">All Day</div>
                                 {
                                     allDayEvents.map((event) => {
                                         return <ListViewEventItem
