@@ -16,6 +16,7 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
     const [currDate, setCurrDate] = useState(dayjs(props.initDate.replace(/-/g, '/')))
     const [ready, setReady] = useState(false)
     const barRef = useRef<HTMLDivElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
 
     const currMonthDateList = useMemo<Dayjs[]>(() => {
         const monthStart = currDate.startOf('month')
@@ -85,13 +86,20 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
             }
         }, 100)
 
+        const b = setInterval(() => {
+            if (!!containerRef.current) {
+                containerRef.current?.addEventListener('wheel', (e)=> e.preventDefault())
+                clearInterval(a)
+            }
+        }, 100)
+
         return () => {
             clearInterval(a)
             barRef.current?.removeEventListener('wheel', handleScroll)
         }
     }, [])
 
-    return <div className="w-full px-3 pb-3 shadow pt-2 bg-white rounded-lg">
+    return <div ref={containerRef} className="w-full px-3 pb-3 shadow pt-2 bg-white rounded-lg">
         <div className="flex-row-item-center justify-between">
             <div className="flex-row-item-center">
                 <i className="uil-calender text-primary-foreground mr-1 text-xl" />
