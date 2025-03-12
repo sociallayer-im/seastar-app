@@ -43,6 +43,7 @@ export default function EventHomeFilterNew({filterOpts, groupDetail, lang, isMan
     return <>
         <div className="">
             <CalendarFilter
+                scheduleUrl={`/event/${groupDetail.handle}/schedule/list`}
                 lang={lang}
                 initDate={filterOpts.start_date || Dayjs().format('YYYY-MM-DD')}
             />

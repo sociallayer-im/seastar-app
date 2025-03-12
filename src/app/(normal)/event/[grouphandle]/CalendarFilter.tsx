@@ -3,9 +3,11 @@
 import {useEffect, useMemo, useRef, useState} from 'react'
 import dayjs, {Dayjs} from 'dayjs'
 import {Dictionary} from '@/lang'
+import {buttonVariants} from '@/components/shadcn/Button'
 
 interface CalendarProps  {
     lang: Dictionary
+    scheduleUrl: string,
     initDate: string, // 'YYYY/MM/DD'
     onChange?: (dateStr: string) => void,
 }
@@ -128,5 +130,6 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
                 })
             }
         </div>
+        <a className={`${buttonVariants({variant: 'secondary', size: 'sm'})} mt-2 w-full text-sm`} href={props.scheduleUrl}>{lang['All Schedule']}</a>
     </div>
 }

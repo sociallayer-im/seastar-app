@@ -510,6 +510,7 @@ export const en = {
     'Sign In to Attend':'Sign In to Attend',
     'Buy Tickets':'Buy Tickets',
     'View Detail':'View Detail',
+    'All Schedule':'All Schedule',
 }
 
 export type Dictionary = typeof en
