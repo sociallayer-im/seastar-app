@@ -2,47 +2,21 @@
 
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
-import useModal from "@/components/client/Modal/useModal"
-import {getEventDetail} from "@/service/solar"
 import dynamic from "next/dynamic"
-import {useCallback} from "react"
+import {useEffect} from "react"
 import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
+import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
+import {Dictionary} from '@/lang'
 
 const DynamicFormatEventTime = dynamic(() => import('@/components/CardEvent/FormatEventTime'), {ssr: false})
 
-const DynamicScheduleEventPopup = dynamic(
-    () => import('@/components/client/ScheduleEventPopup'),
-    {ssr: false}
-)
-
-export default function ListViewEventItem({event, timezone}: {
+export default function ListViewEventItem({event, timezone, lang}: {
     event: IframeSchedulePageDataEventDetail,
-    timezone: string
+    timezone: string,
+    lang: Dictionary,
 }) {
-    const {openModal, showLoading, closeModal} = useModal()
-
-    const showPopup = useCallback(async () => {
-        const loadingModalId = showLoading()
-        const eventDetail = await getEventDetail(event.id)
-        closeModal(loadingModalId)
-
-        if (!eventDetail) return
-
-        // set search params to open the popup
-        const url = new URL(window.location.href)
-        url.searchParams.set('popup', event.id.toString())
-        window.history.pushState({}, '', url.toString())
-
-        openModal({
-            content: () => <DynamicScheduleEventPopup event={eventDetail} timezone={timezone}/>,
-            onClose: () => {
-                const url = new URL(window.location.href)
-                url.searchParams.delete('popup')
-                window.history.pushState({}, '', url.toString())
-            }
-        })
-    }, [event.id, timezone])
+    const {showPopup} = useScheduleEventPopup()
 
     const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
     const host: Solar.ProfileSample = groupHostRole ?
@@ -57,8 +31,13 @@ export default function ListViewEventItem({event, timezone}: {
     const bgColor = event.pinned ? '#FFF7E8' : '#fff'
     const themeColor = event.tags?.[0] ? getLabelColor(event.tags[0]) : bgColor
 
+    useEffect(() => {
+        const popupEvent = new URLSearchParams(window.location.search).get('popup')
+        popupEvent === event.id.toString() && showPopup(event.id, event.is_starred, lang)
+    }, [])
+
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
-        <div onClick={showPopup}
+        <div onClick={() => showPopup(event.id, event.is_starred, lang)}
             className="sm:pl-7 pb-2 flex-1 relative">
             <div style={{background: bgColor}}
                 className="flex flex-col flex-nowrap !items-start bg-white py-2 px-4 shadow rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">

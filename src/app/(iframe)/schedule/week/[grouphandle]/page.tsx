@@ -153,7 +153,10 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
             <div className="grid gap-2 grid-cols-7 w-[1000px]">
                 {
                     disPlayEvents.map((event, index) => {
-                        return <WeeklyViewEventItem event={event} key={index} timezone={data.group.timezone || event.timezone}/>
+                        return <WeeklyViewEventItem
+                            lang={lang}
+                            event={event} key={index}
+                            timezone={data.group.timezone || event.timezone}/>
                     })
                 }
             </div>

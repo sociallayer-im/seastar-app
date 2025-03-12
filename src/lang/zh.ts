@@ -509,4 +509,7 @@ export const zh: Dictionary = {
     'Want to create your own Pop-up City?':'想要创建您自己的 Popup-City 吗？',
     'Start now and let more people freely organize and participate in your exciting events!':'立即开始，让更多人自由组织和参与您的精彩活动！',
     'Create Now':'现在创建',
+    'Sign In to Attend':'登录以参加',
+    'Buy Tickets':'购买门票',
+    'View Detail':'查看详情',
 }

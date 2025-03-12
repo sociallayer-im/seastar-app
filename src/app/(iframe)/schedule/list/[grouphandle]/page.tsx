@@ -151,6 +151,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                                 {
                                     allDayEvents.map((event) => {
                                         return <ListViewEventItem
+                                            lang={lang}
                                             key={event.id}
                                             event={event}
                                             timezone={data.group.timezone} />
@@ -167,6 +168,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                                     {
                                         groupedEventByStartTime[startTime].map((event) => {
                                             return <ListViewEventItem
+                                                lang={lang}
                                                 key={event.id}
                                                 event={event}
                                                 timezone={data.group.timezone} />

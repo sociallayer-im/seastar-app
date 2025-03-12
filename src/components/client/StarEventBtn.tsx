@@ -6,11 +6,12 @@ import {starEvent, unstarEvent} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 
-export default function StarEventCardStarBtn({eventId, starred, label, compact = true}: {
+export default function StarEventCardStarBtn({eventId, starred, label, className, compact = true}: {
     eventId: number,
     starred: boolean,
     label?: string
-    compact?: boolean
+    compact?: boolean,
+    className?: string
 }) {
     const [isStared, setIsStared] = useState(starred)
     const {toast} = useToast()
@@ -34,13 +35,13 @@ export default function StarEventCardStarBtn({eventId, starred, label, compact =
     }
 
     return authToken ?
-        compact ? <CompactStarBtn starred={isStared} onClick={handleStar}/>
+        compact ? <CompactStarBtn starred={isStared} onClick={handleStar} className={className}/>
             : <StarBtn starred={isStared} label={label || ''} onClick={handleStar}/>
         : null
 }
 
-function CompactStarBtn({starred, onClick}: { starred: boolean, onClick: (e: MouseEvent) => void }) {
-    return <div className="absolute right-4 top-4 cursor-pointer z-10" onClick={onClick}>
+function CompactStarBtn({starred, onClick, className}: { starred: boolean, onClick: (e: MouseEvent) => void, className?: string }) {
+    return <div className={`absolute right-4 top-4 cursor-pointer z-10 ${className}`} onClick={onClick}>
         {
             starred ? <img className="w-6 h-6 cursor-pointer" src="/images/favorite_active.png" alt=""/>
                 : <img className="w-6 h-6 cursor-pointer" src="/images/favorite.png" alt=""/>

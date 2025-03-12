@@ -507,6 +507,9 @@ export const en = {
     'Want to create your own Pop-up City?':'Want to create your own Pop-up City?',
     'Start now and let more people freely organize and participate in your exciting events!':'Start now and let more people freely organize and participate in your exciting events!',
     'Create Now':'Create Now',
+    'Sign In to Attend':'Sign In to Attend',
+    'Buy Tickets':'Buy Tickets',
+    'View Detail':'View Detail',
 }
 
 export type Dictionary = typeof en

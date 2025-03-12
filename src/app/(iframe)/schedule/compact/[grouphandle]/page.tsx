@@ -149,6 +149,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                         {
                             disPlayEvents.map((event, index) => {
                                 return <CompactViewEventItem
+                                    lang={lang}
                                     lastEvent={disPlayEvents[index - 1]}
                                     key={event.id}
                                     event={event}

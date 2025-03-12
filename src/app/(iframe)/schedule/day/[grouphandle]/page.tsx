@@ -129,6 +129,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                     <div className="flex-1 flex-col">
                         { allDayEvents.map((event, index) => {
                             return <DailyViewAllDayEventItem
+                                lang={lang}
                                 timezone={data.group.timezone}
                                 event={event} key={index}/>
                         })
@@ -170,6 +171,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
                             {
                                 displayEvents.map((event, index) => {
                                     return <DailyViewEventItem
+                                        lang={lang}
                                         key={index}
                                         event={event}
                                         timezone={data.group.timezone}/>

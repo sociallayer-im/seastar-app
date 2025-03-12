@@ -145,7 +145,6 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         currProfileAttended,
         currProfileCheckedIn,
         currProfileStarred,
-        isOwner: eventDetail.owner.id === currProfile?.id,
         owner: eventDetail.owner,
         groupHost,
         tab,

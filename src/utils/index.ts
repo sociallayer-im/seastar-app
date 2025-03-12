@@ -16,7 +16,7 @@ import {
     VenueDetail,
     VenueTimeslot,
     Weekday,
-    EventWithJoinStatus
+    EventWithJoinStatus, Participant
 } from '@sola/sdk'
 import domtoimage from 'dom-to-image'
 import {Dictionary} from '@/lang'
@@ -448,6 +448,35 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
         canPublishEvent,
         canJoinEvent,
         canViewEvent
+    }
+}
+
+export const checkEventPermissionsForProfile = (eventDetail: EventDetail, groupDetail: GroupDetail, profile?: Profile | null) => {
+    const {canJoinEvent, isManager, isOwner} = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, profile)
+
+    const isEventOperator = !!profile
+        && (isManager
+            || isOwner
+            || eventDetail.event_roles?.some(role => role.role === 'co_host' && role.item_id === profile.id)
+            || eventDetail.event_roles?.some(role => role.role === 'speaker' && role.item_id === profile.id)
+        )
+
+    const attended = !!eventDetail.participants?.find((item: Participant) => {
+        const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
+        return (!item.ticket_id && item.profile.id === profile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked')) // no tickets needed
+            || (!!ticket && !!item.ticket_id && item.profile.id === profile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && item.payment_status?.includes('succe')) // paid ticket
+            || (!!ticket && !!item.ticket_id && item.profile.id === profile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && ticket.payment_methods.length === 0) // free ticket
+    })
+
+    const checkedIn = eventDetail.participants?.find((item: Participant) => {
+        return item.profile.id === profile?.id && item.status === 'checked'
+    })
+
+    return {
+        canAccess: canJoinEvent || isEventOperator,
+        isEventOperator,
+        attended,
+        checkedIn
     }
 }
 

@@ -54,6 +54,7 @@ export interface IframeSchedulePageDataEvent {
     cover_url: string,
     tags: string[] | null,
     external_url: null | string,
+    group_id: number,
     host_info: {
         speaker?: Solar.ProfileSample[]
         co_host?: Solar.ProfileSample[]
@@ -96,8 +97,9 @@ export interface IframeSchedulePageDataProps {
     view: 'week' | 'day' | 'list' | 'compact',
 }
 
-function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []) {
+function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []): string {
     const params = new URLSearchParams()
+    exclude = [...exclude, 'popup']
 
     Object.entries(searchParams).forEach(([key, value]) => {
         if (exclude.includes(key)) {

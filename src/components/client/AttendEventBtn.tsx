@@ -8,10 +8,11 @@ import {getAuth} from '@/utils'
 import {attendEventWithoutTicket} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 
-export default function AttendEventBtn({eventId, lang, className}: {
+export default function AttendEventBtn({eventId, lang, className, onAttended}: {
     eventId: number,
     lang: Dictionary,
     className?: string
+    onAttended?:() => void
 }) {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -31,8 +32,11 @@ export default function AttendEventBtn({eventId, lang, className}: {
                 title: 'Attended event',
                 variant: 'success'
             })
-
-            window.setTimeout(() => window.location.reload(), 3000)
+            if (onAttended) {
+                onAttended()
+            } else {
+                window.setTimeout(() => window.location.reload(), 2000)
+            }
         } catch (e: unknown) {
             console.error('[handleAttendEvent]: ', e)
             toast({

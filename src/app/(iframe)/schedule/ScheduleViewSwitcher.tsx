@@ -31,6 +31,7 @@ export default function ScheduleViewSwitcher({weeklyUrl, dailyUrl, compactUrl, l
                 opts.map(({label, value, href}) => {
                     return <a className={`${buttonVariants({ variant: "ghost", size: 'sm' })} ${value==='compact' ? 'w-[94px]': 'w-[74px]'} rounded-[6px] text-[#C3C7C3] hover:text-[#272928]`}
                               href={href}
+                              key={value}
                               style={currView === value ? activeStyle : {}}>{label}</a>
                 })
             }

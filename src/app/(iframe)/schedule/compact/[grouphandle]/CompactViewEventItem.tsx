@@ -3,46 +3,19 @@
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import useModal from "@/components/client/Modal/useModal"
-import {getEventDetail} from "@/service/solar"
-import dynamic from "next/dynamic"
-import {useCallback} from "react"
 import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
+import {Dictionary} from '@/lang'
+import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
+import {useEffect} from 'react'
 
-const DynamicScheduleEventPopup = dynamic(
-    () => import('@/components/client/ScheduleEventPopup'),
-    {ssr: false}
-)
-
-export default function CompactViewEventItem({event, timezone, lastEvent}: {
+export default function CompactViewEventItem({event, timezone, lang, lastEvent}: {
     event: IframeSchedulePageDataEventDetail,
     lastEvent?: IframeSchedulePageDataEventDetail,
+    lang: Dictionary,
     timezone: string
 }) {
-    const {openModal, showLoading, closeModal} = useModal()
-
-    const showPopup = useCallback(async () => {
-        const loadingModalId = showLoading()
-        const eventDetail = await getEventDetail(event.id)
-        closeModal(loadingModalId)
-
-        if (!eventDetail) return
-
-        // set search params to open the popup
-        const url = new URL(window.location.href)
-        url.searchParams.set('popup', event.id.toString())
-        window.history.pushState({}, '', url.toString())
-
-        openModal({
-            content: () => <DynamicScheduleEventPopup event={eventDetail} timezone={timezone}/>,
-            onClose: () => {
-                const url = new URL(window.location.href)
-                url.searchParams.delete('popup')
-                window.history.pushState({}, '', url.toString())
-            }
-        })
-    }, [event.id, timezone])
-
+    const {showPopup} = useScheduleEventPopup()
     const bgColor = event.pinned ? '#FFF7E8' : '#fff'
     const themeColor = event.tags?.[0] ? getLabelColor(event.tags[0]) : bgColor
 
@@ -56,6 +29,11 @@ export default function CompactViewEventItem({event, timezone, lastEvent}: {
         }
         : event.owner
 
+    useEffect(() => {
+        const popupEvent = new URLSearchParams(window.location.search).get('popup')
+        popupEvent === event.id.toString() && showPopup(event.id, event.is_starred, lang)
+    }, [])
+
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
         <div className="w-12 sm:w-[100px] flex-shrink-0 text-right pr-3 pt-2">
             {event.start_time === lastEvent?.start_time && event.endTimeStr === lastEvent?.endTimeStr
@@ -66,7 +44,9 @@ export default function CompactViewEventItem({event, timezone, lastEvent}: {
                 </div>
             }
         </div>
-        <div onClick={showPopup}
+        <div onClick={() => {
+            showPopup(event.id, event.is_starred, lang)
+        }}
              className="border-[#CECED3] border-dashed border-l pl-5 sm:pl-7 pb-2 flex-1 relative">
             <i className="w-[6px] h-[6px] block absolute bg-[#D9D9D9] rounded-full left-0 sm:top-[17px] top-3 ml-[-3px]"/>
             <div style={{background: bgColor}}
