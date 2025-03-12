@@ -9,6 +9,7 @@ import {
 } from '@/utils'
 import {GoogleMapMarkerProps} from '@/components/client/Map'
 import {CLIENT_MODE} from '@/app/config'
+import Dayjs from '@/libs/dayjs'
 
 export type GroupEventHomeParams = {
     grouphandle?: string
@@ -51,8 +52,13 @@ export default async function GroupEventHomeData({
     if (!filterOpts.private_event && !filterOpts.collection) {
         filterOpts.collection = 'upcoming'
     }
+
     if (disableCollection) {
         filterOpts.collection = undefined
+        if (!filterOpts.start_date && !filterOpts.end_date) {
+            filterOpts.start_date = Dayjs.tz(new Date(), groupDetail.timezone!).format('YYYY-MM-DD')
+            filterOpts.end_date = Dayjs.tz(new Date(), groupDetail.timezone!).format('YYYY-MM-DD')
+        }
     }
 
     const authToken = await getServerSideAuth()
