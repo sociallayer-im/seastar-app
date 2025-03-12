@@ -138,12 +138,10 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
                 }
 
                 { !checkedIn && attendedEvent && !isEventOperator &&
-                    <div className="flex-row-item-center mt-2">
-                        <a className={`${buttonVariants({variant: 'primary'})} sm:mr-3 mt-3 sm:w-auto w-full`}
-                           href={`/event/checkin/${event.id}`}>
-                            <span>{lang['Check-In']}</span>
-                        </a>
-                    </div>
+                    <a className={`${buttonVariants({variant: 'primary'})} sm:mr-3 mt-3 sm:w-auto w-full`}
+                       href={`/event/checkin/${event.id}`}>
+                        <span>{lang['Check-In']}</span>
+                    </a>
                 }
 
                 { !profile &&
