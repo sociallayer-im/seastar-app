@@ -1,4 +1,4 @@
-import GroupEventHome from '@/app/(normal)/event/[grouphandle]/GroupEventHome'
+import GroupEventHomeNew from '@/app/(normal)/event/[grouphandle]/GroupEventHomeNew'
 import {
     GroupEventHomeParams,
     GroupEventHomeSearchParams
@@ -44,5 +44,5 @@ export default async function EventHome(props: {params: GroupEventHomeParams, se
         redirect('/404')
     }
 
-    return <GroupEventHome searchParams={props.searchParams} groupDetail={groupDetail} />
+    return <GroupEventHomeNew searchParams={props.searchParams} groupDetail={groupDetail} />
 }

@@ -136,7 +136,7 @@ export type EventListFilterProps = {
     group_id: string,
     auth_token?: string,
     timezone?: string,
-    collection: EventCollectionType,
+    collection?: EventCollectionType,
     private_event?: string
     with_stars?: string,
     start_date?: string,

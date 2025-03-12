@@ -24,7 +24,7 @@ export type GroupEventHomeDataProps = {
 export default async function GroupEventHomeData({
                                                      searchParams,
                                                      groupDetail
-                                                 }: GroupEventHomeDataProps) {
+                                                 }: GroupEventHomeDataProps, disableCollection?: boolean) {
     if (!groupDetail) {
         redirect('/404')
     }
@@ -50,6 +50,9 @@ export default async function GroupEventHomeData({
     }
     if (!filterOpts.private_event && !filterOpts.collection) {
         filterOpts.collection = 'upcoming'
+    }
+    if (disableCollection) {
+        filterOpts.collection = undefined
     }
 
     const authToken = await getServerSideAuth()
