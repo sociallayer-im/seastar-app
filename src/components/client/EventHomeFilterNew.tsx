@@ -49,10 +49,10 @@ export default function EventHomeFilterNew({filterOpts, groupDetail, lang, isMan
             />
         </div>
 
-        <div className="flex-row-item-center my-3">
+        <div className="flex-row-item-center my-7">
             <Input
                 type={'search'}
-                className="flex-1"
+                className="flex-1 !border-[#EDEDED] !border-[1px]"
                 value={search}
                 onInput={(e) => setSearch(e.currentTarget.value)}
                 onKeyUp={(e) => {
@@ -71,17 +71,19 @@ export default function EventHomeFilterNew({filterOpts, groupDetail, lang, isMan
                 placeholder={'Search...'}/>
             <Button variant="outline"
                     onClick={showFilterDialog}
-                    className="ml-3 relative">
+                    className="ml-3 relative rounded-xl !bg-[#F8F9F8] !border-[#CECED3]">
                 <i className="uil-filter text-lg"/>
                 {isFiltered &&
                     <i className="w-2.5 h-2.5 bg-red-500 rounded-full block absolute right-1.5 top-1.5"/>
                 }
             </Button>
-            <a className={`ml-3 ${buttonVariants({variant: 'outline'})}`}
+            <a className={`ml-3 ${buttonVariants({variant: 'outline'})} rounded-xl !bg-[#F8F9F8] !border-[#CECED3]`}
                href={`/event/${groupDetail.handle}/schedule/list`}>
                 <i className="uil-calender text-lg"/>
             </a>
-            <AddToCalendarAppBtn groupHandle={groupDetail.handle} lang={lang}/>
+            <AddToCalendarAppBtn
+                className={'rounded-xl !bg-[#F8F9F8] !border-[#CECED3]'}
+                groupHandle={groupDetail.handle} lang={lang}/>
         </div>
 
         {

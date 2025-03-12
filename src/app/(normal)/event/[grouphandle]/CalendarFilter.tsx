@@ -127,7 +127,7 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
 
                     return <div key={index}
                                 data-date={date.format('YYYY/MM/DD')}
-                                className={`w-[46px] shrink-0 flex justify-center items-center flex-col text-center cursor-pointer`}
+                                className={`w-[50px] shrink-0 flex justify-center items-center flex-col text-center cursor-pointer`}
                                 style={{opacity: ready ? '1' : '0'}}
                                 onClick={() => {
                                     handleSelectDate(dayjs(date).format('YYYY-MM-DD'))

@@ -7,7 +7,7 @@ import {Dictionary} from '@/lang'
 import CopyText from '@/components/client/CopyText'
 import {CLIENT_MODE} from '@/app/config'
 
-export default function AddToCalendarAppBtn({groupHandle, lang}: { groupHandle: string, lang: Dictionary }) {
+export default function AddToCalendarAppBtn({groupHandle, lang, className}: { groupHandle: string, lang: Dictionary, className?: string }) {
     const {openModal} = useModal()
 
     const urls = getEventIcsUrl({
@@ -23,7 +23,7 @@ export default function AddToCalendarAppBtn({groupHandle, lang}: { groupHandle: 
         })
     }
 
-    return <Button variant="outline" className="ml-3" onClick={showAddToCalendarDialog}>
+    return <Button variant="outline" className={`ml-3 ${className}`} onClick={showAddToCalendarDialog}>
         <i className="uil-rss text-lg mt-[-2px] translate-x-0.5"/>
     </Button>
 }

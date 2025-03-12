@@ -22,7 +22,7 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
 
     const {lang, type} = await selectLang()
 
-    return <div>
+    return <div className="min-h-[100svh] bg-[#F8F9F8]">
         <div className="min-h-[116px]"
              style={{background: 'url(/images/event_homet_header_bg.png) center no-repeat', backgroundSize: '100% 100%'}}>
             <div className="page-width flex-col py-6 flex ">
