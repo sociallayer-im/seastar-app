@@ -51,7 +51,7 @@ export default function DialogVoucherDetail({
             && !!currProfile
     }
 
-    if (voucherDetail.strategy === 'account') {
+    if (voucherDetail.strategy === 'account' || voucherDetail.strategy === 'event') {
         canAccept = voucherDetail.receiver_id === currProfile?.id
             && !currProfileHasAccepted
     }
@@ -204,12 +204,13 @@ export default function DialogVoucherDetail({
             <div className="text-red-500 text-sm my-3">{error}</div>
 
             <div className="flex-row-item-center gap-2">
-                {canSandAgain && canSendAgain &&
+                {canSandAgain && canSendAgain && voucherDetail.strategy === 'code' &&
                     <a href={`/voucher/${voucherDetail.id}/share`}
                        className={`${buttonVariants({variant: "secondary"})} flex-1`}>
                         {lang['Sand Again']}
                     </a>
                 }
+
                 {canAccept && voucherDetail.strategy === 'account' &&
                     <Button variant={'secondary'}
                             onClick={handleReject}

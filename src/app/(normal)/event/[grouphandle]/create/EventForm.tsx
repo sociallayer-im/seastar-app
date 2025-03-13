@@ -577,7 +577,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                                                 <div
                                                     className="font-semibold text-sm text-amber-500">{lang['Close Event']}</div>
                                                 <div className="text-xs text-amber-500">
-                                                    {lang['People can not RSVP the event']}
+                                                    {lang['People is no longer able to register for the event']}
                                                 </div>
                                             </div>
                                             <Switch checked={draft.status === 'closed'}

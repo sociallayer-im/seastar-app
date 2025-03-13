@@ -121,7 +121,7 @@ export const zh: Dictionary = {
     'Highlighted': '突出显示',
     'Select a highlight event, the event you created will display on the top of the day': '选择一个突出显示的活动，您创建的活动将显示在当天的顶部',
     'Close Event': '关闭活动',
-    'People can not RSVP the event': '人们无法 RSVP 活动',
+    'People is no longer able to register for the event': '用户将无法继续报名该活动',
     'The maximum number of tags is 3': '标签的最大数量为 3',
     'Event Name is required': '活动名称是必需的',
     'Choose a badge from you created': '从您创建的徽章中选择',
