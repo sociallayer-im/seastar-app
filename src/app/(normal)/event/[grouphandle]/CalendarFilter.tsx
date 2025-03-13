@@ -14,7 +14,6 @@ interface CalendarProps  {
 
 export default function CalendarFilter({lang, ...props}: CalendarProps) {
     const [currDate, setCurrDate] = useState(dayjs(props.initDate.replace(/-/g, '/')))
-    const [ready, setReady] = useState(false)
     const barRef = useRef<HTMLDivElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
 
@@ -71,7 +70,6 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
                 // scroll to the selected date in the middle
                 const scrollLeft = target.getBoundingClientRect().left - barRef.current.getBoundingClientRect().left
                 barRef.current!.scrollLeft = scrollLeft
-                setReady(true)
             }
         }
 
@@ -120,7 +118,7 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
         </div>
 
 
-        <div ref={barRef} className={`flex flex-row overflow-auto text-sm hide-scroll rounded-lg ${ready ? '' : 'loading-bg'}`}>
+        <div ref={barRef} className={`flex flex-row overflow-auto text-sm hide-scroll rounded-lg`}>
             {
                 currMonthDateList.map((date, index) => {
                     const selected = dayjs(props.initDate).format('YYYY/MM/DD') === date.format('YYYY/MM/DD')
@@ -128,7 +126,6 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
                     return <div key={index}
                                 data-date={date.format('YYYY/MM/DD')}
                                 className={`w-[50px] shrink-0 flex justify-center items-center flex-col text-center cursor-pointer`}
-                                style={{opacity: ready ? '1' : '0'}}
                                 onClick={() => {
                                     handleSelectDate(dayjs(date).format('YYYY-MM-DD'))
                                 }}>

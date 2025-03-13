@@ -513,4 +513,5 @@ export const zh: Dictionary = {
     'Buy Tickets':'购买门票',
     'View Detail':'查看详情',
     'All Schedule':'所有日程',
+    'Map':'地图',
 }

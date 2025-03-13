@@ -4,7 +4,7 @@ import {EventListFilterProps, GroupDetail} from '@sola/sdk'
 import {Input} from '@/components/shadcn/Input'
 import {Button, buttonVariants} from '@/components/shadcn/Button'
 import AddToCalendarAppBtn from '@/components/client/AddtoCalendarApp'
-import TagsFilter from '@/components/client/TagsFilter'
+import TagsFilterNew from '@/components/client/TagsFilterNew'
 import TracksFilter from '@/components/client/TracksFilter'
 import {Dictionary} from '@/lang'
 import {useMemo, useState} from 'react'
@@ -89,7 +89,7 @@ export default function EventHomeFilterNew({filterOpts, groupDetail, lang, isMan
         {
             !!groupDetail.event_tags?.length &&
             <div className="my-2">
-                <TagsFilter
+                <TagsFilterNew
                     lang={lang}
                     onSelected={(tags) => {
                         const url = new URL(window.location.href)

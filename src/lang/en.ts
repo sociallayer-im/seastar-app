@@ -511,6 +511,7 @@ export const en = {
     'Buy Tickets':'Buy Tickets',
     'View Detail':'View Detail',
     'All Schedule':'All Schedule',
+    'Map':'Map',
 }
 
 export type Dictionary = typeof en
