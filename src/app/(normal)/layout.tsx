@@ -35,11 +35,13 @@ export default async function RootLayout({
     return (
         <html lang={langType}
               className={`${poppins.className} ${icon.variable} ${media_icons.variable} ${editor_icons.variable}`}>
+        <head>
+            <script src="https://analytics.wamo.club/app.sola.day" data-domain="app.sola.day" type="text/javascript" />
+        </head>
         <Head>
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
         </Head>
         <body className={`antialiased`}>
-        <Script src="https://analytics.wamo.club/app.sola.day" data-domain="app.sola.day" async />
         <div className="min-h-[100svh]">
             <Header/>
             <div className="relative">
