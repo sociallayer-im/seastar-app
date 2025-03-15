@@ -36,7 +36,7 @@ export default async function RootLayout({
         <html lang={langType}
               className={`${poppins.className} ${icon.variable} ${media_icons.variable} ${editor_icons.variable}`}>
         <head>
-            <script src="https://analytics.wamo.club/js/script.js" data-domain="app.sola.day" type="text/javascript" />
+            <script src="https://analytics.wamo.club/js/script.js" async data-domain="app.sola.day" type="text/javascript" />
         </head>
         <Head>
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
