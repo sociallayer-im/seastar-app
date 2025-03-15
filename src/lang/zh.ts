@@ -9,7 +9,7 @@ export const zh: Dictionary = {
     'to complete your account set-up': '的验证码完成您的帐户设置',
     'Back': '返回',
     'Set a unique Social Layer username': '设置一个独特的 Social Layer 用户名',
-    'Contain the English-language letters and the digits 0-9': '包含英文字符和数字 0-9',
+    'Contain the English-language letters a-z and the digits 0-9': '包含英文字符 a-z 和数字 0-9',
     'Hyphens can also be used but it can not be used at the beginning and at the end': '可以使用连字符，但不能用于开头和结尾',
     'Hyphens cannot appear consecutively': '连字符不能连续出现',
     'Should be equal or longer than 6 characters': '应等于或长于 6 个字符',

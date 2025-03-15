@@ -8,11 +8,10 @@ import {getCurrProfile, selectLang} from '@/app/actions'
 import Header from "@/components/Header"
 import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
 import Subscription from '@/components/client/Subscription'
-import { TrackJSInstall } from "@/app/trackjs_loader"
+// import { TrackJSInstall } from "@/app/trackjs_loader"
 import HyperDx from '@/components/client/HyperDx'
-import Script from 'next/script'
 
-TrackJSInstall()
+// TrackJSInstall()
 
 export const metadata: Metadata = {
     title: "Social Layer",

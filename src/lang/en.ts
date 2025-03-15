@@ -7,7 +7,7 @@ export const en = {
     'to complete your account set-up': 'to complete your account set-up',
     'Back': 'Back',
     'Set a unique Social Layer username': 'Set a unique Social Layer username',
-    'Contain the English-language letters and the digits 0-9': 'Contain the English-language letters the digits 0-9',
+    'Contain the English-language letters a-z and the digits 0-9': 'Contain the English-language letters a-z the digits 0-9',
     'Hyphens can also be used but it can not be used at the beginning and at the end': 'Hyphens can also be used but it can not be used at the beginning and at the end',
     'Hyphens cannot appear consecutively': 'Hyphens cannot appear consecutively',
     'Should be equal or longer than 6 characters': 'Should be equal or longer than 6 characters',
