@@ -12,7 +12,7 @@ interface CalendarProps  {
     onChange?: (dateStr: string) => void,
 }
 
-export default function CalendarFilter({lang, ...props}: CalendarProps) {
+export default function CalendarFilter({lang, onChange, ...props}: CalendarProps) {
     const [currDate, setCurrDate] = useState(dayjs(props.initDate.replace(/-/g, '/')))
     const barRef = useRef<HTMLDivElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -35,7 +35,11 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
         const url = new URL(location.href)
         url.searchParams.set('start_date', newDate.format('YYYY-MM-DD'))
         url.searchParams.set('end_date', newDate.format('YYYY-MM-DD'))
-        location.href = url.href
+        if (onChange) {
+            onChange(newDate.format('YYYY-MM-DD'))
+        } else {
+            location.href = url.href
+        }
     }
 
     const nextMonth = () => {
@@ -44,7 +48,11 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
         const url = new URL(location.href)
         url.searchParams.set('start_date', newDate.format('YYYY-MM-DD'))
         url.searchParams.set('end_date', newDate.format('YYYY-MM-DD'))
-        location.href = url.href
+        if (onChange) {
+            onChange(newDate.format('YYYY-MM-DD'))
+        } else {
+            location.href = url.href
+        }
     }
 
     const today = () => {
@@ -53,14 +61,24 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
         const url = new URL(location.href)
         url.searchParams.set('start_date', newDate.format('YYYY-MM-DD'))
         url.searchParams.set('end_date', newDate.format('YYYY-MM-DD'))
-        location.href = url.href
+        if (onChange) {
+            onChange(newDate.format('YYYY-MM-DD'))
+        } else {
+            location.href = url.href
+        }
     }
 
-    const handleSelectDate = (dateStr: string) => {
+    const handleSelectDate = (date: Dayjs) => {
         const url = new URL(location.href)
+        const dateStr = date.format('YYYY-MM-DD')
         url.searchParams.set('start_date', dateStr)
         url.searchParams.set('end_date', dateStr)
-        location.href = url.href
+        setCurrDate(date)
+        if (onChange) {
+            onChange(dateStr)
+        } else {
+            location.href = url.href
+        }
     }
 
     useEffect(() => {
@@ -121,13 +139,13 @@ export default function CalendarFilter({lang, ...props}: CalendarProps) {
         <div ref={barRef} className={`flex flex-row overflow-auto text-sm hide-scroll rounded-lg`}>
             {
                 currMonthDateList.map((date, index) => {
-                    const selected = dayjs(props.initDate).format('YYYY/MM/DD') === date.format('YYYY/MM/DD')
+                    const selected = dayjs(currDate).format('YYYY/MM/DD') === date.format('YYYY/MM/DD')
 
                     return <div key={index}
                                 data-date={date.format('YYYY/MM/DD')}
                                 className={`w-[50px] shrink-0 flex justify-center items-center flex-col text-center cursor-pointer`}
                                 onClick={() => {
-                                    handleSelectDate(dayjs(date).format('YYYY-MM-DD'))
+                                    handleSelectDate(date)
                                 }}>
                         <div className="text-gray-500 mb-1 text-xs">{date.format('ddd')}</div>
                         <div className={`${selected ? 'text-primary-foreground' : ''} font-semibold `}>{date.format('DD')}</div>

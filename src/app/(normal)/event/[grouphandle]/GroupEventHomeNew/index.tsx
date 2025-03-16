@@ -7,6 +7,7 @@ import SignInPanel from '@/components/SignInPanel'
 import EventHomeFilterNew from '@/components/client/EventHomeFilterNew'
 import EventListGroupedByDate from '@/components/EventListGroupedByDate'
 import EventHomeMap from '@/app/(normal)/event/[grouphandle]/EventHomeMap'
+import EventHomeEventList from '@/app/(normal)/event/[grouphandle]/GroupEventHomeNew/EventList'
 
 
 export default async function GroupEventHome(props: GroupEventHomeDataProps) {
@@ -67,13 +68,13 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
 
         <div className="page-width min-h-[100svh] sm:pt-8 flex-col flex sm:flex-row">
             <div className="flex-1 md:max-w-[648px] order-2 md:order-1">
-                <EventHomeFilterNew
-                    filterOpts={filterOpts}
-                    groupDetail={groupDetail} isManager={isManager} lang={lang}/>
+                <EventHomeEventList
+                    events={events}
+                    lang={lang}
+                    isManager={isManager}
+                    groupDetail={groupDetail}
+                    filterOpts={filterOpts} />
 
-                <div className="my-3">
-                    <EventListGroupedByDate events={events} group={groupDetail} lang={lang}/>
-                </div>
 
                 {!!currProfile && <div className="block sm:hidden pb-6">
                     {canPublishEvent && groupDetail.status !== 'freezed' &&
@@ -104,7 +105,7 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
 
             <div className="md:w-[328px] ml-0 flex-col flex order-1 md:order-2 md:ml-6 mb-6">
                 {!!groupDetail.banner_image_url &&
-                    <a href={groupDetail.banner_link_url || '/'}>
+                    <a href={groupDetail.banner_link_url || '/'} className="mb-3">
                         <img className="w-full h-auto"
                              src={groupDetail.banner_image_url} alt=""/>
                     </a>

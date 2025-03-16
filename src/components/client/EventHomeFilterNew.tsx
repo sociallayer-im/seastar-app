@@ -5,9 +5,9 @@ import {Input} from '@/components/shadcn/Input'
 import {Button, buttonVariants} from '@/components/shadcn/Button'
 import AddToCalendarAppBtn from '@/components/client/AddtoCalendarApp'
 import TagsFilterNew from '@/components/client/TagsFilterNew'
-import TracksFilter from '@/components/client/TracksFilter'
+import TracksFilterNew from '@/components/client/TracksFilterNew'
 import {Dictionary} from '@/lang'
-import {useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import useModal from '@/components/client/Modal/useModal'
 import DialogEventHomeFilter from '@/components/client/DialogEventHomeFilter'
 import CalendarFilter from '@/app/(normal)/event/[grouphandle]/CalendarFilter'
@@ -18,31 +18,58 @@ export interface EventHomeFilterProps {
     groupDetail: GroupDetail
     lang: Dictionary
     isManager?: boolean
+    onFiltered?: (filterOpts: EventListFilterProps) => void
 }
 
-export default function EventHomeFilterNew({filterOpts, groupDetail, lang, isManager}: EventHomeFilterProps) {
+export default function EventHomeFilterNew({filterOpts, groupDetail, lang, onFiltered}: EventHomeFilterProps) {
     const [search, setSearch] = useState(filterOpts.search_title || '')
+    const [currFilterOpts, setCurrFilterOpts] = useState(filterOpts)
     const {openModal} = useModal()
+
+    const isFiltered = useMemo(() => {
+        return !!currFilterOpts.skip_recurring
+            || !!currFilterOpts.skip_multi_day
+            || !!currFilterOpts.venue_id
+    }, [currFilterOpts])
+
+    const updateFilterOptsToSearchParams = (filterOpts: EventListFilterProps) => {
+        const searchParams = new URLSearchParams()
+        const keys = Object.keys(filterOpts) as Array<keyof EventListFilterProps>
+        keys.forEach((key) => {
+            if (filterOpts[key]) {
+                searchParams.set(key, filterOpts[key])
+            } else {
+                searchParams.delete(key)
+            }
+        })
+        searchParams.delete('group_id')
+        searchParams.delete('timezone')
+        const url = new URL(window.location.href)
+        url.search = searchParams.toString()
+        window.history.replaceState(null, '', url.toString())
+        setCurrFilterOpts(filterOpts)
+        !!onFiltered && onFiltered(filterOpts)
+    }
 
     const showFilterDialog = () => {
         openModal({
             content: (close) => <DialogEventHomeFilter
+                mode={'async'}
                 lang={lang}
-                filterOpts={filterOpts}
+                filterOpts={currFilterOpts}
                 groupDetail={groupDetail}
+                onFilterChange={updateFilterOptsToSearchParams}
                 close={close!}/>
         })
     }
 
-    const isFiltered = useMemo(() => {
-        return !!filterOpts.skip_recurring
-            || !!filterOpts.skip_multi_day
-            || !!filterOpts.venue_id
-    }, [filterOpts])
-
     return <>
         <div className="">
             <CalendarFilter
+                onChange={(dateStr: string) => {
+                    const newFilterOpts = {...currFilterOpts, start_date: dateStr, end_date: dateStr}
+                    updateFilterOptsToSearchParams(newFilterOpts)
+                }}
                 scheduleUrl={`/event/${groupDetail.handle}/schedule/list`}
                 lang={lang}
                 initDate={filterOpts.start_date || Dayjs().format('YYYY-MM-DD')}
@@ -57,14 +84,8 @@ export default function EventHomeFilterNew({filterOpts, groupDetail, lang, isMan
                 onInput={(e) => setSearch(e.currentTarget.value)}
                 onKeyUp={(e) => {
                     if (e.key === 'Enter') {
-                        const keyword = e.currentTarget.value.trim()
-                        const url = new URL(window.location.href)
-                        if (keyword) {
-                            url.searchParams.set('search_title', keyword)
-                        } else {
-                            url.searchParams.delete('search_title')
-                        }
-                        window.location.href = url.toString()
+                        const newFilterOpts = {...currFilterOpts, search_title: e.currentTarget.value.trim()}
+                        updateFilterOptsToSearchParams(newFilterOpts)
                     }
                 }}
                 startAdornment={<i className="uil-search text-lg"/>}
@@ -92,33 +113,33 @@ export default function EventHomeFilterNew({filterOpts, groupDetail, lang, isMan
                 <TagsFilterNew
                     lang={lang}
                     onSelected={(tags) => {
-                        const url = new URL(window.location.href)
                         if (tags && tags[0]) {
-                            url.searchParams.set('tags', tags[0])
+                            const newFilterOpts = {...currFilterOpts, tags: tags[0]}
+                            updateFilterOptsToSearchParams(newFilterOpts)
                         } else {
-                            url.searchParams.delete('tags')
+                            const newFilterOpts = {...currFilterOpts, tags: undefined}
+                            updateFilterOptsToSearchParams(newFilterOpts)
                         }
-                        window.location.href = url.toString()
                     }}
-                    values={filterOpts.tags ? filterOpts.tags.split(',') : []}
+                    values={currFilterOpts.tags ? currFilterOpts.tags.split(',') : []}
                     tags={groupDetail.event_tags || []}/>
             </div>
         }
         {
             !!groupDetail.tracks.length &&
             <div className="my-2">
-                <TracksFilter
+                <TracksFilterNew
                     lang={lang}
                     onSelect={(trackIds) => {
-                        const url = new URL(window.location.href)
                         if (trackIds && trackIds[0]) {
-                            url.searchParams.set('track_id', trackIds[0].toString())
+                            const newFilterOpts = {...currFilterOpts, track_id: trackIds[0] + ''}
+                            updateFilterOptsToSearchParams(newFilterOpts)
                         } else {
-                            url.searchParams.delete('track_id')
+                            const newFilterOpts = {...currFilterOpts, track_id: undefined}
+                            updateFilterOptsToSearchParams(newFilterOpts)
                         }
-                        window.location.href = url.toString()
                     }}
-                    values={filterOpts.track_id ? [parseInt(filterOpts.track_id)] : undefined}
+                    values={currFilterOpts.track_id ? [parseInt(currFilterOpts.track_id)] : undefined}
                     tracks={groupDetail.tracks}/>
             </div>
         }

@@ -12,10 +12,12 @@ export interface DialogEventHomeFilterProp {
     filterOpts: EventListFilterProps,
     groupDetail: GroupDetail,
     lang: Dictionary,
+    mode?: 'reload' | 'async'
+    onFilterChange?: (filterOpts: EventListFilterProps) => void
     close: () => void
 }
 
-export default function DialogEventHomeFilter({filterOpts, groupDetail, close, lang}: DialogEventHomeFilterProp) {
+export default function DialogEventHomeFilter({filterOpts, groupDetail, close, lang, mode='reload', onFilterChange}: DialogEventHomeFilterProp) {
     const [opts, setOpts] = useState(filterOpts)
 
     const TimeRangeOpts = [{
@@ -48,8 +50,8 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             ...opts,
             skip_recurring: undefined,
             skip_multi_day: undefined,
-            start_date: undefined,
-            end_date: undefined,
+            // start_date: undefined,
+            // end_date: undefined,
             venue_id: undefined
         })
     }
@@ -68,7 +70,12 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
                 searchParams.append(key, omitOpts[_key])
             }
         }
-        window.location.href = `?${searchParams.toString()}`
+        onFilterChange?.(opts)
+        if (mode ==='reload') {
+            window.location.href = `?${searchParams.toString()}`
+        } else {
+            close()
+        }
     }
 
 
@@ -96,19 +103,19 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             <Checkbox checked={!opts.skip_multi_day}/>
         </div>
 
-        <div className="my-3 text-sm">
-            <div className="font-semibold mb-1">Times</div>
-            {
-                TimeRangeOpts.map((item, index) => {
-                    return <Button key={index}
-                                   onClick={() => updateTimeRange(item.value)}
-                                   variant={selectedRange === item.value ? 'normal' : 'outline'}
-                                   className="mr-1 text-sm" size={'sm'}>
-                        {item.label}
-                    </Button>
-                })
-            }
-        </div>
+        {/*<div className="my-3 text-sm">*/}
+        {/*    <div className="font-semibold mb-1">Times</div>*/}
+        {/*    {*/}
+        {/*        TimeRangeOpts.map((item, index) => {*/}
+        {/*            return <Button key={index}*/}
+        {/*                           onClick={() => updateTimeRange(item.value)}*/}
+        {/*                           variant={selectedRange === item.value ? 'normal' : 'outline'}*/}
+        {/*                           className="mr-1 text-sm" size={'sm'}>*/}
+        {/*                {item.label}*/}
+        {/*            </Button>*/}
+        {/*        })*/}
+        {/*    }*/}
+        {/*</div>*/}
 
         <div className="my-3 text-sm">
             <div className="font-semibold mb-1">Venue</div>

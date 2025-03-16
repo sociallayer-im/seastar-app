@@ -68,7 +68,7 @@ export default async function GroupEventHomeData({
     })
 
 
-    if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0 ) {
+    if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0  && !disableCollection) {
         redirect(`/event/${groupDetail.handle}?collection=past`)
     }
 
