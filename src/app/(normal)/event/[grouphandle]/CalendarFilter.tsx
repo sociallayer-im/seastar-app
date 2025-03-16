@@ -35,6 +35,7 @@ export default function CalendarFilter({lang, onChange, ...props}: CalendarProps
         const url = new URL(location.href)
         url.searchParams.set('start_date', newDate.format('YYYY-MM-DD'))
         url.searchParams.set('end_date', newDate.format('YYYY-MM-DD'))
+        barRef.current!.scrollLeft = 0
         if (onChange) {
             onChange(newDate.format('YYYY-MM-DD'))
         } else {
@@ -48,6 +49,7 @@ export default function CalendarFilter({lang, onChange, ...props}: CalendarProps
         const url = new URL(location.href)
         url.searchParams.set('start_date', newDate.format('YYYY-MM-DD'))
         url.searchParams.set('end_date', newDate.format('YYYY-MM-DD'))
+        barRef.current!.scrollLeft = 0
         if (onChange) {
             onChange(newDate.format('YYYY-MM-DD'))
         } else {
@@ -61,6 +63,18 @@ export default function CalendarFilter({lang, onChange, ...props}: CalendarProps
         const url = new URL(location.href)
         url.searchParams.set('start_date', newDate.format('YYYY-MM-DD'))
         url.searchParams.set('end_date', newDate.format('YYYY-MM-DD'))
+
+        setTimeout(() => {
+            const target = barRef.current?.querySelector(`[data-date="${newDate.format('YYYY/MM/DD')}"]`)
+            if (target && barRef.current) {
+                // scroll to the selected date in the middle
+                const scrollLeft = target.getBoundingClientRect().left - barRef.current.getBoundingClientRect().left
+                if (scrollLeft) {
+                    barRef.current!.scrollLeft = scrollLeft
+                }
+            }
+        })
+
         if (onChange) {
             onChange(newDate.format('YYYY-MM-DD'))
         } else {

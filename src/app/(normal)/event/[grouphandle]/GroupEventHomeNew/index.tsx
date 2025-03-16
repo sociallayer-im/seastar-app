@@ -4,8 +4,6 @@ import {selectLang} from '@/app/actions'
 import {displayProfileName} from '@/utils'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import SignInPanel from '@/components/SignInPanel'
-import EventHomeFilterNew from '@/components/client/EventHomeFilterNew'
-import EventListGroupedByDate from '@/components/EventListGroupedByDate'
 import EventHomeMap from '@/app/(normal)/event/[grouphandle]/EventHomeMap'
 import EventHomeEventList from '@/app/(normal)/event/[grouphandle]/GroupEventHomeNew/EventList'
 
@@ -55,12 +53,12 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                           d="M16.5 9.54545C16.5 14.6364 10 19 10 19C10 19 3.5 14.6364 3.5 9.54545C3.5 5.9305 6.41015 3 10 3C13.5899 3 16.5 5.9305 16.5 9.54545Z"
-                          fill="#272928" stroke="white" stroke-width="1.125" stroke-linecap="round"
-                          stroke-linejoin="round"/>
+                          fill="#272928" stroke="white" stroke-width="1.125" strokeLinecap="round"
+                          strokeLinejoin="round"/>
                     <path fill-rule="evenodd" clip-rule="evenodd"
                           d="M10 11C10.8284 11 11.5 10.3284 11.5 9.5C11.5 8.67157 10.8284 8 10 8C9.17157 8 8.5 8.67157 8.5 9.5C8.5 10.3284 9.17157 11 10 11Z"
-                          fill="white" stroke="white" stroke-width="1.125" stroke-linecap="round"
-                          stroke-linejoin="round"/>
+                          fill="white" stroke="white" stroke-width="1.125" strokeLinecap="round"
+                          strokeLinejoin="round"/>
                 </svg>
                 {lang['Map']}
             </a>
