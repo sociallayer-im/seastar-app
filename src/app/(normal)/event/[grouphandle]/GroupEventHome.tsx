@@ -115,27 +115,6 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
                             <i className="uil-arrow-right"/>
                         </div>
                     </a>
-
-                    <div className="grid grid-cols-1">
-                        {
-                            members.slice(0, 20).map((member, index) => {
-                                return <a href={`/profile/${member.profile.handle}`}
-                                          className="flex-row-item-center p-2 rounded-lg hover:bg-secondary"
-                                          key={index}>
-                                    <Avatar size={32} profile={member.profile} className="mr-2"/>
-                                    <span className="text-sm mr-2">{displayProfileName(member.profile)}</span>
-                                    {member.role !== 'member' &&  <Badge variant="past" className="capitalize">
-                                        {member.role}
-                                    </Badge>}
-                                </a>
-                            })
-                        }
-
-                        <Button variant={"outline"} size={'sm'}
-                                className="!rounded-full !font-normal text-sm border-secondary">
-                            {members.length} {lang['Members']}
-                        </Button>
-                    </div>
                 </div>
             </div>
         </div>

@@ -512,4 +512,5 @@ export const zh: Dictionary = {
     'Sign In to Attend':'登录以参加',
     'Buy Tickets':'购买门票',
     'View Detail':'查看详情',
+    'All':'全部'
 }
