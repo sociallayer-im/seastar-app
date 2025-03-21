@@ -53,14 +53,16 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                 <Button 
                     variant={'outline'} 
                     size={'sm'}
-                    className={`${filter !== 'all' ? 'border-[#EDEDED]' : ''} text-xs`}
+                    style={filter !== 'all' ? {borderColor: "#EDEDED"} : undefined}
+                    className="text-xs"
                     onClick={() => setFilter('all')}
                 >
                     {lang['All']}
                 </Button>
                 <Button 
                     size={'sm'}
-                    className={`${filter !== 'ongoing' ? 'border-[#EDEDED]' : ''} text-xs`}
+                    style={filter !== 'ongoing' ? {borderColor: "#EDEDED"} : undefined}
+                    className="text-xs"
                     variant={'outline'} 
                     onClick={() => setFilter('ongoing')}
                 >
@@ -68,7 +70,8 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                 </Button>
                 <Button 
                     size={'sm'}
-                    className={`${filter !== 'upcoming' ? 'border-[#EDEDED]' : ''} text-xs`}
+                    style={filter !== 'upcoming' ? {borderColor: "#EDEDED"} : undefined}
+                    className="text-xs"
                     variant={'outline'} 
                     onClick={() => setFilter('upcoming')}
                 >
@@ -76,7 +79,8 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                 </Button>
                 <Button 
                     size={'sm'}
-                    className={`${filter !== 'past' ? 'border-[#EDEDED]' : ''} text-xs`}
+                    style={filter !== 'past' ? {borderColor: "#EDEDED"} : undefined}
+                    className="text-xs"
                     variant={'outline'} 
                     onClick={() => setFilter('past')}
                 >
