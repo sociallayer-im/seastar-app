@@ -368,7 +368,6 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                             </div>
                             <GoogleMap
                                 style={{height: '160px', width: '100%'}}
-                                defaultZoom={3}
                                 center={{
                                     lng: eventDetail.geo_lng,
                                     lat: eventDetail.geo_lat

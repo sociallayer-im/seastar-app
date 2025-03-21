@@ -45,7 +45,7 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
             </div>
 
             <div className="md:w-[328px] ml-0 flex-col flex order-1 md:order-2 md:ml-6 mb-6">
-                <a className="flex-row-item-center justify-between bg-background shadow p-3 rounded-lg mb-3 block md:hidden"
+                <a className="flex-row-item-center justify-between  p-3 rounded-lg mb-3"
                    href={`/group/${groupDetail.handle}?tab=members`}>
                     <div className="flex-row-item-center">
                         <img src="/images/default_avatar/avatar_1.png"
@@ -99,23 +99,6 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
                 </>}
 
                 {!currProfile && <SignInPanel lang={lang}/>}
-
-                <div className="mt-8 hidden md:block">
-                    <a className="flex-row-item-center justify-between rounded-lg mb-3"
-                       href={`/group/${groupDetail.handle}?tab=members`}>
-                        <div className="flex-row-item-center">
-                            <Avatar profile={groupDetail} size={16} className="mr-2"/>
-                            <span
-                                className="font-semibold text-sm whitespace-nowrap max-w-[150px] overflow-hidden overflow-ellipsis">
-        {displayProfileName(groupDetail)}
-        </span>
-                        </div>
-                        <div className='text-xs'>
-                            {members.length} {lang['Members']}
-                            <i className="uil-arrow-right"/>
-                        </div>
-                    </a>
-                </div>
             </div>
         </div>
     </div>
