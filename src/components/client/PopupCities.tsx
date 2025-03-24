@@ -35,6 +35,10 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                     return true
             }
         })
+            .sort((a, b) => {
+                // sort by start date desc
+                return new Date(b.start_date!).getTime() - new Date(a.start_date!).getTime()
+            })
     }
 
     const filteredCities = filterPopupCities(popupCities)
