@@ -25,6 +25,7 @@ import dayjs from '@/libs/dayjs'
 import {AVNeeds, isEdgeCityGroup, SeatingStyle} from '@/app/configForSpecifyGroup'
 import useExternalEvent from '@/hooks/useExternalEvent'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
+import {EditorRef} from '@/components/client/Editor/RichTextEditor'
 
 const RichTextEditorDynamic = dynamic(() => import('@/components/client/Editor/RichTextEditor'), {ssr: false})
 const EventDateTimeInput = dynamic(() => import('@/components/client/EventDateTimeInput'), {ssr: false})
@@ -53,6 +54,9 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
         interval: data.recurring?.interval || null,
         event_count: data.recurring?.event_count || 1
     })
+
+    //editor ref
+    const contentEditorRef = useRef<EditorRef>(null)
 
     // errors
     const [timeError, setTimeError] = useState('')
@@ -173,6 +177,9 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
         if (!eventData) {return}
         console.log('luma event data', eventData)
         setDraft({...draft, ...eventData})
+        if (contentEditorRef.current) {
+            contentEditorRef.current.initText?.(eventData.content || '')
+        }
         showConfirmDialog({
             lang: lang,
             title: lang['External Event Imported Successfully'],
@@ -267,6 +274,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                     <div className="font-semibold mb-1">{lang['Event Description']}</div>
                     <div className="mb-3 w-full min-h-[226px] bg-secondary rounded-lg">
                         <RichTextEditorDynamic
+                            editorRef={contentEditorRef}
                             initText={draft.content || ''}
                             onChange={md => {
                                 setDraft({...draft, content: md})
