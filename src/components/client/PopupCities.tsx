@@ -19,27 +19,25 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
     const [filter, setFilter] = useState<FilterType>('all')
 
     const filterPopupCities = (cities: SolaPopupCity[]) => {
-        const now = new Date()
-        return cities.filter(city => {
-            const startDate = new Date(city.start_date!)
-            const endDate = new Date(city.end_date!)
-            
-            switch (filter) {
-                case 'ongoing':
-                    return startDate <= now && endDate >= now
-                case 'upcoming':
-                    return startDate > now
-                case 'past':
-                    return endDate < now
-                default:
-                    return true
-            }
-        })
-            .sort((a, b) => {
-                // sort by start date desc
-                return new Date(b.start_date!).getTime() - new Date(a.start_date!).getTime()
-            })
-    }
+                const now = new Date()
+                const list = cities.filter(city => {
+                    const startDate = new Date(city.start_date!)
+                    const endDate = new Date(city.end_date!)
+
+                    if (filter === 'ongoing') return startDate <= now && endDate >= now
+                    if (filter === 'upcoming') return startDate > now
+                    if (filter === 'past') return endDate < now
+                    return true;
+                });
+
+                const sortByStartDateDesc = (a: SolaPopupCity, b: SolaPopupCity) =>
+                    new Date(b.start_date!).getTime() - new Date(a.start_date!).getTime()
+
+                const featured = list.filter(city => city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
+                const normal = list.filter(city => !city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
+
+                return [...featured, ...normal]
+            };
 
     const filteredCities = filterPopupCities(popupCities)
 
