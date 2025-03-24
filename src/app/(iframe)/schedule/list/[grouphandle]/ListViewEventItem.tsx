@@ -38,11 +38,22 @@ export default function ListViewEventItem({event, timezone, lang}: {
 
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
         <div onClick={() => showPopup(event.id, event.is_starred, lang)}
-            className="sm:pl-7 pb-2 flex-1 relative">
+            className="pb-2 flex-1 relative">
             <div style={{background: bgColor}}
                 className="flex flex-col flex-nowrap !items-start bg-white py-2 px-4 shadow rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">
                 <i className="h-full w-0.5 left-0 top-0 absolute" style={{background: themeColor}}/>
-                <div className="flex-1 font-semibold mr-4 mb-2">{event.title}</div>
+                <div className="flex-1 font-semibold mr-4 mb-2 flex-row-item-center">
+                    {event.title}
+                    {event.is_starred ?
+                        <img src={'/images/starred.png'} className="w-4 h-4 ml-1" /> : null
+                    }
+                    {event.is_attending ?
+                        <div className="flex-row-item-center !inline-flex">
+                            <img src={'/images/check-circle.png'} className="w-4 h-4 ml-1" />
+                            <span className="font-normal text-xs ml-1">Attending</span>
+                        </div> : null
+                    }
+                </div>
                 <div className="flex-1 text-xs text-gray-500 mb-2">
                     <i className="uil-calender mr-1" />
                     <DynamicFormatEventTime

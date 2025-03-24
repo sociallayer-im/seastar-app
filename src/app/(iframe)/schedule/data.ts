@@ -273,8 +273,8 @@ function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 'compac
             }
         case 'list':
             return {
-                start: start.format('YYYY-MM-DD'),
-                end: start.format('YYYY-MM-DD')
+                start: start.startOf('week').format('YYYY-MM-DD'),
+                end: start.endOf('week').format('YYYY-MM-DD')
             }
         case 'compact':
             return {
