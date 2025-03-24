@@ -47,7 +47,8 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
     const [list, setList] = useState<EventRole[]>(initList())
 
     useEffect(() => {
-        setList(initList())
+        const list = initList();
+        setList(list.length ? list : [getEmptyRole(role)]);
     }, [event.event_roles])
 
     const updateEventRole = (newList: EventRole[]) => {
