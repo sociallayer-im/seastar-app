@@ -141,7 +141,9 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                         currView={'list'} />
                 </div>
             </div>
-
+            <ListPagination
+                timezone={data.group.timezone}
+                currStartDate={data.interval[0].format('YYYY-MM-DD')}/>
 
             {!!data.events.length &&
                 <div>
