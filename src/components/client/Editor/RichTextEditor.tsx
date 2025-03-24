@@ -12,6 +12,7 @@ import DropdownMenu from "@/components/client/DropdownMenu"
 import {Input} from "@/components/shadcn/Input"
 import {Button} from "@/components/shadcn/Button"
 import useModal from "@/components/client/Modal/useModal"
+import {state} from 'sucrase/dist/types/parser/traverser/base'
 
 export interface MenuItemForm {
     name: string
@@ -296,12 +297,23 @@ export default function RichTextEditor({initText, onChange, editorRef}: {
                 }
             ]
 
-            editorViewRef.current = new EditorView(document.querySelector(`#${CSS.escape(editorId)}`), {
-                state: EditorState.create({
-                    doc: defaultMarkdownParser.parse(text || '')!,
-                    plugins: [UpdateEditorView, ...editorSetup({schema: markdownSchema})],
+            if (editorViewRef.current) {
+                editorViewRef.current.update({
+                    state: EditorState.create({
+                        doc: defaultMarkdownParser.parse(text || '')!,
+                        plugins: [UpdateEditorView, ...editorSetup({schema: markdownSchema})],
+                    })
                 })
-            })
+            } else {
+                editorViewRef.current = new EditorView(document.querySelector(`#${CSS.escape(editorId)}`), {
+                    state: EditorState.create({
+                        doc: defaultMarkdownParser.parse(text || '')!,
+                        plugins: [UpdateEditorView, ...editorSetup({schema: markdownSchema})],
+                    })
+                })
+            }
+
+
             setEditorState(editorViewRef.current.state)
             setEditorMenuCommand({
                 markerMenu,
@@ -321,6 +333,14 @@ export default function RichTextEditor({initText, onChange, editorRef}: {
         }
     }, [])
 
+    if (editorRef) {
+        useImperativeHandle(editorRef, () => ({
+            initText: (text: string) => {
+                intiEditor(text || '')
+            }
+        }))
+    }
+
     const uploadImgCommend = () => {
         const targetCommand = editorMenuCommand.insertMenu.find(i => i.name === 'Upload Image')
         if (!!targetCommand && targetCommand.command(editorState, undefined, editorViewRef.current)) {
@@ -333,14 +353,6 @@ export default function RichTextEditor({initText, onChange, editorRef}: {
         if (!!targetCommand && targetCommand.command(editorState, undefined, editorViewRef.current)) {
             targetCommand.command(editorState, editorViewRef.current?.dispatch, editorViewRef.current)
         }
-    }
-
-    if (editorRef) {
-        useImperativeHandle(editorRef, () => ({
-            initText: (text: string) => {
-                intiEditor(text)
-            }
-        }))
     }
 
     return <div className={styles['editor-wrapper']}>
