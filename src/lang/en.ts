@@ -7,7 +7,7 @@ export const en = {
     'to complete your account set-up': 'to complete your account set-up',
     'Back': 'Back',
     'Set a unique Social Layer username': 'Set a unique Social Layer username',
-    'Contain the English-language letters and the digits 0-9': 'Contain the English-language letters the digits 0-9',
+    'Contain the English-language letters a-z and the digits 0-9': 'Contain the English-language letters a-z the digits 0-9',
     'Hyphens can also be used but it can not be used at the beginning and at the end': 'Hyphens can also be used but it can not be used at the beginning and at the end',
     'Hyphens cannot appear consecutively': 'Hyphens cannot appear consecutively',
     'Should be equal or longer than 6 characters': 'Should be equal or longer than 6 characters',
@@ -119,7 +119,7 @@ export const en = {
     'Highlighted': 'Highlighted',
     'Select a highlight event, the event you created will display on the top of the day': 'Select a highlight event, the event you created will display on the top of the day',
     'Close Event': 'Close Event',
-    'People can not RSVP the event': 'People can not RSVP the event',
+    'People is no longer able to register for the event': 'People is no longer able to register for the event',
     'The maximum number of tags is 3': 'The maximum number of tags is 3',
     'Event Name is required': 'Event Name is required',
     'Choose a badge from you created': 'Choose a badge from you created',
@@ -512,6 +512,7 @@ export const en = {
     'View Detail':'View Detail',
     'All Schedule':'All Schedule',
     'Map':'Map',
+    'All':'All'
 }
 
 export type Dictionary = typeof en

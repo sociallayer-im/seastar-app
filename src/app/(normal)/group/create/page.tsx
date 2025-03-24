@@ -14,7 +14,7 @@ export default async function Register({searchParams}:{searchParams: {'create-po
                 <div className="font-semibold text-2xl">{lang['Set a unique group name']}</div>
                 <div className="text-sm text-gray-500 my-2">
                     <ul className="pl-4">
-                        <li className="list-disc">{lang['Contain the English-language letters and the digits 0-9']}</li>
+                        <li className="list-disc">{lang['Contain the English-language letters a-z and the digits 0-9']}</li>
                         <li className="list-disc">{lang['Hyphens can also be used but it can not be used at the beginning and at the end']}</li>
                         <li className="list-disc">{lang['Should be equal or longer than 6 characters']}</li>
                     </ul>

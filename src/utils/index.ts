@@ -662,7 +662,7 @@ export const inValidStartEndTime = (start_at?: string | null, end_at?: string | 
 
 export const verifyUsername = (domain: string, lang: Dictionary) => {
     const minLength = 6
-    const maxLength = 16
+    const maxLength = 20
 
     if (!domain || !domain.trim()) {
         return lang['Please input username']

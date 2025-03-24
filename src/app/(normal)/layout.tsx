@@ -8,11 +8,10 @@ import {getCurrProfile, selectLang} from '@/app/actions'
 import Header from "@/components/Header"
 import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
 import Subscription from '@/components/client/Subscription'
-import { TrackJSInstall } from "@/app/trackjs_loader"
+// import { TrackJSInstall } from "@/app/trackjs_loader"
 import HyperDx from '@/components/client/HyperDx'
-import Script from 'next/script'
 
-TrackJSInstall()
+// TrackJSInstall()
 
 export const metadata: Metadata = {
     title: "Social Layer",
@@ -35,11 +34,13 @@ export default async function RootLayout({
     return (
         <html lang={langType}
               className={`${poppins.className} ${icon.variable} ${media_icons.variable} ${editor_icons.variable}`}>
+        <head>
+            <script src="https://analytics.wamo.club/js/script.js" async data-domain="app.sola.day" type="text/javascript" />
+        </head>
         <Head>
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
         </Head>
         <body className={`antialiased`}>
-        <Script src="https://analytics.wamo.club/app.sola.day" data-domain="app.sola.day" async />
         <div className="min-h-[100svh]">
             <Header/>
             <div className="relative">

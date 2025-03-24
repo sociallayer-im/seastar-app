@@ -22,7 +22,7 @@ export default function ShareActionsBtn({eventDetail, lang, groupHandle}: ShareA
        try {
            await saveDomImage({
                dom,
-               fileName: `${eventDetail.title}.png`,
+               fileName: `${eventDetail.title}`,
                scaleFactor: 2
            })
        } catch (e: unknown) {

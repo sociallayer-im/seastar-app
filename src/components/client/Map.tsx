@@ -60,6 +60,8 @@ export function GoogleMapInner({
         }
     }, [mapCenter, geocodingLib])
 
+    const selectedMarker = markers.find(marker => marker.position.lat === mapCenter.lat && marker.position.lng === mapCenter.lng)
+
     const handleMapClick = (e: MapMouseEvent) => {
         const location = e.detail.latLng
         window.postMessage({type: 'picked-location', location}, window.location.origin)
@@ -89,7 +91,7 @@ export function GoogleMapInner({
                                disableDefaultUI>
         {
             markersToShow.map((marker, index) => {
-                const selected = mapCenter.lat === marker.position.lat && mapCenter.lng === marker.position.lng
+                const selected = selectedMarker?.title === marker.title
                 return <MapMarker
                     onClick={() => setMapCenter(marker.position)}
                     marker={marker}
@@ -121,7 +123,7 @@ export function MapMarker({marker, selected, onClick}: {
         <div className="flex flex-col items-center">
             <Button
                 style={selected ? {background: 'linear-gradient(276deg,#f7df3a -18.27%,#d2f8e8 59.84%)'} : undefined}
-                className="text-sm shadow !bg-background"
+                className="text-sm border !bg-background"
                 variant='secondary'
                 size="sm"
             >

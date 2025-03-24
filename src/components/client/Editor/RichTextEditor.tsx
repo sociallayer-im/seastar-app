@@ -5,13 +5,14 @@ import {lift, setBlockType, toggleMark, wrapIn} from "prosemirror-commands"
 import {wrapInList} from "./schema-list"
 import {redo, undo} from "prosemirror-history"
 import {editorSetup} from "./setup"
-import {useEffect, useRef, useState} from 'react'
+import {Ref, useEffect, useRef, useState, useImperativeHandle} from 'react'
 import styles from '@/components/client/Editor/RichTextEditor.module.scss'
 import useUploadImage from "@/hooks/useUploadImage"
 import DropdownMenu from "@/components/client/DropdownMenu"
 import {Input} from "@/components/shadcn/Input"
 import {Button} from "@/components/shadcn/Button"
 import useModal from "@/components/client/Modal/useModal"
+import {state} from 'sucrase/dist/types/parser/traverser/base'
 
 export interface MenuItemForm {
     name: string
@@ -19,6 +20,10 @@ export interface MenuItemForm {
     command: Command
     icon?: string
     hide?: boolean
+}
+
+export interface EditorRef {
+    initText?: (text: string) => void
 }
 
 function MenuButton({
@@ -49,11 +54,12 @@ function MenuButton({
     </div>
 }
 
-export default function RichTextEditor({initText, onChange}: {
+export default function RichTextEditor({initText, onChange, editorRef}: {
     initText?: string,
     onChange?: (text: string) => any
+    editorRef?: Ref<EditorRef>
 }) {
-    const editorRef = useRef<any>(null)
+    const containerRef = useRef<any>(null)
     const editorViewRef = useRef<any>(null)
     const [editorState, setEditorState] = useState<any>(null)
     const {uploadImage} = useUploadImage()
@@ -79,8 +85,8 @@ export default function RichTextEditor({initText, onChange}: {
         !!onChange && onChange(text)
     }, [text])
 
-    useEffect(() => {
-        if (editorRef.current && typeof window !== 'undefined') {
+    const intiEditor = (text: string) => {
+        if (containerRef.current && typeof window !== 'undefined') {
             const UpdateEditorView = new Plugin({
                 view(editorView) {
                     return {
@@ -291,12 +297,23 @@ export default function RichTextEditor({initText, onChange}: {
                 }
             ]
 
-            editorViewRef.current = new EditorView(document.querySelector(`#${CSS.escape(editorId)}`), {
-                state: EditorState.create({
-                    doc: defaultMarkdownParser.parse(initText || '')!,
-                    plugins: [UpdateEditorView, ...editorSetup({schema: markdownSchema})],
+            if (editorViewRef.current) {
+                editorViewRef.current.update({
+                    state: EditorState.create({
+                        doc: defaultMarkdownParser.parse(text || '')!,
+                        plugins: [UpdateEditorView, ...editorSetup({schema: markdownSchema})],
+                    })
                 })
-            })
+            } else {
+                editorViewRef.current = new EditorView(document.querySelector(`#${CSS.escape(editorId)}`), {
+                    state: EditorState.create({
+                        doc: defaultMarkdownParser.parse(text || '')!,
+                        plugins: [UpdateEditorView, ...editorSetup({schema: markdownSchema})],
+                    })
+                })
+            }
+
+
             setEditorState(editorViewRef.current.state)
             setEditorMenuCommand({
                 markerMenu,
@@ -306,11 +323,23 @@ export default function RichTextEditor({initText, onChange}: {
                 otherMenu
             })
         }
+    }
+
+    useEffect(() => {
+        intiEditor(initText || '')
 
         return () => {
             editorViewRef.current?.destroy()
         }
-    }, [initText])
+    }, [])
+
+    if (editorRef) {
+        useImperativeHandle(editorRef, () => ({
+            initText: (text: string) => {
+                intiEditor(text || '')
+            }
+        }))
+    }
 
     const uploadImgCommend = () => {
         const targetCommand = editorMenuCommand.insertMenu.find(i => i.name === 'Upload Image')
@@ -372,7 +401,7 @@ export default function RichTextEditor({initText, onChange}: {
                 })
             }
         </div>
-        <div ref={editorRef} id={editorId}
+        <div ref={containerRef} id={editorId}
              className={'editor'}
              style={{minHeight: `${160}px`, maxHeight: `${320}px`}}/>
     </div>
