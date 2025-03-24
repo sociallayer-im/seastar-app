@@ -10,7 +10,7 @@ import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import CompactViewEventItem from "./CompactViewEventItem"
 import ListPagination from "@/app/(iframe)/schedule/compact/[grouphandle]/ListPagination"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
-import {getCurrProfile, getServerSideAuth, selectLang} from "@/app/actions"
+import {getServerSideAuth, selectLang} from "@/app/actions"
 import MonthlyPagination from "./MonthlyPagination"
 
 export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
