@@ -24,24 +24,16 @@ export default async function GroupEventSettingData(props: GroupEventSettingData
 
     const currProfile = await getCurrProfile()
 
-    if (!currProfile) {
-        redirect(`/event/${groupDetail?.handle}`)
-    }
-
     const {isManager} = analyzeGroupMembershipAndCheckProfilePermissions(
         groupDetail,
         currProfile
     )
 
-    if (!isManager) {
-        redirect(`/event/${groupDetail?.handle}`)
-    }
-
-
     return {
         groupDetail: groupDetail,
         venues: groupDetail.venues,
         tracks: groupDetail.tracks,
-        popupCities: groupDetail.popup_cities
+        popupCities: groupDetail.popup_cities,
+        isManager
     }
 }
