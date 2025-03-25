@@ -12,14 +12,21 @@ import ListPagination from "@/app/(iframe)/schedule/list/[grouphandle]/ListPagin
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import {getServerSideAuth, selectLang} from "@/app/actions"
 import Dayjs from '@/libs/dayjs'
+import {cache} from 'react'
+import {getGroupDetailByHandle} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 
-export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
-    const data = await IframeSchedulePageData({params, searchParams, view: 'list'})
-    if (!data.group) {
-        redirect('/error')
+const cachedGetGroupDetailByHandle = cache((handle: string) => {
+    return getGroupDetailByHandle({params: {groupHandle: handle}, clientMode: CLIENT_MODE})
+})
+
+export async function generateMetadata({params}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
+    const groupDetail = await cachedGetGroupDetailByHandle(params.grouphandle)
+    if (!groupDetail) {
+        redirect('/404')
     } else {
         return {
-            title: `${data.group.nickname || data.group.handle} Event Schedule | Social Layer`
+            title: `${groupDetail.nickname || groupDetail.handle} Event Schedule | Social Layer`
         }
     }
 }
@@ -28,7 +35,9 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams
 }) {
-    const data = await IframeSchedulePageData({params, searchParams, view: 'list'})
+    const groupDetail = await cachedGetGroupDetailByHandle(params.grouphandle)
+    if (!groupDetail) {redirect('/404')}
+    const data = await IframeSchedulePageData({params, searchParams, groupDetail, view: 'list'})
     if (!data.group) {
         redirect('/error')
     }
