@@ -513,7 +513,11 @@ export const en = {
     'All':'All',
     'After {date}': 'After {date}',
     'Before {date}': 'Before {date}',
-    'Venue List': 'Venue List'
+    'Venue List': 'Venue List',
+    'Venue Detail': 'Venue Detail',
+    'Cover/Poster (Optional)':'Cover/Poster (Optional)',
+    'Add a photo': 'Add a photo',
+    'Amenities': 'Amenities'
 }
 
 export type Dictionary = typeof en

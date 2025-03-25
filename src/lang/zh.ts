@@ -516,4 +516,8 @@ export const zh: Dictionary = {
     'After {date}': '{date} 之后',
     'Before {date}': '{date} 之前',
     'Venue List': '场地列表',
+    'Venue Detail':'场地详情',
+    'Cover/Poster (Optional)': '封面/海报（可选）',
+    'Add a photo': '添加照片',
+    'Amenities': '设施',
 }

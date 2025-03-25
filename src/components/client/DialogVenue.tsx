@@ -6,14 +6,15 @@ import {formatVenueDate} from '@/utils'
 import {buttonVariants} from '@/components/shadcn/Button'
 
 export default function DialogVenue({venue, isManager, lang, groupHandle, close}:{venue: VenueDetail, isManager?: boolean ,lang: Dictionary, groupHandle: string, close: ()=> void}) {
-    return <div className="max-h-[90svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-4 rounded-lg p-3">
-        <div className="flex-row-item-center justify-end">
+    return <div className="max-h-[90svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:px-4 rounded-lg px-3 py-4">
+        <div className="flex-row-item-center justify-end mb-1">
             <i className="uil-times text-xl cursor-pointer" onClick={close}/>
         </div>
         <div className="flex-row-item-center overflow-auto mb-6">
             {new Array(5).fill(0).map((_, index) => {
                 return <img
                     className="max-h-[200px] w-auto mr-4"
+                    key={index}
                     src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500" alt=""/>
             })}
         </div>

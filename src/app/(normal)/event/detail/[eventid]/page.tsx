@@ -30,6 +30,7 @@ import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
 import {cache} from 'react'
 import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventParticipantTab'
+import VenueDetailBtn from '@/components/client/VenueDetailBtn'
 
 const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
@@ -364,6 +365,15 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                                                  className={'text-xs text-blue-400 cursor-pointer mr-3'}>
                                         {lang['Copy Address']}
                                     </ClickToCopy>
+                                }
+
+                                {!!eventDetail.venue_id &&
+                                    <VenueDetailBtn
+                                        lang={lang}
+                                        groupHandle={groupDetail.handle}
+                                        venueId={eventDetail.venue_id}
+                                        className="text-xs text-blue-400 cursor-pointer mr-3"
+                                        label= {lang['Venue Detail']} />
                                 }
                             </div>
                             <GoogleMap

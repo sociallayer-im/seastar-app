@@ -20,6 +20,8 @@ import Dayjs from '@/libs/dayjs'
 import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import useEditOverride from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/useEditOverride'
+import useUploadImage from '@/hooks/useUploadImage'
+import {divide} from 'lodash'
 
 const ROLE_OPTIONS: { value: VenueRole, label: string }[] = [
     {value: 'all', label: 'All'},
@@ -40,11 +42,15 @@ export interface VenueFormProps {
 
 export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps) {
     const {editOverride} = useEditOverride()
+    const {uploadImage} = useUploadImage()
 
     const [draft, setDraft] = useState(venueDetail)
     const [enableTimeslots, setEnableTimeslots] = useState(!!venueDetail.venue_timeslots?.length)
     const [timeslots, setTimeslots] = useState(categorizeTimeslotByWeekDay(venueDetail.venue_timeslots || []))
     const [overrides, setOverrides] = useState(venueDetail.venue_overrides || [])
+
+    const [covers, setCovers] = useState<string[]>([])
+    const [amenities, setAmenities] = useState<string[]>([''])
 
     const [titleError, setTitleError] = useState('')
     const [locationError, setLocationError] = useState('')
@@ -148,6 +154,14 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
         }
     }
 
+    const addAmenities = () => {
+        setAmenities([...amenities, ""])
+    }
+
+    const removeAmenities = (index: number) => {
+        setAmenities(amenities.filter((_, i) => i !== index))
+    }
+
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Edit Venue']}</div>
@@ -173,9 +187,63 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
             </div>
 
             <div className="mb-4">
+                <div className="font-semibold mb-1">{lang['Cover/Poster (Optional)']}</div>
+                <div className="flex-row-item-center overflow-auto">
+                    {
+                        covers.map((img, index) => {
+                            return <div key={index} className='h-[170px] overflow-hidden flex'>
+                                <img src={img} alt="" className='h-[170px] w-auto'/>
+                            </div>
+                        })
+                    }
+                    <div onClick={async () => {const img = await uploadImage(); setCovers([...covers, img])}}
+                        className="hover:brightness-95 rounded-lg cursor-pointer h-[170px] w-[170px] flex flex-col items-center justify-center bg-secondary">
+                        <i className="uil-plus-circle text-3xl text-gray-400" />
+                        {lang['Add a photo']}
+                    </div>
+                </div>
+            </div>
+
+            <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Description (Optional)']}</div>
                 <Input className="w-full" value={draft.about || ''}
                        onChange={e => setDraft({...draft, about: e.target.value})}/>
+            </div>
+
+            <div className="mb-4">
+                <div className="font-semibold mb-1">{lang['Venue Capacity (Optional)']}</div>
+                <Input className="w-full"
+                       placeholder={'Unlimited'}
+                       onChange={e => {
+                           setDraft({...draft, capacity: parseInt(e.target.value)})
+                       }}
+                       value={draft.capacity || ''}
+                       type={'number'}
+                       onWheel={(e) => e.currentTarget.blur()}/>
+            </div>
+
+            <div className="mb-4">
+                <div className="font-semibold mb-1">{lang['Amenities']}</div>
+                {
+                    amenities.map((tag, index) => {
+                        return <div key={index} className="flex-row-item-center w-full mb-3">
+                            <Input value={tag} className="flex-1 mr-3"
+                                   onChange={event => {
+                                       const newDraft = [...amenities]
+                                       newDraft[index] = event.target.value
+                                       setAmenities(newDraft)
+                                   }}
+                                   placeholder="Enter a tag"/>
+                            {index === amenities.length - 1 &&
+                                <i className="uil-plus-circle text-3xl text-green-500 cursor-pointer" onClick={addAmenities}/>
+                            }
+                            { index !== amenities.length - 1 &&
+                                <i onClick={() => removeAmenities(index)}
+                                   className="uil-minus-circle text-3xl text-gray-500 cursor-pointer"/>
+                            }
+                        </div>
+                    })
+                }
             </div>
 
             <div className="mb-4">
@@ -255,18 +323,6 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
                         }
                     </div>
                 </Button>
-            </div>
-
-            <div className="mb-4">
-                <div className="font-semibold mb-1">{lang['Venue Capacity (Optional)']}</div>
-                <Input className="w-full"
-                       placeholder={'Unlimited'}
-                       onChange={e => {
-                           setDraft({...draft, capacity: parseInt(e.target.value)})
-                       }}
-                       value={draft.capacity || ''}
-                       type={'number'}
-                       onWheel={(e) => e.currentTarget.blur()}/>
             </div>
 
             <div className="my-8 flex-row-item-center justify-between">
