@@ -751,6 +751,29 @@ export const prefixUrl = (url: string) => {
     }
 }
 
+export const formatVenueDate = (venue: VenueDetail, lang: Dictionary) => {
+    if (!venue.start_date && !venue.end_date) {
+        return lang['Unlimited'];
+    }
+
+    if (venue.start_date && !venue.end_date) {
+        return lang['After {date}'].replace('{date}', venue.start_date);
+    }
+
+    if (!venue.start_date && venue.end_date) {
+        return lang['Before {date}'].replace('{date}', venue.end_date);
+    }
+
+    const startDate = dayjs(venue.start_date!)
+    const endDate = dayjs(venue.end_date!)
+
+    if (startDate.year() === endDate.year()) {
+        return `${startDate.format('DD MMM')} - ${endDate.format('DD MMM')}, ${startDate.format('YYYY')}`
+    } else {
+        return `${startDate.format('DD MMM, YYYY')} - ${endDate.format('DD MMM, YYYY')}`
+    }
+}
+
 
 
 

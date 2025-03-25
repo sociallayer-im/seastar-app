@@ -512,5 +512,7 @@ export const zh: Dictionary = {
     'Sign In to Attend':'登录以参加',
     'Buy Tickets':'购买门票',
     'View Detail':'查看详情',
-    'All':'全部'
+    'All':'全部',
+    'After {date}': '{date} 之后',
+    'Before {date}': '{date} 之前',
 }
