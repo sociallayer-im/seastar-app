@@ -515,4 +515,5 @@ export const zh: Dictionary = {
     'All':'全部',
     'After {date}': '{date} 之后',
     'Before {date}': '{date} 之前',
+    'Venue List': '场地列表',
 }
