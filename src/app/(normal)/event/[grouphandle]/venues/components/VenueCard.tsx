@@ -34,12 +34,12 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
     return (
         <div onClick={showVenueDetail}
              className="bg-white rounded-lg shadow p-6 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
-            <div className="flex gap-6">
-                <div className="flex-1">
+            <div className="flex gap-6 sm:flex-row flex-col">
+                <div className="flex-1 order-2 sm:order-1">
                     <h2 className="font-semibold mb-1">{venue.title}</h2>
                     <div className="text-gray-500">{venue.about}</div>
 
-                    <div className="space-y-1 text-sm mt-6 ">
+                    <div className="space-y-1 text-sm mt-6">
                         <div className="flex">
                             <span className="mr-1">Capacity:</span>
                             <span>{venue.capacity || lang['Unlimited']}</span>
@@ -54,7 +54,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
                         </div>
                     </div>
                 </div>
-                <div className="w-[140px] h-[140px] rounded-lg overflow-hidden flex-shrink-0">
+                <div className="w-[140px] h-[140px] rounded-lg overflow-hidden flex-shrink-0  order-1 sm:order-2">
                     <img
                         src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500"
                         alt={venue.title}

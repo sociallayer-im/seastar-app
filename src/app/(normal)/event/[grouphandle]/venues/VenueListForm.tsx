@@ -53,7 +53,8 @@ export default function VenueListForm({groupDetail, lang, isManager}: { groupDet
                     {isManager &&
                         <a href={`/event/${groupDetail.handle}/venues/create`}
                            className="text-primary-foreground absolute right-0 font-semibold">
-                            {lang['Create a Venue']}
+                            <span className="hidden sm:block">{lang['Create a Venue']}</span>
+                            <i className="uil-plus-circle text-3xl block sm:hidden" />
                         </a>
                     }
                 </div>
