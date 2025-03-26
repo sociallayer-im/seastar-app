@@ -75,7 +75,7 @@ function StarBtn({starred, onClick, label}: { starred: boolean, label: string, o
 
 function SmallStarBtn({starred, onClick, label}: { starred: boolean, label: string, onClick: (e: MouseEvent) => void }) {
     return <div onClick={onClick}
-                className={`${buttonVariants({variant: 'ghost'})} !font-normal text-[#F1CB45] cursor-pointer`}>
+                className={`${buttonVariants({variant: 'ghost'})} !font-normal text-[#F1CB45] cursor-pointer !gap-1`}>
         {!starred ?
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 16 16"
                  fill="none">
