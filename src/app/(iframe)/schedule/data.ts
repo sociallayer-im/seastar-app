@@ -4,7 +4,7 @@ import dayjs, {DayjsType} from "@/libs/dayjs"
 import {pickSearchParam} from "@/utils"
 import {headers} from "next/headers"
 import {getServerSideAuth} from '@/app/actions'
-import {getGroupDetailByHandle, getSdkConfig, Track} from '@sola/sdk'
+import {getGroupDetailByHandle, getSdkConfig, GroupDetail, Track} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
 
@@ -94,6 +94,7 @@ export interface IframeSchedulePageData {
 export interface IframeSchedulePageDataProps {
     params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
+    groupDetail: GroupDetail,
     view: 'week' | 'day' | 'list' | 'compact',
 }
 
@@ -120,18 +121,10 @@ function searchParamsToString(searchParams: IframeSchedulePageSearchParams, excl
 export async function IframeSchedulePageData({
                                                  params,
                                                  searchParams,
+                                                 groupDetail,
                                                  view,
                                              }: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
     const groupName = params.grouphandle
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: groupName},
-        clientMode: CLIENT_MODE
-    })
-
-    if (!groupDetail) {
-        redirect('/404')
-    }
-
     const filters: Filter = {
         tags: searchParams.tags ? pickSearchParam(searchParams.tags)!.split(',') : [],
         trackId: searchParams.track ? Number(pickSearchParam(searchParams.track)!) : undefined,

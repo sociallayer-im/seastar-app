@@ -82,7 +82,6 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
             </div>
             <div
                 className="sm:w-[160px] sm:h-[160px] w-[99px] h-[99px] rounded overflow-hidden flex-grow-0 flex-shrink-0 relative">
-                <StarEventBtn starred={!!starred} eventId={event.id} className="!top-2 !right-2" />
                 {!!event.cover_url
                     ? <img src={event.cover_url} className="w-full h-full object-cover"  alt=""/>
                     : <div className="default-cover w-[452px] h-[452px] sm:scale-[0.356] scale-[0.22]">
@@ -105,14 +104,19 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
         </div>
 
         <div className="mt-3 flex sm:flex-row flex-col sm:justify-between w-full">
-            <div className="sm:order-1 order-2">
-                {
-                    isEventOperator &&
-                    <a href={`/event/edit/${event.id}`} className={`${buttonVariants({variant: 'ghost'})} mr-3 mt-3 text-primary-foreground !font-normal`}>
+            <div className="sm:order-1 order-2 flex mt-3 justify-center sm:justify-start">
+                {!isEventOperator &&
+                    <a href={`/event/edit/${event.id}`} className={`${buttonVariants({variant: 'ghost'})} mr-3 text-primary-foreground !font-normal  !gap-1.5`}>
                         <i className="uil-edit-alt"/>
                         {lang['Edit']}
                     </a>
                 }
+
+                <StarEventBtn
+                    kind={'small'}
+                    starred={!!starred}
+                    eventId={event.id}
+                    label={lang['Star']}/>
             </div>
             <div className="sm:order-2 order-1 flex sm:flex-row flex-col items-center">
                 {canAccess && !!profile && !attendedEvent && !checkedIn && !event.tickets?.length &&

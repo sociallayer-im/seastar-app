@@ -111,7 +111,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                     label={lang['Star']}
                     eventId={eventDetail.id}
                     starred={currProfileStarred}
-                    compact={false}/>
+                    kind={'normal'}/>
                 <a href={`/event/share/${eventDetail.id}`}
                    className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
                     <i className="uil-external-link-alt "/>
