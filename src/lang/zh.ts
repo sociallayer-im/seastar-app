@@ -520,4 +520,5 @@ export const zh: Dictionary = {
     'Cover/Poster (Optional)': '封面/海报（可选）',
     'Add a photo': '添加照片',
     'Amenities': '设施',
+    'Capacity':'容量',
 }

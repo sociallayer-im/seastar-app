@@ -10,9 +10,7 @@ import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ListViewEventItem from "@/app/(iframe)/schedule/list/[grouphandle]/ListViewEventItem"
 import ListPagination from "@/app/(iframe)/schedule/list/[grouphandle]/ListPagination"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
-import {cookies} from 'next/headers'
 import {getServerSideAuth, selectLang} from "@/app/actions"
-import {getAuth} from '@/utils'
 import Dayjs from '@/libs/dayjs'
 
 export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {

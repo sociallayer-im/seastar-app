@@ -28,6 +28,7 @@ export const VENUE_FRAGMENT = gql`
         id
         title
         visibility
+        image_urls
     }`
 
 export const VENUE_DETAIL_FRAGMENT = gql`
@@ -58,6 +59,7 @@ export const VENUE_DETAIL_FRAGMENT = gql`
         venue_overrides {
             ...VenueOverrideFragment
         }
+        amenities
     }`
 
 export const TRACK_FRAGMENT = gql`

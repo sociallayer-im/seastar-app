@@ -25,57 +25,61 @@ export default function DialogVenue({venue, isManager, lang, groupHandle, close}
             <i className="uil-times text-xl cursor-pointer" onClick={close}/>
         </div>
        <div className="max-h-[80svh] overflow-auto">
-           <div className="flex-row-item-center overflow-auto mb-6">
-               {new Array(5).fill(0).map((_, index) => {
-                   return <img
-                       className="max-h-[200px] w-auto mr-4"
-                       key={index}
-                       src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500" alt=""/>
-               })}
-           </div>
+           {!!venue.image_urls?.length &&
+               <div className="flex-row-item-center overflow-auto mb-6">
+                   {venue.image_urls.map((img, index) => {
+                       return <img
+                           className="h-[200px] w-auto mr-4"
+                           key={index}
+                           src={img} alt=""/>
+                   })}
+               </div>
+           }
+
            <div className="font-semibold text-2xl">{venue.title}</div>
            <div className="text-gray-500">{venue.about}</div>
            <div className="space-y-1 text-sm mt-6 ">
                <div className="flex">
-                   <span className="mr-1">Capacity:</span>
+                   <span className="mr-1">{lang['Capacity']}:</span>
                    <span>{venue.capacity || lang['Unlimited']}</span>
                </div>
                <div className="flex">
-                   <span className="mr-1">Available Date:</span>
+                   <span className="mr-1">{lang['Available Date']}:</span>
                    <span>{formatVenueDate(venue, lang)}</span>
                </div>
                <div className="flex">
-                   <span className="mr-1">Address:</span>
+                   <span className="mr-1">{lang['Location']}:</span>
                    <span>{venue.formatted_address || ''}</span>
                </div>
                {!!venue.link &&
                    <div className="flex">
                        <span className="mr-1">Link:</span>
-                       <a href={prefixUrl(venue.link)} target={'_blank'} className="text-blue-500">{venue.link}</a>
+                       <a href={prefixUrl(venue.link)} target={'_blank'} className="text-blue-500 break-all">{venue.link}</a>
                    </div>
                }
            </div>
 
-           <div className="my-3">
-               {(!!venue.start_date || !!venue.end_date) &&
+           <div className="my-6">
+               {!!venue.amenities?.length &&
                    <div className="my-3">
-                       <div className="font-semibold mb-1 text-lg">{lang['Available Date']}</div>
-                       <div className="flex-row-item-center text-sm">
-                           {!!venue.start_date && <div className="mr-1">{lang['From']} <b>{venue.start_date}</b></div>}
-                           {!!venue.end_date && <div>{lang['To']} <b>{venue.end_date}</b></div>}
+                       <div className="font-semibold mb-1 text-lg">{lang['Amenities']}</div>
+                       <div className="flex flex-row flex-wrap text-sm">
+                           {venue.amenities.map((amenitie, index) => {
+                               return <div className="mr-4 shrink-0 whitespace-nowrap">{amenitie}</div>
+                           })}
                        </div>
                    </div>
                }
 
                {!venue.venue_timeslots?.length &&
-                   <div className="my-3">
+                   <div className="my-6">
                        <div className="font-semibold mb-1 text-lg">{lang['Timeslots']}</div>
                        <div>7*24 Hours</div>
                    </div>
                }
 
                {!!venue.venue_timeslots?.length &&
-                   <div>
+                   <div className="my-6">
                        <div className="flex-row-item-center justify-between">
                            <div className="font-semibold mb-1 text-lg">{lang['Timeslots']}</div>
                        </div>

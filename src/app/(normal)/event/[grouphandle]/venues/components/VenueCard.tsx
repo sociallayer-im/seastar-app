@@ -54,13 +54,15 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
                         </div>
                     </div>
                 </div>
-                <div className="w-[140px] h-[140px] rounded-lg overflow-hidden flex-shrink-0  order-1 sm:order-2">
-                    <img
-                        src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500"
-                        alt={venue.title}
-                        className="w-full h-full object-cover"
-                    />
-                </div>
+                {!!venue.image_urls?.length &&
+                    <div className="w-[140px] h-[140px] rounded-lg overflow-hidden flex-shrink-0  order-1 sm:order-2">
+                        <img
+                            src={venue.image_urls[0]}
+                            alt={venue.title}
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                }
             </div>
             {isManager &&
                 <div className="flex justify-end gap-1 mt-4">
