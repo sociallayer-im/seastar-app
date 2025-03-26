@@ -11,7 +11,7 @@ import ListViewEventItem from "@/app/(iframe)/schedule/list/[grouphandle]/ListVi
 import ListPagination from "@/app/(iframe)/schedule/list/[grouphandle]/ListPagination"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import {getServerSideAuth, selectLang} from "@/app/actions"
-import WeeklyPagination from '@/app/(iframe)/schedule/list/[grouphandle]/WeeklyPagination'
+import MonthPagination from '@/app/(iframe)/schedule/list/[grouphandle]/MonthPagination'
 
 export async function generateMetadata({params, searchParams}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
     const data = await IframeSchedulePageData({params, searchParams, view: 'list'})
@@ -59,9 +59,9 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                 <div className="flex-row-item-center">
                     <div className="schedule-month text-base sm:text-lg mr-2 font-semibold">{data.interval[0].format('YYYY MMMM')}</div>
                     <div className="flex-row-item-center">
-                        <WeeklyPagination
+                        <MonthPagination
                             timezone={data.group.timezone}
-                            currStartDate={data.interval[0].format('YYYY-MM-DD')}/>
+                            currStartDate={data.interval[1].format('YYYY-MM-DD')}/>
                     </div>
                 </div>
                 <div className="flex-row-item-center mt-3 sm:mt-0">
