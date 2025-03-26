@@ -517,7 +517,8 @@ export const en = {
     'Venue Detail': 'Venue Detail',
     'Cover/Poster (Optional)':'Cover/Poster (Optional)',
     'Add a photo': 'Add a photo',
-    'Amenities': 'Amenities'
+    'Amenities': 'Amenities',
+    'Capacity': 'Capacity',
 }
 
 export type Dictionary = typeof en

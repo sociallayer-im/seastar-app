@@ -60,6 +60,7 @@ export interface Venue {
     id: number,
     title: string,
     visibility: null | 'all' | 'manager' | 'member' | 'everyone',
+    image_urls: null | string[]
 }
 
 export interface VenueDetail extends Venue {
@@ -81,6 +82,7 @@ export interface VenueDetail extends Venue {
     require_approval?: boolean,
     venue_timeslots: VenueTimeslot[]
     venue_overrides: VenueOverride[]
+    amenities: null | string[]
 }
 
 export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'

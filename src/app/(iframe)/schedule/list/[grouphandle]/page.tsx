@@ -12,7 +12,6 @@ import ListPagination from "@/app/(iframe)/schedule/list/[grouphandle]/ListPagin
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import {getServerSideAuth, selectLang} from "@/app/actions"
 import MonthPagination from '@/app/(iframe)/schedule/list/[grouphandle]/MonthPagination'
-import Dayjs from '@/libs/dayjs'
 import {cache} from 'react'
 import {getGroupDetailByHandle} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
