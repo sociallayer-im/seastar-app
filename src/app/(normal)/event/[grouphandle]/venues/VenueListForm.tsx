@@ -2,13 +2,13 @@
 
 import {GroupDetail, removeVenue} from '@sola/sdk'
 import {Dictionary} from '@/lang'
-import {buttonVariants} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 import VenueCard from './components/VenueCard'
+import NoData from '@/components/NoData'
 
 export default function VenueListForm({groupDetail, lang, isManager}: { groupDetail: GroupDetail, isManager?: boolean, lang: Dictionary }) {
     const {showLoading, closeModal} = useModal()
@@ -53,12 +53,14 @@ export default function VenueListForm({groupDetail, lang, isManager}: { groupDet
                     {isManager &&
                         <a href={`/event/${groupDetail.handle}/venues/create`}
                            className="text-primary-foreground absolute right-0 font-semibold">
-                            {lang['Create a Venue']}
+                            <span className="hidden sm:block">{lang['Create a Venue']}</span>
+                            <i className="uil-plus-circle text-3xl block sm:hidden" />
                         </a>
                     }
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 w-full">
+                    {!groupDetail.venues.length && <NoData/>}
                     {groupDetail.venues.map((venue, index) => (
                         <VenueCard
                             isManager={isManager}
