@@ -30,11 +30,10 @@ function ShareScheduleModal({ lang, close }: { lang: Dictionary, close: () => vo
     const currentUrl = typeof window !== 'undefined' ? window.location.href: '';
     const iframeCode = `<iframe src="${currentUrl}" width="100%" height="600px" frameborder="0" allowfullscreen></iframe>`;
 
-
     const handleCopyLink = () => {
         navigator.clipboard.writeText(currentUrl);
         toast({
-            description: "Copied",
+            description: lang['Copied'],
             variant: "success"
         });
     };
@@ -49,11 +48,11 @@ function ShareScheduleModal({ lang, close }: { lang: Dictionary, close: () => vo
 
     return (
         <div className="max-w-[600px] rounded-lg bg-background shadow p-6" style={{ width: '90vw' }}>
-            <div className="font-semibold text-xl mb-6">Share Schedule</div>
+            <div className="font-semibold text-xl mb-6">{lang['Share Schedule']}</div>
 
             <div className="space-y-6">
                 <div>
-                    <div className="text-sm font-medium mb-2">Schedule Link</div>
+                    <div className="text-sm font-medium mb-2">{lang['Schedule Link']}</div>
                     <div className="flex  gap-2">
                         <div className="flex-1 p-2 bg-secondary rounded-lg break-all text-sm flex items-center">
                             {currentUrl}
@@ -65,7 +64,7 @@ function ShareScheduleModal({ lang, close }: { lang: Dictionary, close: () => vo
                 </div>
 
                 <div>
-                    <div className="text-sm font-medium mb-2">Embed Code</div>
+                    <div className="text-sm font-medium mb-2">{lang['Embed Code']}</div>
                     <div className="flex gap-2">
                         <div className="flex-1 p-2 bg-secondary rounded-lg break-all text-sm">
                             {iframeCode}
