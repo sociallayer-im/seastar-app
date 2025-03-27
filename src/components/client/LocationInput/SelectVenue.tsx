@@ -59,7 +59,7 @@ export default function SelectVenue({
 
     const createLocationOpt = {
         id: 0,
-        title: `<i class="uil-plus-circle text-lg"></i> ${lang['Other Location']}`
+        title: `<i class="uil-plus-circle text-lg"></i> ${lang['New Location']}`
     } as VenueDetail
 
     const toLink = (url: string) => {

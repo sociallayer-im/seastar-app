@@ -80,7 +80,7 @@ export const zh: Dictionary = {
     'To': '结束',
     'Meeting URL': '会议链接',
     'Input meeting url': '输入会议链接',
-    'Other Location': '其他地点',
+    'New Location': '新地点',
     'Timeslots': '时间段',
     'Overrides': '覆盖',
     'Link': '链接',

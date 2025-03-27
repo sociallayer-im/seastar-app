@@ -78,7 +78,7 @@ export const en = {
     'To': 'To',
     'Meeting URL': 'Meeting URL',
     'Input meeting url': 'Input meeting url',
-    'Other Location': 'Other Location',
+    'New Location': 'New Location',
     'Timeslots': 'Timeslots',
     'Overrides': 'Overrides',
     'Link': 'Link',
