@@ -92,7 +92,7 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
                         {isManager &&
                             <a href={`/event/${groupDetail.handle}/setting`}
                                className={`${buttonVariants({variant: "secondary"})} ml-3`}>
-                                {lang['Setting']}
+                                {lang['Settings']}
                             </a>
                         }
                     </div>

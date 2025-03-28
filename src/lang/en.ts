@@ -304,7 +304,7 @@ export const en = {
     'Hosting': 'Hosting',
     'Starred': 'Starred',
     'Send a Badge': 'Send a Badge',
-    'Setting': 'Setting',
+    'Settings': 'Settings',
     'Sign in to participate in a fun event': 'Sign in to participate in a fun event',
     'Add iCal Subscription': 'Add iCal Subscription',
     'Add events to your calendar to stay updated.': 'Add events to your calendar to stay updated.',
@@ -435,7 +435,6 @@ export const en = {
     'Unlimited':'Unlimited',
     'Apply':'Apply',
     'Promo Code Required':'Promo Code Required',
-    'Settings':'Settings',
     'Create Group':'Create Group',
     'Notification':'Notification',
     'Sign Out':'Sign Out',
@@ -514,6 +513,10 @@ export const en = {
     'Share Schedule': 'Share Schedule',
     'Schedule Link': 'Schedule Link',
     'Embed Code': 'Embed Code',
+    'All Venues': 'All Venues',
+    'Time Range': 'Time Range',
+    'Reset Filter': 'Reset Filter',
+    'Can not change the repeat setting after the event is created': 'Can not change the repeat setting after the event is created',
 }
 
 export type Dictionary = typeof en

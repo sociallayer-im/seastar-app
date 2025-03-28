@@ -138,8 +138,14 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
     return <div className="shadow rounded-lg bg-white p-4 w-80">
         <div className="max-h-[60svh] overflow-auto">
             <div className="font-semibold mb-3">{lang['Repeat Setting']}</div>
+           {disabled && (
+                <div className="mb-3 text-yellow-500 flex p-2 mx-auto w-full max-w-[500px] bg-amber-50 rounded-lg text-xs">
+                        <i className="uil-info-circle text-xl mr-2"/>
+                        <div>{lang['Can not change the repeat setting after the event is created']}</div>
+                    </div>)
+           }
             <div>{lang['Repeat period']}</div>
-            <div className="mb-3">
+            <div className={`${disabled ? 'opacity-40' : ''} mb-3`}>
                 <DropdownMenu
                     disabled={disabled}
                     value={RepeatInterval.filter((r => r.value === repeatForm.interval))}
@@ -163,13 +169,14 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
                 </DropdownMenu>
             </div>
             <div>{lang['Repeat Times']}</div>
+            
             <Input value={repeatForm.event_count || ''}
                    disabled={!repeatForm.interval || disabled}
                    onChange={e => {
                        setRepeatForm({...repeatForm, event_count: Number(e.target.value)})
                    }}
                    type="number"
-                   className={'w-full mb-3'}
+                   className={`${disabled ? 'opacity-40' : ''} w-full mb-3`}
                    endAdornment={lang['Times']}
                    onWheel={(e) => {
                        e.currentTarget.blur()
@@ -187,13 +194,15 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
             }
 
             <div className="flex-row-item-center">
-                <Button variant={'secondary'}
-                        onClick={close}
-                        className="flex-1">{lang['Cancel']}</Button>
-                <Button variant={disabled ? 'secondary' : 'primary'}
-                        disabled={disabled}
-                        onClick={handleConfirm}
-                        className="flex-1 ml-2">{lang['Confirm']}</Button>
+                {!disabled &&  <>
+                        <Button variant={'secondary'}
+                                onClick={close}
+                                className="flex-1">{lang['Cancel']}</Button>
+                        <Button variant={'primary'}
+                                onClick={handleConfirm}
+                                className="flex-1 ml-2">{lang['Confirm']}</Button>
+                    </>
+                }
             </div>
         </div>
     </div>

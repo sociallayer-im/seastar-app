@@ -306,7 +306,6 @@ export const zh: Dictionary = {
     'Hosting': '我发起的',
     'Starred': '已关注',
     'Send a Badge':'发送徽章',
-    'Setting':'设置',
     'Sign in to participate in a fun event': '登录以参加有趣的活动',
     'Add iCal Subscription':'添加 iCal 订阅',
     'Add events to your calendar to stay updated.':'将活动添加到您的日历以保持更新。',
@@ -516,4 +515,8 @@ export const zh: Dictionary = {
     'Share Schedule': '分享日程',
     'Schedule Link': '日程链接',
     'Embed Code': '嵌入代码',
+    'All Venues': '所有场地',
+    'Time Range': '时间范围',
+    'Reset Filter': '重置筛选器',
+    'Can not change the repeat setting after the event is created': '无法在活动创建后更改重复设置',
 }
