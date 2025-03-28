@@ -78,7 +78,7 @@ export const en = {
     'To': 'To',
     'Meeting URL': 'Meeting URL',
     'Input meeting url': 'Input meeting url',
-    'Other Location': 'Other Location',
+    'New Location': 'New Location',
     'Timeslots': 'Timeslots',
     'Overrides': 'Overrides',
     'Link': 'Link',
@@ -519,6 +519,12 @@ export const en = {
     'Add a photo': 'Add a photo',
     'Amenities': 'Amenities',
     'Capacity': 'Capacity',
+    'Share Schedule': 'Share Schedule',
+    'Schedule Link': 'Schedule Link',
+    'Embed Code': 'Embed Code',
+    'All Venues': 'All Venues',
+    'Time Range': 'Time Range',
+    'Reset Filter': 'Reset Filter',
 }
 
 export type Dictionary = typeof en

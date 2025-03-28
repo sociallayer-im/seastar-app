@@ -1,7 +1,7 @@
 import DiscoverPage, {generateMetadata as discoverGenerateMetadata} from "@/app/(normal)/discover/page"
 import GroupEventHome from '@/app/(normal)/event/[grouphandle]/GroupEventHome'
 import { headers } from "next/headers"
-import {GroupEventHomeDataProps, GroupEventHomeSearchParams} from '@/app/(normal)/event/[grouphandle]/data'
+import GroupEventHomeData, { GroupEventHomeSearchParams} from '@/app/(normal)/event/[grouphandle]/data'
 import {cache} from 'react'
 import {getGroupDetailByHandle} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
@@ -49,7 +49,9 @@ export default async function Home(props: {searchParams: GroupEventHomeSearchPar
             redirect('/404')
         }
 
-        return <GroupEventHome groupDetail={groupDetail} searchParams={props.searchParams} />
+        const data = await GroupEventHomeData({searchParams: props.searchParams, groupDetail})
+        const {lang, type} = await selectLang()
+        return <GroupEventHome data={data} lang={lang} langType={type} />
     } else {
         return <DiscoverPage />
     }

@@ -15,6 +15,7 @@ import MonthlyPagination from "./MonthlyPagination"
 import {cache} from 'react'
 import {getGroupDetailByHandle} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
+import ShareScheduleBtn from "@/components/client/ShareScheduleBtn"
 
 const cachedGetGroupDetailByHandle = cache((handle: string) => {
     return getGroupDetailByHandle({params: {groupHandle: handle}, clientMode: CLIENT_MODE})
@@ -55,13 +56,18 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
     return <div className="min-h-[100svh] relative pb-12 bg-[#F8F9F8] w-full">
         <div className="schedule-bg"></div>
         <div className="page-width z-10 relative">
-            <div className="py-3 sm:py-5 max-w-[100vw]">
-                <div className="sm:text-2xl text-xl flex flex-row">
+            <div className="py-3 sm:py-5 max-w-[100vw] flex flex-row justify-between">
+                <div className="sm:text-2xl text-xl">
                     <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2">
                         {data.group.nickname || data.group.handle}
                     </a>
-                    <div>{lang['Event Schedule']}</div>
+                    <span className="whitespace-nowrap">{lang['Event Schedule']}</span>
                 </div>
+                <ShareScheduleBtn 
+                lang={lang} 
+                className="sm:block hidden" 
+                groupHandle={params.grouphandle} 
+                view="compact"/>
             </div>
 
             <div className="desk-tool-bar flex-row justify-between hidden sm:flex">
@@ -138,6 +144,15 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                             tracks: data.tracks
                         }}/>
                 </div>
+                <div className="ml-3">
+                    <ShareScheduleBtn 
+                    lang={lang} 
+                    compact={true} 
+                    className="sm:hidden block"
+                    groupHandle={params.grouphandle}
+                    view="compact"/>
+                </div>
+
                 <div className="ml-3">
                     <ScheduleViewSwitcher
                         dropdown={true}
