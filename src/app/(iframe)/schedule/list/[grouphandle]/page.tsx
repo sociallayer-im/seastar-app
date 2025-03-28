@@ -63,7 +63,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                     </a>
                     <span className="whitespace-nowrap">{lang['Event Schedule']}</span>
                 </div>
-                <ShareScheduleBtn lang={lang} className="sm:block hidden" />
+                <ShareScheduleBtn lang={lang} className="sm:block hidden" groupHandle={params.grouphandle} view="list" />
             </div>
 
             <div className="desk-tool-bar hidden sm:flex flex-row justify-between">
@@ -138,9 +138,12 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
                 </div>
 
                 <div className="ml-3">
-                    <ShareScheduleBtn lang={lang} 
+                    <ShareScheduleBtn 
+                    lang={lang} 
                     compact={true} 
-                    className="sm:hidden block"/>
+                    className="sm:hidden block"
+                    groupHandle={params.grouphandle}
+                    view="list"/>
                 </div>
 
                 <div className="ml-3">

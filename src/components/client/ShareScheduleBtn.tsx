@@ -5,12 +5,12 @@ import { Dictionary } from "@/lang"
 import useModal from "./Modal/useModal"
 import { useToast } from "../shadcn/Toast/use-toast"
 
-export default function ShareScheduleBtn({ lang, className, compact }: { lang: Dictionary, className?: string, compact?: boolean }) {
+export default function ShareScheduleBtn({ lang, className, compact, groupHandle, view }: { lang: Dictionary, className?: string, compact?: boolean, groupHandle: string, view: string }) {
     const { openModal } = useModal()
 
     const handleShowShareModal = () => {
         openModal({
-            content: (close) => <ShareScheduleModal lang={lang} close={close!} />
+            content: (close) => <ShareScheduleModal lang={lang} close={close!} groupHandle={groupHandle} view={view} />
         })
     }
 
@@ -24,11 +24,17 @@ export default function ShareScheduleBtn({ lang, className, compact }: { lang: D
         </Button>
 }
 
-function ShareScheduleModal({ lang, close }: { lang: Dictionary, close: () => void }) {
+function ShareScheduleModal({ lang, close, view , groupHandle}: { lang: Dictionary, close: () => void, groupHandle: string, view: string }) {
     const { toast } = useToast()
 
-    const currentUrl = typeof window !== 'undefined' ? window.location.href: '';
-    const iframeCode = `<iframe src="${currentUrl}" width="100%" height="600px" frameborder="0" allowfullscreen></iframe>`;
+    const currentUrl = typeof window !== 'undefined' ? window.location.href: ''
+    let iframeSrc = currentUrl
+    if (currentUrl.includes('/event')) {
+        const searchParams = new URL(currentUrl).searchParams
+        iframeSrc = `${window.location.origin}/schedule/${view}/${groupHandle}?${searchParams.toString()}`
+    }
+    
+    const iframeCode = `<iframe src="${iframeSrc}" width="100%" height="600px" frameborder="0" allowfullscreen></iframe>`
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(currentUrl);
