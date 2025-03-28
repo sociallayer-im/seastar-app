@@ -12,10 +12,11 @@ export interface DialogEventHomeFilterProp {
     filterOpts: EventListFilterProps,
     groupDetail: GroupDetail,
     lang: Dictionary,
-    close: () => void
+    close: () => void,
+    onFilterChange: (filter: EventListFilterProps) => void
 }
 
-export default function DialogEventHomeFilter({filterOpts, groupDetail, close, lang}: DialogEventHomeFilterProp) {
+export default function DialogEventHomeFilter({filterOpts, groupDetail, close, lang, onFilterChange}: DialogEventHomeFilterProp) {
     const [opts, setOpts] = useState(filterOpts)
 
     const TimeRangeOpts = [{
@@ -55,22 +56,9 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
     }
 
     const handleApply = () => {
-        const searchParams = new URLSearchParams()
-        const omitOpts = {
-            ...opts,
-            group_id: undefined,
-            timezone: undefined
-        }
-
-        for (const key in omitOpts) {
-            const _key = key as keyof typeof omitOpts
-            if (omitOpts[_key]) {
-                searchParams.append(key, omitOpts[_key])
-            }
-        }
-        window.location.href = `?${searchParams.toString()}`
+        onFilterChange(opts)
+        close()
     }
-
 
     return <div className="w-[350px] p-3 bg-background shadow rounded-lg">
         <div className="flex-row-item-center justify-between  mb-4">

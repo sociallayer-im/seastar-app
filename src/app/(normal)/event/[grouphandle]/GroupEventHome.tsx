@@ -1,17 +1,25 @@
-import {Button, buttonVariants} from "@/components/shadcn/Button"
-import {Badge} from "@/components/shadcn/Badge"
-import GroupEventHomeData, { GroupEventHomeDataProps} from '@/app/(normal)/event/[grouphandle]/data'
-import {selectLang} from '@/app/actions'
-import {displayProfileName} from '@/utils'
-import Avatar from '@/components/Avatar'
+'use client'
+
+import {buttonVariants} from "@/components/shadcn/Button"
+import GroupEventHomeData from '@/app/(normal)/event/[grouphandle]/data'
+import {displayProfileName, getAuth} from '@/utils'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import SignInPanel from '@/components/SignInPanel'
 import EventHomeFilter from '@/components/client/EventHomeFilter'
 import EventListGroupedByDate from '@/components/EventListGroupedByDate'
 import EventHomeMap from '@/app/(normal)/event/[grouphandle]/EventHomeMap'
+import { useState } from "react"
+import { EventListFilterProps, EventWithJoinStatus, getEvents } from "@sola/sdk"
+import { Dictionary } from "@/lang"
+import useModal from '@/components/client/Modal/useModal'
+import { CLIENT_MODE } from "@/app/config"
+interface GroupEventHomeProps {
+    lang: Dictionary,
+    langType: string,
+    data: Awaited<ReturnType<typeof GroupEventHomeData>>
+}
 
-
-export default async function GroupEventHome(props: GroupEventHomeDataProps) {
+export default function GroupEventHome({data, lang, langType}: GroupEventHomeProps) {
     const {
         groupDetail,
         events,
@@ -21,9 +29,46 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
         filterOpts,
         mapMarkers,
         canPublishEvent
-    } = await GroupEventHomeData(props)
+    } = data
 
-    const {lang, type} = await selectLang()
+    const {showLoading, closeModal} = useModal()
+
+    const [eventList, setEventList] = useState<EventWithJoinStatus[]>(events)
+    const [currFilter, setCurrFilter] = useState<EventListFilterProps>(filterOpts)
+
+    const handleFilterChange = async (filter: EventListFilterProps) => {
+        setCurrFilter(filter)
+        const searchParams = new URLSearchParams()
+
+        for (const key in filter) {
+            const _key = key as keyof typeof filter
+            if (filter[_key] && _key !== 'group_id' && _key !== 'timezone') {
+                searchParams.append(key, filter[_key])
+            }
+        }
+
+        window.history.pushState({}, '', `?${searchParams.toString()}`)
+
+        const loading = showLoading()
+        try {
+            const events = await getEvents({
+                params: {
+                    filters: {
+                        ...filter,
+                        group_id: groupDetail.id + '',
+                        timezone: groupDetail.timezone || undefined
+                    },
+                    authToken: getAuth()
+                }, clientMode: CLIENT_MODE
+            })
+            setEventList(events)
+        } catch (e) {
+            console.error(e)
+        } finally {
+            closeModal(loading)
+        }
+    }
+    
 
     return <div style={{background: '#fff url(/images/event_home_bg.png) top center repeat-x'}}>
         <div className="page-width min-h-[100svh] sm:pt-8 pt-3 flex-col flex md:flex-row">
@@ -32,15 +77,19 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
                     <EventHomeMap
                         mapMarkers={mapMarkers}
                         lang={lang}
-                        langType={type}
+                        langType={langType}
                         groupHandle={groupDetail.handle}
                     />
                 }
-                <EventHomeFilter filterOpts={filterOpts}
-                                 groupDetail={groupDetail} isManager={isManager} lang={lang}/>
+                <EventHomeFilter 
+                    filterOpts={currFilter}
+                    onFilterChange={handleFilterChange}
+                    groupDetail={groupDetail} 
+                    isManager={isManager} 
+                    lang={lang}/>
 
                 <div className="my-3">
-                    <EventListGroupedByDate events={events} group={groupDetail} lang={lang}/>
+                    <EventListGroupedByDate events={eventList} group={groupDetail} lang={lang}/>
                 </div>
             </div>
 

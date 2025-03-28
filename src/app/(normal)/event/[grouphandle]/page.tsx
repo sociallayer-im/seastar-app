@@ -1,5 +1,5 @@
 import GroupEventHome from '@/app/(normal)/event/[grouphandle]/GroupEventHome'
-import {
+import GroupEventHomeData, {
     GroupEventHomeParams,
     GroupEventHomeSearchParams
 } from '@/app/(normal)/event/[grouphandle]/data'
@@ -39,10 +39,11 @@ export async function generateMetadata(props: {params: GroupEventHomeParams}) {
 export default async function EventHome(props: {params: GroupEventHomeParams, searchParams: GroupEventHomeSearchParams}) {
     const {params: {grouphandle}} = props
     const groupDetail = await cachedGetGroupDetailByHandle(grouphandle!)
-
+    const data = await GroupEventHomeData({searchParams: props.searchParams, groupDetail})
+    const {lang, type} = await selectLang()
     if (!groupDetail) {
         redirect('/404')
     }
 
-    return <GroupEventHome searchParams={props.searchParams} groupDetail={groupDetail} />
+    return <GroupEventHome data={data} lang={lang} langType={type} />
 }
