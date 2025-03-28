@@ -514,6 +514,9 @@ export const en = {
     'Share Schedule': 'Share Schedule',
     'Schedule Link': 'Schedule Link',
     'Embed Code': 'Embed Code',
+    'All Venues': 'All Venues',
+    'Time Range': 'Time Range',
+    'Reset Filter': 'Reset Filter',
 }
 
 export type Dictionary = typeof en

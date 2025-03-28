@@ -13,6 +13,8 @@ import { EventListFilterProps, EventWithJoinStatus, getEvents } from "@sola/sdk"
 import { Dictionary } from "@/lang"
 import useModal from '@/components/client/Modal/useModal'
 import { CLIENT_MODE } from "@/app/config"
+import DialogEventHomeFilter from "@/components/client/DialogEventHomeFilter"
+
 interface GroupEventHomeProps {
     lang: Dictionary,
     langType: string,
@@ -37,6 +39,7 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
     const [currFilter, setCurrFilter] = useState<EventListFilterProps>(filterOpts)
 
     const handleFilterChange = async (filter: EventListFilterProps) => {
+        console.log('filter', filter)
         setCurrFilter(filter)
         const searchParams = new URLSearchParams()
 
@@ -47,7 +50,7 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
             }
         }
 
-        window.history.pushState({}, '', `?${searchParams.toString()}`)
+        window.history.replaceState({}, '', `?${searchParams.toString()}`)
 
         const loading = showLoading()
         try {
@@ -148,6 +151,16 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
                 </>}
 
                 {!currProfile && <SignInPanel lang={lang}/>}
+
+                <div className="mt-6 hidden sm:block">
+                <DialogEventHomeFilter
+                        filterOpts={currFilter}
+                        groupDetail={groupDetail}
+                        lang={lang}
+                        onFilterChange={handleFilterChange}
+                        dialogMode="modal"
+                    />
+                </div>
             </div>
         </div>
     </div>

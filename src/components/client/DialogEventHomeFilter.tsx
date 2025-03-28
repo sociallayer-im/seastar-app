@@ -12,16 +12,17 @@ export interface DialogEventHomeFilterProp {
     filterOpts: EventListFilterProps,
     groupDetail: GroupDetail,
     lang: Dictionary,
-    close: () => void,
-    onFilterChange: (filter: EventListFilterProps) => void
+    close?: () => void,
+    onFilterChange: (filter: EventListFilterProps) => void,
+    dialogMode?: 'dialog' | 'modal'
 }
 
-export default function DialogEventHomeFilter({filterOpts, groupDetail, close, lang, onFilterChange}: DialogEventHomeFilterProp) {
+export default function DialogEventHomeFilter({filterOpts, groupDetail, close, lang, onFilterChange, dialogMode='dialog'}: DialogEventHomeFilterProp) {
     const [opts, setOpts] = useState(filterOpts)
 
     const TimeRangeOpts = [{
         value: 'all_time',
-        label: lang['All Time']
+        label:  lang['All Time']
     }, {
         value: 'today',
         label: lang['Today']
@@ -38,60 +39,76 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
     }, [opts])
 
     const updateTimeRange = (range: string) => {
-        setOpts({
+        const newOpts = {
             ...opts,
             ...getTimePropsFromRange(range)
-        })
+        }
+        setOpts(newOpts)
+        dialogMode === 'modal' && onFilterChange(newOpts)
     }
 
     const handleReset = () => {
-        setOpts({
+        const newOpts = {
             ...opts,
             skip_recurring: undefined,
             skip_multi_day: undefined,
             start_date: undefined,
             end_date: undefined,
             venue_id: undefined
-        })
+        }
+        setOpts(newOpts)
+        dialogMode === 'modal' && onFilterChange(newOpts)
     }
-
+    
     const handleApply = () => {
         onFilterChange(opts)
-        close()
+        close && close()
     }
 
-    return <div className="w-[350px] p-3 bg-background shadow rounded-lg">
-        <div className="flex-row-item-center justify-between  mb-4">
+    const className = dialogMode === 'dialog' ? 'w-[350px] p-3 bg-background shadow rounded-lg' : ''
+
+    return <div className={className}>
+        <div className="flex-row-item-center justify-between mb-4">
             <div className="font-semibold text-2xl">{lang['Filter']}</div>
             <Button onClick={handleReset}
-                    variant="ghost" size={'sm'} className="!font-normal text-sm text-blue-500">
-                <i className="uil-repeat text-lg"/>{lang['Reset']}
+                    variant="ghost" size={'sm'} className="!font-normal text-sm text-primary-foreground">
+                {lang['Reset Filter']}
             </Button>
         </div>
 
 
         <div className="flex-row-item-center justify-between my-3 text-sm"
-             onClick={() => setOpts({...opts, skip_recurring: opts.skip_recurring ? undefined : '1'})}
+             onClick={() => {
+                const newOpts = {...opts, skip_recurring: opts.skip_recurring ? undefined : '1'}
+                setOpts(newOpts)
+                dialogMode === 'modal' && onFilterChange(newOpts)
+             }}
         >
-            <div className="font-semibold">Repeating Events</div>
+            <div className="font-semibold">{lang['Repeating Events']}</div>
             <Checkbox checked={!opts.skip_recurring}/>
         </div>
 
         <div className="flex-row-item-center justify-between my-3 text-sm"
-             onClick={() => setOpts({...opts, skip_multi_day: opts.skip_multi_day ? undefined : '1'})}
+             onClick={() => {
+                const newOpts = {...opts, skip_multi_day: opts.skip_multi_day ? undefined : '1'}
+                setOpts(newOpts)
+                dialogMode === 'modal' && onFilterChange(newOpts)
+             }}
         >
-            <div className="font-semibold">Multi-day Events</div>
+            <div className="font-semibold">{lang['Multi-day Events']}</div>
             <Checkbox checked={!opts.skip_multi_day}/>
         </div>
 
         <div className="my-3 text-sm">
-            <div className="font-semibold mb-1">Times</div>
+            <div className="font-semibold mb-2">{lang['Time Range']}</div>
             {
                 TimeRangeOpts.map((item, index) => {
                     return <Button key={index}
-                                   onClick={() => updateTimeRange(item.value)}
-                                   variant={selectedRange === item.value ? 'normal' : 'outline'}
-                                   className="mr-1 text-sm" size={'sm'}>
+                                   onClick={() => {
+                                    updateTimeRange(item.value)
+                                   }}
+                                   variant={'outline'}
+                                   className={`${selectedRange === item.value ? '' : 'border-gray-300'} mr-1 text-xs `} size={'sm'}>
                         {item.label}
                     </Button>
                 })
@@ -99,17 +116,19 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
         </div>
 
         <div className="my-3 text-sm">
-            <div className="font-semibold mb-1">Venue</div>
+            <div className="font-semibold mb-1">{lang['Venues']}</div>
             <DropdownMenu
                 options={groupDetail.venues}
                 renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}</div>}
                 valueKey={'id'}
                 onSelect={(opt) => {
                     if (opt[0]) {
-                        setOpts({
+                        const newOpts = {
                             ...opts,
                             venue_id: opt[0].id.toString()
-                        })
+                        }
+                        setOpts(newOpts)
+                        dialogMode === 'modal' && onFilterChange(newOpts)
                     }
                 }}
                 value={opts.venue_id ? [groupDetail.venues.find(v => v.id.toString() === opts.venue_id)!] : undefined}
@@ -117,16 +136,19 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
                 <Input
                     type="text"
                     readOnly
-                    value={groupDetail.venues.find((v => v.id.toString() === opts.venue_id))?.title || 'All Venues'}
+                    value={groupDetail.venues.find((v => v.id.toString() === opts.venue_id))?.title || lang['All Venues']}
                     className="cursor-pointer w-full"
                     endAdornment={<i className="uil-angle-down text-lg"/>}
                 />
             </DropdownMenu>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mt-4">
-            <Button variant="secondary" onClick={close}>{lang['Cancel']}</Button>
-            <Button variant="primary" onClick={handleApply}>{lang['Show Events']}</Button>
-        </div>
+        {
+            dialogMode === 'dialog' &&
+            <div className="grid grid-cols-2 gap-3 mt-4">
+                <Button variant="secondary" onClick={close}>{lang['Cancel']}</Button>
+                <Button variant="primary" onClick={handleApply}>{lang['Show Events']}</Button>
+            </div>
+        }
     </div>
 }
