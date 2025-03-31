@@ -35,16 +35,9 @@ export default async function Test() {
                 </div>
 
                 {/* 活动日程表 */}
-                <div className="bg-white rounded-lg shadow-lg p-6">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">活动日程</h2>
-                    <div className="w-full h-[600px]">
-                        <iframe 
-                            src="https://app.sola.day/schedule/list/infinitacity?" 
-                            className="w-full h-full rounded-lg"
-                            frameBorder="0"
-                            allowFullScreen
-                        />
-                    </div>
+                <div className="bg-white rounded-lg shadow-lg">
+                <iframe src="https://app.sola.day/schedule/list/infinitacity?" width="100%" height="600px" frameborder="0" allowfullscreen></iframe>
+
                 </div>
             </div>
         </div>

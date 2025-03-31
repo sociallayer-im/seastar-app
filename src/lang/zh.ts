@@ -527,10 +527,4 @@ export const zh: Dictionary = {
     'Add a photo': '添加照片',
     'Amenities': '设施',
     'Capacity':'容量',
-    'Share Schedule': '分享日程',
-    'Schedule Link': '日程链接',
-    'Embed Code': '嵌入代码',
-    'All Venues': '所有场地',
-    'Time Range': '时间范围',
-    'Reset Filter': '重置筛选器',
 }
