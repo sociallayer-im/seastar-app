@@ -89,6 +89,7 @@ export interface IframeSchedulePageData {
     listingUrl: string,
     isFiltered: boolean,
     eventHomeUrl: string
+    isIframe?: boolean
 }
 
 export interface IframeSchedulePageDataProps {
@@ -193,7 +194,8 @@ export async function IframeSchedulePageData({
 
     const headersList = await headers()
     const currPath = headersList.get('x-current-path')
-    if (currPath?.includes('/event/')) {
+    const isIframe = !currPath?.includes('/event/')
+    if (!isIframe) {
         // if not in iframe
         weeklyUrl = `/event/${groupName}/schedule/week${searchParamsToString(searchParams)}`
         dailyUrl = `/event/${groupName}/schedule/day${searchParamsToString(searchParams)}`
@@ -240,7 +242,8 @@ export async function IframeSchedulePageData({
         listingUrl,
         compactUrl,
         isFiltered,
-        eventHomeUrl
+        eventHomeUrl,
+        isIframe
     }
 }
 

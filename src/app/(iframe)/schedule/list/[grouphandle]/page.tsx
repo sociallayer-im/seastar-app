@@ -11,7 +11,6 @@ import ListViewEventItem from "@/app/(iframe)/schedule/list/[grouphandle]/ListVi
 import ListPagination from "@/app/(iframe)/schedule/list/[grouphandle]/ListPagination"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import {getServerSideAuth, selectLang} from "@/app/actions"
-import Dayjs from '@/libs/dayjs'
 import {cache} from 'react'
 import {getGroupDetailByHandle} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
@@ -59,7 +58,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
         <div className="page-width z-10 relative">
             <div className="py-3 sm:py-5 max-w-[100vw] flex flex-row justify-between">
                 <div className="sm:text-2xl text-xl">
-                    <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2">
+                    <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2" target={data.isIframe ? "_blank" : "_self"}>
                         {data.group.nickname || data.group.handle}
                     </a>
                     <span className="whitespace-nowrap">{lang['Event Schedule']}</span>
