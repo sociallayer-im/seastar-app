@@ -2,15 +2,15 @@
 
 import {GroupDetail, removeVenue} from '@sola/sdk'
 import {Dictionary} from '@/lang'
-import {buttonVariants} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
+import VenueCard from './components/VenueCard'
+import NoData from '@/components/NoData'
 
-export default function VenueListForm({groupDetail, lang}: { groupDetail: GroupDetail, lang: Dictionary }) {
-
+export default function VenueListForm({groupDetail, lang, isManager}: { groupDetail: GroupDetail, isManager?: boolean, lang: Dictionary }) {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
     const {showConfirmDialog} = useConfirmDialog()
@@ -45,33 +45,34 @@ export default function VenueListForm({groupDetail, lang}: { groupDetail: GroupD
         })
     }
 
-    return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
-            <div className="py-6 font-semibold text-center text-xl">{lang['Venues']}</div>
-            <div
-                className="mb-4">{lang['venues are the default locations that creators can choose for their events.']}</div>
+    return (
+        <div className="min-h-[calc(100svh-48px)] w-full">
+            <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+                <div className="flex justify-center items-center py-6 relative">
+                    <h1 className="text-2xl font-semibold">{lang['Venues']}</h1>
+                    {isManager &&
+                        <a href={`/event/${groupDetail.handle}/venues/create`}
+                           className="text-primary-foreground absolute right-0 font-semibold">
+                            <span className="hidden sm:block">{lang['Create a Venue']}</span>
+                            <i className="uil-plus-circle text-3xl block sm:hidden" />
+                        </a>
+                    }
+                </div>
 
-            <div className="grid grid-cols-1 gap-3 w-full">
-                {
-                    groupDetail.venues.map((venue, index) => {
-                        return <div key={index} className="flex-row-item-center w-full">
-                            <a href={`/event/${groupDetail.handle}/venues/edit/${venue.id}`}
-                               className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 !h-auto justify-between`}>
-                                <div className="font-normal flex-1 whitespace-normal">{venue.title}</div>
-                                <i className="uil-edit-alt"/>
-                            </a>
-                            <i  onClick={() => handleRemove(venue.id)}
-                                className="uil-minus-circle text-3xl text-gray-500 cursor-pointer"/>
-                        </div>
-                    })
-                }
+                <div className="grid grid-cols-1 gap-6 w-full">
+                    {!groupDetail.venues.length && <NoData/>}
+                    {groupDetail.venues.map((venue, index) => (
+                        <VenueCard
+                            isManager={isManager}
+                            key={index}
+                            venue={venue}
+                            lang={lang}
+                            groupHandle={groupDetail.handle}
+                            onRemove={handleRemove}
+                        />
+                    ))}
+                </div>
             </div>
-
-            <a href={`/event/${groupDetail.handle}/venues/create`}
-               className={`${buttonVariants({variant: 'secondary'})} mt-3`}>
-                <i className="uil-plus-circle text-lg"/>
-                {lang['Create a Venue']}
-            </a>
         </div>
-    </div>
+    )
 }

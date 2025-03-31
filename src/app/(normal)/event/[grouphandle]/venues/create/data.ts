@@ -48,7 +48,9 @@ export default async function CreateVenueData({params: {grouphandle}}: CreateVen
         capacity: null,
         require_approval: false,
         venue_timeslots:[] as VenueTimeslot[],
-        venue_overrides: [] as VenueOverride[]
+        venue_overrides: [] as VenueOverride[],
+        image_urls: [] as string[],
+        amenities: [] as string[],
     } as VenueDetail
 
     return {

@@ -71,6 +71,13 @@ export default async function GroupEventHome(props: GroupEventHomeDataProps) {
                     </a>
                 }
 
+                <a href={`/event/${groupDetail.handle}/venues`}
+                   className={`${buttonVariants({variant: "normal"})} w-full mt-3`}
+                >
+                    <img src="/images/icon_venue.svg" alt=""/>
+                    {lang['Venue List']}
+                </a>
+
 
                 {!!currProfile && <>
                     {canPublishEvent && groupDetail.status !== 'freezed' &&

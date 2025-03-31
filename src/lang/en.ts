@@ -517,6 +517,14 @@ export const en = {
     'Time Range': 'Time Range',
     'Reset Filter': 'Reset Filter',
     'Can not change the repeat setting after the event is created': 'Can not change the repeat setting after the event is created',
+    'After {date}': 'After {date}',
+    'Before {date}': 'Before {date}',
+    'Venue List': 'Venue List',
+    'Venue Detail': 'Venue Detail',
+    'Cover/Poster (Optional)':'Cover/Poster (Optional)',
+    'Add a photo': 'Add a photo',
+    'Amenities': 'Amenities',
+    'Capacity': 'Capacity',
 }
 
 export type Dictionary = typeof en

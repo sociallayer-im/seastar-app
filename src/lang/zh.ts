@@ -519,4 +519,12 @@ export const zh: Dictionary = {
     'Time Range': '时间范围',
     'Reset Filter': '重置筛选器',
     'Can not change the repeat setting after the event is created': '无法在活动创建后更改重复设置',
+    'After {date}': '{date} 之后',
+    'Before {date}': '{date} 之前',
+    'Venue List': '场地列表',
+    'Venue Detail':'场地详情',
+    'Cover/Poster (Optional)': '封面/海报（可选）',
+    'Add a photo': '添加照片',
+    'Amenities': '设施',
+    'Capacity':'容量',
 }

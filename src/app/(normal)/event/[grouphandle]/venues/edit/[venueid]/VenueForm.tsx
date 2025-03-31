@@ -20,6 +20,8 @@ import Dayjs from '@/libs/dayjs'
 import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import useEditOverride from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/useEditOverride'
+import useUploadImage from '@/hooks/useUploadImage'
+import {divide} from 'lodash'
 
 const ROLE_OPTIONS: { value: VenueRole, label: string }[] = [
     {value: 'all', label: 'All'},
@@ -40,6 +42,7 @@ export interface VenueFormProps {
 
 export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps) {
     const {editOverride} = useEditOverride()
+    const {uploadImage} = useUploadImage()
 
     const [draft, setDraft] = useState(venueDetail)
     const [enableTimeslots, setEnableTimeslots] = useState(!!venueDetail.venue_timeslots?.length)
@@ -129,7 +132,9 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
         !!onConfirm && onConfirm({
             ...draft,
             venue_timeslots: plantTimeslots,
-            venue_overrides: overrides
+            venue_overrides: overrides,
+            image_urls: draft.image_urls?.filter(img => !!img.trim()) || [],
+            amenities: draft.amenities?.filter(amenity => !!amenity.trim()) || []
         })
     }
 
@@ -146,6 +151,26 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
         if (!!newOverride) {
             setOverrides([...overrides, newOverride])
         }
+    }
+
+    const addAmenities = () => {
+        setDraft({...draft, amenities: draft.amenities ? [...draft.amenities, ''] : ['']})
+    }
+
+    const removeAmenities = (index: number) => {
+        const newDraft = [...(draft.amenities || [])]
+        newDraft.splice(index, 1)
+        setDraft({...draft, amenities: newDraft})
+    }
+
+    const addImage = (img: string) => {
+        setDraft({...draft, image_urls: draft.image_urls ? [...draft.image_urls, img] : [img]})
+    }
+
+    const removeImage = (index: number) => {
+        const newDraft = [...(draft.image_urls || [])]
+        newDraft.splice(index, 1)
+        setDraft({...draft, image_urls: newDraft})
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
@@ -173,9 +198,65 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
             </div>
 
             <div className="mb-4">
+                <div className="font-semibold mb-1">{lang['Cover/Poster (Optional)']}</div>
+                <div className="flex-row-item-center overflow-auto">
+                    {
+                        (draft.image_urls || []).map((img, index) => {
+                            return <div key={index} className='h-[170px] overflow-hidden flex mr-4 shrink-0 bg-[#f1f1f1] rounded-lg relative'>
+                                <i className="uil-minus-circle text-2xl cursor-pointer absolute right-1 top-1 text-gray-400"
+                                   onClick={()=> removeImage(index)} />
+                                <img src={img} alt="" className='h-[170px] w-auto'/>
+                            </div>
+                        })
+                    }
+                    <div onClick={async () => {const img = await uploadImage(); addImage(img)}}
+                        className="shrink-0 hover:brightness-95 rounded-lg cursor-pointer h-[170px] w-[170px] flex flex-col items-center justify-center bg-secondary">
+                        <i className="uil-plus-circle text-3xl text-gray-400" />
+                        {lang['Add a photo']}
+                    </div>
+                </div>
+            </div>
+
+            <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Description (Optional)']}</div>
                 <Input className="w-full" value={draft.about || ''}
                        onChange={e => setDraft({...draft, about: e.target.value})}/>
+            </div>
+
+            <div className="mb-4">
+                <div className="font-semibold mb-1">{lang['Venue Capacity (Optional)']}</div>
+                <Input className="w-full"
+                       placeholder={'Unlimited'}
+                       onChange={e => {
+                           setDraft({...draft, capacity: parseInt(e.target.value)})
+                       }}
+                       value={draft.capacity || ''}
+                       type={'number'}
+                       onWheel={(e) => e.currentTarget.blur()}/>
+            </div>
+
+            <div className="mb-4">
+                <div className="font-semibold mb-1">{lang['Amenities']}</div>
+                {
+                    (draft.amenities?.length ? draft.amenities : ['']).map((tag, index) => {
+                        return <div key={index} className="flex-row-item-center w-full mb-3">
+                            <Input value={tag} className="flex-1 mr-3"
+                                   onChange={event => {
+                                       const newAmenities = [...(draft.amenities || [])]
+                                       newAmenities[index] = event.target.value
+                                       setDraft({...draft, amenities: newAmenities})
+                                   }}
+                                   placeholder="Enter amenities"/>
+                            {index === (draft.amenities || []).length - 1 &&
+                                <i className="uil-plus-circle text-3xl text-green-500 cursor-pointer" onClick={addAmenities}/>
+                            }
+                            { index !== (draft.amenities || []).length - 1 &&
+                                <i onClick={() => removeAmenities(index)}
+                                   className="uil-minus-circle text-3xl text-gray-500 cursor-pointer"/>
+                            }
+                        </div>
+                    })
+                }
             </div>
 
             <div className="mb-4">
@@ -255,18 +336,6 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
                         }
                     </div>
                 </Button>
-            </div>
-
-            <div className="mb-4">
-                <div className="font-semibold mb-1">{lang['Venue Capacity (Optional)']}</div>
-                <Input className="w-full"
-                       placeholder={'Unlimited'}
-                       onChange={e => {
-                           setDraft({...draft, capacity: parseInt(e.target.value)})
-                       }}
-                       value={draft.capacity || ''}
-                       type={'number'}
-                       onWheel={(e) => e.currentTarget.blur()}/>
             </div>
 
             <div className="my-8 flex-row-item-center justify-between">
