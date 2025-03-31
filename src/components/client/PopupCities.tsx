@@ -99,11 +99,11 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                                    width={227} height={148}
                                    src={popupCity.image_url || ''} alt=""/>
                         </div>
-                        <div className="webkit-box-clamp-1 text-xs">
+                        <div className="webkit-box-clamp-1 sm:text-sm text-xs">
                             <DisplayDateTime format={'MMM DD'}
                                              dataTimeStr={popupCity.start_date!}/>
                             <span className="mx-1">-</span>
-                            <DisplayDateTime format={'MMM DD'} dataTimeStr={popupCity.end_date!}/>
+                            <DisplayDateTime format={'MMM DD, YYYY'} dataTimeStr={popupCity.end_date!}/>
                         </div>
                         <div className="webkit-box-clamp-2 text-lg font-semibold leading-5 h-10 mb-4">
                             {popupCity.title}

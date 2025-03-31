@@ -123,12 +123,14 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
                     </a>
                 }
 
-                <a href={`/event/${groupDetail.handle}/venues`}
-                   className={`${buttonVariants({variant: "normal"})} w-full mt-3`}
-                >
-                    <img src="/images/icon_venue.svg" alt=""/>
-                    {lang['Venue List']}
-                </a>
+                {!!groupDetail.venues.length &&
+                    <a href={`/event/${groupDetail.handle}/venues`}
+                       className={`${buttonVariants({variant: "normal"})} w-full mt-3`}
+                    >
+                        <img src="/images/icon_venue.svg" alt=""/>
+                        {lang['Venue List']}
+                    </a>
+                }
 
 
                 {!!currProfile && <>
@@ -151,7 +153,7 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
                         {isManager &&
                             <a href={`/event/${groupDetail.handle}/setting`}
                                className={`${buttonVariants({variant: "secondary"})} ml-3`}>
-                                {lang['Setting']}
+                                {lang['Settings']}
                             </a>
                         }
                     </div>

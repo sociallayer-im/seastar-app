@@ -537,6 +537,30 @@ export const formatEventTime = (dateTimeStr: string, timezone?: string | null) =
         }) + ` ${GMT}`
 }
 
+export const formatEventDuration = (startTime: string, endTime: string, timezone?: string | null) => {
+    const tz = timezone || dayjs.tz.guess()
+    const start = dayjs.tz(new Date(startTime).getTime(), tz)
+    const end = dayjs.tz(new Date(endTime).getTime(), tz)
+    const utcOffset = start.utcOffset() / 60
+    const GMT = utcOffset >= 0 ? `GMT+${utcOffset}` : `GMT${utcOffset}`
+    const now = dayjs.tz(new Date(), tz)
+
+    const isInDayEvent = start.isSame(end, 'day')
+
+    const startDateStr = start.calendar(now, {
+        sameDay: `[Today] HH:mm`,
+        nextDay: `[Tomorrow] HH:mm`,
+        nextWeek: 'MMM DD, HH:mm',
+        lastDay: 'MMM DD, HH:mm',
+        lastWeek: 'MMM DD, HH:mm',
+        sameElse: 'MMM DD, HH:mm'
+    })
+
+    const endDateStr = isInDayEvent ? end.format('HH:mm') : end.format('MMM DD, HH:mm')
+
+    return startDateStr+ ` - ` + endDateStr + ` ${GMT}`
+}
+
 export function isSupportedDownloadCardBrowser() {
     const userAgent = navigator.userAgent.toLowerCase()
     const supportedBrowsers = ['safari', 'chrome', 'firefox', 'edge']

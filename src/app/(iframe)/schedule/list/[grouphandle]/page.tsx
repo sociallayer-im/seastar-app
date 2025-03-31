@@ -11,11 +11,12 @@ import ListViewEventItem from "@/app/(iframe)/schedule/list/[grouphandle]/ListVi
 import ListPagination from "@/app/(iframe)/schedule/list/[grouphandle]/ListPagination"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import {getServerSideAuth, selectLang} from "@/app/actions"
-import MonthPagination from '@/app/(iframe)/schedule/list/[grouphandle]/MonthPagination'
+import Dayjs from '@/libs/dayjs'
 import {cache} from 'react'
 import {getGroupDetailByHandle} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import ShareScheduleBtn from "@/components/client/ShareScheduleBtn"
+import MonthPagination from '@/app/(iframe)/schedule/list/[grouphandle]/MonthPagination'
 
 const cachedGetGroupDetailByHandle = cache((handle: string) => {
     return getGroupDetailByHandle({params: {groupHandle: handle}, clientMode: CLIENT_MODE})

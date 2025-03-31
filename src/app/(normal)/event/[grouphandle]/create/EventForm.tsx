@@ -228,7 +228,8 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                                     {draft.title || lang['Event Name']}
                                 </div>
                                 <div
-                                    className="text-lg absolute font-semibold left-[76px] top-[178px]">{eventCoverTimeStr(draft.start_time!, draft.timezone!).date}
+                                    className="text-lg absolute font-semibold left-[76px] top-[178px]">
+                                    {eventCoverTimeStr(draft.start_time!, draft.timezone!).date}
                                     <br/>
                                     {eventCoverTimeStr(draft.start_time!, draft.timezone!).time}
                                 </div>

@@ -9,7 +9,7 @@ import {displayProfileName} from '@/utils'
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 import {Dictionary} from '@/lang'
 
-const DynamicFormatEventTime = dynamic(() => import('@/components/CardEvent/FormatEventTime'), {ssr: false})
+const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), {ssr: false})
 
 export default function ListViewEventItem({event, timezone, lang}: {
     event: IframeSchedulePageDataEventDetail,
@@ -56,8 +56,9 @@ export default function ListViewEventItem({event, timezone, lang}: {
                 </div>
                 <div className="flex-1 text-xs text-gray-500 mb-2">
                     <i className="uil-calender mr-1" />
-                    <DynamicFormatEventTime
-                        dateTimeStr={event.start_time}
+                    <DynamicFormatEventDuration
+                        startDate={event.start_time}
+                        endDate={event.end_time}
                         tz={timezone}/>
                 </div>
                 {event.location &&
