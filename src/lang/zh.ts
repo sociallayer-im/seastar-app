@@ -314,7 +314,7 @@ export const zh: Dictionary = {
     'Past': '已结束',
     'Private': '私密',
     'Reset':'重置',
-    'All Time':'所有时间',
+    'All Time':'全部时间',
     'Today':'今天',
     'Week':'本周',
     'Month':'本月',

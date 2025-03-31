@@ -16,9 +16,10 @@ export interface EventHomeFilterProps {
     groupDetail: GroupDetail
     lang: Dictionary
     isManager?: boolean
+    onFilterChange: (filter: EventListFilterProps) => void
 }
 
-export default function EventHomeFilter({filterOpts, groupDetail, lang, isManager}: EventHomeFilterProps) {
+export default function EventHomeFilter({filterOpts, groupDetail, lang, isManager, onFilterChange}: EventHomeFilterProps) {
     const [search, setSearch] = useState(filterOpts.search_title || '')
     const {openModal} = useModal()
 
@@ -28,6 +29,7 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                 lang={lang}
                 filterOpts={filterOpts}
                 groupDetail={groupDetail}
+                onFilterChange={onFilterChange}
                 close={close!}/>
         })
     }
@@ -84,11 +86,10 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                         const keyword = e.currentTarget.value.trim()
                         const url = new URL(window.location.href)
                         if (keyword) {
-                            url.searchParams.set('search_title', keyword)
+                            !!onFilterChange && onFilterChange({...filterOpts, search_title: keyword})
                         } else {
-                            url.searchParams.delete('search_title')
+                            !!onFilterChange && onFilterChange({...filterOpts, search_title: undefined})
                         }
-                        window.location.href = url.toString()
                     }
                 }}
                 startAdornment={<i className="uil-search text-lg"/>}
@@ -114,13 +115,11 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                 <TagsFilter
                     lang={lang}
                     onSelected={(tags) => {
-                        const url = new URL(window.location.href)
                         if (tags && tags[0]) {
-                            url.searchParams.set('tags', tags[0])
+                           !!onFilterChange && onFilterChange({...filterOpts, tags: tags[0]})
                         } else {
-                            url.searchParams.delete('tags')
+                           !!onFilterChange && onFilterChange({...filterOpts, tags: undefined})
                         }
-                        window.location.href = url.toString()
                     }}
                     values={filterOpts.tags ? filterOpts.tags.split(',') : []}
                     tags={groupDetail.event_tags || []}/>
@@ -132,13 +131,11 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                 <TracksFilter
                     lang={lang}
                     onSelect={(trackIds) => {
-                        const url = new URL(window.location.href)
                         if (trackIds && trackIds[0]) {
-                            url.searchParams.set('track_id', trackIds[0].toString())
+                            !!onFilterChange && onFilterChange({...filterOpts, track_id: trackIds[0].toString()})
                         } else {
-                            url.searchParams.delete('track_id')
+                            !!onFilterChange && onFilterChange({...filterOpts, track_id: undefined})
                         }
-                        window.location.href = url.toString()
                     }}
                     values={filterOpts.track_id ? [parseInt(filterOpts.track_id)] : undefined}
                     tracks={groupDetail.tracks}/>
