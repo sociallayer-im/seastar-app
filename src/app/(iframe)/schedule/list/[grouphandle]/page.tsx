@@ -16,6 +16,7 @@ import {cache} from 'react'
 import {getGroupDetailByHandle} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import ShareScheduleBtn from "@/components/client/ShareScheduleBtn"
+import MonthPagination from '@/app/(iframe)/schedule/list/[grouphandle]/MonthPagination'
 
 const cachedGetGroupDetailByHandle = cache((handle: string) => {
     return getGroupDetailByHandle({params: {groupHandle: handle}, clientMode: CLIENT_MODE})
@@ -43,7 +44,7 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
         redirect('/error')
     }
 
-    const {allDayEvents, groupedEventByStartTime} = await ListViewData({
+    const {groupedEventByStartDate} = await ListViewData({
         events: data.events,
         timezone: data.group.timezone,
         currentDate: data.interval[0].format('YYYY-MM-DD')
@@ -69,6 +70,11 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
             <div className="desk-tool-bar hidden sm:flex flex-row justify-between">
                 <div className="flex-row-item-center">
                     <div className="schedule-month text-base sm:text-lg mr-2 font-semibold">{data.interval[0].format('YYYY MMMM')}</div>
+                    <div className="flex-row-item-center">
+                        <MonthPagination
+                            timezone={data.group.timezone}
+                            currStartDate={data.interval[1].format('YYYY-MM-DD')}/>
+                    </div>
                 </div>
                 <div className="flex-row-item-center mt-3 sm:mt-0">
                     {!!authToken &&
@@ -163,28 +169,14 @@ export default async function IframeScheduleWeeklyPage({searchParams, params}: {
             {!!data.events.length &&
                 <div>
                     <div className="">
-                        {!!allDayEvents.length &&
-                            <div>
-                                <div className="sm:pl-7 font-semibold mb-3">All Day</div>
-                                {
-                                    allDayEvents.map((event) => {
-                                        return <ListViewEventItem
-                                            lang={lang}
-                                            key={event.id}
-                                            event={event}
-                                            timezone={data.group.timezone} />
-                                    })
-                                }
-                            </div>
-                        }
                         {
-                            Object.keys(groupedEventByStartTime).map((startTime, index) => {
+                            Object.keys(groupedEventByStartDate).map((startDate, index) => {
                                 return <div key={index}>
-                                    <div className="sm:pl-7 font-semibold mb-1 mt-6">
-                                        {Dayjs.tz(new Date(startTime).getTime(), data.group.timezone).format('HH:mm, MMM DD')}
+                                    <div className="font-semibold mb-1 mt-6">
+                                        {startDate}
                                     </div>
                                     {
-                                        groupedEventByStartTime[startTime].map((event) => {
+                                        groupedEventByStartDate[startDate].map((event) => {
                                             return <ListViewEventItem
                                                 lang={lang}
                                                 key={event.id}

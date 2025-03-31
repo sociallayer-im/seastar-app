@@ -2,11 +2,11 @@
 
 import dayjs from "@/libs/dayjs"
 import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
+import Dayjs from '@/libs/dayjs'
 
 
 export interface IframeSchedulePageDataEventDetail extends IframeSchedulePageDataEvent {
-    isAllDay: boolean,
-    time: string
+    date: string
 }
 
 interface CalculateGridPositionProps {
@@ -18,37 +18,31 @@ interface CalculateGridPositionProps {
 export async function ListViewData({
     events,
     timezone,
-    currentDate
 }: CalculateGridPositionProps) {
     let dayEvents = [] as IframeSchedulePageDataEventDetail[]
     events.forEach(event => {
-        const current = dayjs.tz(currentDate, timezone)
         const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
-        const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
-        const isAllDay = start.isBefore(current, 'day') && end.isAfter(current, 'day')
 
         dayEvents.push({
             ...event,
-            isAllDay,
-            time: start.format('HH:mm')
+            date: Dayjs.tz(new Date(event.start_time).getTime(), timezone).format('MMM DD')
         })
     })
 
 
-    const allDayEvents = dayEvents.filter(event => event.isAllDay)
 
-    const groupedEventByStartTime = dayEvents
-        .filter(e => !e.isAllDay)
+    const groupedEventByStartDate = dayEvents
         .reduce((acc, event) => {
-        if (!acc[event.start_time]) {
-            acc[event.start_time] = []
+        if (!acc[event.date]) {
+            acc[event.date] = []
         }
-        acc[event.start_time].push(event)
+        acc[event.date].push(event)
         return acc
     }, {} as {[key: string]: IframeSchedulePageDataEventDetail[]})
 
+    console.log(Object.keys(groupedEventByStartDate), timezone)
+
     return {
-        allDayEvents,
-        groupedEventByStartTime
+        groupedEventByStartDate
     }
 }

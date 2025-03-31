@@ -8,7 +8,7 @@ import {
 } from "@/app/(iframe)/schedule/data"
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import CompactViewEventItem from "./CompactViewEventItem"
-import ListPagination from "@/app/(iframe)/schedule/list/[grouphandle]/ListPagination"
+import ListPagination from "@/app/(iframe)/schedule/compact/[grouphandle]/ListPagination"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import {getServerSideAuth, selectLang} from "@/app/actions"
 import MonthlyPagination from "./MonthlyPagination"

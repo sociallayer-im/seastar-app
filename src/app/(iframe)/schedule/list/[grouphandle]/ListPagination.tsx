@@ -53,12 +53,11 @@ export default function ListPagination({currStartDate, timezone}: WeeklyPaginati
         <div className="flex-row-item-center bg-[#F8F9F8] w-[1000px] flex-1 overflow-auto h-[54px] overflow-y-hidden">
             {
                 interval.map((day, index) => {
-                    const isSelected = day.format('YYYY-MM-DD') === currStartDate
+                    const isSelected = day.format('YYYY-MM-DD') === dayjs.tz(new Date().getTime(), timezone).format('YYYY-MM-DD')
                     return <div
                         id={isSelected ? 'selected' : ''}
                         style={isSelected ? {backgroundColor: '#EFFFF9'} : {}}
-                        className="hover:bg-[#cdcfd2] hover:border-[#cdcfd2] px-8 flex-1 flex-shrink-0 cursor-pointer h-[52px] leading-[52px] text-center sm:border border-[#F1F1F1]"
-                        onClick={() => toSelected(day)}
+                        className="px-8 flex-1 flex-shrink-0 cursor-pointer h-[52px] leading-[52px] text-center sm:border border-[#F1F1F1]"
                         key={index}>
                         <strong>{day.format('DD')}</strong>
                         <span className="ml-1">{day.format('ddd')}</span>
