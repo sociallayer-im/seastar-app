@@ -81,7 +81,6 @@ body {
 }
 
 .page-width {
-    min-width: 375px;
     max-width: 1024px;
     margin: 0 auto;
     padding-left: 12px;
@@ -90,7 +89,6 @@ body {
 }
 
 .page-width-md {
-    min-width: 375px;
     max-width: 800px;
     margin: 0 auto;
     padding-left: 12px;
@@ -99,7 +97,6 @@ body {
 }
 
 .page-width-sm {
-    min-width: 375px;
     max-width: 600px;
     margin: 0 auto;
     padding-left: 12px;
