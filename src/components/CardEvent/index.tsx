@@ -1,5 +1,5 @@
 import {getLabelColor} from "@/utils/label_color"
-import {checkProcess, formatEventTime} from "@/utils"
+import {checkProcess, eventCoverTimeStr} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
 import {CSSProperties, ReactElement} from "react"
 import dynamic from 'next/dynamic'
@@ -7,7 +7,7 @@ import {Dictionary} from '@/lang'
 import {EventWithJoinStatus} from '@sola/sdk'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
-const DynamicFormatEventTime = dynamic(() => import('./FormatEventTime'), {ssr: false})
+const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), {ssr: false})
 
 export default function CardEvent({event, className, id, style, lang, highlight, additionalElement}: {
     event: EventWithJoinStatus,
@@ -24,8 +24,6 @@ export default function CardEvent({event, className, id, style, lang, highlight,
     const groupHost = event.event_roles?.find(r => r.role === 'group_host')
     const cohosts = event.event_roles?.filter(r => r.role === 'co_host')
     const host = groupHost?.nickname || event.owner.nickname || event.owner.handle
-
-    const startTime = formatEventTime(event.start_time, event.timezone)
 
     const customStyle = {
         ...style,
@@ -68,11 +66,12 @@ export default function CardEvent({event, className, id, style, lang, highlight,
             <div className="flex-row-item-center text-xs sm:text-sm sm:my-1">
                 host by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}
             </div>
-            <div className="h-6 flex-row-item-center text-xs sm:text-sm">
+            <div className="min-h-6 flex text-xs sm:text-sm">
                 <i className="uil-calendar-alt mr-1 text-sm"/>
-                <DynamicFormatEventTime
-                    dateTimeStr={event.start_time}
-                    tz={event.timezone} />
+                <div className="mt-0.5 sm:mt-0"><DynamicFormatEventDuration
+                    startDate={event.start_time}
+                    endDate={event.end_time}
+                    tz={event.timezone} /></div>
             </div>
             {!!event.location &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
@@ -105,7 +104,9 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                             {event.title}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">
-                            {startTime}
+                            {eventCoverTimeStr(event.start_time!, event.timezone!).date}
+                            <br/>
+                            {eventCoverTimeStr(event.start_time!, event.timezone!).time}
                         </div>
                         {!!event.location &&
                             <div className="text-lg absolute font-semibold left-[76px] top-[240px]">
