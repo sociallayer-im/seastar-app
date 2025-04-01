@@ -1,5 +1,5 @@
 import {
-    Event, getEvents, EventListFilterProps, GroupDetail
+    Event, getEvents, EventListFilterProps, GroupDetail, EventWithJoinStatus
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
@@ -58,6 +58,13 @@ export default async function GroupEventHomeData({
         clientMode: CLIENT_MODE
     })
 
+    const eventsWithTrack = filteredEvents.map(e => {
+        return {
+            ...e,
+            track: e.track_id ? groupDetail.tracks.find(t => t.id === e.track_id) : null
+        } as EventWithJoinStatus
+    })
+
 
     if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0 ) {
         redirect(`/event/${groupDetail.handle}?collection=past`)
@@ -86,7 +93,7 @@ export default async function GroupEventHomeData({
         filterOpts,
         groupDetail,
         currProfile,
-        events: setEventIsOwnerStatus({events: filteredEvents, currProfile}),
+        events: setEventIsOwnerStatus({events: eventsWithTrack, currProfile}),
         members: [owner, ...managers, ...issuers, ...members],
         isManager,
         isOwner,

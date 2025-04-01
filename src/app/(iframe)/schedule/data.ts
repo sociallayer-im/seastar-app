@@ -159,7 +159,7 @@ export async function IframeSchedulePageData({
     }
 
     const url = `${getSdkConfig(CLIENT_MODE).api}/api/event/list?${apiSearchParams.toString()}`
-    // console.log('url =>', url)
+    console.log('url =>', url)
     const response = await fetch(url, {
         cache: 'no-store',
         headers: {

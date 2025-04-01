@@ -69,7 +69,10 @@ export default function ListViewEventItem({event, timezone, lang}: {
                 }
                 <div className="text-xs text-gray-500 flex-row-item-center">
                     {event.track &&
-                        <div>{event.track.title}<span className="mx-1">|</span></div>
+                        <div>
+                            <span style={{color: getLabelColor(event.track.title)}}>{event.track.title}</span>
+                            <span className="mx-1 text-gray-300">|</span>
+                        </div>
                     }
                     <div className="flex-row-item-center">
                         by <Avatar profile={host} size={16}

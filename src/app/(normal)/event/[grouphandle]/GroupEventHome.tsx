@@ -39,7 +39,6 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
     const [currFilter, setCurrFilter] = useState<EventListFilterProps>(filterOpts)
 
     const handleFilterChange = async (filter: EventListFilterProps) => {
-        console.log('filter', filter)
         setCurrFilter(filter)
         const searchParams = new URLSearchParams()
 
@@ -64,7 +63,13 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
                     authToken: getAuth()
                 }, clientMode: CLIENT_MODE
             })
-            setEventList(events)
+            const listWithTrack = events.map(e => {
+                return {
+                    ...e,
+                    track: e.track_id ? groupDetail.tracks.find(t => t.id === e.track_id) : null,
+                }
+            })
+            setEventList(listWithTrack)
         } catch (e) {
             console.error(e)
         } finally {
