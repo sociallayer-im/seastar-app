@@ -510,7 +510,7 @@ export const zh: Dictionary = {
     'Create Now':'现在创建',
     'Sign In to Attend':'登录以参加',
     'Buy Tickets':'购买门票',
-    'View Detail':'查看详情',
+    'View Details':'查看详情',
     'All':'全部',
     'Share Schedule': '分享日程',
     'Schedule Link': '日程链接',

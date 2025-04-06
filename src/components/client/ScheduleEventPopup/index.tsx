@@ -161,7 +161,7 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
                 }
                 <a href={`/event/detail/${event.id}`}
                    className={`${buttonVariants({variant: 'normal'})} mt-3 sm:w-auto w-full`}
-                   rel="nofollow">{lang['View Detail']}</a>
+                   rel="nofollow">{lang['View Details']}</a>
             </div>
         </div>
     </div>

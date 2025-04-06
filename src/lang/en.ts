@@ -508,7 +508,7 @@ export const en = {
     'Create Now':'Create Now',
     'Sign In to Attend':'Sign In to Attend',
     'Buy Tickets':'Buy Tickets',
-    'View Detail':'View Detail',
+    'View Details':'View Details',
     'All':'All',
     'Share Schedule': 'Share Schedule',
     'Schedule Link': 'Schedule Link',
