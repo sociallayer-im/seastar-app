@@ -246,7 +246,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                 </div>
 
                 <div className="sm:order-1 sm:mr-8 flex-1 max-w-[644px]">
-                    {!!data.tracks.length && <>
+                    {!!data.tracks.length && data.isGroupManager && <>
                         <div className="font-semibold mb-1">{lang['Event Track']}</div>
                         <div className="mb-8">
                             <TracksFilter

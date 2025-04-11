@@ -30,7 +30,7 @@ export default function TagsFilter({tags, values, onSelected, multiple, lang, al
                 onSelected?.(undefined)
             }}
                     variant={values?.length ? 'outline' : 'normal'}
-                    className="select-none hover:brightness-95 mr-1 mb-1 border-foreground border"
+                    className={`select-none hover:brightness-95 mr-1 mb-1 ${values?.length ? 'border-gray-300' : 'border-foreground'}`}
                     size={'sm'}>
                 <div className="text-xs font-normal">
                     <div className="font-semibold">{lang['All Tags']}</div>
@@ -39,26 +39,14 @@ export default function TagsFilter({tags, values, onSelected, multiple, lang, al
         }
         {tags.filter((t, index) => !t.startsWith(':'))
             .map((t, index) => {
-                const color = getLabelColor(t)
                 const selected = values?.includes(t)
-                const themeStyle = selected
-                    ? {
-                        color: '#fff',
-                        borderColor: color,
-                        backgroundColor: color
-                    }
-                    : {
-                        color: color,
-                        borderColor: color
-                    }
-
+                
                 return <Button
                     key={index}
                     onClick={() => handleSelect(t)}
-                    variant="outline"
+                    variant={selected ? 'normal' : 'outline'}
                     size={'sm'}
-                    style={themeStyle}
-                    className="select-none hover:brightness-95 mr-1 mb-1">
+                    className={`select-none hover:brightness-95 mr-1 mb-1 ${selected ? 'border-foreground' : 'border-gray-300'}`}>
                     <div className="text-xs font-normal">
                         <div className="font-semibold">{t}</div>
                     </div>
