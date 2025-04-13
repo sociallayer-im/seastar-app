@@ -33,10 +33,10 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                 const sortByStartDateDesc = (a: SolaPopupCity, b: SolaPopupCity) =>
                     new Date(b.start_date!).getTime() - new Date(a.start_date!).getTime()
 
-                const featured = list.filter(city => city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
-                const normal = list.filter(city => !city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
+                // const featured = list.filter(city => city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
+                // const normal = list.filter(city => !city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
 
-                return [...featured, ...normal]
+                return list.sort(sortByStartDateDesc)
             };
 
     const filteredCities = filterPopupCities(popupCities)

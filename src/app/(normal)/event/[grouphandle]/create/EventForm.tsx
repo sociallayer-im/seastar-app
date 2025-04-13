@@ -272,6 +272,55 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         {!!titleError && <div className="text-red-400 mt-2 text-xs err-msg">{titleError}</div>}
                     </div>
 
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['When will it happen']}</div>
+                        <EventDateTimeInput
+                            lang={lang}
+                            venues={data.venues}
+                            state={{event: draft, setEvent: setDraft}}
+                        />
+                        {data.isGroupManager &&
+                            <RepeatForm
+                                disabled={!!draft.id}
+                                lang={lang}
+                                event={draft}
+                                repeatForm={repeatForm}
+                                onChange={repeatForm => setRepeatForm(repeatForm)}
+                            />
+                        }
+                        {!!timeError && <div className="text-red-400 mt-2 text-xs err-msg">{timeError}</div>}
+                        {!!trackDayError && <div className="text-red-400 mt-2 text-xs err-msg">{trackDayError}</div>}
+                        {!!occupiedEvent &&
+                            <div
+                                className="text-red-400 mt-2 text-xs err-msg">{lang['The selected time slot is occupied by another event at the current venue. Occupying event:']}
+                                <a className="text-blue-400"
+                                   target="_blank"
+                                   href={`/event/detail/${occupiedEvent.id}`}>[{occupiedEvent.title}]</a>
+                            </div>
+                        }
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Location']}</div>
+                        <LocationInput
+                            lang={lang}
+                            isManager={data.isGroupManager}
+                            isMember={data.isGroupMember}
+                            venues={data.venues}
+                            state={{event: draft, setEvent: setDraft}}/>
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Meeting URL']}</div>
+                        <Input className="w-full"
+                               placeholder={lang['Input meeting url']}
+                               onChange={e => {
+                                   setDraft({...draft, meeting_url: e.target.value})
+                               }}
+                               startAdornment={<i className="uil-link text-lg"/>}
+                               value={draft.meeting_url || ''}/>
+                    </div>
+
                     <div className="font-semibold mb-1">{lang['Event Description']}</div>
                     <div className="mb-3 w-full min-h-[226px] bg-secondary rounded-lg">
                         <RichTextEditorDynamic
@@ -306,16 +355,6 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         </div>
                     </div>
 
-                    <div className="mb-8">
-                        <div className="font-semibold mb-1">{lang['Location']}</div>
-                        <LocationInput
-                            lang={lang}
-                            isManager={data.isGroupManager}
-                            isMember={data.isGroupMember}
-                            venues={data.venues}
-                            state={{event: draft, setEvent: setDraft}}/>
-                    </div>
-
                     {!!draft.venue_id && isEdgeCityGroup(draft.group_id) &&
                         <>
                             <div className="mb-8">
@@ -348,45 +387,6 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                             </div>
                         </>
                     }
-
-                    <div className="mb-8">
-                        <div className="font-semibold mb-1">{lang['When will it happen']}</div>
-                        <EventDateTimeInput
-                            lang={lang}
-                            venues={data.venues}
-                            state={{event: draft, setEvent: setDraft}}
-                        />
-                        {data.isGroupManager &&
-                            <RepeatForm
-                                disabled={!!draft.id}
-                                lang={lang}
-                                event={draft}
-                                repeatForm={repeatForm}
-                                onChange={repeatForm => setRepeatForm(repeatForm)}
-                            />
-                        }
-                        {!!timeError && <div className="text-red-400 mt-2 text-xs err-msg">{timeError}</div>}
-                        {!!trackDayError && <div className="text-red-400 mt-2 text-xs err-msg">{trackDayError}</div>}
-                        {!!occupiedEvent &&
-                            <div
-                                className="text-red-400 mt-2 text-xs err-msg">{lang['The selected time slot is occupied by another event at the current venue. Occupying event:']}
-                                <a className="text-blue-400"
-                                   target="_blank"
-                                   href={`/event/detail/${occupiedEvent.id}`}>[{occupiedEvent.title}]</a>
-                            </div>
-                        }
-                    </div>
-
-                    <div className="mb-8">
-                        <div className="font-semibold mb-1">{lang['Meeting URL']}</div>
-                        <Input className="w-full"
-                               placeholder={lang['Input meeting url']}
-                               onChange={e => {
-                                   setDraft({...draft, meeting_url: e.target.value})
-                               }}
-                               startAdornment={<i className="uil-link text-lg"/>}
-                               value={draft.meeting_url || ''}/>
-                    </div>
 
                     {!!data.availableHost.length &&
                         <div className="mb-8">
