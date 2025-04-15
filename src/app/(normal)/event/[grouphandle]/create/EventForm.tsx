@@ -398,20 +398,22 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         </div>
                     }
 
-                    <div className="mb-8">
-                        <div className="font-semibold mb-1">{lang['Tags']}</div>
-                        <TagsFilter
-                            allowResetBtn={false}
-                            multiple={true}
-                            tags={data.tags}
-                            lang={lang}
-                            onSelected={(tags) => {
-                                setDraft({...draft, tags: tags?.length ? tags : null})
-                            }}
-                            values={draft.tags || []}
-                        />
-                        {!!tagError && <div className="text-red-400 mt-2 text-xs err-msg">{tagError}</div>}
-                    </div>
+                    {!!draft.tags?.length &&
+                        <div className="mb-8">
+                            <div className="font-semibold mb-1">{lang['Tags']}</div>
+                            <TagsFilter
+                                allowResetBtn={false}
+                                multiple={true}
+                                tags={data.tags}
+                                lang={lang}
+                                onSelected={(tags) => {
+                                    setDraft({...draft, tags: tags?.length ? tags : null})
+                                }}
+                                values={draft.tags || []}
+                            />
+                            {!!tagError && <div className="text-red-400 mt-2 text-xs err-msg">{tagError}</div>}
+                        </div>
+                    }
 
                     <div className="mb-8">
                         <div className="font-semibold mb-1">{lang['Invite Co-hosts']}</div>
