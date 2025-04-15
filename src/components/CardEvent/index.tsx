@@ -70,7 +70,7 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                         <span className="mx-1 text-gray-300">|</span>
                     </div>
                 }
-                <div>host by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}</div>
+                <div>hosted by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}</div>
             </div>
             <div className="min-h-6 flex text-xs sm:text-sm">
                 <i className="uil-calendar-alt mr-1 text-sm"/>

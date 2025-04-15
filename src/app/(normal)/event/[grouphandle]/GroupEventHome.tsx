@@ -105,7 +105,7 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
                 <a className="flex-row-item-center justify-between  p-3 rounded-lg mb-3"
                    href={`/group/${groupDetail.handle}?tab=members`}>
                     <div className="flex-row-item-center">
-                        <img src="/images/default_avatar/avatar_1.png"
+                        <img src={(groupDetail.image_url && groupDetail.image_url != "") ? groupDetail.image_url : "/images/default_avatar/avatar_1.png"}
                              className="w-4 h-4 rounded-full mr-2" alt=""/>
                         <span
                             className="font-semibold text-xs whitespace-nowrap max-w-[150px] overflow-hidden overflow-ellipsis">
