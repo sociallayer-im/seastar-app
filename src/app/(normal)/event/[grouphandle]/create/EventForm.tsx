@@ -398,7 +398,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         </div>
                     }
 
-                    {!!draft.tags?.length &&
+                    {!!data.tags?.length &&
                         <div className="mb-8">
                             <div className="font-semibold mb-1">{lang['Tags']}</div>
                             <TagsFilter
