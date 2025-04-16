@@ -1,7 +1,8 @@
-'use server'
-
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
+import { GroupDetail } from "@sola/sdk"
+import { IframeSchedulePageData, IframeSchedulePageSearchParams } from "../../utils"
+import { getInterval, pickSearchParam } from "@/utils"
 
 
 export interface IframeSchedulePageDataEventDetail extends IframeSchedulePageDataEvent {
@@ -10,19 +11,33 @@ export interface IframeSchedulePageDataEventDetail extends IframeSchedulePageDat
 }
 
 interface CalculateGridPositionProps {
-    events: IframeSchedulePageDataEvent[],
-    timezone: string,
-    interval: DayjsType[]
+    groupDetail: GroupDetail,
+    searchParams: IframeSchedulePageSearchParams,
+    currPath: string,
+    authToken: string | null | undefined
 }
 
 export async function calculateGridPosition({
-    events,
-    timezone,
-    interval
-}: CalculateGridPositionProps): Promise<IframeSchedulePageDataEventDetail[]> {
-    const dayEvents = [[], [], [], [], [], [], []] as IframeSchedulePageDataEvent[][]
+    groupDetail,
+    searchParams,
+    currPath,
+    authToken
+}: CalculateGridPositionProps) {
+    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'week'})
+    const timezone = groupDetail.timezone || 'UTC'
+
+    const startDate = pickSearchParam(searchParams.start_date)
+    const {start, end} = getInterval(startDate, 'week')
+    
+    const interval: DayjsType[] = []
+    let current = dayjs.tz(start, groupDetail.timezone!)
+    while (current.isSameOrBefore(dayjs.tz(end, groupDetail.timezone!))) {
+        interval.push(current.endOf('day'))
+        current = current.add(1, 'day')
+    }
     const days = interval
-    events.forEach(event => {
+    const dayEvents = [[], [], [], [], [], [], []] as IframeSchedulePageDataEvent[][]
+    data.events.forEach(event => {
         const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
         const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
         const dayIndex = days.findIndex((day) => {
@@ -69,5 +84,8 @@ export async function calculateGridPosition({
         })
     })
 
-    return res
+    return {
+        events: res,
+        data
+    }
 }

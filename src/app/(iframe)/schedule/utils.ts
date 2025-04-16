@@ -1,8 +1,5 @@
-'use server'
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {getInterval, pickSearchParam} from "@/utils"
-import {headers} from "next/headers"
-import {getServerSideAuth} from '@/app/actions'
 import {getSdkConfig, GroupDetail, Track} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 
@@ -72,15 +69,13 @@ export interface IframeSchedulePageDataEvent {
     is_owner: boolean
 }
 
-export interface IframeSchedulePageData {
+export interface IframeSchedulePageDataType {
     group: IframeSchedulePageDataGroup
     tags: string[],
     venues: Solar.Venue[],
     tracks: Solar.Track[],
     events: IframeSchedulePageDataEvent[],
-    interval: DayjsType[],
     filters: Filter,
-    startDate?: string,
     weeklyUrl: string,
     dailyUrl: string,
     compactUrl: string,
@@ -88,13 +83,15 @@ export interface IframeSchedulePageData {
     isFiltered: boolean,
     eventHomeUrl: string
     isIframe?: boolean
+    currDate: string
 }
 
 export interface IframeSchedulePageDataProps {
-    params: IframeSchedulePageParams,
     searchParams: IframeSchedulePageSearchParams,
     groupDetail: GroupDetail,
     view: 'week' | 'day' | 'list' | 'compact',
+    authToken: string | null | undefined,
+    currPath: string | null | undefined
 }
 
 function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []): string {
@@ -117,13 +114,13 @@ function searchParamsToString(searchParams: IframeSchedulePageSearchParams, excl
     return str ? '?' + str : ''
 }
 
-export async function IframeSchedulePageData({
-                                                 params,
-                                                 searchParams,
+export async function IframeSchedulePageData({   searchParams,
                                                  groupDetail,
                                                  view,
-                                             }: IframeSchedulePageDataProps): Promise<IframeSchedulePageData> {
-    const groupName = params.grouphandle
+                                                 authToken,
+                                                 currPath
+                                             }: IframeSchedulePageDataProps): Promise<IframeSchedulePageDataType> {
+    const groupName = groupDetail.handle
     const filters: Filter = {
         tags: searchParams.tags ? pickSearchParam(searchParams.tags)!.split(',') : [],
         trackId: searchParams.track ? Number(pickSearchParam(searchParams.track)!) : undefined,
@@ -133,9 +130,8 @@ export async function IframeSchedulePageData({
         skipMultiDay: searchParams.skip_multi_day === 'true'
     }
     const startDate = pickSearchParam(searchParams.start_date)
-
     const {start, end} = getInterval(startDate, view)
-
+    
     const apiSearchParams = new URLSearchParams()
     apiSearchParams.set('group_id', groupName)
     apiSearchParams.set('start_date', start)
@@ -149,7 +145,6 @@ export async function IframeSchedulePageData({
     filters.skipRecurring && apiSearchParams.set('skip_recurring', '1')
     filters.skipMultiDay && apiSearchParams.set('skip_multiday', '1')
 
-    const authToken = await getServerSideAuth()
     if (!!authToken) {
         apiSearchParams.set('auth_token', authToken)
         apiSearchParams.set('with_attending', '1')
@@ -171,18 +166,19 @@ export async function IframeSchedulePageData({
 
     const data = await response.json()
 
-    // console.log('---events', data.events.length)
+    const intervelStart = dayjs.tz(start, groupDetail.timezone!).startOf('day')
+    const intervelEnd = dayjs.tz(end, groupDetail.timezone!).endOf('day')
 
-    const interval = []
-    let current = dayjs.tz(start, groupDetail.timezone!)
-    while (current.isSameOrBefore(dayjs.tz(end, groupDetail.timezone!))) {
-        interval.push(current.endOf('day'))
-        current = current.add(1, 'day')
-    }
+    // const interval = []
+    // let current = dayjs.tz(start, groupDetail.timezone!)
+    // while (current.isSameOrBefore(dayjs.tz(end, groupDetail.timezone!))) {
+    //     interval.push(current.endOf('day'))
+    //     current = current.add(1, 'day')
+    // }
 
     let weeklyUrl = `/schedule/week/${groupName}${searchParamsToString(searchParams)}`
     let dailyUrl = `/schedule/day/${groupName}${searchParamsToString(searchParams)}`
-    if (view === 'week' && dayjs.tz(new Date(), groupDetail.timezone!).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
+    if (view === 'week' && dayjs.tz(new Date(), groupDetail.timezone!).isBetween(intervelStart, intervelEnd, 'day', '[]')) {
         // if current date is in the interval, set the daily view to the current date
         dailyUrl = `/schedule/day/${groupName}${searchParamsToString(searchParams, ['start_date'])}`
     }
@@ -190,14 +186,12 @@ export async function IframeSchedulePageData({
     let compactUrl = `/schedule/compact/${groupName}${searchParamsToString(searchParams)}`
 
 
-    const headersList = await headers()
-    const currPath = headersList.get('x-current-path')
     const isIframe = !currPath?.includes('/event/')
     if (!isIframe) {
         // if not in iframe
         weeklyUrl = `/event/${groupName}/schedule/week${searchParamsToString(searchParams)}`
         dailyUrl = `/event/${groupName}/schedule/day${searchParamsToString(searchParams)}`
-        if (view === 'week' && dayjs.tz(new Date(), groupDetail.timezone!).isBetween(interval[0], interval[interval.length - 1], 'day', '[]')) {
+        if (view === 'week' && dayjs.tz(new Date(), groupDetail.timezone!).isBetween(intervelStart, intervelEnd, 'day', '[]')) {
             dailyUrl = `/event/${groupName}/schedule/day${searchParamsToString(searchParams, ['start_date'])}`
         }
         listingUrl = `/event/${groupName}/schedule/list${searchParamsToString(searchParams)}`
@@ -233,8 +227,7 @@ export async function IframeSchedulePageData({
         tracks: groupDetail.tracks || [],
         venues: groupDetail.venues || [],
         filters: filters,
-        interval,
-        startDate,
+        currDate: intervelStart.format('YYYY-MM-DD'),
         weeklyUrl,
         dailyUrl,
         listingUrl,

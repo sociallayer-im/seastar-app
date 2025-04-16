@@ -4,6 +4,7 @@ import useModal from "@/components/client/Modal/useModal"
 import ScheduleFilter, {ScheduleFilterLabels} from "@/app/(iframe)/schedule/ScheduleFilter"
 import {Filter} from "@/app/(iframe)/schedule/data"
 import {Button} from "@/components/shadcn/Button"
+import { IframeSchedulePageSearchParams } from "./utils"
 
 interface FilterBtnProps {
     filters: Filter,
@@ -14,15 +15,17 @@ interface FilterBtnProps {
     },
     compact?: boolean,
     isFiltered: boolean,
-    labels?: { filter?: string, filterDialog?: ScheduleFilterLabels }
+    labels?: { filter?: string, filterDialog?: ScheduleFilterLabels },
+    onChange?: (searchParams: IframeSchedulePageSearchParams) => void
 }
 
-export default function FilterBtn({filters, list, isFiltered, labels, compact}: FilterBtnProps,) {
+export default function FilterBtn({filters, list, isFiltered, labels, compact, onChange}: FilterBtnProps,) {
     const {openModal} = useModal()
 
     const showFilter = () => {
         openModal({
             content: (close) => <ScheduleFilter
+                onChange={onChange}
                 labels={labels?.filterDialog}
                 close={close}
                 filters={filters}

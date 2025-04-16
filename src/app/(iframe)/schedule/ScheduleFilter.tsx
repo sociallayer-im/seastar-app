@@ -6,6 +6,7 @@ import {Button} from "@/components/shadcn/Button"
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {getAuth} from '@/utils'
+import { IframeSchedulePageSearchParams } from "./utils"
 
 export interface ScheduleFilterLabels {
     filters?: string
@@ -27,7 +28,8 @@ interface ScheduleFilterProps {
         tracks: Solar.Track[]
     }
     close?: () => void,
-    labels?: ScheduleFilterLabels
+    labels?: ScheduleFilterLabels,
+    onChange?: (searchParams: IframeSchedulePageSearchParams) => void
 }
 
 export default function ScheduleFilter(props: ScheduleFilterProps) {
@@ -96,7 +98,11 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         filters.applied ? currSearchParams.set('applied', 'true') : currSearchParams.delete('applied')
         filters.skipRecurring ? currSearchParams.set('skip_repeat', 'true') : currSearchParams.delete('skip_repeat')
         filters.skipMultiDay ? currSearchParams.set('skip_multi_day', 'true') : currSearchParams.delete('skip_multi_day')
-        window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
+        if (!!props.onChange) {
+            props.onChange(Object.fromEntries(currSearchParams.entries()) as IframeSchedulePageSearchParams)
+        } else {
+            window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
+        }
     }
 
     const selectedVenue = props.list.venues.find(venue => venue.id === filters.venueId)

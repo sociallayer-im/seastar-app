@@ -798,6 +798,38 @@ export const formatVenueDate = (venue: VenueDetail, lang: Dictionary) => {
     }
 }
 
+export function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 'compact' = 'week') {
+    let start = dayjs()
+
+    try {
+        start = dayjs(startDate || undefined)
+    } catch (e: any) {
+        console.warn(e)
+    }
+
+    switch (view) {
+        case 'week':
+            return {
+                start: start.startOf('week').format('YYYY-MM-DD'),
+                end: start.endOf('week').format('YYYY-MM-DD')
+            }
+        case 'day':
+            return {
+                start: start.format('YYYY-MM-DD'),
+                end: start.format('YYYY-MM-DD')
+            }
+        case 'list':
+            return {
+                start: start.startOf('week').format('YYYY-MM-DD'),
+                end: start.endOf('week').format('YYYY-MM-DD')
+            }
+        case 'compact':
+            return {
+                start: start.format('YYYY-MM-DD'),
+                end: start.format('YYYY-MM-DD')
+            }
+    }
+}
 
 
 
