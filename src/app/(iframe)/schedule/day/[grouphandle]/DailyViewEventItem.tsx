@@ -17,11 +17,16 @@ export default function DailyViewEventItem({event, timezone, lang}: {event: Ifra
 
     useEffect(() => {
         const popupEvent = new URLSearchParams(window.location.search).get('popup')
-        popupEvent === event.id.toString() && showPopup(event.id, event.is_starred, lang)
+        // popupEvent === event.id.toString() && showPopup(event.id, event.group.id, event.is_starred, lang)
     }, [])
 
+    const handleClick = () => {
+        // todo: open popup
+        // showPopup(event.id, event.group.id, event.is_starred, lang)
+    }
+
     return <div className="w-full absolute shadow rounded p-2 overflow-hidden duration-300 hover:z-[999] hover:scale-[1.01] cursor-pointer"
-        onClick={() => showPopup(event.id, event.is_starred, lang)}
+        onClick={() => handleClick}
         style={event.style}>
         <div className="absolute w-[2px] h-full left-0 top-0" style={{background: themColor}}/>
         <div className="text-xs">{timeDuration}</div>

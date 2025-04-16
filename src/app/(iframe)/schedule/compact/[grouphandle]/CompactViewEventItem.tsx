@@ -2,7 +2,6 @@
 
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
-import useModal from "@/components/client/Modal/useModal"
 import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
 import {Dictionary} from '@/lang'
@@ -31,7 +30,7 @@ export default function CompactViewEventItem({event, timezone, lang, lastEvent}:
 
     useEffect(() => {
         const popupEvent = new URLSearchParams(window.location.search).get('popup')
-        popupEvent === event.id.toString() && showPopup(event.id, event.is_starred, lang)
+        popupEvent === event.id.toString() && showPopup(event.id, event.group.id, event.is_starred, lang)
     }, [])
 
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
@@ -45,7 +44,7 @@ export default function CompactViewEventItem({event, timezone, lang, lastEvent}:
             }
         </div>
         <div onClick={() => {
-            showPopup(event.id, event.is_starred, lang)
+            showPopup(event.id, event.group.id, event.is_starred, lang)
         }}
              className="border-[#CECED3] border-dashed border-l pl-5 sm:pl-7 pb-2 flex-1 relative">
             <i className="w-[6px] h-[6px] block absolute bg-[#D9D9D9] rounded-full left-0 sm:top-[17px] top-3 ml-[-3px]"/>

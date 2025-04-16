@@ -1,4 +1,4 @@
-import dayjs, {DayjsType} from "@/libs/dayjs"
+import dayjs from "@/libs/dayjs"
 import {getInterval, pickSearchParam} from "@/utils"
 import {getSdkConfig, GroupDetail, Track} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
@@ -49,7 +49,13 @@ export interface IframeSchedulePageDataEvent {
     cover_url: string,
     tags: string[] | null,
     external_url: null | string,
-    group_id: number,
+    group: {
+        handle: string,
+        id: number,
+        nickname: string,
+        timezone: string,
+        username: string
+    },
     host_info: {
         speaker?: Solar.ProfileSample[]
         co_host?: Solar.ProfileSample[]
@@ -168,13 +174,6 @@ export async function IframeSchedulePageData({   searchParams,
 
     const intervelStart = dayjs.tz(start, groupDetail.timezone!).startOf('day')
     const intervelEnd = dayjs.tz(end, groupDetail.timezone!).endOf('day')
-
-    // const interval = []
-    // let current = dayjs.tz(start, groupDetail.timezone!)
-    // while (current.isSameOrBefore(dayjs.tz(end, groupDetail.timezone!))) {
-    //     interval.push(current.endOf('day'))
-    //     current = current.add(1, 'day')
-    // }
 
     let weeklyUrl = `/schedule/week/${groupName}${searchParamsToString(searchParams)}`
     let dailyUrl = `/schedule/day/${groupName}${searchParamsToString(searchParams)}`

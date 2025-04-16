@@ -1,4 +1,3 @@
-import dayjs from "@/libs/dayjs"
 import {IframeSchedulePageDataEvent, IframeSchedulePageSearchParams} from "@/app/(iframe)/schedule/utils"
 import Dayjs from '@/libs/dayjs'
 import { IframeSchedulePageData } from "../../utils"
