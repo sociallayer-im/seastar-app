@@ -31,6 +31,7 @@ import Image from 'next/image'
 import {cache} from 'react'
 import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventParticipantTab'
 import VenueDetailBtn from '@/components/client/VenueDetailBtn'
+import {getLabelColor} from '@/utils/label_color'
 
 const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
@@ -238,7 +239,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                     {eventDetail.title}
                 </div>
 
-                <div className="flex-row-item-center my-3">
+                <div className="flex-row-item-center my-3 gap-3">
                     {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
                     {eventDetail.display === 'private' &&
                         <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
@@ -255,6 +256,17 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
 
                     {isEventCreator && <Badge variant='hosting' className="mr-1">{lang['Hosting']}</Badge>}
                     {currProfileAttended && <Badge variant='joining' className="mr-1">{lang['Attended']}</Badge>}
+
+                    {
+                        eventDetail.tags?.map(tag => {
+                            const color = getLabelColor(tag)
+
+                            return <div className="flex-row-item-center gap-1.5 text-sm">
+                                <i className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                                <div>{tag}</div>
+                            </div>
+                        })
+                    }
                 </div>
 
                 <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">
