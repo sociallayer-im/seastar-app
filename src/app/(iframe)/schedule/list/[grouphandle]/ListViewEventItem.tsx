@@ -33,11 +33,11 @@ export default function ListViewEventItem({event, timezone, lang}: {
 
     useEffect(() => {
         const popupEvent = new URLSearchParams(window.location.search).get('popup')
-        popupEvent === event.id.toString() && showPopup(event.id, event.is_starred, lang)
+        popupEvent === event.id.toString() && showPopup(event.id, event.group.id, event.is_starred, lang)
     }, [])
 
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
-        <div onClick={() => showPopup(event.id, event.is_starred, lang)}
+        <div onClick={() => showPopup(event.id, event.group.id, event.is_starred, lang)}
             className="pb-2 flex-1 relative">
             <div style={{background: bgColor}}
                 className="flex flex-col flex-nowrap !items-start bg-white py-2 px-4 shadow rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">
