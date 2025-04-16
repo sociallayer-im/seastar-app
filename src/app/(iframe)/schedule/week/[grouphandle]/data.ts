@@ -1,7 +1,6 @@
 import dayjs, {DayjsType} from "@/libs/dayjs"
-import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
 import { GroupDetail } from "@sola/sdk"
-import { IframeSchedulePageData, IframeSchedulePageSearchParams } from "../../utils"
+import { IframeSchedulePageData, IframeSchedulePageSearchParams, IframeSchedulePageDataEvent } from "../../utils"
 import { getInterval, pickSearchParam } from "@/utils"
 
 
