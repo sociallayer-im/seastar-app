@@ -30,7 +30,7 @@ export default function TracksFilter({tracks, values, onSelect, multiple, lang, 
             <Button
                 onClick={() => onSelect?.()}
                 variant={!!values && values.length ? 'outline' : 'normal'}
-                className="!h-11 select-none hover:brightness-95 mb-1 mr-1 border-foreground border"
+                className={`!h-11 select-none hover:brightness-95 mb-1 mr-1 ${values?.length ? 'border-gray-300' : 'border-foreground'}`}
                 size={'sm'}>
                 <div className="text-xs font-normal">
                     <div className="font-semibold">{lang['All Tracks']}</div>
@@ -38,27 +38,14 @@ export default function TracksFilter({tracks, values, onSelect, multiple, lang, 
             </Button>
         }
         {tracks.map((t, index) => {
-            const color = getLabelColor(t.title)
             const selected = values?.includes(t.id)
-            const themeStyle = selected
-                ? {
-                    color: '#fff',
-                    borderColor: color,
-                    backgroundColor: color,
-                    height: '44px',
-                } :
-                {
-                    color: color,
-                    borderColor: color,
-                    height: '44px',
-                }
+        
             return <Button
                 key={index}
                 onClick={() => handleSelect(t.id)}
-                variant="outline"
+                variant={selected ? 'normal' : 'outline'}
                 size={'sm'}
-                style={themeStyle}
-                className="select-none hover:brightness-95 mb-1 mr-1">
+                className={`select-none hover:brightness-95 mb-1 mr-1 ${selected ? 'border-foreground' : 'border-gray-300'} h-[44px]`}>
                 <div className="text-xs font-normal">
                     <div className="font-semibold">{t.title}</div>
                     <div className="capitalize">{t.kind}</div>

@@ -1,10 +1,16 @@
 'use client'
 
-export default function JoinedFilterBtn(props: { checked?: boolean, label?: string }) {
+import { IframeSchedulePageSearchParams } from "./utils"
+
+export default function JoinedFilterBtn(props: { checked?: boolean, label?: string, onChange?: (searchParams: IframeSchedulePageSearchParams) => void }) {
     const handleClick = () => {
         const currSearchParams = new URLSearchParams(window.location.search)
         !props.checked ? currSearchParams.set('applied', 'true') : currSearchParams.delete('applied')
-        window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
+        if (!!props.onChange) {
+            props.onChange(Object.fromEntries(currSearchParams.entries()) as IframeSchedulePageSearchParams)
+        } else {
+            window.location.href = `${window.location.pathname}?${currSearchParams.toString()}`
+        }
     }
 
     return <div className="mr-4 sm:flex flex-row items-center text-sm cursor-pointer hidden" onClick={handleClick}>

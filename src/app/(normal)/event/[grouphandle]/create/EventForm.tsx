@@ -246,7 +246,7 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                 </div>
 
                 <div className="sm:order-1 sm:mr-8 flex-1 max-w-[644px]">
-                    {!!data.tracks.length && <>
+                    {!!data.tracks.length && data.isGroupManager && <>
                         <div className="font-semibold mb-1">{lang['Event Track']}</div>
                         <div className="mb-8">
                             <TracksFilter
@@ -270,6 +270,55 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                                required
                                onChange={e => setDraft({...draft, title: e.target.value})}/>
                         {!!titleError && <div className="text-red-400 mt-2 text-xs err-msg">{titleError}</div>}
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['When will it happen']}</div>
+                        <EventDateTimeInput
+                            lang={lang}
+                            venues={data.venues}
+                            state={{event: draft, setEvent: setDraft}}
+                        />
+                        {data.isGroupManager &&
+                            <RepeatForm
+                                disabled={!!draft.id}
+                                lang={lang}
+                                event={draft}
+                                repeatForm={repeatForm}
+                                onChange={repeatForm => setRepeatForm(repeatForm)}
+                            />
+                        }
+                        {!!timeError && <div className="text-red-400 mt-2 text-xs err-msg">{timeError}</div>}
+                        {!!trackDayError && <div className="text-red-400 mt-2 text-xs err-msg">{trackDayError}</div>}
+                        {!!occupiedEvent &&
+                            <div
+                                className="text-red-400 mt-2 text-xs err-msg">{lang['The selected time slot is occupied by another event at the current venue. Occupying event:']}
+                                <a className="text-blue-400"
+                                   target="_blank"
+                                   href={`/event/detail/${occupiedEvent.id}`}>[{occupiedEvent.title}]</a>
+                            </div>
+                        }
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Location']}</div>
+                        <LocationInput
+                            lang={lang}
+                            isManager={data.isGroupManager}
+                            isMember={data.isGroupMember}
+                            venues={data.venues}
+                            state={{event: draft, setEvent: setDraft}}/>
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="font-semibold mb-1">{lang['Meeting URL']}</div>
+                        <Input className="w-full"
+                               placeholder={lang['Input meeting url']}
+                               onChange={e => {
+                                   setDraft({...draft, meeting_url: e.target.value})
+                               }}
+                               startAdornment={<i className="uil-link text-lg"/>}
+                               value={draft.meeting_url || ''}/>
                     </div>
 
                     <div className="font-semibold mb-1">{lang['Event Description']}</div>
@@ -306,16 +355,6 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         </div>
                     </div>
 
-                    <div className="mb-8">
-                        <div className="font-semibold mb-1">{lang['Location']}</div>
-                        <LocationInput
-                            lang={lang}
-                            isManager={data.isGroupManager}
-                            isMember={data.isGroupMember}
-                            venues={data.venues}
-                            state={{event: draft, setEvent: setDraft}}/>
-                    </div>
-
                     {!!draft.venue_id && isEdgeCityGroup(draft.group_id) &&
                         <>
                             <div className="mb-8">
@@ -349,45 +388,6 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         </>
                     }
 
-                    <div className="mb-8">
-                        <div className="font-semibold mb-1">{lang['When will it happen']}</div>
-                        <EventDateTimeInput
-                            lang={lang}
-                            venues={data.venues}
-                            state={{event: draft, setEvent: setDraft}}
-                        />
-                        {data.isGroupManager &&
-                            <RepeatForm
-                                disabled={!!draft.id}
-                                lang={lang}
-                                event={draft}
-                                repeatForm={repeatForm}
-                                onChange={repeatForm => setRepeatForm(repeatForm)}
-                            />
-                        }
-                        {!!timeError && <div className="text-red-400 mt-2 text-xs err-msg">{timeError}</div>}
-                        {!!trackDayError && <div className="text-red-400 mt-2 text-xs err-msg">{trackDayError}</div>}
-                        {!!occupiedEvent &&
-                            <div
-                                className="text-red-400 mt-2 text-xs err-msg">{lang['The selected time slot is occupied by another event at the current venue. Occupying event:']}
-                                <a className="text-blue-400"
-                                   target="_blank"
-                                   href={`/event/detail/${occupiedEvent.id}`}>[{occupiedEvent.title}]</a>
-                            </div>
-                        }
-                    </div>
-
-                    <div className="mb-8">
-                        <div className="font-semibold mb-1">{lang['Meeting URL']}</div>
-                        <Input className="w-full"
-                               placeholder={lang['Input meeting url']}
-                               onChange={e => {
-                                   setDraft({...draft, meeting_url: e.target.value})
-                               }}
-                               startAdornment={<i className="uil-link text-lg"/>}
-                               value={draft.meeting_url || ''}/>
-                    </div>
-
                     {!!data.availableHost.length &&
                         <div className="mb-8">
                             <div className="font-semibold mb-1">{lang['Host']}</div>
@@ -398,20 +398,22 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         </div>
                     }
 
-                    <div className="mb-8">
-                        <div className="font-semibold mb-1">{lang['Tags']}</div>
-                        <TagsFilter
-                            allowResetBtn={false}
-                            multiple={true}
-                            tags={data.tags}
-                            lang={lang}
-                            onSelected={(tags) => {
-                                setDraft({...draft, tags: tags?.length ? tags : null})
-                            }}
-                            values={draft.tags || []}
-                        />
-                        {!!tagError && <div className="text-red-400 mt-2 text-xs err-msg">{tagError}</div>}
-                    </div>
+                    {!!draft.tags?.length &&
+                        <div className="mb-8">
+                            <div className="font-semibold mb-1">{lang['Tags']}</div>
+                            <TagsFilter
+                                allowResetBtn={false}
+                                multiple={true}
+                                tags={data.tags}
+                                lang={lang}
+                                onSelected={(tags) => {
+                                    setDraft({...draft, tags: tags?.length ? tags : null})
+                                }}
+                                values={draft.tags || []}
+                            />
+                            {!!tagError && <div className="text-red-400 mt-2 text-xs err-msg">{tagError}</div>}
+                        </div>
+                    }
 
                     <div className="mb-8">
                         <div className="font-semibold mb-1">{lang['Invite Co-hosts']}</div>

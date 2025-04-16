@@ -6,7 +6,7 @@ import {Checkbox} from '@/components/shadcn/Checkbox'
 import {getRangeFromTimeProps, getTimePropsFromRange} from '@/utils'
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
-
+import TagsFilter from '@/components/client/TagsFilter'
 
 export interface DialogEventHomeFilterProp {
     filterOpts: EventListFilterProps,
@@ -54,7 +54,17 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             skip_multi_day: undefined,
             start_date: undefined,
             end_date: undefined,
-            venue_id: undefined
+            venue_id: undefined,
+            tags: undefined
+        }
+        setOpts(newOpts)
+        dialogMode === 'modal' && onFilterChange(newOpts)
+    }
+
+    const handleChangeTags = (tags?: string[]) => {
+        const newOpts = {
+            ...opts,
+            tags: tags?.[0] ? tags[0] : undefined
         }
         setOpts(newOpts)
         dialogMode === 'modal' && onFilterChange(newOpts)
@@ -76,71 +86,88 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             </Button>
         </div>
 
-
-        <div className="flex-row-item-center justify-between my-3 text-sm"
-             onClick={() => {
-                const newOpts = {...opts, skip_recurring: opts.skip_recurring ? undefined : '1'}
-                setOpts(newOpts)
-                dialogMode === 'modal' && onFilterChange(newOpts)
-             }}
-        >
-            <div className="font-semibold">{lang['Repeating Events']}</div>
-            <Checkbox checked={!opts.skip_recurring}/>
-        </div>
-
-        <div className="flex-row-item-center justify-between my-3 text-sm"
-             onClick={() => {
-                const newOpts = {...opts, skip_multi_day: opts.skip_multi_day ? undefined : '1'}
-                setOpts(newOpts)
-                dialogMode === 'modal' && onFilterChange(newOpts)
-             }}
-        >
-            <div className="font-semibold">{lang['Multi-day Events']}</div>
-            <Checkbox checked={!opts.skip_multi_day}/>
-        </div>
-
-        <div className="my-3 text-sm">
-            <div className="font-semibold mb-2">{lang['Time Range']}</div>
-            {
-                TimeRangeOpts.map((item, index) => {
-                    return <Button key={index}
-                                   onClick={() => {
-                                    updateTimeRange(item.value)
-                                   }}
-                                   variant={'outline'}
-                                   className={`${selectedRange === item.value ? '' : 'border-gray-300'} mr-1 text-xs `} size={'sm'}>
-                        {item.label}
-                    </Button>
-                })
+        
+        <div className={`${dialogMode === 'dialog' ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>
+            {!!groupDetail.event_tags?.length &&
+                <div className="my-3 text-sm">
+                    <div className="font-semibold mb-2">{lang['Tags']}</div>
+                    <div className="my-2">
+                        <TagsFilter
+                            lang={lang}
+                            onSelected={(tags) => {
+                                handleChangeTags(tags)
+                            }}
+                            values={opts.tags ? opts.tags.split(',') : []}
+                            tags={groupDetail.event_tags || []}/>
+                    </div>
+                </div>
             }
-        </div>
 
-        <div className="my-3 text-sm">
-            <div className="font-semibold mb-1">{lang['Venues']}</div>
-            <DropdownMenu
-                options={groupDetail.venues}
-                renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}</div>}
-                valueKey={'id'}
-                onSelect={(opt) => {
-                    if (opt[0]) {
-                        const newOpts = {
-                            ...opts,
-                            venue_id: opt[0].id.toString()
-                        }
-                        setOpts(newOpts)
-                        dialogMode === 'modal' && onFilterChange(newOpts)
-                    }
+            <div className="flex-row-item-center justify-between my-3 text-sm"
+                onClick={() => {
+                    const newOpts = {...opts, skip_recurring: opts.skip_recurring ? undefined : '1'}
+                    setOpts(newOpts)
+                    dialogMode === 'modal' && onFilterChange(newOpts)
                 }}
-                value={opts.venue_id ? [groupDetail.venues.find(v => v.id.toString() === opts.venue_id)!] : undefined}
             >
-                <Input
-                    type="text"
-                    readOnly
-                    value={groupDetail.venues.find((v => v.id.toString() === opts.venue_id))?.title || lang['All Venues']}
-                    className="cursor-pointer w-full"
-                    endAdornment={<i className="uil-angle-down text-lg"/>}
-                />
-            </DropdownMenu>
+                <div className="font-semibold">{lang['Repeating Events']}</div>
+                <Checkbox checked={!opts.skip_recurring}/>
+            </div>
+
+            <div className="flex-row-item-center justify-between my-3 text-sm"
+                onClick={() => {
+                    const newOpts = {...opts, skip_multi_day: opts.skip_multi_day ? undefined : '1'}
+                    setOpts(newOpts)
+                    dialogMode === 'modal' && onFilterChange(newOpts)
+                }}
+            >
+                <div className="font-semibold">{lang['Multi-day Events']}</div>
+                <Checkbox checked={!opts.skip_multi_day}/>
+            </div>
+
+            <div className="my-3 text-sm">
+                <div className="font-semibold mb-2">{lang['Time Range']}</div>
+                {
+                    TimeRangeOpts.map((item, index) => {
+                        return <Button key={index}
+                                    onClick={() => {
+                                        updateTimeRange(item.value)
+                                    }}
+                                    variant={'outline'}
+                                    className={`${selectedRange === item.value ? '' : 'border-gray-300'} mr-1 text-xs `} size={'sm'}>
+                            {item.label}
+                        </Button>
+                    })
+                }
+            </div>
+
+            <div className="my-3 text-sm">
+                <div className="font-semibold mb-1">{lang['Venues']}</div>
+                <DropdownMenu
+                    options={groupDetail.venues}
+                    renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}</div>}
+                    valueKey={'id'}
+                    onSelect={(opt) => {
+                        if (opt[0]) {
+                            const newOpts = {
+                                ...opts,
+                                venue_id: opt[0].id.toString()
+                            }
+                            setOpts(newOpts)
+                            dialogMode === 'modal' && onFilterChange(newOpts)
+                        }
+                    }}
+                    value={opts.venue_id ? [groupDetail.venues.find(v => v.id.toString() === opts.venue_id)!] : undefined}
+                >
+                    <Input
+                        type="text"
+                        readOnly
+                        value={groupDetail.venues.find((v => v.id.toString() === opts.venue_id))?.title || lang['All Venues']}
+                        className="cursor-pointer w-full"
+                        endAdornment={<i className="uil-angle-down text-lg"/>}
+                    />
+                </DropdownMenu>
+            </div>
         </div>
 
         {

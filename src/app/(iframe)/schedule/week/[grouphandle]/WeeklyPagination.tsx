@@ -1,33 +1,47 @@
 'use client'
 
 import dayjs from "@/libs/dayjs"
+import { IframeSchedulePageSearchParams } from "@/app/(iframe)/schedule/utils"
 
 interface WeeklyPaginationProps {
     currStartDate: string,
-    timezone: string
+    timezone: string,
+    onChange?: (searchParams: IframeSchedulePageSearchParams) => void
 }
 
-export default function WeeklyPagination({currStartDate, timezone}: WeeklyPaginationProps) {
+export default function WeeklyPagination({currStartDate, timezone, onChange}: WeeklyPaginationProps) {
 
     const toNextWeek = () => {
         const nextWeek = dayjs.tz(currStartDate, timezone).add(1, 'week').format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', nextWeek)
-        location.href = url.toString()
+        if (onChange) {
+            onChange(Object.fromEntries(url.searchParams.entries()) as IframeSchedulePageSearchParams)
+        } else {
+            location.href = url.toString()
+        }
     }
 
     const toPrevWeek = () => {
         const prevWeek = dayjs.tz(currStartDate, timezone).subtract(1, 'week').format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', prevWeek)
-        location.href = url.toString()
+        if (onChange) {
+            onChange(Object.fromEntries(url.searchParams.entries()) as IframeSchedulePageSearchParams)
+        } else {
+            location.href = url.toString()
+        }
     }
 
     const toCurrWeek = () => {
         const nextWeek = dayjs.tz(dayjs(), timezone).startOf('week').format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', nextWeek)
-        location.href = url.toString()
+        if (onChange) {
+            onChange(Object.fromEntries(url.searchParams.entries()) as IframeSchedulePageSearchParams)
+        } else {
+            location.href = url.toString()
+        }
     }
 
     return <>

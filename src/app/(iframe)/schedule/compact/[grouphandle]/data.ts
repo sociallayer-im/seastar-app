@@ -1,7 +1,7 @@
-'use server'
-
 import dayjs from "@/libs/dayjs"
-import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
+import {IframeSchedulePageData, IframeSchedulePageDataEvent, IframeSchedulePageSearchParams} from "@/app/(iframe)/schedule/utils"
+import { GroupDetail } from "@sola/sdk"
+import { getInterval, pickSearchParam } from "@/utils"
 
 
 export interface IframeSchedulePageDataEventDetail extends IframeSchedulePageDataEvent {
@@ -11,19 +11,25 @@ export interface IframeSchedulePageDataEventDetail extends IframeSchedulePageDat
 }
 
 interface CalculateGridPositionProps {
-    events: IframeSchedulePageDataEvent[],
-    timezone: string,
-    currentDate:string
+    groupDetail: GroupDetail,
+    searchParams: IframeSchedulePageSearchParams,
+    currPath: string,
+    authToken: string | null | undefined
 }
 
 export async function calculateGridPosition({
-    events,
-    timezone,
-    currentDate
-}: CalculateGridPositionProps): Promise<IframeSchedulePageDataEventDetail[]> {
+    groupDetail,
+    searchParams,
+    currPath,
+    authToken
+}: CalculateGridPositionProps) {
+    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'compact'})
+    const timezone = groupDetail.timezone || 'UTC'
+
+
     let dayEvents = [] as IframeSchedulePageDataEventDetail[]
-    events.forEach(event => {
-        const current = dayjs.tz(currentDate, timezone)
+    data.events.forEach(event => {
+        const current = dayjs.tz(data.currDate, timezone)
         const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
         const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
         const isAllDay = start.isBefore(current, 'day') && end.isAfter(current, 'day')
@@ -47,5 +53,8 @@ export async function calculateGridPosition({
         }
     })
 
-    return dayEvents
+    return {
+        events: dayEvents,
+        data
+    }
 }

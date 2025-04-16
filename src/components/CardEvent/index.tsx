@@ -64,7 +64,13 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                 }
             </div>
             <div className="flex-row-item-center text-xs sm:text-sm sm:my-1">
-                host by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}
+                {event.track &&
+                    <div>
+                        <span style={{color: getLabelColor(event.track.title)}}>{event.track.title}</span>
+                        <span className="mx-1 text-gray-300">|</span>
+                    </div>
+                }
+                <div>hosted by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}</div>
             </div>
             <div className="min-h-6 flex text-xs sm:text-sm">
                 <i className="uil-calendar-alt mr-1 text-sm"/>

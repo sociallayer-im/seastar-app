@@ -129,7 +129,7 @@ export default function TrackForm({trackDetail, lang, groupDetail, onConfirm}: T
                     <div>
                         <div className="text-sm font-semibold">Public</div>
                         <div className="text-gray-500 text-xs font-normal">
-                            Everyone can view the event which selected this track.
+                            Everyone can view events in the track.
                         </div>
                     </div>
                     {draft.kind == 'public'
@@ -143,10 +143,7 @@ export default function TrackForm({trackDetail, lang, groupDetail, onConfirm}: T
                      className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                     <div>
                         <div className="text-sm font-semibold">Private</div>
-                        <div className="text-gray-500 text-xs font-normal">Select a private
-                            event, the event you created can only be viewed through the
-                            link,
-                            and users can view the event in [My Event] page.
+                        <div className="text-gray-500 text-xs font-normal">Only track members or group managers can view events in the track.
                         </div>
                     </div>
                     {draft.kind == 'private'

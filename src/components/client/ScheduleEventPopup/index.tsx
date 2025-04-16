@@ -1,5 +1,12 @@
 import dayjs from "@/libs/dayjs"
-import {checkEventPermissionsForProfile, checkProcess, clientToSignIn, genGoogleMapLink, getAvatar} from "@/utils"
+import {
+    checkEventPermissionsForProfile,
+    checkProcess,
+    clientToSignIn, eventCoverTimeStr,
+    formatEventDuration,
+    genGoogleMapLink,
+    getAvatar
+} from "@/utils"
 import {getLabelColor} from "@/utils/label_color"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
@@ -20,14 +27,6 @@ export interface ScheduleEventPopupProps {
 }
 
 export default function ScheduleEventPopup({event, timezone, lang, starred, profile, groupDetail} : ScheduleEventPopupProps) {
-    const startTime = dayjs.tz(new Date(event.start_time), timezone)
-    const endTime = dayjs.tz(new Date(event.end_time), timezone)
-
-    let interval = `${startTime.format('HH:mm Do')} - ${endTime.format('HH:mm Do')}, ${startTime.format('MMMM')}`
-    if (startTime.format('YYYY-MM-DD') != endTime.format('YYYY-MM-DD')) {
-        interval = `${startTime.format('HH:mm Do')}, ${startTime.format('MMMM')} - ${endTime.format('HH:mm Do')}, ${endTime.format('MMMM')}`
-    }
-
     const eventProcess = checkProcess(event.start_time, event.end_time)
 
     const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
@@ -46,7 +45,7 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
     return <div className="max-h-[90svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap">
             <div className="flex-1">
-                <div className="text-xs font-semibold sm:my-3 my-2">{interval}</div>
+                <div className="text-xs font-semibold sm:my-3 my-2">{formatEventDuration(event.start_time, event.end_time, event.timezone)}</div>
                 <div className="flex-row-item-center sm:my-2 my-1">
                     {eventProcess === 'ongoing' && <Badge variant='ongoing'>Ongoing</Badge>}
                     {eventProcess === 'past' && <Badge variant='past'>Past</Badge>}
@@ -66,6 +65,9 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
                 }
                 {!!host &&
                     <div className="flex-row-item-center text-xs">
+                        {event.track &&
+                            <div><span style={{color: getLabelColor(event.track.title)}}>{event.track.title}</span><span className="mx-1">|</span></div>
+                        }
                         <img className="mr-1 w-4 h-4 flex-shrink-0 rounded-full" src={getAvatar(host.id, host.image_url)} alt=""/>
                         <span className="mr-1">by</span>
                         <span>{host.nickname || host.handle}</span>
@@ -89,7 +91,9 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
                             {event.title}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">
-                            {interval}
+                            {eventCoverTimeStr(event.start_time!, event.timezone!).date}
+                            <br/>
+                            {eventCoverTimeStr(event.start_time!, event.timezone!).time}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[240px]">
                             {event.location}
@@ -157,7 +161,7 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
                 }
                 <a href={`/event/detail/${event.id}`}
                    className={`${buttonVariants({variant: 'normal'})} mt-3 sm:w-auto w-full`}
-                   rel="nofollow">{lang['View Detail']}</a>
+                   rel="nofollow">{lang['View Details']}</a>
             </div>
         </div>
     </div>

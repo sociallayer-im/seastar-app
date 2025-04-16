@@ -1,34 +1,38 @@
-'use server'
-
 import dayjs from "@/libs/dayjs"
-import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
+import {IframeSchedulePageDataEvent, IframeSchedulePageSearchParams} from "@/app/(iframe)/schedule/utils"
 import Dayjs from '@/libs/dayjs'
+import { IframeSchedulePageData } from "../../utils"
+import { GroupDetail } from "@sola/sdk"
 
 
 export interface IframeSchedulePageDataEventDetail extends IframeSchedulePageDataEvent {
     date: string
 }
 
-interface CalculateGridPositionProps {
-    events: IframeSchedulePageDataEvent[],
-    timezone: string,
-    currentDate:string
+interface ListViewDataProps {
+    searchParams: IframeSchedulePageSearchParams,
+    groupDetail: GroupDetail,
+    currPath: string,
+    authToken: string | null | undefined
 }
 
 export async function ListViewData({
-    events,
-    timezone,
-}: CalculateGridPositionProps) {
+    searchParams,
+    groupDetail,
+    currPath,
+    authToken
+}: ListViewDataProps) {
+    
+    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'list'})
+    const timezone = groupDetail.timezone || 'UTC'
+    
     let dayEvents = [] as IframeSchedulePageDataEventDetail[]
-    events.forEach(event => {
-        const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
-
+    data.events.forEach(event => {
         dayEvents.push({
             ...event,
             date: Dayjs.tz(new Date(event.start_time).getTime(), timezone).format('MMM DD')
         })
     })
-
 
 
     const groupedEventByStartDate = dayEvents
@@ -40,9 +44,8 @@ export async function ListViewData({
         return acc
     }, {} as {[key: string]: IframeSchedulePageDataEventDetail[]})
 
-    console.log(Object.keys(groupedEventByStartDate), timezone)
-
     return {
+        data,
         groupedEventByStartDate
     }
 }

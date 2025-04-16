@@ -23,8 +23,3 @@ export function middleware(request: NextRequest) {
 export const config = {
     matcher: ['/((?!api|/images|/fonts|favicon.ico|sitemap.xml|robots.txt).*)'],
 }
-
-
-
-
-

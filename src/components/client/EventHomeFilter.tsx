@@ -4,7 +4,6 @@ import {EventListFilterProps, GroupDetail} from '@sola/sdk'
 import {Input} from '@/components/shadcn/Input'
 import {Button, buttonVariants} from '@/components/shadcn/Button'
 import AddToCalendarAppBtn from '@/components/client/AddtoCalendarApp'
-import TagsFilter from '@/components/client/TagsFilter'
 import TracksFilter from '@/components/client/TracksFilter'
 import {Dictionary} from '@/lang'
 import {useMemo, useState} from 'react'
@@ -40,6 +39,7 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
             || !!filterOpts.start_date
             || !!filterOpts.end_date
             || !!filterOpts.venue_id
+            || !!filterOpts.tags
     }, [filterOpts])
 
     return <>
@@ -109,22 +109,6 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
             <AddToCalendarAppBtn groupHandle={groupDetail.handle} lang={lang}/>
         </div>
 
-        {
-            !!groupDetail.event_tags?.length &&
-            <div className="my-2">
-                <TagsFilter
-                    lang={lang}
-                    onSelected={(tags) => {
-                        if (tags && tags[0]) {
-                           !!onFilterChange && onFilterChange({...filterOpts, tags: tags[0]})
-                        } else {
-                           !!onFilterChange && onFilterChange({...filterOpts, tags: undefined})
-                        }
-                    }}
-                    values={filterOpts.tags ? filterOpts.tags.split(',') : []}
-                    tags={groupDetail.event_tags || []}/>
-            </div>
-        }
         {
             !!groupDetail.tracks.length &&
             <div className="my-2">

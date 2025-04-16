@@ -2,32 +2,46 @@
 
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {useEffect, useMemo} from "react"
+import { IframeSchedulePageSearchParams } from "@/app/(iframe)/schedule/utils"
 
 interface WeeklyPaginationProps {
     currStartDate: string,
     timezone: string,
+    onChange?:(searchParams: IframeSchedulePageSearchParams) => void
 }
 
-export default function ListPagination({currStartDate, timezone}: WeeklyPaginationProps) {
+export default function ListPagination({currStartDate, timezone, onChange}: WeeklyPaginationProps) {
     const toNextWeek = () => {
         const nextWeek = dayjs.tz(currStartDate, timezone).add(1, 'week').startOf('week').format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', nextWeek)
-        location.href = url.toString()
+        if (onChange) {
+            onChange(Object.fromEntries(url.searchParams.entries()))
+        } else {
+            location.href = url.toString()
+        }
     }
 
     const toPrevWeek = () => {
         const prevWeek = dayjs.tz(currStartDate, timezone).subtract(1, 'week').startOf('week').format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', prevWeek)
-        location.href = url.toString()
+        if (onChange) {
+            onChange(Object.fromEntries(url.searchParams.entries()))
+        } else {
+            location.href = url.toString()
+        }
     }
 
     const toSelected = (date: DayjsType) => {
         const selected = date.format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', selected)
-        location.href = url.toString()
+        if (onChange) {
+            onChange(Object.fromEntries(url.searchParams.entries()))
+        } else {
+            location.href = url.toString()
+        }
     }
 
     const interval = useMemo(() => {
