@@ -171,12 +171,6 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
     }, [venueHasTimeslots])
 
     return event.timezone ? <div>
-        {venueHasTimeslots &&
-            <div className="text-orange-300 text-xs flex-row-item-center bg-orange-50 px-2 my-2 py-0.5 rounded-lg">
-                <i className="uil-info-circle text-lg mr-1"/>
-                {lang['Due to the timeslot settings of the venue, only same-day events can be created']}
-            </div>
-        }
         <div className="flex-row-item-center">
             <div className="w-11 text-center mr-1">{lang['From']}</div>
             <DatePicker
