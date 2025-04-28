@@ -119,7 +119,7 @@ export default async function CreateEventPageData({params}: CreateEventDataProps
     return {
         currProfile,
         recurring: null,
-        eventDraft: {...emptyEvent, group_id: groupDetail.id},
+        eventDraft: {...emptyEvent, group_id: groupDetail.id, timezone: groupDetail.timezone},
         groupDetail,
         memberships: groupDetail.memberships || [],
         isGroupOwner: isOwner,
