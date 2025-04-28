@@ -5,7 +5,7 @@ import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
 import {getAvatar} from "@/utils"
 import {debounce} from 'lodash'
 import useUploadAvatar from "@/hooks/useUploadAvatar"
-import {EventDraftType, EventRole, EventRoleType, searchProfile} from '@sola/sdk'
+import {EventDraftType, EventRole, EventRoleDetail, EventRoleType, searchProfile} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 
 interface EventRoleInputProps {
@@ -28,7 +28,7 @@ const getEmptyRole = (role: EventRoleType) => {
 
 export default function EventRoleInput({lang, role, state: {event, setEvent}}: EventRoleInputProps) {
     const initList = (): EventRole[] => {
-        return event.event_roles?.filter(r => r.role === role)
+        return event.event_roles?.filter(r => r.role === role && !(r as EventRoleDetail)._destroy)
             .map(r => ({
                 role: r.role,
                 nickname: r.nickname,
