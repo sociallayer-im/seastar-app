@@ -35,7 +35,7 @@ export default function SelectVenue({
                 geo_lat: venue.geo_lat,
                 formatted_address: venue.formatted_address,
                 location_data: venue.location_data,
-                location: venue.location,
+                location: venue.title,
                 ...(venue.capacity !== undefined && {max_participant: venue.capacity})
             }
 
