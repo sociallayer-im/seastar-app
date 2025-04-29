@@ -525,6 +525,8 @@ export const en = {
     'Add a photo': 'Add a photo',
     'Amenities': 'Amenities',
     'Capacity': 'Capacity',
+    'When set, this appears as the event host.': 'When set, this appears as the event host.',
+    'Custom Host': 'Custom Host',
 }
 
 export type Dictionary = typeof en

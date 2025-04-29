@@ -87,7 +87,7 @@ export const zh: Dictionary = {
     'Need Approval': '需要批准',
     'Select Venue': '选择地点',
     'Upload Cover': '上传封面',
-    'Host': '发起人',
+    'Host': '主持人',
     'Profile': '个人',
     'Group': '群组',
     'Venue Timeslots': '地点可用时间段',
@@ -527,4 +527,6 @@ export const zh: Dictionary = {
     'Add a photo': '添加照片',
     'Amenities': '设施',
     'Capacity':'容量',
+    'When set, this appears as the event host.': '如果设置，这将显示为活动主持人。',
+    'Custom Host': '自定义主持人',
 }
