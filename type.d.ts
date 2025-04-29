@@ -179,7 +179,8 @@ declare namespace Solar {
     export enum EventRoleType {
         Speaker = 'speaker',
         CoHost = 'co_host',
-        GroupHost = 'group_host'
+        GroupHost = 'group_host',
+        CustomHost = 'custom_host'
     }
 
     export interface EventRole {

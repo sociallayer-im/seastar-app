@@ -1,17 +1,18 @@
-import {Dictionary} from "@/lang"
-import {Input} from "@/components/shadcn/Input"
-import {ChangeEvent, useCallback, useEffect, useRef, useState} from "react"
-import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
-import {getAvatar} from "@/utils"
-import {debounce} from 'lodash'
+import { Dictionary } from "@/lang"
+import { Input } from "@/components/shadcn/Input"
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
+import DropdownMenu, { DropdownTrigger } from "@/components/client/DropdownMenu"
+import { getAvatar } from "@/utils"
+import { debounce } from 'lodash'
 import useUploadAvatar from "@/hooks/useUploadAvatar"
-import {EventDraftType, EventRole, EventRoleDetail, EventRoleType, searchProfile} from '@sola/sdk'
-import {CLIENT_MODE} from '@/app/config'
+import { EventDraftType, EventRole, EventRoleDetail, EventRoleType, searchProfile } from '@sola/sdk'
+import { CLIENT_MODE } from '@/app/config'
 
 interface EventRoleInputProps {
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
     role: EventRoleType,
-    lang: Dictionary
+    lang: Dictionary,
+    multiple?: boolean
 }
 
 
@@ -26,7 +27,7 @@ const getEmptyRole = (role: EventRoleType) => {
     } as EventRole
 }
 
-export default function EventRoleInput({lang, role, state: {event, setEvent}}: EventRoleInputProps) {
+export default function EventRoleInput({ lang, role, multiple = true, state: { event, setEvent } }: EventRoleInputProps) {
     const initList = (): EventRole[] => {
         return event.event_roles?.filter(r => r.role === role && !(r as EventRoleDetail)._destroy)
             .map(r => ({
@@ -42,7 +43,7 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
     // Remove the role that already exists, create new roles after saving/creating event,
     // thought the role may not change, the id will be changed
     const listToRemove = event.event_roles?.filter(r => !!r.id && r.role === role)
-        .map(r => ({...r, _destroy: '1'})) || []
+        .map(r => ({ ...r, _destroy: '1' })) || []
 
     const [list, setList] = useState<EventRole[]>(initList())
 
@@ -95,6 +96,7 @@ export default function EventRoleInput({lang, role, state: {event, setEvent}}: E
                 onRemove={() => {
                     removeItem(item)
                 }}
+                multiple={multiple}
                 onChange={(role) => changeItem(role, i)}
             />)
         }
@@ -108,13 +110,14 @@ export interface RoleOptionProps {
     onChange?: (role: EventRole) => void
     onAdd?: () => void
     onRemove?: () => void
-    showAddBtn?: boolean
+    showAddBtn?: boolean,
+    multiple?: boolean
 }
 
-function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange}: RoleOptionProps) {
-    const {uploadAvatar} = useUploadAvatar()
+function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multiple = true }: RoleOptionProps) {
+    const { uploadAvatar } = useUploadAvatar()
     const [searchResult, setSearchResult] = useState<Solar.ProfileSample[]>([])
-    const {current: dropDownTrigger} = useRef<DropdownTrigger>({trigger: null})
+    const { current: dropDownTrigger } = useRef<DropdownTrigger>({ trigger: null })
     const searchIdentifier = useRef<number>(0)
 
     const handleSearch = useCallback(debounce(async (keyword: string) => {
@@ -140,7 +143,7 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange}: RoleOpt
     }, 500), [dropDownTrigger])
 
     const handleInputName = async (e: ChangeEvent<HTMLInputElement>) => {
-        !!onChange && onChange({...item, nickname: e.target.value})
+        !!onChange && onChange({ ...item, nickname: e.target.value })
         await handleSearch(e.target.value)
     }
 
@@ -151,7 +154,7 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange}: RoleOpt
     const setAvatar = async () => {
         await uploadAvatar({
             onUploaded: (url) => {
-                !!onChange && onChange({...item, image_url: url})
+                !!onChange && onChange({ ...item, image_url: url })
             }
         })
     }
@@ -169,10 +172,10 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange}: RoleOpt
         {!!item.nickname &&
             <div className="w-11 h-11 relative flex-shrink-0 mr-3">
                 <img className="w-11 h-11 rounded-full"
-                    src={item.image_url || "/images/default_avatar/avatar_1.png"} alt=""/>
+                    src={item.image_url || "/images/default_avatar/avatar_1.png"} alt="" />
                 <div onClick={setAvatar}
                     className="cursor-pointer absolute bottom-0 right-0 bg-background rounded-full w-4 h-4 shadow flex-row-item-center justify-center">
-                    <i className="uil-edit-alt text-xs"/>
+                    <i className="uil-edit-alt text-xs" />
                 </div>
             </div>
         }
@@ -186,40 +189,42 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange}: RoleOpt
                     }}
                     renderOption={(profile) => <div className="flex-row-item-center">
                         <img className="w-6 h-6 rounded-full mr-1"
-                            src={getAvatar(profile.id, profile.image_url)} alt=""/>
+                            src={getAvatar(profile.id, profile.image_url)} alt="" />
                         {profile.handle} {profile.nickname && `(${profile.nickname})`}
                     </div>}
                     trigger={dropDownTrigger}>
                     <Input
                         onFocus={handleFocus}
                         onChange={handleInputName}
-                        startAdornment={<i className="uil-user text-xl"/>}
+                        startAdornment={<i className="uil-user text-xl" />}
                         value={item.nickname || ''}
                         className="w-full"
-                        placeholder={lang['Input name']}/>
+                        placeholder={lang['Input name']} />
                 </DropdownMenu>
             </div>
 
             {!!item.nickname && !item.item_id &&
                 <Input className="flex-1  ml-3"
-                    startAdornment={<i className="uil-envelope text-xl"/>}
+                    startAdornment={<i className="uil-envelope text-xl" />}
                     value={item.email || ''}
                     onChange={e => {
-                        !!onChange && onChange({...item, email: e.target.value})
+                        !!onChange && onChange({ ...item, email: e.target.value })
                     }}
-                    placeholder={lang['Input email to invite']}/>
+                    placeholder={lang['Input email to invite']} />
             }
         </div>
-        <div className="flex-shrink-0 ml-3">
-            {showAddBtn ? <i onClick={() => {
-                !!onAdd && onAdd()
-            }}
-            className="uil-plus-circle text-3xl text-green-400 cursor-pointer hover:opacity-70 active:brightness-90"/>
-                : <i onClick={() => {
-                    !!onRemove && onRemove()
+        {multiple &&
+            <div className="flex-shrink-0 ml-3">
+                {showAddBtn ? <i onClick={() => {
+                    !!onAdd && onAdd()
                 }}
-                className="uil-minus-circle text-3xl text-gray-400 cursor-pointer hover:opacity-70 active:brightness-90"/>
-            }
-        </div>
+                    className="uil-plus-circle text-3xl text-green-400 cursor-pointer hover:opacity-70 active:brightness-90" />
+                    : <i onClick={() => {
+                        !!onRemove && onRemove()
+                    }}
+                        className="uil-minus-circle text-3xl text-gray-400 cursor-pointer hover:opacity-70 active:brightness-90" />
+                }
+            </div>
+        }
     </div>
 }

@@ -56,6 +56,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
 
 
     const groupHost = eventDetail.event_roles?.find(r => r.role === 'group_host')
+    const customHost = eventDetail.event_roles?.find(r => r.role === 'custom_host')
 
     let filteredParticipants: Participant[]
     if (!eventDetail?.tickets?.length) {
@@ -147,6 +148,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         currProfileStarred,
         owner: eventDetail.owner,
         groupHost,
+        customHost,
         tab,
         participants: filteredParticipants,
         showParticipants,

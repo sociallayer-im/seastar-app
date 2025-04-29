@@ -22,15 +22,20 @@ export default function WeeklyViewEventItem({event, timezone, lang}: {event: Ifr
         popupEvent === event.id.toString() && showPopup(event.id, event.group.id, event.is_starred, lang)
     }, [])
 
+    const customHostRole = event.event_roles?.find(r => r.role === 'custom_host')
     const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
-    const host: Solar.ProfileSample = groupHostRole ?
+    const host: Solar.ProfileSample = customHostRole ?
         {
+            image_url: customHostRole.image_url,
+            nickname: customHostRole.nickname,
+            handle: customHostRole.nickname!,
+            id: customHostRole.item_id!
+        } : groupHostRole ? {
             image_url: groupHostRole.image_url,
             nickname: groupHostRole.nickname,
             handle: groupHostRole.nickname!,
             id: groupHostRole.item_id!
-        }
-        : event.owner
+        } : event.owner
 
     
     const filteredTags= event.tags && event.tags.length > 0

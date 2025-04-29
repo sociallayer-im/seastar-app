@@ -398,6 +398,17 @@ export default function EventForm({lang, data, onConfirm, onCancel}: EventFormPr
                         </div>
                     }
 
+                     <div className="mb-8">
+                        <div className="font-semibold">{lang['Custom Host']}</div>
+                        <div className="text-xs text-gray-500 font-normal mb-2">
+                        {lang['When set, this appears as the event host.']}
+                        </div>
+                        <EventRoleInput lang={lang}
+                                        multiple={false}
+                                        state={{event: draft, setEvent: setDraft}}
+                                        role={'custom_host' as Solar.EventRoleType}/>
+                    </div>
+
                     {!!data.tags?.length &&
                         <div className="mb-8">
                             <div className="font-semibold mb-1">{lang['Tags']}</div>

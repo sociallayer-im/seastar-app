@@ -119,7 +119,7 @@ export interface Participant {
     }
 }
 
-export type EventRoleType = 'speaker' | 'co_host' | 'group_host'
+export type EventRoleType = 'speaker' | 'co_host' | 'group_host' | 'custom_host'
 
 export interface EventRole {
     id?: number
