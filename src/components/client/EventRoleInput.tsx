@@ -172,7 +172,7 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
         {!!item.nickname &&
             <div className="w-11 h-11 relative flex-shrink-0 mr-3">
                 <img className="w-11 h-11 rounded-full"
-                    src={item.image_url || "/images/default_avatar/avatar_1.png"} alt="" />
+                    src={item.image_url || "/images/default_avatar/avatar_0.png"} alt="" />
                 <div onClick={setAvatar}
                     className="cursor-pointer absolute bottom-0 right-0 bg-background rounded-full w-4 h-4 shadow flex-row-item-center justify-center">
                     <i className="uil-edit-alt text-xs" />
