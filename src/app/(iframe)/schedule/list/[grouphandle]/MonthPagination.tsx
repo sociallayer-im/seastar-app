@@ -12,7 +12,7 @@ interface WeeklyPaginationProps {
 export default function MonthPagination({currStartDate, timezone, onChange}: WeeklyPaginationProps) {
 
     const toNextMonth = () => {
-        const nextWeek = dayjs.tz(currStartDate, timezone).add(1, 'month').startOf('week').format('YYYY-MM-DD')
+        const nextWeek = dayjs.tz(currStartDate, timezone).add(1, 'month').format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', nextWeek)
         // location.href = url.toString()
@@ -20,7 +20,7 @@ export default function MonthPagination({currStartDate, timezone, onChange}: Wee
     }
 
     const toPrevMonth = () => {
-        const prevWeek = dayjs.tz(currStartDate, timezone).subtract(1, 'month').startOf('week').format('YYYY-MM-DD')
+        const prevWeek = dayjs.tz(currStartDate, timezone).subtract(1, 'month').format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', prevWeek)
         // location.href = url.toString()
@@ -28,7 +28,7 @@ export default function MonthPagination({currStartDate, timezone, onChange}: Wee
     }
 
     const toCurrMonth = () => {
-        const nextWeek = dayjs.tz(dayjs(), timezone).startOf('week').format('YYYY-MM-DD')
+        const nextWeek = dayjs.tz(dayjs(), timezone).format('YYYY-MM-DD')
         const url = new URL(location.href)
         url.searchParams.set('start_date', nextWeek)
         // location.href = url.toString()

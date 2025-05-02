@@ -43,18 +43,35 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
         return interval
     }, [data.currDate])
 
+    const [currStartDate, setCurrStartDate] = useState<string>(data.currDate)
+
+    const handleSelectDate = (searchParams: IframeSchedulePageSearchParams) => {
+        const newSearchParams = new URLSearchParams()
+            Object.entries(searchParams).forEach(([key, value]) => {
+                newSearchParams.set(key, value)
+            })
+
+            if (!!searchParams.start_date) {
+                setCurrStartDate(searchParams.start_date as string)
+                window.history.replaceState({}, '', `${window.location.pathname}?${newSearchParams.toString()}`)
+            }
+    }
+
     const handleFilterChange = async (searchParams: IframeSchedulePageSearchParams) => {
         showLoading()
         try {
             console.log('searchParams', searchParams)
+            const currDate = searchParams.start_date ? searchParams.start_date : interval[0].format('YYYY-MM-DD')
             const {data, groupedEventByStartDate} = await ListViewData({
                 searchParams,
                 groupDetail,
                 authToken: getAuth(),
                 currPath: window.location.pathname
             })
+
             setData(data)
             setEvents(groupedEventByStartDate)
+            setCurrStartDate(currDate as string)
             const newSearchParams = new URLSearchParams()
             Object.entries(searchParams).forEach(([key, value]) => {
                 newSearchParams.set(key, value)
@@ -91,7 +108,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
                     <MonthPagination
                         onChange={handleFilterChange}
                         timezone={data.group.timezone}
-                        currStartDate={interval[1].format('YYYY-MM-DD')}/>
+                        currStartDate={currStartDate}/>
                 </div>
             </div>
             <div className="flex-row-item-center mt-3 sm:mt-0">
@@ -186,13 +203,14 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
             </div>
         </div>
         <ListPagination
+            onSelectDate={handleSelectDate}
             onChange={handleFilterChange}
             timezone={data.group.timezone}
-            currStartDate={interval[0].format('YYYY-MM-DD')}/>
+            currStartDate={currStartDate}/>
 
             <div>
             {Object.keys(events).map((startDate, index) => {
-                            return <div key={index}>
+                            return <div key={index} id={startDate}>
                                 <div className="font-semibold mb-1 mt-6">
                                     {startDate}
                                 </div>

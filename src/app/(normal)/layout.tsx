@@ -10,6 +10,7 @@ import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
 import Subscription from '@/components/client/Subscription'
 // import { TrackJSInstall } from "@/app/trackjs_loader"
 import HyperDx from '@/components/client/HyperDx'
+import { headers } from "next/headers"
 
 // TrackJSInstall()
 
@@ -30,6 +31,9 @@ export default async function RootLayout({
                                          }: Readonly<{ children: ReactNode }>) {
     const {type: langType, lang} = await selectLang()
     const currProfile = await getCurrProfile()
+    const headersList = headers()
+    const currentPath = headersList.get('x-current-path')
+    const isSchedule = currentPath?.includes('/schedule')
 
     return (
         <html lang={langType}
@@ -42,7 +46,7 @@ export default async function RootLayout({
         </Head>
         <body className={`antialiased`}>
         <div className="min-h-[100svh]">
-            <Header/>
+            <Header sticky={!isSchedule} />
             <div className="relative">
                 {children}
             </div>
