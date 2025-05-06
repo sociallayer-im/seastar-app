@@ -529,4 +529,5 @@ export const zh: Dictionary = {
     'Capacity':'容量',
     'When set, this appears as the event host.': '如果设置，这将显示为活动主持人。',
     'Custom Host': '自定义主持人',
+    'Join Event(RSVP)': '加入活动（RSVP）',
 }

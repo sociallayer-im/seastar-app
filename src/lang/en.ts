@@ -527,6 +527,7 @@ export const en = {
     'Capacity': 'Capacity',
     'When set, this appears as the event host.': 'When set, this appears as the event host.',
     'Custom Host': 'Custom Host',
+    'Join Event(RSVP)': 'Join Event(RSVP)',
 }
 
 export type Dictionary = typeof en

@@ -17,7 +17,7 @@ interface TimeListProps extends Omit<TimePickerProps, 'children'> {
 }
 
 export function TimeList(props: TimeListProps) {
-    const minutesStep = 30
+    const minutesStep = 15
     const id = useId()
 
     const timeList = useMemo(() => {
@@ -48,7 +48,7 @@ export function TimeList(props: TimeListProps) {
     }, [id])
 
 
-    return <div id={id} className="max-h-[200px] overflow-auto">
+    return <div id={id} className="max-h-[200px] overflow-auto min-w-[80px]">
         <div>{
             timeList.map((time, index) => {
                 const enabled = !props.filterFn || props.filterFn(time.format('HH:mm'))
@@ -112,7 +112,8 @@ export default function TimePicker(props: TimePickerProps) {
         <Input className={`flex-1`}
             ref={inputRef}
             value={props.initTime}
-            type="time" variant="textCenter"
+            type="time" 
+            variant="textCenter"
             onFocus={() => {
                 setOpen(true)
             }}

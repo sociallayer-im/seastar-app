@@ -185,7 +185,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div className="flex-row-item-center mt-2">
                                 <a href={`/event/detail/${eventDetail.id}?tab=tickets`}
                                     className={`${buttonVariants({ variant: 'special' })} text-xs flex-1`}>
-                                    {lang['Join Event']}
+                                    {lang['Join Event(RSVP)']}
                                 </a>
                             </div>
                         }

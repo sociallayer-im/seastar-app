@@ -52,7 +52,7 @@ export default function AttendEventBtn({eventId, lang, className, onAttended}: {
     return <Button variant={'special'}
                    onClick={handleAttendEvent}
                    className={className}>
-        <span>{lang['Join Event']}</span>
+        <span>{lang['Join Event(RSVP)']}</span>
     </Button>
 }
 
