@@ -83,12 +83,27 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
     }
 
     const setStartTime = (timeStr: string) => {
-        const dateStr = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!).format('YYYY/MM/DD')
+        const startDate = dayjs.tz(new Date(event.start_time).getTime(), event.timezone!)
+        const dateStr = startDate.format('YYYY/MM/DD')
         const result = dayjs.tz(`${dateStr} ${timeStr}`, event.timezone!).toISOString()
-        setEvent({
-            ...event,
-            start_time: result
-        })
+
+
+
+        // if start time and end time is same date, set end time to start time + 1 hour
+        const endDate = dayjs.tz(new Date(event.end_time).getTime(), event.timezone!)
+        if (endDate.format('YYYY/MM/DD') === startDate.format('YYYY/MM/DD')) {
+            const endResult = dayjs.tz(`${dateStr} ${timeStr}`, event.timezone!).add(1, 'hour').toISOString()
+            setEvent({
+                ...event,
+                start_time: result,
+                end_time: endResult
+            })
+        } else {
+            setEvent({
+                ...event,
+                start_time: result
+            })
+        }
     }
 
     const setEndTime = (timeStr: string) => {
