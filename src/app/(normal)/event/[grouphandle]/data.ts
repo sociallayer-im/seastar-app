@@ -54,8 +54,8 @@ export default async function GroupEventHomeData({
 
     const authToken = await getServerSideAuth()
     const filteredEvents = await getEvents({
-        params: {filters: filterOpts, authToken},
-        clientMode: CLIENT_MODE
+        params: {filters: filterOpts, authToken, limit: 1000},
+        clientMode: CLIENT_MODE,
     })
 
     const eventsWithTrack = filteredEvents.map(e => {

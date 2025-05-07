@@ -60,7 +60,8 @@ export default function GroupEventHome({data, lang, langType}: GroupEventHomePro
                         group_id: groupDetail.id + '',
                         timezone: groupDetail.timezone || undefined
                     },
-                    authToken: getAuth()
+                    authToken: getAuth(),
+                    limit: 1000
                 }, clientMode: CLIENT_MODE
             })
             const listWithTrack = events.map(e => {

@@ -149,9 +149,11 @@ export type EventListFilterProps = {
     skip_recurring?: string
 }
 
-export const getEvents = async ({params: {filters, authToken}, clientMode}: SolaSdkFunctionParams<{
+export const getEvents = async ({params: {filters, authToken, page, limit}, clientMode}: SolaSdkFunctionParams<{
     filters: EventListFilterProps,
-    authToken?: string
+    authToken?: string,
+    page?: number,
+    limit?: number
 }>) => {
     const searchParams = new URLSearchParams()
     // searchParams.set('limit', '100')
@@ -168,6 +170,16 @@ export const getEvents = async ({params: {filters, authToken}, clientMode}: Sola
         searchParams.set('with_stars', '1')
         searchParams.set('with_attending', '1')
         searchParams.set("auth_token", authToken)
+    }
+
+    if (page) {
+        searchParams.set('page', page.toString())
+    }
+
+    if (limit) {
+        searchParams.set('limit', limit.toString())
+    } else {
+        searchParams.set('limit', '100')
     }
 
     const url = `${getSdkConfig(clientMode).api}/api/event/list?${searchParams.toString()}`
