@@ -1,7 +1,7 @@
 import {EventListFilterProps, GroupDetail} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {Button} from '@/components/shadcn/Button'
-import {useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import {Checkbox} from '@/components/shadcn/Checkbox'
 import {getRangeFromTimeProps, getTimePropsFromRange} from '@/utils'
 import DropdownMenu from '@/components/client/DropdownMenu'
@@ -19,6 +19,10 @@ export interface DialogEventHomeFilterProp {
 
 export default function DialogEventHomeFilter({filterOpts, groupDetail, close, lang, onFilterChange, dialogMode='dialog'}: DialogEventHomeFilterProp) {
     const [opts, setOpts] = useState(filterOpts)
+
+    useEffect(() => {
+        setOpts(filterOpts)
+    }, [filterOpts])
 
     const TimeRangeOpts = [{
         value: 'all_time',
@@ -64,7 +68,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
     const handleChangeTags = (tags?: string[]) => {
         const newOpts = {
             ...opts,
-            tags: tags?.[0] ? tags[0] : undefined
+            tags: tags?.[0] ? tags.join(',') : undefined
         }
         setOpts(newOpts)
         dialogMode === 'modal' && onFilterChange(newOpts)
@@ -97,6 +101,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
                             onSelected={(tags) => {
                                 handleChangeTags(tags)
                             }}
+                            multiple={true}
                             values={opts.tags ? opts.tags.split(',') : []}
                             tags={groupDetail.event_tags || []}/>
                     </div>
