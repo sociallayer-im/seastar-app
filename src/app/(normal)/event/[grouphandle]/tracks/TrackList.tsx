@@ -20,8 +20,8 @@ export default function TrackList({groupDetail, lang}: { groupDetail: GroupDetai
     const handleRemove = async (trackId: number) => {
         showConfirmDialog({
             lang: lang,
-            title: lang['Remove Track'],
-            content: lang['Are you sure you want to remove this track?'],
+            title: lang['Remove Program'],
+            content: lang['Are you sure you want to remove this program?'],
             onConfig: async () => {
                 const loading = showLoading()
                 try {
@@ -49,7 +49,7 @@ export default function TrackList({groupDetail, lang}: { groupDetail: GroupDetai
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
-            <div className="py-6 font-semibold text-center text-xl">{lang['Tracks']}</div>
+            <div className="py-6 font-semibold text-center text-xl">{lang['Event Programs']}</div>
             {!groupDetail.tracks?.length && <NoData/>}
             <div className="grid grid-cols-1 gap-3">
                 {
@@ -69,7 +69,7 @@ export default function TrackList({groupDetail, lang}: { groupDetail: GroupDetai
 
             <a href={`/event/${groupDetail.handle}/tracks/create/`} className={`${buttonVariants({variant: 'secondary'})} mt-3`}>
                 <i className="uil-plus-circle text-lg"/>
-                {lang['Create a Track']}
+                {lang['Create a Program']}
             </a>
         </div>
     </div>

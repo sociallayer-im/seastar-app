@@ -1,5 +1,5 @@
 
-import {Group} from '@sola/sdk'
+import { Group } from '@sola/sdk'
 
 
 
@@ -8,5 +8,17 @@ export const SeatingStyle = ['theater', 'workshop', 'single table + chairs', 'Yo
 export const AVNeeds = ['presentation screen', 'microphone', 'speakers']
 
 export const isEdgeCityGroup = (groupId: number) => {
-    return [3427, 3409, 3463, 3454,924].includes(groupId)
+    return [3427, 3409, 3463, 3454, 924, 3579].includes(groupId)
 }
+
+export const tagsGroupNeeded = (groupId: number) => {
+    return [3579].includes(groupId)
+}
+
+export const edgeTagsGroups = [{
+    title: 'Weekly Themes',
+    tags: ['Wellbeing', 'Food']
+}, {
+    title: 'Community',
+    tags: ['Community', 'Social Events']
+}]

@@ -7,6 +7,8 @@ import {getRangeFromTimeProps, getTimePropsFromRange} from '@/utils'
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import TagsFilter from '@/components/client/TagsFilter'
+import TagGroupsFilter from '@/components/client/TagGroupsFilter'
+import { tagsGroupNeeded } from '@/app/configForSpecifyGroup'
 
 export interface DialogEventHomeFilterProp {
     filterOpts: EventListFilterProps,
@@ -59,7 +61,8 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             start_date: undefined,
             end_date: undefined,
             venue_id: undefined,
-            tags: undefined
+            tags: undefined,
+            track_id: undefined
         }
         setOpts(newOpts)
         dialogMode === 'modal' && onFilterChange(newOpts)
@@ -90,20 +93,59 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             </Button>
         </div>
 
+        <div className="my-3 text-sm">
+                <div className="font-semibold mb-1">{lang['Programs']}</div>
+                <DropdownMenu
+                    options={groupDetail.tracks}
+                    renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}{opt.kind !== 'private' && <i className="uil uil-lock text-sm ml-1"/>}</div>}
+                    valueKey={'id'}
+                    onSelect={(opt) => {
+                        if (opt[0]) {
+                            const newOpts = {
+                                ...opts,
+                                track_id: opt[0].id.toString()
+                            }
+                            setOpts(newOpts)
+                            dialogMode === 'modal' && onFilterChange(newOpts)
+                        }
+                    }}
+                    value={opts.track_id ? [groupDetail.tracks.find(v => v.id.toString() === opts.track_id)!] : undefined}
+                >
+                    <Input
+                        type="text"
+                        readOnly
+                        value={groupDetail.tracks.find((v => v.id.toString() === opts.track_id))?.title || lang['All Programs']}
+                        className="cursor-pointer w-full"
+                        endAdornment={<i className="uil-angle-down text-lg"/>}
+                    />
+                </DropdownMenu>
+            </div>
+
         
         <div className={`${dialogMode === 'dialog' ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>
             {!!groupDetail.event_tags?.length &&
                 <div className="my-3 text-sm">
                     <div className="font-semibold mb-2">{lang['Tags']}</div>
                     <div className="my-2">
-                        <TagsFilter
-                            lang={lang}
-                            onSelected={(tags) => {
-                                handleChangeTags(tags)
-                            }}
-                            multiple={true}
-                            values={opts.tags ? opts.tags.split(',') : []}
-                            tags={groupDetail.event_tags || []}/>
+                        {tagsGroupNeeded(groupDetail.id) ?
+                            <TagGroupsFilter
+                                lang={lang}
+                                onSelected={(tags) => {
+                                    handleChangeTags(tags)
+                                }}
+                                multiple={true}
+                                values={opts.tags ? opts.tags.split(',') : []}
+                                tags={groupDetail.event_tags || []}/>
+                                :   <TagsFilter
+                                lang={lang}
+                                onSelected={(tags) => {
+                                    handleChangeTags(tags)
+                                }}
+                                multiple={true}
+                                values={opts.tags ? opts.tags.split(',') : []}
+                                tags={groupDetail.event_tags || []}/>
+                        }
+                    
                     </div>
                 </div>
             }

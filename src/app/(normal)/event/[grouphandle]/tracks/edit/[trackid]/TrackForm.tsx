@@ -61,7 +61,7 @@ export default function TrackForm({trackDetail, lang, groupDetail, onConfirm}: T
 
     const handleConfirm = () => {
         if (!draft.title) {
-            setTitleError('Please enter the track name')
+            setTitleError('Please enter the name')
             scrollToErrMsg()
             return
         } else {
@@ -83,13 +83,13 @@ export default function TrackForm({trackDetail, lang, groupDetail, onConfirm}: T
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{
                 !!trackDetail.id
-                    ? lang['Edit Track']
-                    : lang['Create Track']
+                    ? lang['Edit Program']
+                    : lang['Create Program']
             }
             </div>
 
             <div className="mb-4">
-                <div className="font-semibold mb-1">{lang['Name of track']}</div>
+                <div className="font-semibold mb-1">{lang['Name of program']}</div>
                 <Input className="w-full" value={draft.title} onChange={(e) => {
                     setDraft({...draft, title: e.target.value})
                 }}/>
@@ -129,7 +129,7 @@ export default function TrackForm({trackDetail, lang, groupDetail, onConfirm}: T
                     <div>
                         <div className="text-sm font-semibold">Public</div>
                         <div className="text-gray-500 text-xs font-normal">
-                            Everyone can view events in the track.
+                            {lang['Everyone can view events in the program']}
                         </div>
                     </div>
                     {draft.kind == 'public'
@@ -143,7 +143,8 @@ export default function TrackForm({trackDetail, lang, groupDetail, onConfirm}: T
                      className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                     <div>
                         <div className="text-sm font-semibold">Private</div>
-                        <div className="text-gray-500 text-xs font-normal">Only track members or group managers can view events in the track.
+                        <div className="text-gray-500 text-xs font-normal">
+                            {lang['Only program members or group managers can view events in the program.']}
                         </div>
                     </div>
                     {draft.kind == 'private'
