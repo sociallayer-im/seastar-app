@@ -43,7 +43,7 @@ const openModal = (props: ModalProps) => {
     return id
 }
 
-const showLoading = () => {
+const showLoading = (): string => {
     const id = genId()
     const content = <LoadingGlobal/>
     const newState = [...memoryState, {content, id}]
