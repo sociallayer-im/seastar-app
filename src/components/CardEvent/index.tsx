@@ -34,9 +34,9 @@ export default function CardEvent({event, className, id, style, lang, highlight,
     return <a href={`/event/detail/${event.id}`}
               id={id}
               style={customStyle}
-              className={`relative shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
+              className={`relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
         <DynamicEventCardStarBtn eventId={event.id} starred={event.is_starred}/>
-        <div className="flex-1 mr-2">
+        <div className="flex-1 mr-2 order-2 xs:order-1">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
                 {event.display === 'private' && <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
@@ -64,11 +64,10 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                         })
                 }
             </div>
-            <div className="flex sm:flex-row flex-col text-xs sm:text-sm sm:my-1">
+            <div className="flex flex-col text-xs sm:text-sm my-1">
                 {event.track &&
                     <div>
                         <span style={{color: getLabelColor(event.track.title)}}>{event.track.title}</span>
-                        <span className="mx-1 text-gray-300 sm:inline hidden">|</span>
                     </div>
                 }
                 <div>hosted by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}</div>
@@ -101,10 +100,10 @@ export default function CardEvent({event, className, id, style, lang, highlight,
         </div>
         {
             !!event.cover_url ?
-                <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px]">
+                <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
                     <img className="w-full h-full object-cover" src={event.cover_url} alt=""/>
                 </div>
-                : <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px]">
+                : <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
                     <div className="default-cover w-[452px] h-[452px] sm:scale-[0.309] scale-[0.22]">
                         <div
                             className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
