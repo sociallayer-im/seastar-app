@@ -64,11 +64,11 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                         })
                 }
             </div>
-            <div className="flex-row-item-center text-xs sm:text-sm sm:my-1">
+            <div className="flex sm:flex-row flex-col text-xs sm:text-sm sm:my-1">
                 {event.track &&
                     <div>
                         <span style={{color: getLabelColor(event.track.title)}}>{event.track.title}</span>
-                        <span className="mx-1 text-gray-300">|</span>
+                        <span className="mx-1 text-gray-300 sm:inline hidden">|</span>
                     </div>
                 }
                 <div>hosted by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}</div>

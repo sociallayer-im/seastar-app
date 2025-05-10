@@ -110,20 +110,20 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
         </div>
 
         {
-            !!groupDetail.tracks.length &&
-            <div className="my-2">
-                <TracksFilter
-                    lang={lang}
-                    onSelect={(trackIds) => {
-                        if (trackIds && trackIds[0]) {
-                            !!onFilterChange && onFilterChange({...filterOpts, track_id: trackIds[0].toString()})
-                        } else {
-                            !!onFilterChange && onFilterChange({...filterOpts, track_id: undefined})
-                        }
-                    }}
-                    values={filterOpts.track_id ? [parseInt(filterOpts.track_id)] : undefined}
-                    tracks={groupDetail.tracks}/>
-            </div>
+            // !!groupDetail.tracks.length &&
+            // <div className="my-2">
+            //     <TracksFilter
+            //         lang={lang}
+            //         onSelect={(trackIds) => {
+            //             if (trackIds && trackIds[0]) {
+            //                 !!onFilterChange && onFilterChange({...filterOpts, track_id: trackIds[0].toString()})
+            //             } else {
+            //                 !!onFilterChange && onFilterChange({...filterOpts, track_id: undefined})
+            //             }
+            //         }}
+            //         values={filterOpts.track_id ? [parseInt(filterOpts.track_id)] : undefined}
+            //         tracks={groupDetail.tracks}/>
+            // </div>
         }
     </>
 }

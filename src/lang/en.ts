@@ -528,6 +528,18 @@ export const en = {
     'When set, this appears as the event host.': 'When set, this appears as the event host.',
     'Custom Host': 'Custom Host',
     'Join Event(RSVP)': 'Join Event(RSVP)',
+    'Programs': 'Programs',
+    'Program': 'Program',
+    'All Programs': 'All Programs',
+    'Event Programs': 'Event Programs',
+    'Create a Program': 'Create a Program',
+    'Create Program': 'Create Program',
+    'Edit Program': 'Edit Program',
+    'Name of program': 'Name of program',
+    'Everyone can view events in the program': 'Everyone can view events in the program',
+    'Only program members or group managers can view events in the program.': 'Only program members or group managers can view events in the program.',
+    'Remove Program': 'Remove Program',
+    'Are you sure you want to remove this program?': 'Are you sure you want to remove this program?',
 }
 
 export type Dictionary = typeof en
