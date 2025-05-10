@@ -94,10 +94,10 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
         </div>
 
         <div className="my-3 text-sm">
-                <div className="font-semibold mb-1">{lang['Programs']}</div>
+            {tagsGroupNeeded(groupDetail.id) ? '' : <div className="font-semibold mb-1">{lang['Programs']}</div>}          
                 <DropdownMenu
                     options={groupDetail.tracks}
-                    renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}{opt.kind !== 'private' && <i className="uil uil-lock text-sm ml-1"/>}</div>}
+                    renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}{opt.kind === 'private' && <i className="uil uil-lock text-sm ml-1"/>}</div>}
                     valueKey={'id'}
                     onSelect={(opt) => {
                         if (opt[0]) {
@@ -125,7 +125,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
         <div className={`${dialogMode === 'dialog' ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>
             {!!groupDetail.event_tags?.length &&
                 <div className="my-3 text-sm">
-                    <div className="font-semibold mb-2">{lang['Tags']}</div>
+                    {tagsGroupNeeded(groupDetail.id) ? '' : <div className="font-semibold mb-2">{lang['Tags']}</div>}
                     <div className="my-2">
                         {tagsGroupNeeded(groupDetail.id) ?
                             <TagGroupsFilter
