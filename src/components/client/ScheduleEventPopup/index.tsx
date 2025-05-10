@@ -109,7 +109,7 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
 
         <div className="mt-3 flex sm:flex-row flex-col sm:justify-between w-full">
             <div className="sm:order-1 order-2 flex mt-3 justify-center sm:justify-start">
-                {!isEventOperator &&
+                {isEventOperator &&
                     <a href={`/event/edit/${event.id}`} className={`${buttonVariants({variant: 'ghost'})} mr-3 text-primary-foreground !font-normal  !gap-1.5`}>
                         <i className="uil-edit-alt"/>
                         {lang['Edit']}
