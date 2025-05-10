@@ -17,8 +17,11 @@ export const tagsGroupNeeded = (groupId: number) => {
 
 export const edgeTagsGroups = [{
     title: 'Weekly Themes',
-    tags: ['Wellbeing', 'Food']
+    tags: ['Protocols for Flourishing', 'Reality Reinvented', 'Environments of Tomorrow', 'Decentralized Technologies']
 }, {
     title: 'Community',
-    tags: ['Community', 'Social Events']
+    tags: ['Social Gathering', 'Workout', 'Wellbeing', 'Food & Beverages', 'Party', 'Vibe-coding', 'Outdoor Adventure', 'Field Trip', 'Kids & Families']
+},{
+    title: 'Topics',
+    tags: ['AI', 'Neurotech', 'Biotech', 'AR/VR/XR', 'D/ACC', 'Hardtech', 'Blockchain & Cryptography', 'Privacy', 'Health & Longevity', 'Education', 'Art & Design', 'Protocol Research', 'Philosophy', 'Politics', 'Climate & Sustainability', 'Agtech', 'Governance', 'Enlightment']
 }]

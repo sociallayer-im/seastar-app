@@ -1,7 +1,6 @@
 'use client'
 
 import {Button} from '@/components/shadcn/Button'
-import {getLabelColor} from '@/utils/label_color'
 import {Dictionary} from '@/lang'
 import {edgeTagsGroups} from '@/app/configForSpecifyGroup'
 import {useState} from 'react'
