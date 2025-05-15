@@ -71,7 +71,7 @@ export default function TagGroupsFilterProps({tags, values, onSelected, multiple
     return <div className="flex flex-col gap-4">
         {groups.map((group, groupIndex) => (
             <div key={groupIndex} className="flex flex-col gap-2 border border-gray-200 rounded-md p-2">
-                <div 
+                <div
                     onClick={() => toggleGroup(group.title)}
                     className="justify-between text-sm font-medium cursor-pointer transition-colors flex items-center"
                 >
@@ -101,9 +101,9 @@ export default function TagGroupsFilterProps({tags, values, onSelected, multiple
             </div>
         ))}
 
-        {Other && Other.tags.length > 0 && (
+        {/* {Other && Other.tags.length > 0 && (
             <div className="flex flex-col gap-2 border border-gray-200 rounded-md p-2">
-                <div 
+                <div
                     onClick={() => toggleGroup('Other')}
                     className="justify-between text-sm font-medium cursor-pointer transition-colors flex items-center"
                 >
@@ -131,7 +131,7 @@ export default function TagGroupsFilterProps({tags, values, onSelected, multiple
                     </div>
                 )}
             </div>
-        )}
+        )} */}
 
         {allowResetBtn && false &&
             <Button onClick={() => {

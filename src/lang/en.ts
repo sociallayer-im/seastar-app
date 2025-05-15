@@ -300,7 +300,7 @@ export const en = {
     'See all Pop-up Cities events': 'See all Pop-up Cities events',
     'View events': 'View events',
     'See all Communities': 'See all Communities',
-    'Attended': 'Attended',
+    'Attended': 'Attending',
     'Hosting': 'Hosting',
     'Starred': 'Starred',
     'Send a Badge': 'Send a Badge',
