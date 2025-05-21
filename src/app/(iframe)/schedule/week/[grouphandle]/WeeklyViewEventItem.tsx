@@ -46,7 +46,7 @@ export default function WeeklyViewEventItem({event, timezone, lang}: {event: Ifr
     const mainThemColor = filteredTags[0] ? getLabelColor(filteredTags[0]) : bgColor
 
     return <div
-        className="bg-white p-2 h-[210px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
+        className="bg-white p-2 h-[220px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
         onClick={() => showPopup(event.id, event.group.id, event.is_starred, lang)}
         style={{gridArea: event.grid, boxShadow: '0 1.988px 18px 0 rgba(0, 0, 0, 0.10)', background: bgColor}}>
         <div className="block content-[''] w-[2px] h-[210px] absolute left-0 top-0"
