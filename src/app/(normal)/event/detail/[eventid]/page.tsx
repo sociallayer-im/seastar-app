@@ -240,7 +240,13 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     {eventDetail.title}
                 </div>
 
-                <div className="flex-row-item-center my-3 gap-3">
+                {eventDetail.track && <div className="flex-row-item-center gap-1.5 text-lg mt-1"
+                        style={{ color: getLabelColor(eventDetail.track.title) }}>
+                        {eventDetail.track.title}
+                    </div>}
+
+
+                <div className="flex-row-item-center my-3 gap-3 overflow-auto !flex-wrap">
                     {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
                     {eventDetail.display === 'private' &&
                         <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
@@ -258,6 +264,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     {isEventCreator && <Badge variant='hosting' className="mr-1">{lang['Hosting']}</Badge>}
                     {currProfileAttended && <Badge variant='joining' className="mr-1">{lang['Attended']}</Badge>}
 
+
                     {
                         eventDetail.tags?.map(tag => {
                             const color = getLabelColor(tag)
@@ -269,6 +276,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         })
                     }
                 </div>
+
 
                 <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">
                     <div className="hide-scroll whitespace-nowrap overflow-auto max-w-[640px]">
@@ -288,16 +296,16 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                     </a> : null
                                 : customHost
                                     ? <a key={customHost.id}
-                                    className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                    href={customHost.item_id ? `/profile/${customHost.profile!.handle}` : '#'}>
-                                    <img className="w-11 h-11 rounded-full mr-2"
-                                        src={getAvatar(customHost.item_id, customHost.image_url)} alt="" />
-                                    <div>
-                                        <div className="font-semibold text-sm text-nowrap">
-                                            {customHost.nickname}
+                                        className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
+                                        href={customHost.item_id ? `/profile/${customHost.profile!.handle}` : '#'}>
+                                        <img className="w-11 h-11 rounded-full mr-2"
+                                            src={getAvatar(customHost.item_id, customHost.image_url)} alt="" />
+                                        <div>
+                                            <div className="font-semibold text-sm text-nowrap">
+                                                {customHost.nickname}
+                                            </div>
+                                            <div className="text-xs text-gray-400">{lang['Host']}</div>
                                         </div>
-                                        <div className="text-xs text-gray-400">{lang['Host']}</div>
-                                    </div>
                                     </a>
                                     : <a
                                         className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"

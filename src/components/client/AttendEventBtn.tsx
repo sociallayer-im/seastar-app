@@ -34,7 +34,7 @@ export default function AttendEventBtn({eventId, lang, className, onAttended}: {
                 clientMode: CLIENT_MODE
             })
             toast({
-                title: 'Attended event',
+                title: 'Attending event',
                 variant: 'success'
             })
             if (onAttended) {
