@@ -122,7 +122,7 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
                     eventId={event.id}
                     label={lang['Star']}/>
             </div>
-            <div className="sm:order-2 order-1 flex sm:flex-row flex-col items-center">
+            <div className="sm:order-2 order-1 flex sm:flex-row flex-col items-center flex-wrap">
                 {canAccess && !!profile && !attendedEvent && !checkedIn && !event.tickets?.length &&
                     <AttendEventBtn
                         onAttended={() => {setAttendedEvent(true)}}
