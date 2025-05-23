@@ -14,6 +14,8 @@ export type GroupEventHomeParams = {
     grouphandle?: string
 }
 
+export const PAGE_SIZE = 10
+
 export type GroupEventHomeSearchParams = Omit<EventListFilterProps, 'group_id' | 'timezone'>
 
 export type GroupEventHomeDataProps = {
@@ -54,7 +56,7 @@ export default async function GroupEventHomeData({
 
     const authToken = await getServerSideAuth()
     const filteredEvents = await getEvents({
-        params: {filters: filterOpts, authToken, limit: 1000},
+        params: {filters: {...filterOpts, page: 1}, authToken, limit: PAGE_SIZE * (filterOpts.page ?? 1)},
         clientMode: CLIENT_MODE,
     })
 
@@ -64,7 +66,6 @@ export default async function GroupEventHomeData({
             track: e.track_id ? groupDetail.tracks.find(t => t.id === e.track_id) : null
         } as EventWithJoinStatus
     })
-
 
     if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0 ) {
         redirect(`/event/${groupDetail.handle}?collection=past`)
