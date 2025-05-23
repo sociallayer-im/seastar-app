@@ -51,7 +51,7 @@ export const EVENT_ROLE_DETAIL_FRAGMENT = gql`
     ${GROUP_FRAGMENT}
     ${PROFILE_FRAGMENT}
     fragment EventRoleDetailFragment on event_roles {
-      ...EventRoleFragment 
+      ...EventRoleFragment
       event {
         ...EventFragment
       }
@@ -68,10 +68,10 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
     ${EVENT_ROLE_DETAIL_FRAGMENT}
     query GetProfileEventsByHandle($handle: String!) {
         attends: participants(where: {
-            status: {_neq: "cancel"}, 
+            status: {_neq: "cancelled"},
             _or:[ {payment_status: {_is_null: true}},  {payment_status: {_eq: "succeeded"}}],
-            profile: {handle: {_eq: $handle}}, 
-            event: {status: {_neq: "cancel"}}
+            profile: {handle: {_eq: $handle}},
+            event: {status: {_neq: "cancelled"}}
             }, order_by: {id: desc}) {
                 id
                 event {
@@ -79,8 +79,8 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
                 }
         }
         hosting: events(where: {
-            owner: {handle: {_eq: $handle}}, 
-            status: {_neq: "cancel"}
+            owner: {handle: {_eq: $handle}},
+            status: {_neq: "cancelled"}
             }, order_by: {id: desc}) {
                 ...EventFragment
         }
@@ -105,8 +105,8 @@ export const GET_GROUP_EVENT_BY_HANDLE = gql`
     query GetGroupEventsByHandle($handle: String!) {
         events(where: {
             display: {_neq: "private"}
-            group: {handle: {_eq: $handle}}, 
-            status: {_neq: "cancel"}
+            group: {handle: {_eq: $handle}},
+            status: {_neq: "cancelled"}
             }, order_by: {id: desc}) {
                 ...EventFragment
         }
@@ -162,7 +162,7 @@ export const GET_MAP_EVENTS_BY_GROUP_HANDLE = gql`
     query GetMapEventsByGroupHandle($handle: String!, $now: timestamp!) {
         events(where: {
             display: {_neq: "private"},
-            group: {handle: {_eq: $handle}}, 
+            group: {handle: {_eq: $handle}},
             status: {_neq: "cancelled"},
             geo_lat: {_is_null: false},
             geo_lng: {_is_null: false}
