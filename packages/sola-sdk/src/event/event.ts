@@ -80,11 +80,18 @@ export const getProfileEventByHandle = async ({params: {handle}, clientMode}: So
     })
 
     return {
-        attends: response.data.attends.map((a: { event: Event }) => fixDate(a.event)) as Event[],
-        hosting: response.data.hosting.map((e: Event) => fixDate(e)) as Event[],
+        attends: response.data.attends
+            .filter((a: { event?: Event }) => !!a.event)
+            .map((a: { event: Event }) => fixDate(a.event)) as Event[],
+        hosting: response.data.hosting
+            .filter((a: { event?: Event }) => !!a.event)
+            .map((e: Event) => fixDate(e)) as Event[],
         coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event)) as Event[],
-        starred: response.data.starred.map((a: { event: Event }) => fixDate(a.event)) as Event[]
+        starred: response.data.starred
+            .filter((a: { event?: Event }) => !!a.event)
+            .map((a: { event: Event }) => fixDate(a.event)) as Event[]
     }
+
 }
 
 export const getGroupEventByHandle = async ({params: {handle}, clientMode}: SolaSdkFunctionParams<{
@@ -100,7 +107,8 @@ export const getGroupEventByHandle = async ({params: {handle}, clientMode}: Sola
 }
 
 export const getEventIcsUrl = ({params: {groupHandle}, clientMode}: SolaSdkFunctionParams<{ groupHandle: string }>) => {
-    const url = `${getSdkConfig(clientMode).api}/group/icalendar?group_name=${groupHandle}`
+    const nonce = new Date().getTime()
+    const url = `${getSdkConfig(clientMode).api}/group/icalendar?group_name=${groupHandle}&nonce=${nonce}`
     const googleCalendarLink = `https://www.google.com/calendar/render?cid=${encodeURIComponent(url.replace('https', 'http'))}`;
     const outlookCalendarLink = `https://outlook.live.com/calendar/0/addcalendar?url=${encodeURIComponent(url)}`;
     const systemCalendarLink = url.replace('https', 'webcal')
