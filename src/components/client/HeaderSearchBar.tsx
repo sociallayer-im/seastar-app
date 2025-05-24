@@ -11,7 +11,7 @@ export default function HeaderSearchBar({lang}: { lang: Dictionary }) {
 
     const handleSearch = () => {
         if (!keyword.trim()) return
-        window.location.href = `/search?keyword=${keyword}`
+        window.location.href = `/search?keyword=${encodeURIComponent(keyword)}`
     }
 
     const style = active ? {width: '350px', height: '32px', position: 'absolute'} : {width: '14px'}

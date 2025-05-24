@@ -28,7 +28,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
 
     const handleSearch = () => {
         if (!currKeyword.trim()) return
-        location.href = `/search?keyword=${currKeyword}&tab=${currTab}`
+        location.href = `/search?keyword=${encodeURIComponent(currKeyword)}&tab=${currTab}`
     }
 
     const tabs = [{
