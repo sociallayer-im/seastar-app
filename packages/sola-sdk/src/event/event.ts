@@ -346,7 +346,7 @@ export const getOccupiedTimeEvent = async ({
 
     const doc = gql`query MyQuery {
         events(where: {venue_id: {_eq: ${venueId}}, 
-        status: {_in: ["open", "published"]}${excludeEventId ? `,id: {_neq:${excludeEventId}}` : ''}}) {
+        status: {_neq: "cancelled"}${excludeEventId ? `,id: {_neq:${excludeEventId}}` : ''}}) {
             id
             title
             start_time
