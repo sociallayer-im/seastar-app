@@ -36,28 +36,28 @@ export const search = async ({params, clientMode}: SolaSdkFunctionParams<{ keywo
         ${BADGE_CLASS_FRAGMENT}
         query Search($keyword: String!) {
              events: events(where: {
-                    status: {_in: ["open", "published", "normal"]}, 
-                    display: {_neq: "private"}, 
-                    title: {_regex: $keyword}}, limit: 100, order_by: {id: desc}) 
+                    status: {_in: ["open", "published", "normal", "closed"]},
+                    display: {_neq: "private"},
+                    title: {_regex: $keyword}}, limit: 100, order_by: {id: desc})
                     {
                         ...EventFragment
                     },
                 groups: groups(where: {
                     _or: [{handle: {_regex: $keyword}},{nickname: {_regex: $keyword}}]
-                    }, limit: 100, order_by: {id: desc}) 
+                    }, limit: 100, order_by: {id: desc})
                     {
                         ...GroupFragment
                     },
                 profiles: profiles(where: {
                     _or: [{handle: {_regex: $keyword}},{nickname: {_regex: $keyword}}]
-                    }, limit: 100, order_by: {id: desc}) 
+                    }, limit: 100, order_by: {id: desc})
                     {
                         ...ProfileFragment
                     },
                 badgeClasses: badge_classes(where: {
                     badge_type: {_neq: "private"},
                     _or: [{name: {_regex: $keyword}},{title: {_regex: $keyword}}]
-                    }, limit: 100, order_by: {id: desc}) 
+                    }, limit: 100, order_by: {id: desc})
                     {
                         ...BadgeClassFragment
                     }

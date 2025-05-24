@@ -87,7 +87,7 @@ export const getOccupiedTimeEvent = async (startTime: string, endTime: string, t
     if (!venueId) return null
 
     const doc = gql`query MyQuery {
-        events(where: {venue_id: {_eq: ${venueId}}, status: {_eq: "open"}${excludeEventId ? `,id: {_neq:${excludeEventId}}` : ''}}) {
+        events(where: {venue_id: {_eq: ${venueId}}, status: {_neq: ["cancelled"]}${excludeEventId ? `,id: {_neq:${excludeEventId}}` : ''}}) {
             id
             title
             start_time
@@ -245,4 +245,3 @@ export const updateGroup = async (group: Solar.Group, auth_token: string) => {
     const data = await response.json()
     return data.group as Solar.Group
 }
-
