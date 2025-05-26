@@ -1,7 +1,14 @@
 'use client'
 
 import {Dictionary} from '@/lang'
-import {CommentItemType, createComment, getCommentsByItemIdAndType, ProfileDetail, Comment} from '@sola/sdk'
+import {
+    CommentItemType,
+    createComment,
+    getCommentsByItemIdAndType,
+    ProfileDetail,
+    Comment,
+    CommentType
+} from '@sola/sdk'
 import {Textarea} from '@/components/shadcn/Textarea'
 import Avatar from '@/components/Avatar'
 import {useEffect, useState} from 'react'
@@ -15,10 +22,11 @@ export interface CommentPanelProps {
     lang: Dictionary
     currProfile: ProfileDetail | null
     itemType: CommentItemType
+    commentType: CommentType
     itemId: number
 }
 
-export default function CommentPanel({lang, currProfile, itemType, itemId}: CommentPanelProps) {
+export default function CommentPanel({lang, currProfile, itemType, itemId, commentType}: CommentPanelProps) {
     const [content, setContent] = useState('')
     const [comments, setComments] = useState<Comment[]>([])
     const [loading, setLoading] = useState(true)
@@ -67,6 +75,7 @@ export default function CommentPanel({lang, currProfile, itemType, itemId}: Comm
             params: {
                 itemId,
                 itemType,
+                commentType
             },
             clientMode: CLIENT_MODE
         })

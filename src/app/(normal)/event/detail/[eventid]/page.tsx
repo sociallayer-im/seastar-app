@@ -565,6 +565,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         <CommentPanel lang={lang}
                             currProfile={currProfile}
                             itemType={'Event'}
+                            commentType={'comment'}
                             itemId={eventDetail.id} />
                     </div>
                 </div>}

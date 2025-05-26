@@ -22,8 +22,8 @@ export const COMMENT_FRAGMENT = gql`
 
 export const GET_COMMENTS_BY_ITEM_ID_AND_ITEM_TYPE = gql`
     ${COMMENT_FRAGMENT}
-    query GetCommentsByItemIdAndItemType($item_id: Int!, $item_type: String!) {
-        comments(where: {item_id: {_eq: $item_id}, item_type: {_eq: $item_type}}, order_by: {created_at: desc}) {
+    query GetCommentsByItemIdAndItemType($item_id: Int!, $item_type: String!, $comment_type: String!) {
+        comments(where: {item_id: {_eq: $item_id}, item_type: {_eq: $item_type}, comment_type: {_eq: $comment_type}}, order_by: {created_at: desc}) {
             ...CommentFragment
         }
     }

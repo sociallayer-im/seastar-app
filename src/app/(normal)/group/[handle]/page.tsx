@@ -188,6 +188,7 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                             currProfile={currProfile}
                             itemType="Group"
                             itemId={group.id}
+                            commentType={'comment'}
                         />
                     </div>
                 }

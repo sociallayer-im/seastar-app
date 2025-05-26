@@ -48,13 +48,14 @@ export const createComment = async ({params, clientMode}: SolaSdkFunctionParams<
     return data.comment as Comment
 }
 
-export const getCommentsByItemIdAndType = async ({params, clientMode}: SolaSdkFunctionParams<{itemId: number, itemType: 'Event' | 'Group'}>) => {
+export const getCommentsByItemIdAndType = async ({params, clientMode}: SolaSdkFunctionParams<{itemId: number, itemType: CommentItemType, commentType: CommentType}>) => {
     const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_COMMENTS_BY_ITEM_ID_AND_ITEM_TYPE,
         variables: {
             item_id: params.itemId,
             item_type: params.itemType,
+            comment_type: params.commentType,
         },
     })
 
