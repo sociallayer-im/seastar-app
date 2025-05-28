@@ -480,21 +480,36 @@ export const checkEventPermissionsForProfile = (eventDetail: EventDetail, groupD
     }
 }
 
-export const getTimePropsFromRange = (range?: string) => {
+export const getTimePropsFromRange = (timezone: string, range: string, collection: string) => {
+    timezone = timezone || dayjs.tz.guess()
     if (range === 'today') {
         return {
-            start_date: dayjs().format('YYYY-MM-DD'),
-            end_date: dayjs().format('YYYY-MM-DD'),
+            start_date: dayjs.tz(new Date(), timezone).format('YYYY-MM-DD'),
+            end_date: dayjs.tz(new Date(), timezone).format('YYYY-MM-DD'),
         }
     } else if (range === 'week') {
-        return {
-            start_date: dayjs().format('YYYY-MM-DD'),
-            end_date: dayjs().endOf('week').format('YYYY-MM-DD'),
+        if (collection === 'past') {
+            return {
+                start_date: dayjs.tz(new Date(), timezone).startOf('week').format('YYYY-MM-DD'),
+                end_date: dayjs.tz(new Date(), timezone).endOf('week').format('YYYY-MM-DD'),
+            }
+        } else {
+            return {
+                start_date: dayjs.tz(new Date(), timezone).format('YYYY-MM-DD'),
+                end_date: dayjs.tz(new Date(), timezone).endOf('week').format('YYYY-MM-DD'),
+            }
         }
     } else if (range === 'month') {
-        return {
-            start_date: dayjs().format('YYYY-MM-DD'),
-            end_date: dayjs().endOf('month').format('YYYY-MM-DD'),
+        if (collection === 'past') {
+            return {
+                start_date: dayjs.tz(new Date(), timezone).startOf('month').format('YYYY-MM-DD'),
+                end_date: dayjs.tz(new Date(), timezone).endOf('month').format('YYYY-MM-DD'),
+            }
+        } else {
+            return {
+                start_date: dayjs.tz(new Date(), timezone).format('YYYY-MM-DD'),
+                end_date: dayjs.tz(new Date(), timezone).endOf('month').format('YYYY-MM-DD'),
+            }
         }
     } else {
         return {

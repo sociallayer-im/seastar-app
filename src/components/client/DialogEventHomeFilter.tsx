@@ -47,7 +47,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
     const updateTimeRange = (range: string) => {
         const newOpts = {
             ...opts,
-            ...getTimePropsFromRange(range)
+            ...getTimePropsFromRange(groupDetail.timezone!, range, opts.collection)
         }
         setOpts(newOpts)
         dialogMode === 'modal' && onFilterChange(newOpts)
