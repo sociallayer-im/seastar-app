@@ -4,7 +4,7 @@ import {
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
-    analyzeGroupMembershipAndCheckProfilePermissions,
+    analyzeGroupMembershipAndCheckProfilePermissions, getTimePropsFromRange,
     setEventIsOwnerStatus,
 } from '@/utils'
 import {GoogleMapMarkerProps} from '@/components/client/Map'
@@ -55,10 +55,26 @@ export default async function GroupEventHomeData({
     }
 
     const authToken = await getServerSideAuth()
-    const filteredEvents = await getEvents({
-        params: {filters: {...filterOpts, page: 1}, authToken, limit: PAGE_SIZE * (filterOpts.page ?? 1)},
-        clientMode: CLIENT_MODE,
-    })
+
+    const [highlightedEvents, filteredEvents] = await Promise.all([
+        getEvents({
+            params: {
+                filters: {
+                    collection: undefined,
+                    group_id: groupDetail.id.toString(),
+                    ...getTimePropsFromRange(groupDetail.timezone || '', 'today'),
+                    page: 1,
+                    pined: 1,
+                },
+                authToken, limit: 1000
+            },
+            clientMode: CLIENT_MODE,
+        }),
+        await getEvents({
+            params: {filters: {...filterOpts, page: 1}, authToken, limit: PAGE_SIZE * (filterOpts.page ?? 1)},
+            clientMode: CLIENT_MODE,
+        })
+    ])
 
     const eventsWithTrack = filteredEvents.map(e => {
         return {
@@ -67,7 +83,14 @@ export default async function GroupEventHomeData({
         } as EventWithJoinStatus
     })
 
-    if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0 ) {
+    const highlightedEventsWithTrack = highlightedEvents.map(e => {
+        return {
+            ...e,
+            track: e.track_id ? groupDetail.tracks.find(t => t.id === e.track_id) : null
+        } as EventWithJoinStatus
+    })
+
+    if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0) {
         redirect(`/event/${groupDetail.handle}?collection=past`)
     }
 
@@ -94,6 +117,7 @@ export default async function GroupEventHomeData({
         filterOpts,
         groupDetail,
         currProfile,
+        highlightedEvents: setEventIsOwnerStatus({events: highlightedEventsWithTrack, currProfile}),
         events: setEventIsOwnerStatus({events: eventsWithTrack, currProfile}),
         members: [owner, ...managers, ...issuers, ...members],
         isManager,

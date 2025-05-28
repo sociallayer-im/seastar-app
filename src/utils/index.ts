@@ -480,7 +480,7 @@ export const checkEventPermissionsForProfile = (eventDetail: EventDetail, groupD
     }
 }
 
-export const getTimePropsFromRange = (timezone: string, range: string, collection: string) => {
+export const getTimePropsFromRange = (timezone: string, range: string, collection?: string) => {
     timezone = timezone || dayjs.tz.guess()
     if (range === 'today') {
         return {

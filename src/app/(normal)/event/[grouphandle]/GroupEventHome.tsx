@@ -31,7 +31,8 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
         isManager,
         filterOpts,
         mapMarkers,
-        canPublishEvent
+        canPublishEvent,
+        highlightedEvents
     } = data
 
     const { showLoading, closeModal } = useModal()
@@ -107,7 +108,11 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     lang={lang} />
 
                 <div className="my-3">
-                    <EventListGroupedByDate events={eventList} group={groupDetail} lang={lang} />
+                    <EventListGroupedByDate
+                        highlightedEvents={currFilter.collection === 'upcoming' ? highlightedEvents : []}
+                        events={eventList}
+                        group={groupDetail}
+                        lang={lang} />
                     {hasMore && <Button variant="secondary" className="w-full mb-3" 
                     onClick={() => handleFilterChange({...currFilter, page: currFilter.page ? Number(currFilter.page) + 1 : 2})}>
                         View More Events

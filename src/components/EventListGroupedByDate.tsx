@@ -5,13 +5,14 @@ import CardEvent from '@/components/CardEvent'
 import NoData from '@/components/NoData'
 import {Dictionary} from '@/lang'
 
-export default function EventListGroupedByDate({group, events, lang}: {
+export default function EventListGroupedByDate({group, events, highlightedEvents, lang}: {
     lang: Dictionary,
     group?: GroupDetail,
-    events: EventWithJoinStatus[]
+    events: EventWithJoinStatus[],
+    highlightedEvents: EventWithJoinStatus[],
 }) {
 
-    const pinnedEvents = events.filter(e => e.pinned)
+    const pinnedEvents = highlightedEvents
     const listGroupedByDate = useMemo(() => {
         let res: {
             date: string,

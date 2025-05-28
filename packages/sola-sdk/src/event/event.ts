@@ -122,7 +122,7 @@ export const getEventIcsUrl = ({params: {groupHandle}, clientMode}: SolaSdkFunct
 
 }
 
-export type EventCollectionType = "upcoming" | "past"
+export type EventCollectionType = "upcoming" | "past" | undefined
 
 export type EventFilters = {
     groupId: number,
@@ -155,7 +155,8 @@ export type EventListFilterProps = {
     track_id?: string
     skip_multi_day?: string
     skip_recurring?: string
-    page?: number
+    page?: number,
+    pined?: number,
 }
 
 export const getEvents = async ({params: {filters, authToken, limit}, clientMode}: SolaSdkFunctionParams<{
