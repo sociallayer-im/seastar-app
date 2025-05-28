@@ -64,7 +64,7 @@ export default async function GroupEventHomeData({
                     group_id: groupDetail.id.toString(),
                     ...getTimePropsFromRange(groupDetail.timezone || '', 'today'),
                     page: 1,
-                    pined: 1,
+                    pinned: 1,
                 },
                 authToken, limit: 1000
             },
