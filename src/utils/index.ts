@@ -134,7 +134,7 @@ export function eventCoverTimeStr(date: string, timezone: string) {
     const time = dayjs.tz(new Date(date).getTime(), timezone)
     const offset = time.utcOffset() / 60
     return {
-        date: time.format('ddd, MMM MM,YYYY'),
+        date: time.format('ddd, MMM DD, YYYY'),
         time: `${time.format('HH:mm')} GMT${offset >= 0 ? `+` + offset : offset}`
     }
 }

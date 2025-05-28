@@ -9,15 +9,15 @@ import {
     getAvatar,
     getEventDetailPageTimeStr, pickSearchParam, prefixUrl
 } from "@/utils"
-import { selectLang } from "@/app/actions"
-import { Button, buttonVariants } from "@/components/shadcn/Button"
+import {selectLang} from "@/app/actions"
+import {Button, buttonVariants} from "@/components/shadcn/Button"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
 import NoData from "@/components/NoData"
 import Avatar from '@/components/Avatar'
 import AddSingleEventToCalendarApp from '@/components/client/AddSingleEventToCalendarAppBtn'
 import EventFeedbackBtn from '@/components/EventFeedbackBtn'
 import AttendEventBtn from '@/components/client/AttendEventBtn'
-import { Badge } from '@/components/shadcn/Badge'
+import {Badge} from '@/components/shadcn/Badge'
 import SignInPanel from '@/components/SignInPanel'
 import RecurringListBtn from '@/app/(normal)/event/detail/[eventid]/RecurringListBtn'
 import GoogleMap from '@/components/client/Map'
@@ -28,20 +28,20 @@ import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
 import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
-import { cache } from 'react'
+import {cache} from 'react'
 import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventParticipantTab'
 import VenueDetailBtn from '@/components/client/VenueDetailBtn'
-import { getLabelColor } from '@/utils/label_color'
+import {getLabelColor} from '@/utils/label_color'
 
-const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
+const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
 
 const cachedEventDetailPage = cache(EventDetailPage)
 
-export async function generateMetadata({ params: { eventid }, searchParams: { tab } }: {
+export async function generateMetadata({params: {eventid}, searchParams: {tab}}: {
     params: EventDetailPageDataProps,
     searchParams: EventDetailPageSearchParams
 }) {
-    const { eventDetail } = await cachedEventDetailPage(eventid, pickSearchParam(tab))
+    const {eventDetail} = await cachedEventDetailPage(eventid, pickSearchParam(tab))
 
     const description = removeMarkdown(eventDetail.content || '').slice(0, 200)
     return {
@@ -56,7 +56,7 @@ export async function generateMetadata({ params: { eventid }, searchParams: { ta
     }
 }
 
-export default async function EventDetail({ params: { eventid }, searchParams: { tab: _tab } }: {
+export default async function EventDetail({params: {eventid}, searchParams: {tab: _tab}}: {
     params: EventDetailPageDataProps,
     searchParams: EventDetailPageSearchParams
 }) {
@@ -83,12 +83,12 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
         ticketsPurchased,
         currProfileStarred
     } = await cachedEventDetailPage(eventid, pickSearchParam(_tab))
-    const { lang } = await selectLang()
+    const {lang} = await selectLang()
 
     return <div className="page-width !pt-4 !pb-12">
         <div className="flex flex-row items-center justify-between sm:mb-8 mb-4">
             <a href={`/event/${groupDetail.handle}`} className="flex-row-item-center">
-                <Avatar size={24} profile={groupDetail} className="mr-1" />
+                <Avatar size={24} profile={groupDetail} className="mr-1"/>
                 <span
                     className="font-semibold font-sm overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[120px] sm:max-w-max">
                     {displayProfileName(groupDetail)}
@@ -98,25 +98,25 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
             <div className="flex-row-item-center">
                 {!!eventDetail.tickets?.length && isEventOperator &&
                     <a href={`/event/detail/${eventDetail.id}/promo-code`}
-                        className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
-                        <i className="uil-ticket text-lg" />
+                       className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
+                        <i className="uil-ticket text-lg"/>
                         <span className="sm:inline hidden ml-1 ">{lang['Promo Code']}</span>
                     </a>
                 }
                 {isEventOperator &&
                     <a href={`/event/edit/${eventDetail.id}`}
-                        className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
-                        <i className="uil-edit-alt" />
+                       className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
+                        <i className="uil-edit-alt"/>
                         <span className="sm:inline hidden ml-1 ">{lang['Edit']}</span>
                     </a>}
                 <DynamicEventCardStarBtn
                     label={lang['Star']}
                     eventId={eventDetail.id}
                     starred={currProfileStarred}
-                    kind={'normal'} />
+                    kind={'normal'}/>
                 <a href={`/event/share/${eventDetail.id}`}
-                    className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
-                    <i className="uil-external-link-alt " />
+                   className="cursor-pointer hover:bg-gray-300 flex-row-item-center ml-2 h-8 font-semibold text-base bg-gray-200 rounded-lg px-2">
+                    <i className="uil-external-link-alt "/>
                     <span className="sm:inline hidden ml-1 ">{lang['Share']}</span>
                 </a>
             </div>
@@ -127,10 +127,10 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                 {
                     !!eventDetail.cover_url
                         ? <img className="max-w-[450px] w-full mx-auto"
-                            src={eventDetail.cover_url} alt="" />
+                               src={eventDetail.cover_url} alt=""/>
                         :
                         <div className="w-[324px] h-[324px] overflow-hidden mx-auto">
-                            <div className="default-cover w-[452px] h-[452px]" style={{ transform: 'scale(0.716814)' }}>
+                            <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.716814)'}}>
                                 <div
                                     className="font-semibold text-[27px] webkit-box-clamp-2 max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                                     {eventDetail.title}
@@ -138,7 +138,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                 <div
                                     className="text-lg absolute font-semibold left-[76px] top-[178px]">
                                     {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).date}
-                                    <br />
+                                    <br/>
                                     {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).time}
                                 </div>
                                 <div
@@ -152,7 +152,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                 {currProfile ?
                     <div className="border-gray-200 border rounded-lg p-4 mt-6">
                         <div className="flex-row-item-center text-sm">
-                            <Avatar profile={currProfile!} size={24} className="mr-1" />
+                            <Avatar profile={currProfile!} size={24} className="mr-1"/>
                             <span>{displayProfileName(currProfile!)}</span>
                         </div>
 
@@ -168,23 +168,23 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <AddSingleEventToCalendarApp
                                 event={eventDetail}
                                 lang={lang}
-                                className="text-xs flex-1" />
+                                className="text-xs flex-1"/>
                             <EventFeedbackBtn eventId={eventDetail.id}
-                                lang={lang}
-                                className="text-xs flex-1 ml-2" />
+                                              lang={lang}
+                                              className="text-xs flex-1 ml-2"/>
                         </div>
 
                         {!isTicketEvent && !currProfileAttended && canAccess &&
                             <div className="flex-row-item-center mt-2">
                                 <AttendEventBtn eventId={eventDetail.id} lang={lang}
-                                    className="text-xs flex-1" />
+                                                className="text-xs flex-1"/>
                             </div>
                         }
 
                         {isTicketEvent && !currProfileAttended && canAccess &&
                             <div className="flex-row-item-center mt-2">
                                 <a href={`/event/detail/${eventDetail.id}?tab=tickets`}
-                                    className={`${buttonVariants({ variant: 'special' })} text-xs flex-1`}>
+                                   className={`${buttonVariants({variant: 'special'})} text-xs flex-1`}>
                                     {lang['Join Event(RSVP)']}
                                 </a>
                             </div>
@@ -193,14 +193,14 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         {isEventOperator ?
                             eventDetail.badge_class_id
                                 ? <div className="flex-row-item-center mt-2">
-                                    <a className={`${buttonVariants({ variant: 'secondary' })} text-xs flex-1`}
-                                        href={`/event/checkin-for-participants/${eventDetail.id}`}>
+                                    <a className={`${buttonVariants({variant: 'secondary'})} text-xs flex-1`}
+                                       href={`/event/checkin-for-participants/${eventDetail.id}`}>
                                         <span>{lang['Check-In And Send POAP']}</span>
                                     </a>
                                 </div>
                                 : <div className="flex-row-item-center mt-2">
-                                    <a className={`${buttonVariants({ variant: 'secondary' })} text-xs flex-1`}
-                                        href={`/event/checkin-for-participants/${eventDetail.id}`}>
+                                    <a className={`${buttonVariants({variant: 'secondary'})} text-xs flex-1`}
+                                       href={`/event/checkin-for-participants/${eventDetail.id}`}>
                                         <span>{lang['Check-In For Participants']}</span>
                                     </a>
                                 </div>
@@ -209,8 +209,8 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
                         {!currProfileCheckedIn && currProfileAttended && !isEventOperator &&
                             <div className="flex-row-item-center mt-2">
-                                <a className={`${buttonVariants({ variant: 'primary' })} text-xs flex-1`}
-                                    href={`/event/checkin/${eventDetail.id}`}>
+                                <a className={`${buttonVariants({variant: 'primary'})} text-xs flex-1`}
+                                   href={`/event/checkin/${eventDetail.id}`}>
                                     <span>{lang['Check-In']}</span>
                                 </a>
                             </div>
@@ -219,7 +219,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         {currProfileCheckedIn &&
                             <div className="flex-row-item-center mt-2">
                                 <Button disabled={true} variant={'secondary'}
-                                    className="text-xs flex-1">
+                                        className="text-xs flex-1">
                                     {lang['Checked']}
                                 </Button>
                             </div>
@@ -227,11 +227,11 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
                         {!!ticketsPurchased.length &&
                             <div className="mt-3">
-                                <MyTicketList tickets={ticketsPurchased} lang={lang} />
+                                <MyTicketList tickets={ticketsPurchased} lang={lang}/>
                             </div>
                         }
                     </div>
-                    : <SignInPanel lang={lang} />
+                    : <SignInPanel lang={lang}/>
                 }
             </div>
 
@@ -241,9 +241,9 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                 </div>
 
                 {eventDetail.track && <div className="flex-row-item-center gap-1.5 text-lg mt-1"
-                        style={{ color: getLabelColor(eventDetail.track.title) }}>
-                        {eventDetail.track.title}
-                    </div>}
+                                           style={{color: getLabelColor(eventDetail.track.title)}}>
+                    {eventDetail.track.title}
+                </div>}
 
 
                 <div className="flex-row-item-center my-3 gap-3 overflow-auto !flex-wrap">
@@ -270,7 +270,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             const color = getLabelColor(tag)
 
                             return <div className="flex-row-item-center gap-1.5 text-sm">
-                                <i className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                                <i className="w-2 h-2 rounded-full" style={{backgroundColor: color}}/>
                                 <div>{tag}</div>
                             </div>
                         })
@@ -280,53 +280,49 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
                 <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">
                     <div className="hide-scroll whitespace-nowrap overflow-auto max-w-[640px]">
-                        {
-                            !!groupHost ?
-                                groupHost.group
-                                    ? <a
+                        {!!customHost ?
+                            <a key={customHost.id}
+                               className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
+                               href={customHost.item_id ? `/profile/${customHost.profile!.handle}` : '#'}>
+                                <img className="w-11 h-11 rounded-full mr-2"
+                                     src={getAvatar(customHost.item_id, customHost.image_url)} alt=""/>
+                                <div>
+                                    <div className="font-semibold text-sm text-nowrap">
+                                        {customHost.nickname}
+                                    </div>
+                                    <div className="text-xs text-gray-400">{lang['Host']}</div>
+                                </div>
+                            </a> : !!groupHost ?
+                                (groupHost.group ? <a
                                         className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
                                         href={groupHost.group ? `/group/${groupHost.group!.handle}` : undefined}>
-                                        <Avatar profile={groupHost.group!} size={44} className="mr-2" />
+                                        <Avatar profile={groupHost.group!} size={44} className="mr-2"/>
                                         <div>
                                             <div className="font-semibold text-sm text-nowrap">
                                                 {groupHost.nickname}
                                             </div>
                                             <div className="text-xs text-gray-400">{lang['Host']}</div>
                                         </div>
-                                    </a> : null
-                                : customHost
-                                    ? <a key={customHost.id}
-                                        className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                        href={customHost.item_id ? `/profile/${customHost.profile!.handle}` : '#'}>
-                                        <img className="w-11 h-11 rounded-full mr-2"
-                                            src={getAvatar(customHost.item_id, customHost.image_url)} alt="" />
-                                        <div>
-                                            <div className="font-semibold text-sm text-nowrap">
-                                                {customHost.nickname}
-                                            </div>
-                                            <div className="text-xs text-gray-400">{lang['Host']}</div>
+                                    </a> : null)
+                                : <a className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
+                                   href={`/profile/${owner.handle}`}>
+                                    <Avatar profile={owner} size={44} className="mr-2"/>
+                                    <div>
+                                        <div className="font-semibold text-sm text-nowrap">
+                                            {displayProfileName(owner)}
                                         </div>
-                                    </a>
-                                    : <a
-                                        className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                        href={`/profile/${owner.handle}`}>
-                                        <Avatar profile={owner} size={44} className="mr-2" />
-                                        <div>
-                                            <div className="font-semibold text-sm text-nowrap">
-                                                {displayProfileName(owner)}
-                                            </div>
-                                            <div className="text-xs text-gray-400">{lang['Host']}</div>
-                                        </div>
-                                    </a>
+                                        <div className="text-xs text-gray-400">{lang['Host']}</div>
+                                    </div>
+                                </a>
                         }
 
                         {
                             eventDetail.event_roles?.filter(role => role.role === 'co_host').map(role => {
                                 return <a key={role.id}
-                                    className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                    href={role.item_id ? `/profile/${role.profile!.handle}` : '#'}>
+                                          className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
+                                          href={role.item_id ? `/profile/${role.profile!.handle}` : '#'}>
                                     <img className="w-11 h-11 rounded-full mr-2"
-                                        src={getAvatar(role.item_id, role.image_url)} alt="" />
+                                         src={getAvatar(role.item_id, role.image_url)} alt=""/>
                                     <div>
                                         <div className="font-semibold text-sm text-nowrap">
                                             {role.nickname}
@@ -342,10 +338,10 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         {
                             eventDetail.event_roles?.filter(role => role.role === 'speaker').map(role => {
                                 return <a key={role.id}
-                                    className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                    href={role.item_id ? `/profile/${role.profile!.handle}` : undefined}>
+                                          className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
+                                          href={role.item_id ? `/profile/${role.profile!.handle}` : undefined}>
                                     <img className="w-11 h-11 rounded-full mr-2"
-                                        src={getAvatar(role.item_id, role.image_url)} alt="" />
+                                         src={getAvatar(role.item_id, role.image_url)} alt=""/>
                                     <div>
                                         <div className="font-semibold text-sm text-nowrap">
                                             {role.nickname}
@@ -368,7 +364,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div className="font-semibold text-base">{getEventDetailPageTimeStr(eventDetail).date}</div>
                             <div className="text-gray-400 text-base">{getEventDetailPageTimeStr(eventDetail).time}</div>
                             {!!recurring &&
-                                <RecurringListBtn lang={lang} recurring={recurring} currEventId={eventDetail.id} />
+                                <RecurringListBtn lang={lang} recurring={recurring} currEventId={eventDetail.id}/>
                             }
                         </div>
                     </div>
@@ -392,12 +388,12 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         <div className="ml-11 -mt-4">
                             <div className="flex-row-item-center mb-2">
                                 <a className="text-xs text-blue-400 cursor-pointer mr-3"
-                                    target={'_blank'}
-                                    href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
+                                   target={'_blank'}
+                                   href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
 
                                 {!!eventDetail.formatted_address &&
                                     <ClickToCopy text={eventDetail.formatted_address}
-                                        className={'text-xs text-blue-400 cursor-pointer mr-3'}>
+                                                 className={'text-xs text-blue-400 cursor-pointer mr-3'}>
                                         {lang['Copy Address']}
                                     </ClickToCopy>
                                 }
@@ -408,11 +404,11 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                         groupHandle={groupDetail.handle}
                                         venueId={eventDetail.venue_id}
                                         className="text-xs text-blue-400 cursor-pointer mr-3"
-                                        label={lang['Venue Detail']} />
+                                        label={lang['Venue Detail']}/>
                                 }
                             </div>
                             <GoogleMap
-                                style={{ height: '160px', width: '100%' }}
+                                style={{height: '160px', width: '100%'}}
                                 center={{
                                     lng: eventDetail.geo_lng,
                                     lat: eventDetail.geo_lat
@@ -423,7 +419,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                         lng: eventDetail.geo_lng,
                                         lat: eventDetail.geo_lat
                                     }
-                                }]} />
+                                }]}/>
                         </div>
                     }
 
@@ -436,7 +432,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div>
                                 <div className="font-semibold text-base">{lang['Online Meeting']}</div>
                                 <a href={prefixUrl(eventDetail.meeting_url)} target={'_blank'}
-                                    className="text-gray-400 text-base hover:text-blue-400">
+                                   className="text-gray-400 text-base hover:text-blue-400">
                                     {eventDetail.meeting_url}
                                 </a>
                             </div>
@@ -444,59 +440,59 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     }
 
                     {!!eventDetail.badge_class &&
-                        <a className={`${buttonVariants({ variant: 'secondary' })} mt-2 w-full !h-auto`}
-                            href={`/badge-class/${eventDetail.badge_class.id}`}>
+                        <a className={`${buttonVariants({variant: 'secondary'})} mt-2 w-full !h-auto`}
+                           href={`/badge-class/${eventDetail.badge_class.id}`}>
                             <div className="flex flex-row justify-between w-full items-center text-sm">
                                 <div className="flex-1 whitespace-pre-line">
                                     {lang['Registration for the event, upon completion, will be rewarded with POAP*1']}
                                 </div>
                                 <Image className="min-w-9 min-h-9 rounded-full"
-                                    src={eventDetail.badge_class.image_url!} width={36} height={36} alt="" />
+                                       src={eventDetail.badge_class.image_url!} width={36} height={36} alt=""/>
                             </div>
                         </a>}
                 </div>
 
                 <div className="grid sm:flex grid-cols-2 font-semibold mt-6">
                     <a href={'?tab=content'}
-                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 relative">
+                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 relative">
                         <span className="z-10">{lang['Content']}</span>
                         {(tab === 'content' || tab === '') &&
                             <img width={90} height={12}
-                                className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
-                                src="/images/tab_bg.png" alt="" />
+                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
+                                 src="/images/tab_bg.png" alt=""/>
                         }
                     </a>
                     {isTicketEvent && <a href={'?tab=tickets'}
-                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2  mr-0 relative border-l-[1px] border-gray-200">
+                                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2  mr-0 relative border-l-[1px] border-gray-200">
                         <div className="z-10">
                             {lang['Tickets']}
                             <span className="text-xs">({eventDetail.tickets?.length})</span>
                         </div>
                         {tab === 'tickets' &&
                             <img width={90} height={12}
-                                className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
-                                src="/images/tab_bg.png" alt="" />
+                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
+                                 src="/images/tab_bg.png" alt=""/>
                         }
                     </a>
                     }
                     <a href={'?tab=comments'}
-                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2  mr-0 relative border-l-[1px] border-gray-200">
+                       className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2  mr-0 relative border-l-[1px] border-gray-200">
                         <span className="z-10">{lang['Comments']}</span>
                         {tab === 'comments' &&
                             <img width={90} height={12}
-                                className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
-                                src="/images/tab_bg.png" alt="" />
+                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
+                                 src="/images/tab_bg.png" alt=""/>
                         }
                     </a>
                     {showParticipants && <a href={'?tab=participants'}
-                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
+                                            className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <div className="z-10">
                             {lang['Participants']}
                         </div>
                         {tab === 'participants' &&
                             <img width={90} height={12}
-                                className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
-                                src="/images/tab_bg.png" alt="" />
+                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
+                                 src="/images/tab_bg.png" alt=""/>
                         }
                     </a>
                     }
@@ -521,9 +517,9 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             </div>
                         }
 
-                        {!eventDetail.content && !eventDetail.notes && <NoData />}
+                        {!eventDetail.content && !eventDetail.notes && <NoData/>}
                         <div className="editor-wrapper display my-3">
-                            <RichTextDisplayer markdownStr={eventDetail.content || ''} />
+                            <RichTextDisplayer markdownStr={eventDetail.content || ''}/>
                         </div>
 
                         {!!eventDetail.notes ?
@@ -531,13 +527,13 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                 <div className="bg-secondary border-dashed border-2 rounded-lg p-3 mt-8 ">
                                     <div className="font-semibold mb-2">{lang['Event Note']}</div>
                                     <div className="editor-wrapper display">
-                                        <RichTextDisplayer markdownStr={eventDetail.notes || ''} />
+                                        <RichTextDisplayer markdownStr={eventDetail.notes || ''}/>
                                     </div>
                                 </div>
                                 : <div className="bg-secondary border-dashed border-2 rounded-lg p-3 mt-8 ">
                                     <div className="font-semibold mb-2">{lang['Attend event to view notes']}</div>
-                                    <div className="bg-gray-300 w-full h-4 rounded-lg mb-2" />
-                                    <div className="bg-gray-300 w-80 h-4 rounded-lg" />
+                                    <div className="bg-gray-300 w-full h-4 rounded-lg mb-2"/>
+                                    <div className="bg-gray-300 w-80 h-4 rounded-lg"/>
                                 </div>
                             : null
                         }
@@ -557,16 +553,16 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     <TicketList
                         eventDetail={eventDetail}
                         lang={lang}
-                        currProfile={currProfile} />
+                        currProfile={currProfile}/>
                 }
 
                 {tab === 'comments' && <div>
                     <div className="py-4">
                         <CommentPanel lang={lang}
-                            currProfile={currProfile}
-                            itemType={'Event'}
-                            commentType={'comment'}
-                            itemId={eventDetail.id} />
+                                      currProfile={currProfile}
+                                      itemType={'Event'}
+                                      commentType={'comment'}
+                                      itemId={eventDetail.id}/>
                     </div>
                 </div>}
 

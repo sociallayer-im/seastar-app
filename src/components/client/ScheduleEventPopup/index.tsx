@@ -30,7 +30,15 @@ export default function ScheduleEventPopup({event, timezone, lang, starred, prof
     const eventProcess = checkProcess(event.start_time, event.end_time)
 
     const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
-    const host: Solar.ProfileSample = groupHostRole ?
+    const customHostRole = event.event_roles?.find(r => r.role === 'custom_host')
+    const host: Solar.ProfileSample = customHostRole ?
+        {
+            image_url: customHostRole.image_url,
+            nickname: customHostRole.nickname,
+            handle: customHostRole.nickname!,
+            id: customHostRole.item_id!
+        }
+        : groupHostRole ?
         {
             image_url: groupHostRole.image_url,
             nickname: groupHostRole.nickname,
