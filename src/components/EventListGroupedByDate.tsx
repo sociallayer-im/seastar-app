@@ -55,7 +55,7 @@ export default function EventListGroupedByDate({group, events, highlightedEvents
                 <div className="text-lg font-semibold mb-2">{item.date}</div>
                 {
                     item.events.map((event, index) => {
-                        return <CardEvent className="mb-3" key={index} event={event} lang={lang}/>
+                        return <CardEvent className="mb-3" key={index} event={event} lang={lang} highlight={event.pinned}/>
                     })
                 }
             </div>
