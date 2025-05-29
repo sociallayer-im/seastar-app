@@ -84,7 +84,6 @@ export const getProfileEventByHandle = async ({params: {handle}, clientMode}: So
             .filter((a: { event?: Event }) => !!a.event)
             .map((a: { event: Event }) => fixDate(a.event)) as Event[],
         hosting: response.data.hosting
-            .filter((a: { event?: Event }) => !!a.event)
             .map((e: Event) => fixDate(e)) as Event[],
         coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event)) as Event[],
         starred: response.data.starred
