@@ -109,7 +109,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
 
                 <div className="my-3">
                     <EventListGroupedByDate
-                        highlightedEvents={currFilter.collection === 'upcoming' ? highlightedEvents : []}
+                        highlightedEvents={currFilter.collection === 'upcoming' && !currFilter.search_title ? highlightedEvents : []}
                         events={eventList}
                         group={groupDetail}
                         lang={lang} />
