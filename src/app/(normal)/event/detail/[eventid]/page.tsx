@@ -85,6 +85,34 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
     } = await cachedEventDetailPage(eventid, pickSearchParam(_tab))
     const {lang} = await selectLang()
 
+    let locationInfo: {
+        location: string | null
+        formatted_address: string | null
+        geo_lat: number | null
+        geo_lng: number | null
+    } = {
+        location: '',
+        formatted_address: null,
+        geo_lat: null,
+        geo_lng: null,
+    }
+
+    if (!!eventDetail.venue) {
+        locationInfo = {
+            location: eventDetail.venue.title,
+            formatted_address: eventDetail.venue.formatted_address,
+            geo_lat: eventDetail.venue.geo_lat,
+            geo_lng: eventDetail.venue.geo_lng
+        }
+    } else if (!!eventDetail.location) {
+        locationInfo = {
+            location: eventDetail.location,
+            formatted_address: eventDetail.formatted_address,
+            geo_lat: eventDetail.geo_lat,
+            geo_lng: eventDetail.geo_lng
+        }
+    }
+
     return <div className="page-width !pt-4 !pb-12">
         <div className="flex flex-row items-center justify-between sm:mb-8 mb-4">
             <a href={`/event/${groupDetail.handle}`} className="flex-row-item-center">
@@ -368,47 +396,33 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                             }
                         </div>
                     </div>
-                    {!!eventDetail.venue &&
-                        <div className="flex-row-item-center my-4">
-                            <div
-                                className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
-                                <i className="uil-location-point text-base"></i>
-                            </div>
-                            <div>
-                                <div className="font-semibold text-base">{eventDetail.venue.title}</div>
-                                {eventDetail.venue.formatted_address &&
-                                    <div className="text-gray-400 text-base">
-                                        {eventDetail.venue.formatted_address}
-                                    </div>
-                                }
-                            </div>
-                        </div>
+                    {!!locationInfo.location &&
+                       <>
+                           <div className="flex-row-item-center my-4">
+                               <div
+                                   className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
+                                   <i className="uil-location-point text-base"></i>
+                               </div>
+                               <div>
+                                   <div className="font-semibold text-base">{locationInfo.location}</div>
+                                   {locationInfo.formatted_address &&
+                                       <div className="text-gray-400 text-base">
+                                           {locationInfo.formatted_address}
+                                       </div>
+                                   }
+                               </div>
+                           </div>
+                       </>
                     }
-                    {!!eventDetail.location && !eventDetail.venue &&
-                        <div className="flex-row-item-center my-4">
-                            <div
-                                className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
-                                <i className="uil-location-point text-base"></i>
-                            </div>
-                            <div>
-                                <div className="font-semibold text-base">{eventDetail.location}</div>
-                                {!!eventDetail.formatted_address &&
-                                    <div className="text-gray-400 text-base">
-                                        {eventDetail.formatted_address}
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
-                    {!!eventDetail.geo_lat && !!eventDetail.geo_lng &&
+                    {!!locationInfo.geo_lat && !!locationInfo.geo_lng &&
                         <div className="ml-11 -mt-4">
                             <div className="flex-row-item-center mb-2">
                                 <a className="text-xs text-blue-400 cursor-pointer mr-3"
                                    target={'_blank'}
                                    href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
 
-                                {!!eventDetail.formatted_address &&
-                                    <ClickToCopy text={eventDetail.formatted_address}
+                                {!!locationInfo.formatted_address &&
+                                    <ClickToCopy text={locationInfo.formatted_address}
                                                  className={'text-xs text-blue-400 cursor-pointer mr-3'}>
                                         {lang['Copy Address']}
                                     </ClickToCopy>
@@ -426,14 +440,14 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                             <GoogleMap
                                 style={{height: '160px', width: '100%'}}
                                 center={{
-                                    lng: eventDetail.geo_lng,
-                                    lat: eventDetail.geo_lat
+                                    lng: locationInfo.geo_lng,
+                                    lat: locationInfo.geo_lat
                                 }}
                                 markers={[{
                                     title: eventDetail.title,
                                     position: {
-                                        lng: eventDetail.geo_lng,
-                                        lat: eventDetail.geo_lat
+                                        lng: locationInfo.geo_lng,
+                                        lat: locationInfo.geo_lat
                                     }
                                 }]}/>
                         </div>
