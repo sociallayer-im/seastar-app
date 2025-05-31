@@ -8,7 +8,7 @@ import SignInPanel from '@/components/SignInPanel'
 import EventHomeFilter from '@/components/client/EventHomeFilter'
 import EventListGroupedByDate from '@/components/EventListGroupedByDate'
 import EventHomeMap from '@/app/(normal)/event/[grouphandle]/EventHomeMap'
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { EventListFilterProps, EventWithJoinStatus, getEvents } from "@sola/sdk"
 import { Dictionary } from "@/lang"
 import useModal from '@/components/client/Modal/useModal'
@@ -40,6 +40,24 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
     const [eventList, setEventList] = useState<EventWithJoinStatus[]>(events)
     const [currFilter, setCurrFilter] = useState<EventListFilterProps>(filterOpts)
     const [hasMore, setHasMore] = useState<boolean>(!!events.length)
+
+    const checkUiStatus = (currFilter: EventListFilterProps):{
+        isFiltered: boolean,
+        showHighlight: boolean
+    } => {
+        const isFiltered = !!currFilter.skip_recurring
+            || !!currFilter.skip_multi_day
+            || !!currFilter.start_date
+            || !!currFilter.end_date
+            || !!currFilter.venue_id
+            || !!currFilter.tags
+        return {
+            isFiltered,
+            showHighlight: currFilter.collection === 'upcoming' && !currFilter.search_title && !isFiltered
+        }
+    }
+
+    const [uiStatus, setUiStatus] = useState(checkUiStatus(currFilter))
 
     const handleFilterChange = async (filter: EventListFilterProps) => {
         setCurrFilter(filter)
@@ -81,13 +99,13 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                 setEventList([...eventList, ...listWithTrack])
             }
 
+            setUiStatus(checkUiStatus(filter))
         } catch (e) {
             console.error(e)
         } finally {
             closeModal(loading)
         }
     }
-
 
     return <div style={{ background: '#fff url(/images/event_home_bg.png) top center repeat-x' }}>
         <div className="page-width min-h-[100svh] sm:pt-8 pt-3 flex-col flex md:flex-row">
@@ -105,15 +123,16 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     onFilterChange={(filter) => handleFilterChange({...filter, page: 1})}
                     groupDetail={groupDetail}
                     isManager={isManager}
+                    isFiltered={uiStatus.isFiltered}
                     lang={lang} />
 
                 <div className="my-3">
                     <EventListGroupedByDate
-                        highlightedEvents={currFilter.collection === 'upcoming' && !currFilter.search_title ? highlightedEvents : []}
+                        highlightedEvents={ uiStatus.showHighlight ? highlightedEvents : []}
                         events={eventList}
                         group={groupDetail}
                         lang={lang} />
-                    {hasMore && <Button variant="secondary" className="w-full mb-3" 
+                    {hasMore && <Button variant="secondary" className="w-full mb-3"
                     onClick={() => handleFilterChange({...currFilter, page: currFilter.page ? Number(currFilter.page) + 1 : 2})}>
                         View More Events
                     </Button>}

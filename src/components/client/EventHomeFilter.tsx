@@ -16,9 +16,10 @@ export interface EventHomeFilterProps {
     lang: Dictionary
     isManager?: boolean
     onFilterChange: (filter: EventListFilterProps) => void
+    isFiltered?: boolean
 }
 
-export default function EventHomeFilter({filterOpts, groupDetail, lang, isManager, onFilterChange}: EventHomeFilterProps) {
+export default function EventHomeFilter({filterOpts, groupDetail, lang, isManager, isFiltered ,onFilterChange}: EventHomeFilterProps) {
     const [search, setSearch] = useState(filterOpts.search_title || '')
     const {openModal} = useModal()
 
@@ -32,16 +33,6 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                 close={close!}/>
         })
     }
-
-    const isFiltered = useMemo(() => {
-        return !!filterOpts.skip_recurring
-            || !!filterOpts.skip_multi_day
-            || !!filterOpts.start_date
-            || !!filterOpts.end_date
-            || !!filterOpts.venue_id
-            || !!filterOpts.tags
-    }, [filterOpts])
-
     return <>
         <div className="flex-row-item-center">
             <a href="?collection=upcoming"
