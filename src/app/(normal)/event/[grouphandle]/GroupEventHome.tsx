@@ -91,7 +91,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                 }
             })
 
-            setHasMore(listWithTrack.length !== 0)
+            setHasMore(listWithTrack.length === PAGE_SIZE)
 
             if (filter.page === 1) {
                 setEventList(listWithTrack)
@@ -132,6 +132,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                         events={eventList}
                         group={groupDetail}
                         lang={lang} />
+
                     {hasMore && <Button variant="secondary" className="w-full mb-3"
                     onClick={() => handleFilterChange({...currFilter, page: currFilter.page ? Number(currFilter.page) + 1 : 2})}>
                         View More Events
