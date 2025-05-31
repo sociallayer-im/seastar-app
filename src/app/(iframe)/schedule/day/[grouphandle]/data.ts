@@ -3,7 +3,7 @@
 import dayjs, {DayjsType} from "@/libs/dayjs"
 import {CSSProperties} from 'react'
 import {getLabelColor, getLightColor} from "@/utils/label_color"
-import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
+import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data_deprecated"
 
 
 export interface ConcurrencyEvent extends IframeSchedulePageDataEvent {

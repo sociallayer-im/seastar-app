@@ -31,7 +31,7 @@ export default function ScheduleCompactView({data: initialData, groupDetail, eve
     const [data, setData] = useState<IframeSchedulePageDataType>(initialData)
     
     const interval = useMemo(() => {
-        const {start, end} = getInterval(data.currDate, 'compact')
+        const {start, end} = getInterval(data.currDate, 'compact', groupDetail.timezone || undefined)
         const interval = []
         let current = dayjs.tz(start, groupDetail.timezone!)
         while (current.isSameOrBefore(dayjs.tz(end, groupDetail.timezone!))) {

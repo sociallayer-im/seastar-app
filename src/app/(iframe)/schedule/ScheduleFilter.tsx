@@ -1,12 +1,11 @@
 import {useEffect, useMemo, useState} from "react"
 import {getLabelColor} from "@/utils/label_color"
-import {Filter} from "@/app/(iframe)/schedule/data"
 import {Checkbox} from '@/components/shadcn/Checkbox'
 import {Button} from "@/components/shadcn/Button"
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {getAuth} from '@/utils'
-import { IframeSchedulePageSearchParams } from "./utils"
+import { IframeSchedulePageSearchParams, Filter } from "./utils"
 
 export interface ScheduleFilterLabels {
     filters?: string

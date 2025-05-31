@@ -33,7 +33,7 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
     const {toast} = useToast()
 
     const interval = useMemo(() => {
-        const {start, end} = getInterval(data.currDate, 'week')
+        const {start, end} = getInterval(data.currDate, 'week', groupDetail.timezone || undefined)
         const interval = []
         let current = dayjs.tz(start, groupDetail.timezone!)
         while (current.isSameOrBefore(dayjs.tz(end, groupDetail.timezone!))) {

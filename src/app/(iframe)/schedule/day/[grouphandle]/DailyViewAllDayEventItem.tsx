@@ -2,7 +2,7 @@
 
 import {getLabelColor, getLightColor} from "@/utils/label_color"
 import {useEffect} from "react"
-import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data"
+import {IframeSchedulePageDataEvent} from "@/app/(iframe)/schedule/data_deprecated"
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 import {Dictionary} from '@/lang'
 

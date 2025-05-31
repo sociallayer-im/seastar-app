@@ -134,7 +134,9 @@ export async function IframeSchedulePageData({
     }
     const startDate = pickSearchParam(searchParams.start_date)
 
-    const {start, end} = getInterval(startDate, view)
+    const {start, end} = getInterval(startDate, view, groupDetail.timezone || undefined)
+
+    console.log('start, end', start, end)
 
     const apiSearchParams = new URLSearchParams()
     apiSearchParams.set('group_id', groupName)

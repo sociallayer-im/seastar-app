@@ -18,8 +18,8 @@ export default function ScheduleViewSwitcher({weeklyUrl, dailyUrl, compactUrl, l
     }
 
     const opts = [
-        {label: 'List', value: 'list', href: listingUrl},
         {label: 'Compact', value: 'compact', href: compactUrl},
+        {label: 'List', value: 'list', href: listingUrl},
         {label: 'Week', value: 'week', href: weeklyUrl},
        //  {label: 'Day', value: 'day', href: dailyUrl}
     ]

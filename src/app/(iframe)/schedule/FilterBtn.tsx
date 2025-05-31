@@ -2,9 +2,8 @@
 
 import useModal from "@/components/client/Modal/useModal"
 import ScheduleFilter, {ScheduleFilterLabels} from "@/app/(iframe)/schedule/ScheduleFilter"
-import {Filter} from "@/app/(iframe)/schedule/data"
 import {Button} from "@/components/shadcn/Button"
-import { IframeSchedulePageSearchParams } from "./utils"
+import { IframeSchedulePageSearchParams, Filter } from "./utils"
 
 interface FilterBtnProps {
     filters: Filter,

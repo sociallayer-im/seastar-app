@@ -136,7 +136,7 @@ export async function IframeSchedulePageData({   searchParams,
         skipMultiDay: searchParams.skip_multi_day === 'true'
     }
     const startDate = pickSearchParam(searchParams.start_date)
-    const {start, end} = getInterval(startDate, view)
+    const {start, end} = getInterval(startDate, view, groupDetail.timezone || undefined)
     
     const apiSearchParams = new URLSearchParams()
     apiSearchParams.set('group_id', groupName)
@@ -226,7 +226,7 @@ export async function IframeSchedulePageData({   searchParams,
         tracks: groupDetail.tracks || [],
         venues: groupDetail.venues || [],
         filters: filters,
-        currDate: startDate ? startDate : intervelStart.format('YYYY-MM-DD'),
+        currDate: startDate ? startDate : dayjs.tz(undefined, groupDetail.timezone || dayjs.tz.guess()).format('YYYY-MM-DD'),
         weeklyUrl,
         dailyUrl,
         listingUrl,

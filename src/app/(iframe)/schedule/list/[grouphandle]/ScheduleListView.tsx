@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from "react"
+import {useEffect, useMemo, useState} from "react"
 import { GroupDetail } from "@sola/sdk"
 import {IframeSchedulePageSearchParams, IframeSchedulePageDataType } from "@/app/(iframe)/schedule/utils"
 import { Dictionary } from "@/lang"
@@ -33,7 +33,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
     const {closeModal, showLoading} = useModal()
     const {toast} = useToast()
     const interval = useMemo(() => {
-        const {start, end} = getInterval(data.currDate, 'list')
+        const {start, end} = getInterval(data.currDate, 'list', groupDetail.timezone || undefined)
         const interval = []
         let current = dayjs.tz(start, groupDetail.timezone!)
         while (current.isSameOrBefore(dayjs.tz(end, groupDetail.timezone!))) {
@@ -45,6 +45,15 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
 
     const [currStartDate, setCurrStartDate] = useState<string>(data.currDate)
 
+    const scrollIntoView = (dateString: string) => {
+        const id = dayjs(dateString).format('MMM DD')
+        const element = document.getElementById(id)
+        if (element) {
+            element.style.scrollMarginTop = "80px";
+            element.scrollIntoView({behavior: 'smooth', block: 'start'})
+        }
+    }
+
     const handleSelectDate = (searchParams: IframeSchedulePageSearchParams) => {
         const newSearchParams = new URLSearchParams()
             Object.entries(searchParams).forEach(([key, value]) => {
@@ -54,6 +63,9 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
             if (!!searchParams.start_date) {
                 setCurrStartDate(searchParams.start_date as string)
                 window.history.replaceState({}, '', `${window.location.pathname}?${newSearchParams.toString()}`)
+                setTimeout(() => {
+                    scrollIntoView(searchParams.start_date as string)
+                }, 100)
             }
     }
 
@@ -87,6 +99,17 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
             closeModal()
         }
     }
+
+    useEffect(() => {
+        if (data.currDate) {
+            const id = dayjs(data.currDate).format('MMM DD')
+            const element = document.getElementById(id)
+            if (element) {
+                element.style.scrollMarginTop = "80px";
+                element.scrollIntoView({behavior: 'smooth', block: 'start'})
+            }
+        }
+    }, []);
 
     return <div className="min-h-[100svh] relative pb-12 bg-[#F8F9F8] w-full">
     <div className="schedule-bg"></div>
@@ -206,7 +229,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
             onSelectDate={handleSelectDate}
             onChange={handleFilterChange}
             timezone={data.group.timezone}
-            currStartDate={currStartDate}/>
+            currStartDate={currStartDate} />
 
             <div>
             {Object.keys(events).map((startDate, index) => {

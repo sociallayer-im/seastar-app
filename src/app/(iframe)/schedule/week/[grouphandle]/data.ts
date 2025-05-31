@@ -26,7 +26,7 @@ export async function calculateGridPosition({
     const timezone = groupDetail.timezone || 'UTC'
 
     const startDate = pickSearchParam(searchParams.start_date)
-    const {start, end} = getInterval(startDate, 'week')
+    const {start, end} = getInterval(startDate, 'week', groupDetail.timezone || undefined)
     
     const interval: DayjsType[] = []
     let current = dayjs.tz(start, groupDetail.timezone!)

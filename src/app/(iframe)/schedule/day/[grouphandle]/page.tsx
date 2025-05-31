@@ -9,7 +9,7 @@ import {
     IframeSchedulePageData,
     IframeSchedulePageParams,
     IframeSchedulePageSearchParams
-} from "@/app/(iframe)/schedule/data"
+} from "@/app/(iframe)/schedule/data_deprecated"
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[grouphandle]/DailyViewAllDayEventItem"
@@ -56,7 +56,7 @@ export default async function IframeScheduleDailyPage({searchParams, params}: {
     }
 
     const {events: displayEvents, allDayEvents} = await calculateGridPosition({
-        events: data.events,
+        events: data.events as any[],
         timezone: data.group.timezone,
         currDate: data.interval[0].format('YYYY-MM-DD')
     })

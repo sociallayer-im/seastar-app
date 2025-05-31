@@ -154,7 +154,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     <div className='text-xs'>{members.length} {lang['Members']} <i className="uil-arrow-right" /></div>
                 </a>
 
-                <a href={`/event/${groupDetail.handle}/schedule/list`}
+                <a href={`/event/${groupDetail.handle}/schedule/compact`}
                     className={`${buttonVariants({ variant: "warm" })} w-full`}>
                     <i className="uil-calender text-lg" />
                     <span>{lang['Event Schedule']}</span>

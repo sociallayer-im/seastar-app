@@ -813,11 +813,11 @@ export const formatVenueDate = (venue: VenueDetail, lang: Dictionary) => {
     }
 }
 
-export function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 'compact' = 'week') {
+export function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 'compact' = 'week', timezone: string= dayjs.tz.guess()) {
     let start = dayjs()
 
     try {
-        start = dayjs(startDate || undefined)
+        start = dayjs.tz(startDate || undefined, timezone)
     } catch (e: any) {
         console.warn(e)
     }
