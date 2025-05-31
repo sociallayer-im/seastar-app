@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client'
 import {PROFILE_FRAGMENT} from '../profile'
 import {BADGE_CLASS_FRAGMENT} from '../badge'
-import {TRACK_FRAGMENT, GROUP_FRAGMENT} from '../group'
+import {TRACK_FRAGMENT, GROUP_FRAGMENT, VENUE_DETAIL_FRAGMENT} from '../group'
 
 export const EVENT_ROLE_FRAGMENT = gql`
     fragment EventRoleFragment on event_roles {
@@ -277,6 +277,7 @@ export const EVENT_DETAIL_FRAGMENT = gql`
     ${BADGE_CLASS_FRAGMENT}
     ${TICKET_FRAGMENT}
     ${TICKET_ITEM_FRAGMENT}
+    ${VENUE_DETAIL_FRAGMENT}
     fragment EventDetailFragment on events {
         ...EventFragment
         recurring_id
@@ -301,6 +302,9 @@ export const EVENT_DETAIL_FRAGMENT = gql`
         }
         location_data
         venue_id
+        venue {
+            ...VenueDetailFragment
+        }
         participants (where: {status: {_neq: "cancelled"}, _or:[ {payment_status: {_is_null: true}},  {payment_status: {_eq: "succeeded"}}]}) {
             ...ParticipantFragment
         }

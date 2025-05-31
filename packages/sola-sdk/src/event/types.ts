@@ -1,5 +1,5 @@
 import {Profile} from '../profile'
-import {Group, Track} from '../group'
+import {Group, Track, VenueDetail} from '../group'
 import {BadgeClass} from '../badge'
 
 export interface Event {
@@ -41,7 +41,7 @@ export interface EventDetail extends Event {
     badge_class: BadgeClass | null,
     external_url: string | null,
     notes: string | null,
-    venue: string | null,
+    venue: VenueDetail | null,
     group: Group,
     tickets: Ticket[] | null
     location_data: string | null,

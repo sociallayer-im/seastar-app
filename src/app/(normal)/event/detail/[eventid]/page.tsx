@@ -368,7 +368,23 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                             }
                         </div>
                     </div>
-                    {!!eventDetail.location &&
+                    {!!eventDetail.venue &&
+                        <div className="flex-row-item-center my-4">
+                            <div
+                                className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
+                                <i className="uil-location-point text-base"></i>
+                            </div>
+                            <div>
+                                <div className="font-semibold text-base">{eventDetail.venue.title}</div>
+                                {eventDetail.venue.formatted_address &&
+                                    <div className="text-gray-400 text-base">
+                                        {eventDetail.venue.formatted_address}
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    {!!eventDetail.location && !eventDetail.venue &&
                         <div className="flex-row-item-center my-4">
                             <div
                                 className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
