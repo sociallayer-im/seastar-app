@@ -83,12 +83,19 @@ export default async function GroupEventHomeData({
         } as EventWithJoinStatus
     })
 
-    const highlightedEventsWithTrack = highlightedEvents.map(e => {
+    const highlightedEventsWithTrack = highlightedEvents
+        .filter(e => {
+            // check the event is past
+            return new Date(e.end_time).getTime() >= new Date().getTime()
+        })
+        .map(e => {
         return {
             ...e,
             track: e.track_id ? groupDetail.tracks.find(t => t.id === e.track_id) : null
         } as EventWithJoinStatus
     })
+
+    console.log('eventsWithTrack', highlightedEventsWithTrack.length)
 
     if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0) {
         redirect(`/event/${groupDetail.handle}?collection=past`)
