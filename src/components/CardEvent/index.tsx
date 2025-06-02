@@ -79,7 +79,14 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                     endDate={event.end_time}
                     tz={event.timezone} /></div>
             </div>
-            {!!event.location &&
+            {!!event.venue &&
+                <div className="h-6 flex-row-item-center text-xs sm:text-sm">
+                    <i className="uil-location-point mr-1 text-sm"/>
+                    <span
+                        className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{event.venue.title}</span>
+                </div>
+            }
+            {!!event.location && !event.venue &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
                     <i className="uil-location-point mr-1 text-sm"/>
                     <span

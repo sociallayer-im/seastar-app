@@ -24,6 +24,7 @@ export interface Event {
     formatted_address: string | null
     display: string | null,
     track?: Track | null,
+    venue: VenueDetail | null,
 }
 
 export interface EventWithJoinStatus extends Event {
