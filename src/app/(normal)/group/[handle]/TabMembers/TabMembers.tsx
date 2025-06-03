@@ -43,7 +43,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
         if (!searchKeyword) return members
         return members.filter(m => {
             return m.profile.nickname?.toLowerCase().includes(keyword) ||
-                m.profile.handle.toLowerCase().includes(keyword)
+                m.profile.handle?.toLowerCase().includes(keyword)
         })
     }, [members, searchKeyword])
 
