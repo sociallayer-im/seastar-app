@@ -31,7 +31,7 @@ export async function generateMetadata({params}: {
         redirect('/404')
     } else {
         return {
-            title: `${groupDetail.nickname || groupDetail.handle} Event Schedule | Social Layer`
+            title: `${groupDetail.nickname || groupDetail.handle} Event Schedule | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`
         }
     }
 }

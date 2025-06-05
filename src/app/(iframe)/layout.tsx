@@ -9,8 +9,8 @@ import {selectLang} from '@/app/actions'
 import {poppins, icon} from "@/app/fonts"
 
 export const metadata: Metadata = {
-    title: "Social Layer",
-    description: "Social Layer",
+    title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
+    description: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
 }
 
 export const viewport = {

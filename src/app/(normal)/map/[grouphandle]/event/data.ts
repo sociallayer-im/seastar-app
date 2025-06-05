@@ -19,6 +19,8 @@ export type GroupEventMapDataProps = {
 }
 
 export default async function GroupEventMapData({params, searchParams}: GroupEventMapDataProps) {
+    if (process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP !== 'true') redirect('/')
+
     const groupHandle = params.grouphandle
     const groupDetail = await getGroupDetailByHandle({
         params: {groupHandle},
@@ -27,6 +29,7 @@ export default async function GroupEventMapData({params, searchParams}: GroupEve
     if (!groupDetail) {
         redirect('/404')
     }
+
 
     const currProfile = await getCurrProfile()
     const {

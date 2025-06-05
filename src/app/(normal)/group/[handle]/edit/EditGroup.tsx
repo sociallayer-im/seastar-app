@@ -36,6 +36,8 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
     const memberCount = members.filter(m => m.role !== 'owner').length
     const managerCount = members.filter(m => m.role === 'manager').length
 
+    const enableGoogleMap = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true'
+
     const showEditSocialMedia = (type: keyof Solar.SocialMedia, value?: string) => {
         openModal({
             content: (close) => <DialogEditSocialMedia
@@ -183,12 +185,15 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                         />
                     </div>
 
-                    <div className="flex-row-item-center justify-between mt-6">
-                        <div className="font-semibold">Enable Map</div>
-                        <Switch checked={newGroup.map_enabled}
-                                onClick={() => setNewGroup({...newGroup, map_enabled: !newGroup.map_enabled})}
-                        />
-                    </div>
+                    {enableGoogleMap &&
+                        <div className="flex-row-item-center justify-between mt-6">
+                            <div className="font-semibold">Enable Map</div>
+                            <Switch checked={newGroup.map_enabled}
+                                    onClick={() => setNewGroup({...newGroup, map_enabled: !newGroup.map_enabled})}
+                            />
+                        </div>
+                    }
+
                 </div>
 
                 <div className="flex-1 mt-6">
@@ -223,7 +228,8 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
             </div>
             <div className="flex-row-item-center justify-between my-4">
                 {isOwner &&
-                    <Button variant={'secondary'} className="!text-gray-400 text-sm flex-1 sm:flex-grow-0 sm:min-w-36 mr-4"
+                    <Button variant={'secondary'}
+                            className="!text-gray-400 text-sm flex-1 sm:flex-grow-0 sm:min-w-36 mr-4"
                             onClick={handleFreezeGroup}>
                         {lang['Freeze Group']}
                     </Button>

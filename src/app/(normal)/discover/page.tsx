@@ -13,16 +13,16 @@ import PopupCities from '@/components/client/PopupCities'
 
 export async function generateMetadata() {
     return {
-        title: 'Discover | Social Layer',
+        title: `Discover | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
         openGraph: {
-            title: 'Discover | Social Layer',
+            title: `Discover | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
             images: '/images/facaster_default_cover.png',
         }
     }
 }
 
 export default async function DiscoverPage() {
-    const {eventGroups, popupCities, events, currProfile, popupCityMap} = await DiscoverPageData()
+    const {eventGroups, popupCities, events, currProfile, popupCityMap, enableGoogleMap} = await DiscoverPageData()
     const {lang, type} = await selectLang()
 
     const mapMarkers = popupCityMap.map((event) => {
@@ -33,7 +33,7 @@ export default async function DiscoverPage() {
     })
 
     return <div className="page-width min-h-[100svh] pt-4 sm:pt-6 !pb-16">
-        <PopupCityMap mapMarkers={mapMarkers} lang={lang} langType={type}/>
+        {enableGoogleMap && <PopupCityMap mapMarkers={mapMarkers} lang={lang} langType={type}/>}
 
         <ToCreatePopupCity lang={lang} />
 

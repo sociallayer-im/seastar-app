@@ -45,9 +45,9 @@ export async function generateMetadata({params: {eventid}, searchParams: {tab}}:
 
     const description = removeMarkdown(eventDetail.content || '').slice(0, 200)
     return {
-        title: `${eventDetail.title} | Social Layer`,
+        title: `${eventDetail.title} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
         openGraph: {
-            title: `${eventDetail.title} | Social Layer`,
+            title: `${eventDetail.title} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
             description: description,
             type: 'website',
             url: `https://app.sola.day/event/detail/${eventDetail.id}`,
@@ -81,7 +81,8 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
         seatingStyle,
         recurring,
         ticketsPurchased,
-        currProfileStarred
+        currProfileStarred,
+        enableGoogleMap
     } = await cachedEventDetailPage(eventid, pickSearchParam(_tab))
     const {lang} = await selectLang()
 
@@ -417,9 +418,11 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                     {!!locationInfo.geo_lat && !!locationInfo.geo_lng &&
                         <div className="ml-11 -mt-4">
                             <div className="flex-row-item-center mb-2">
-                                <a className="text-xs text-blue-400 cursor-pointer mr-3"
-                                   target={'_blank'}
-                                   href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
+                                {enableGoogleMap &&
+                                    <a className="text-xs text-blue-400 cursor-pointer mr-3"
+                                       target={'_blank'}
+                                       href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
+                                }
 
                                 {!!locationInfo.formatted_address &&
                                     <ClickToCopy text={locationInfo.formatted_address}
@@ -437,19 +440,22 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                                         label={lang['Venue Detail']}/>
                                 }
                             </div>
-                            <GoogleMap
-                                style={{height: '160px', width: '100%'}}
-                                center={{
-                                    lng: locationInfo.geo_lng,
-                                    lat: locationInfo.geo_lat
-                                }}
-                                markers={[{
-                                    title: eventDetail.title,
-                                    position: {
+
+                            {enableGoogleMap &&
+                                <GoogleMap
+                                    style={{height: '160px', width: '100%'}}
+                                    center={{
                                         lng: locationInfo.geo_lng,
                                         lat: locationInfo.geo_lat
-                                    }
-                                }]}/>
+                                    }}
+                                    markers={[{
+                                        title: eventDetail.title,
+                                        position: {
+                                            lng: locationInfo.geo_lng,
+                                            lat: locationInfo.geo_lat
+                                        }
+                                    }]}/>
+                            }
                         </div>
                     }
 

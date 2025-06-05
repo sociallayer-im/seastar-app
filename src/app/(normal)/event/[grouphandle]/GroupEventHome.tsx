@@ -32,7 +32,8 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
         filterOpts,
         mapMarkers,
         canPublishEvent,
-        highlightedEvents
+        highlightedEvents,
+        enableGoogleMap
     } = data
 
     const { showLoading, closeModal } = useModal()
@@ -110,7 +111,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
     return <div style={{ background: '#fff url(/images/event_home_bg.png) top center repeat-x' }}>
         <div className="page-width min-h-[100svh] sm:pt-8 pt-3 flex-col flex md:flex-row">
             <div className="flex-1 md:max-w-[648px] order-2 md:order-1">
-                {groupDetail.map_enabled &&
+                {groupDetail.map_enabled && enableGoogleMap &&
                     <EventHomeMap
                         mapMarkers={mapMarkers}
                         lang={lang}

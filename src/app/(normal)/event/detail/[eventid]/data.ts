@@ -156,7 +156,8 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         ticketsPurchased,
 
         seatingStyle,
-        avNeeds
+        avNeeds,
+        enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true',
     }
 }
 

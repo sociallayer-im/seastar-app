@@ -19,6 +19,8 @@ export interface GroupMarkerMapPageDataProps {
 }
 
 export default async function GroupMarkerMapPageData({params, searchParams}: GroupMarkerMapPageDataProps) {
+    if (process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP !== 'true') redirect('/')
+
     const groupHandle = params.grouphandle
     const groupDetail = await getGroupDetailByHandle({
         clientMode: CLIENT_MODE,

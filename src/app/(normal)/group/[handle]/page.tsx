@@ -25,9 +25,9 @@ export async function generateMetadata({params:{handle}, searchParams:{tab}}: Gr
     const lang = (await selectLang()).lang
 
     return {
-        title: `${displayProfileName(group)} - ${lang['Group']} | Social Layer`,
+        title: `${displayProfileName(group)} - ${lang['Group']} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
         openGraph: {
-            title: `${displayProfileName(group)} - ${lang['Group']} | Social Layer`,
+            title: `${displayProfileName(group)} - ${lang['Group']} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
             description: group.about || undefined,
             type: 'website',
             url: `https://app.sola.day/group/${group.handle}`,

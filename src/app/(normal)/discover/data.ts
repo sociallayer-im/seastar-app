@@ -7,6 +7,7 @@ export default async function DiscoverPageData() {
     const currProfile = await getCurrProfile()
     return {
         ...data,
-        currProfile
+        currProfile,
+        enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true'
     }
 }

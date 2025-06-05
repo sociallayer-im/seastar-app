@@ -15,8 +15,8 @@ import { headers } from "next/headers"
 // TrackJSInstall()
 
 export const metadata: Metadata = {
-    title: "Social Layer",
-    description: "Social Layer",
+    title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
+    description: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
 }
 
 export const viewport = {

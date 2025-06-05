@@ -16,7 +16,7 @@ export async function generateMetadata({params:{eventid},searchParams:{tab}}: Ev
     const {lang} = await selectLang()
 
     return {
-        title: `${lang['Share Event']}-${eventDetail.title} | Social Layer`,
+        title: `${lang['Share Event']}-${eventDetail.title} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
     }
 }
 

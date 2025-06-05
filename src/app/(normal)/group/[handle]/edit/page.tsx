@@ -7,7 +7,7 @@ export const fetchCache = 'force-no-store'
 export async function generateMetadata({params:{handle}}: GroupDataProps) {
     const {group} = await GroupPageData(handle)
     return {
-        title: `${group.nickname || group.handle} | Edit Group | Social Layer`
+        title: `${group.nickname || group.handle} | Edit Group | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`
     }
 }
 

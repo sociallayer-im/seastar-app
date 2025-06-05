@@ -131,6 +131,7 @@ export default async function GroupEventHomeData({
         isOwner,
         isMember,
         isIssuer,
-        canPublishEvent
+        canPublishEvent,
+        enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true',
     }
 }
