@@ -117,7 +117,7 @@ export default function DialogInviteDetail({inviteDetail, lang, close}: DialogIn
 
             <div className="text-red-500 text-sm my-2">{error}</div>
 
-            {inviteDetail.accepted
+            {inviteDetail.status === 'accepted'
                 ?  <div className="p-2 bg-amber-50 text-amber-500 mb-3 flex items-center rounded-lg">
                     <i className="uil-info-circle text-lg mr-1"/>
                     {lang['You have accepted']}
