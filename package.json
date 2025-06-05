@@ -11,6 +11,9 @@
     "build-storybook": "storybook build",
     "cypress:open": "cypress open"
   },
+  "overrides": {
+    "strip-ansi": "6.0.0"
+  },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
     "@hyperdx/browser": "^0.21.2",
