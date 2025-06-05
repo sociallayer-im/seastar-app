@@ -437,19 +437,7 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                                         label={lang['Venue Detail']}/>
                                 }
                             </div>
-                            <GoogleMap
-                                style={{height: '160px', width: '100%'}}
-                                center={{
-                                    lng: locationInfo.geo_lng,
-                                    lat: locationInfo.geo_lat
-                                }}
-                                markers={[{
-                                    title: eventDetail.title,
-                                    position: {
-                                        lng: locationInfo.geo_lng,
-                                        lat: locationInfo.geo_lat
-                                    }
-                                }]}/>
+
                         </div>
                     }
 
