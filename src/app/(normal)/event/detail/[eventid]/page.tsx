@@ -440,7 +440,6 @@ export default async function EventDetail({params: {eventid}, searchParams: {tab
                                         label={lang['Venue Detail']}/>
                                 }
                             </div>
-
                             {enableGoogleMap &&
                                 <GoogleMap
                                     style={{height: '160px', width: '100%'}}
