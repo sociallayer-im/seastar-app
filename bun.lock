@@ -664,7 +664,7 @@
 
     "@sentry/utils": ["@sentry/utils@8.55.0", "", { "dependencies": { "@sentry/core": "8.55.0" } }, "sha512-cYcl39+xcOivBpN9d8ZKbALl+DxZKo/8H0nueJZ0PO4JA+MJGhSm6oHakXxLPaiMoNLTX7yor8ndnQIuFg+vmQ=="],
 
-    "@sola-sdk": ["@sola/sdk@workspace:packages/sola-sdk"],
+    "@sola-sdk": ["@sola/sdk@file:packages/sola-sdk", { "dependencies": { "@apollo/client": "^3.12.5", "graphql": "^16.10.0", "graphql-ws": "^6.0.1" } }],
 
     "@sola/sdk": ["@sola/sdk@workspace:packages/sola-sdk"],
 
