@@ -1,21 +1,20 @@
 import DiscoverPageData from '@/app/(normal)/discover/data'
-import Image from 'next/image'
 import {displayProfileName} from '@/utils'
 import Avatar from '@/components/Avatar'
 import {selectLang} from '@/app/actions'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import Footer from '@/components/Footer'
 import Feedback from '@/components/client/Feedback'
-import DisplayDateTime from '@/components/client/DisplayDateTime'
 import PopupCityMap from './PopupCityMap'
 import ToCreatePopupCity from '@/app/(normal)/discover/ToCreatePopupCity'
 import PopupCities from '@/components/client/PopupCities'
 
 export async function generateMetadata() {
+    const { lang } = await selectLang()
     return {
-        title: `Discover | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
+        title: `${lang['Discover']} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
         openGraph: {
-            title: `Discover | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
+            title: `${lang['Discover']} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
             images: '/images/facaster_default_cover.png',
         }
     }
@@ -41,7 +40,7 @@ export default async function DiscoverPage() {
 
         <div className="mt-8">
             <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
-                <div>Communities</div>
+                <div>{lang['Communities']}</div>
                 <a href="/communities" className="flex-row-item-center text-sm">
                     <span>{lang['See all Communities']}</span>
                     <i className="uil-arrow-right text-2xl ml-1"/>

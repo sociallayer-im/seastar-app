@@ -587,4 +587,5 @@ export const zh: Dictionary = {
     "只有项目成员或群组管理员可以查看项目中的活动",
   "Remove Program": "移除项目",
   "Are you sure you want to remove this program?": "您确定要移除此项目吗？",
+  'Communities': '社区',
 };
