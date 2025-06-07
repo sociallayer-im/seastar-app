@@ -606,6 +606,15 @@ export const en = {
     "Are you sure you want to remove this program?":
         "Are you sure you want to remove this program?",
     'Communities': 'Communities',
+    'We value your feedback!': 'We value your feedback!',
+    'About us': 'About us',
+    'Contact us': 'Contact us',
+    'My Badge': 'My Badge',
+    'My Groups': 'My Groups',
+    'Setting': 'Setting',
+    'About': 'About',
+    'What is Badge': 'What is Badge',
+    'Development Doc': 'Development Doc',
 };
 
 export type Dictionary = typeof en;

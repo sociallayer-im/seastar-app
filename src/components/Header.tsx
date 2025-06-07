@@ -17,10 +17,10 @@ export default async function Header({sticky = true}:{sticky?: boolean}) {
         <div className="page-width w-full flex-row-item-center justify-between items-center h-[48px]">
             <div className="flex-row-item-center">
                 <a href="/" className="sm:block hidden">
-                    <Image src="/images/logo_horizontal.svg" width={102} height={32} alt="Social Layer"/>
+                    <img src={process.env.NEXT_PUBLIC_APP_LOGO || '/images/logo_horizontal.svg'} width={102} height={32} alt={process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}/>
                 </a>
                 <a href="/" className="sm:hidden block">
-                    <Image src="/images/header_logo.svg" width={32} height={32} alt="Social Layer"/>
+                    <Image src="/images/sola_logo_compact.png" width={32} height={32} alt="Social Layer"/>
                 </a>
                 <a href="/discover"
                    className={`ml-3 text-xs font-semibold ${currentPath?.includes('discover') ? 'text-primary-foreground' : ''}`}>

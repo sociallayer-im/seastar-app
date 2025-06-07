@@ -588,4 +588,13 @@ export const zh: Dictionary = {
   "Remove Program": "移除项目",
   "Are you sure you want to remove this program?": "您确定要移除此项目吗？",
   'Communities': '社区',
+  'We value your feedback!': '我们重视您的反馈！',
+  'About us': '关于我们',
+  'Contact us': '联系我们',
+  'My Badge': '我的徽章',
+  'My Groups': '我的群组',
+  'Setting': '设置',
+  'About': '关于',
+  'What is Badge': '什么是徽章',
+  'Development Doc': '开发文档',
 };
