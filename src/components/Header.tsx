@@ -4,6 +4,7 @@ import LangSwitcher from "@/components/client/LangSwitcher"
 import ProfileMenu from "@/components/client/ProfileMenu"
 import { headers } from "next/headers"
 import HeaderSearchBar from "@/components/client/HeaderSearchBar"
+import HeaderSignInBtn from "@/components/client/HeaderSignInBtn"
 
 export default async function Header({sticky = true}:{sticky?: boolean}) {
     const { type, lang } = await selectLang()
@@ -39,11 +40,7 @@ export default async function Header({sticky = true}:{sticky?: boolean}) {
                 <span className="w-[0.5px] h-3 bg-gray-400 mx-2" />
                 {
                     !profile ?
-                        <a className="cursor-pointer flex-row-item-center btn btn-ghost btn-sm text-xs font-normal px-1"
-                            href={`${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${encodeURIComponent(currentPath!)}`}>
-                            <i className="uil-wallet text-base mr-1" />
-                            <span>{lang['Sign In']}</span>
-                        </a>
+                        <HeaderSignInBtn lang={lang} />
                         :<ProfileMenu profile={profile} lang={lang} currentPath={currentPath!} />
                 }
             </div>
