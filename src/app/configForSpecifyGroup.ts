@@ -23,7 +23,7 @@ export const tagsGroupNeeded = (groupId: number) => {
 
 export const edgeTagsGroups = [{
     title: 'Weekly Themes',
-    tags: ['Protocols for Flourishing', 'Reality Reinvented', 'Environments of Tomorrow', 'Decentralized Technologies']
+    tags: ['Protocols for Flourishing', 'Reality Reinvented', 'Environments of Tomorrow', 'Emergent Futures']
 }, {
     title: 'Community',
     tags: ['Social Gathering', 'Workouts', 'Wellbeing', 'Food & Beverages', 'Party', 'Vibe-coding', 'Outdoor Adventure', 'Field Trip', 'Kids & Families']
