@@ -13,30 +13,36 @@ export interface EventTabProps {
     attends: EventWithJoinStatus[]
     hosting: EventWithJoinStatus[]
     stared: EventWithJoinStatus[]
-    labels?: {attended?: string, created?: string, star?: string}
+    coHosting: EventWithJoinStatus[]
 }
 
-export default function Tabs({attends, hosting, stared, labels, lang}: EventTabProps) {
-    const [tab, setTab] = useState<'attended' | 'created' | 'star'>('attended')
+export default function Tabs({attends, hosting, stared, coHosting, lang}: EventTabProps) {
+    const [tab, setTab] = useState<'attended' | 'created' | 'star' | 'cohosting'>('attended')
     return <div className="py-4">
         <div className="flex flex-row-item-center">
             <Button variant={tab === 'attended' ? 'outline' : 'ghost'}
                 size={'sm'}
                 onClick={() => setTab('attended')}>
-                <span className="font-normal text-sm">{labels?.attended || 'Attended'}</span>
+                <span className="font-normal text-sm">{lang['Attended']}</span>
             </Button>
             <Button variant={tab === 'created' ? 'outline' : 'ghost'}
                 className={'font-normal'}
                 size={'sm'}
                 onClick={() => setTab('created')}>
-                <span className="font-normal text-sm">{labels?.created || 'Created'}</span>
+                <span className="font-normal text-sm">{lang['Hosting']}</span>
+            </Button>
+            <Button variant={tab === 'cohosting' ? 'outline' : 'ghost'}
+                    className={'font-normal'}
+                    size={'sm'}
+                    onClick={() => setTab('cohosting')}>
+                <span className="font-normal text-sm">{lang['Co-hosting']}</span>
             </Button>
             {!!stared.length &&
                 <Button variant={tab === 'star' ? 'outline' : 'ghost'}
                     className={'font-normal'}
                     size={'sm'}
                     onClick={() => setTab('star')}>
-                    <span className="font-normal text-sm">{labels?.star || 'Star'}</span>
+                    <span className="font-normal text-sm">{lang['Starred']}</span>
                 </Button>
             }
         </div>
@@ -71,10 +77,31 @@ export default function Tabs({attends, hosting, stared, labels, lang}: EventTabP
             </div>
         }
 
+        { tab === 'star' &&
+            <div className="grid grid-cols-1 gap-3 py-4">
+                {
+                    stared.map((event, i) => {
+                        return <CardEvent key={i} event={event} lang={lang} />
+                    })
+                }
+            </div>
+        }
+
+        { tab === 'cohosting' &&
+            <div className="grid grid-cols-1 gap-3 py-4">
+                {
+                    coHosting.map((event, i) => {
+                        return <CardEvent key={i} event={event} lang={lang} />
+                    })
+                }
+            </div>
+        }
+
 
         {
             ((!attends.length && tab === 'attended') ||
                 (!hosting.length && tab === 'created') ||
+                (!hosting.length && tab === 'cohosting') ||
                 (!stared.length && tab === 'star')) && <NoData />
         }
     </div>
