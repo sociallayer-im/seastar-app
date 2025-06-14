@@ -14,7 +14,7 @@ export type GroupEventHomeParams = {
     grouphandle?: string
 }
 
-export const PAGE_SIZE = 10
+export const PAGE_SIZE = 25
 
 export type GroupEventHomeSearchParams = Omit<EventListFilterProps, 'group_id' | 'timezone'>
 
