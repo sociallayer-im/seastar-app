@@ -130,6 +130,10 @@ body {
     background: linear-gradient(180deg, rgba(186, 255, 173, 0.61) -7.33%, rgba(161, 244, 230, 0.23) 48.89%, rgba(128, 248, 192, 0.00) 75.74%);
 }
 
+.schedule-gradient {
+    background: linear-gradient(180deg, rgba(186, 255, 173, 0.61) -7.33%, rgba(161, 244, 230, 0.23) 48.89%, rgba(128, 248, 192, 0.00) 75.74%);
+}
+
 .webkit-box-clamp-2 {
     display: -webkit-box!important;
     -webkit-line-clamp: 2;

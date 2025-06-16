@@ -2,6 +2,7 @@ import dayjs from "@/libs/dayjs"
 import {getInterval, pickSearchParam} from "@/utils"
 import {getSdkConfig, GroupDetail, Track} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
+import {Venue} from '@sola/sdk'
 
 export interface IframeSchedulePageSearchParams {
     start_date?: string | string[]
@@ -73,6 +74,7 @@ export interface IframeSchedulePageDataEvent {
     is_attending: boolean
     is_starred: boolean
     is_owner: boolean
+    venue?: Venue | null
 }
 
 export interface IframeSchedulePageDataType {
@@ -95,7 +97,7 @@ export interface IframeSchedulePageDataType {
 export interface IframeSchedulePageDataProps {
     searchParams: IframeSchedulePageSearchParams,
     groupDetail: GroupDetail,
-    view: 'week' | 'day' | 'list' | 'compact',
+    view: 'week' | 'day' | 'list' | 'compact' | 'venue',
     authToken: string | null | undefined,
     currPath: string | null | undefined
 }

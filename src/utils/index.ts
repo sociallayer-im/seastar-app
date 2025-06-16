@@ -1,9 +1,9 @@
 import Cookies from 'js-cookie'
-import {getProfileByToken} from '@/service/solar'
-import {sha3_256} from 'js-sha3'
+import { getProfileByToken } from '@/service/solar'
+import { sha3_256 } from 'js-sha3'
 import dayjs from "dayjs"
 import BigNumber from "bignumber.js"
-import {Payments, PaymentsType} from "@/utils/payment_setting"
+import { Payments, PaymentsType } from "@/utils/payment_setting"
 import {
     Event,
     EventDetail,
@@ -19,13 +19,13 @@ import {
     EventWithJoinStatus, Participant
 } from '@sola/sdk'
 import domtoimage from 'dom-to-image'
-import {Dictionary} from '@/lang'
-import {AVAILABLE_PAYMENT_TYPES, SOLA_APP_SUBDOMAINS} from '@/app/config'
+import { Dictionary } from '@/lang'
+import { AVAILABLE_PAYMENT_TYPES, SOLA_APP_SUBDOMAINS } from '@/app/config'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
 export const setAuth = (token: string) => {
-    Cookies.set(AUTH_FIELD, token, {expires: 365})
+    Cookies.set(AUTH_FIELD, token, { expires: 365 })
 }
 
 export const getAuth = () => {
@@ -116,7 +116,7 @@ export function getPrefillEventDateTime() {
 
     const initStartTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), nearestMinute || 0)
     const initEndTime = new Date(initStartTime.getTime() + 60 * 30 * 1000)
-    return {initStartTime, initEndTime}
+    return { initStartTime, initEndTime }
 }
 
 export function calculateDuration(start: Date, end: Date) {
@@ -377,11 +377,11 @@ export type SetEventAttendedStatusParams = {
 }
 
 export const setEventAttendedStatus = ({
-                                           events,
-                                           currProfileAttends,
-                                           currProfileStarred,
-                                           currProfile
-                                       }: SetEventAttendedStatusParams) => {
+    events,
+    currProfileAttends,
+    currProfileStarred,
+    currProfile
+}: SetEventAttendedStatusParams) => {
     return events.map(e => {
         const isCreator = e.owner.handle === currProfile?.handle
         const isJoined = !!currProfileAttends.find(h => h.id === e.id)
@@ -401,9 +401,9 @@ export type SetEventIsOwnerStatusParams = {
 }
 
 export const setEventIsOwnerStatus = ({
-                                           events,
-                                           currProfile
-                                       }: SetEventIsOwnerStatusParams) => {
+    events,
+    currProfile
+}: SetEventIsOwnerStatusParams) => {
     return events.map(e => {
         const isOwner = currProfile?.handle === e.owner?.handle
         return {
@@ -452,7 +452,7 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
 }
 
 export const checkEventPermissionsForProfile = (eventDetail: EventDetail, groupDetail: GroupDetail, profile?: Profile | null) => {
-    const {canJoinEvent, isManager, isOwner} = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, profile)
+    const { canJoinEvent, isManager, isOwner } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, profile)
 
     const isEventOperator = !!profile
         && (isManager
@@ -573,7 +573,7 @@ export const formatEventDuration = (startTime: string, endTime: string, timezone
 
     const endDateStr = isInDayEvent ? end.format('HH:mm') : end.format('MMM DD, HH:mm')
 
-    return startDateStr+ ` - ` + endDateStr + ` ${GMT}`
+    return startDateStr + ` - ` + endDateStr + ` ${GMT}`
 }
 
 export function isSupportedDownloadCardBrowser() {
@@ -582,7 +582,7 @@ export function isSupportedDownloadCardBrowser() {
     return supportedBrowsers.some(browser => userAgent.indexOf(browser) !== -1)
 }
 
-export const saveDomImage = async ({dom, fileName, scaleFactor = 1}: {
+export const saveDomImage = async ({ dom, fileName, scaleFactor = 1 }: {
     dom: HTMLElement,
     fileName: string,
     scaleFactor: number
@@ -813,7 +813,7 @@ export const formatVenueDate = (venue: VenueDetail, lang: Dictionary) => {
     }
 }
 
-export function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 'compact' = 'week', timezone: string= dayjs.tz.guess()) {
+export function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 'compact' | 'venue' = 'week', timezone: string = dayjs.tz.guess()) {
     let start = dayjs()
 
     try {
@@ -839,6 +839,11 @@ export function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 
                 end: start.endOf('week').format('YYYY-MM-DD')
             }
         case 'compact':
+            return {
+                start: start.format('YYYY-MM-DD'),
+                end: start.format('YYYY-MM-DD')
+            }
+        case 'venue':
             return {
                 start: start.format('YYYY-MM-DD'),
                 end: start.format('YYYY-MM-DD')
