@@ -615,6 +615,7 @@ export const en = {
     'About': 'About',
     'What is Badge': 'What is Badge',
     'Development Doc': 'Development Doc',
+    'Unhighlighted': 'Unhighlighted',
 };
 
 export type Dictionary = typeof en;

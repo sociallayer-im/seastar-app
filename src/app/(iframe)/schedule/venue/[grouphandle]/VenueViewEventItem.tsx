@@ -5,6 +5,7 @@ import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 import { Dictionary } from "@/lang"
 import Avatar from "@/components/Avatar"
 import { displayProfileName } from "@/utils"
+import { useState } from "react"
 
 export default function VenueViewEventItem({ event, height, top, left, lang, width }: {
     event: IframeSchedulePageDataEventDetail,
@@ -15,8 +16,9 @@ export default function VenueViewEventItem({ event, height, top, left, lang, wid
     width: number,
 }) {
 
+    const [highlighted, setHighlighted] = useState(event.pinned)
     const borderColor = event.tags?.[0] ? getLabelColor(event.tags?.[0]) : '#666'
-    const bg = event.pinned ? '#FFF7E8' : '#fff'
+    const bg = highlighted ? '#FFF7E8' : '#fff'
 
     const { showPopup } = useScheduleEventPopup()
 
@@ -37,7 +39,9 @@ export default function VenueViewEventItem({ event, height, top, left, lang, wid
         } : event.owner
 
     return (
-        <div onClick={() => showPopup(event.id, event.group.id, event.is_starred, lang)}
+        <div onClick={() => showPopup(event.id, event.group.id, event.is_starred, lang, (highlighted) => {
+            setHighlighted(highlighted)
+        })}
             className="border-2 border-gray-200 absolute rounded-lg p-2 overflow-hidden flex flex-col justify-between"
             style={{
                 width: `${width}px`,

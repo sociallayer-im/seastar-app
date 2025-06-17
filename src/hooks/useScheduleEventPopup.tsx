@@ -40,7 +40,7 @@ export default function useScheduleEventPopup() {
         return profile
     }
 
-    const showPopup = async (eventId: number, groupId: number, starred: boolean, lang: Dictionary) => {
+    const showPopup = async (eventId: number, groupId: number, starred: boolean, lang: Dictionary, onHighlighted?: (highlighted: boolean) => void) => {
         const loadingModalId = showLoading()
         try {
             
@@ -63,6 +63,7 @@ export default function useScheduleEventPopup() {
             window.history.pushState({}, '', url.toString())
             openModal({
                 content: () => <DynamicScheduleEventPopup
+                    onHighlighted={onHighlighted}
                     profile={profile || undefined}
                     groupDetail={groupDetail!}
                     starred={starred}

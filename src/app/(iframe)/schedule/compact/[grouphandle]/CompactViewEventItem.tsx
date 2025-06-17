@@ -6,7 +6,7 @@ import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
 import {Dictionary} from '@/lang'
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 
 export default function CompactViewEventItem({event, timezone, lang, lastEvent}: {
     event: IframeSchedulePageDataEventDetail,
@@ -15,7 +15,8 @@ export default function CompactViewEventItem({event, timezone, lang, lastEvent}:
     timezone: string
 }) {
     const {showPopup} = useScheduleEventPopup()
-    const bgColor = event.pinned ? '#FFF7E8' : '#fff'
+    const [highlighted, setHighlighted] = useState(event.pinned)
+    const bgColor = highlighted ? '#FFF7E8' : '#fff'
     const themeColor = event.tags?.[0] ? getLabelColor(event.tags[0]) : bgColor
 
     const customHostRole = event.event_roles?.find(r => r.role === 'custom_host')
@@ -49,7 +50,9 @@ export default function CompactViewEventItem({event, timezone, lang, lastEvent}:
             }
         </div>
         <div onClick={() => {
-            showPopup(event.id, event.group.id, event.is_starred, lang)
+            showPopup(event.id, event.group.id, event.is_starred, lang, (highlighted) => {
+                setHighlighted(highlighted)
+            })
         }}
              className="border-[#CECED3] border-dashed border-l pl-5 sm:pl-7 pb-2 flex-1 relative">
             <i className="w-[6px] h-[6px] block absolute bg-[#D9D9D9] rounded-full left-0 sm:top-[17px] top-3 ml-[-3px]"/>

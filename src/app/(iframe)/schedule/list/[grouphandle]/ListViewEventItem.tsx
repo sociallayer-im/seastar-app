@@ -3,7 +3,7 @@
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dynamic from "next/dynamic"
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
 import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
@@ -34,7 +34,8 @@ export default function ListViewEventItem({event, timezone, lang}: {
             id: groupHostRole.item_id!
         } : event.owner
 
-    const bgColor = event.pinned ? '#FFF7E8' : '#fff'
+    const [highlighted, setHighlighted] = useState(event.pinned)
+    const bgColor = highlighted ? '#FFF7E8' : '#fff'
     const themeColor = event.tags?.[0] ? getLabelColor(event.tags[0]) : bgColor
 
     useEffect(() => {
@@ -43,7 +44,9 @@ export default function ListViewEventItem({event, timezone, lang}: {
     }, [])
 
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
-        <div onClick={() => showPopup(event.id, event.group.id, event.is_starred, lang)}
+        <div onClick={() => showPopup(event.id, event.group.id, event.is_starred, lang, (highlighted) => {
+           setHighlighted(highlighted)
+        })}
             className="pb-2 flex-1 relative">
             <div style={{background: bgColor}}
                 className="flex flex-col flex-nowrap !items-start bg-white py-2 px-4 shadow rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">

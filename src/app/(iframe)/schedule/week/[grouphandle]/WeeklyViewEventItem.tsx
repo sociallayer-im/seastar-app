@@ -4,7 +4,7 @@ import OuterLink from "@/app/(iframe)/schedule/OuterLink"
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
 import {genGoogleMapLink, getAvatar} from "@/utils"
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 import {Dictionary} from '@/lang'
@@ -42,7 +42,8 @@ export default function WeeklyViewEventItem({event, timezone, lang}: {event: Ifr
         ? event.tags.filter(tag => !tag.startsWith(':'))
         : []
 
-    const bgColor = event.pinned ? '#FFF7E8' : '#fff'
+    const [highlighted, setHighlighted] = useState(event.pinned)
+    const bgColor = highlighted ? '#FFF7E8' : '#fff'
     const mainThemColor = filteredTags[0] ? getLabelColor(filteredTags[0]) : bgColor
 
     return <div

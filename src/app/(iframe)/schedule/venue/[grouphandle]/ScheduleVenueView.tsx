@@ -40,7 +40,7 @@ export default function ScheduleCompactView({ data: initialData, groupDetail, ev
             } as unknown as VenueDetail
             return groupVenues.concat(PlaceholderVenue).concat(Array(minVenueLengt - groupVenues.length).fill(PlaceholderVenue))
         } else {
-            return groupVenues 
+            return groupVenues
         }
     }, [groupDetail.venues])
 

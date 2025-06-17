@@ -597,4 +597,5 @@ export const zh: Dictionary = {
   'About': '关于',
   'What is Badge': '什么是徽章',
   'Development Doc': '开发文档',
+  'Unhighlighted': '取消高亮',
 };
