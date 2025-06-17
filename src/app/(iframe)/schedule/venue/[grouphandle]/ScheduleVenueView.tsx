@@ -1,11 +1,11 @@
 'use client'
 
-import { GroupDetail } from "@sola/sdk"
+import { GroupDetail, VenueDetail } from "@sola/sdk"
 import { IframeSchedulePageDataType } from "@/app/(iframe)/schedule/utils"
 import { Dictionary } from "@/lang"
 import { IframeSchedulePageDataEventDetail } from "./data"
 import dayjs from "@/libs/dayjs"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import VenueViewEventItem from "./VenueViewEventItem"
 
 interface ScheduleVenueViewProps {
@@ -29,7 +29,20 @@ export default function ScheduleCompactView({ data: initialData, groupDetail, ev
     }
 
     // 获取所有唯一的场馆
-    const venues = groupDetail.venues || []
+    const venues = useMemo(() => {
+        const groupVenues = groupDetail.venues || []
+        const minVenueLengt = 20
+        if (groupVenues.length < minVenueLengt) {
+            const PlaceholderVenue = {
+                id: 0,
+                title: '',
+                image_urls: [],
+            } as unknown as VenueDetail
+            return groupVenues.concat(PlaceholderVenue).concat(Array(minVenueLengt - groupVenues.length).fill(PlaceholderVenue))
+        } else {
+            return groupVenues 
+        }
+    }, [groupDetail.venues])
 
     const venueWidth = 150
     const venueHeight = 150
@@ -40,8 +53,7 @@ export default function ScheduleCompactView({ data: initialData, groupDetail, ev
 
     const [now, setNow] = useState<dayjs.Dayjs>(dayjs.tz(new Date(), groupDetail.timezone!))
     const totalMinutes = now.diff(now.startOf('day'), 'minute')
-    const [showCursor, setShowCursor] = useState<boolean>(now.isSame(dayjs.tz(data.currDate, groupDetail.timezone!), 'date'))
-
+    const showCursor = useState<boolean>(now.isSame(dayjs.tz(data.currDate, groupDetail.timezone!), 'date'))
 
     useEffect(() => {
         // scroll cursor to view
@@ -59,7 +71,7 @@ export default function ScheduleCompactView({ data: initialData, groupDetail, ev
 
 
     return (
-        <div className="" style={{ width: pageWidth }}>
+        <div className="min-w-full" style={{ width: pageWidth }}>
             <div className="py-3 sm:py-5 w-full flex flex-row justify-between px-4 schedule-gradient">
                 <div className="sm:text-2xl text-xl">
                     <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2" target={data.isIframe ? "_blank" : "_self"}>
@@ -76,9 +88,10 @@ export default function ScheduleCompactView({ data: initialData, groupDetail, ev
                 <div className="border-r border-b border-t border-gray-200 bg-gray-50 sticky left-0 top-0 z-30" />
 
                 {venues.map((venue, index) => (
-                    <div key={venue.id}
+                    <div key={index}
                         className="overflow-hidden text-sm border-r border-b border-t  border-gray-200 bg-gray-50 text-center font-medium relative">
-                        {venue.image_urls?.[0] && <img src={venue.image_urls?.[0]} alt="" className="w-full h-full object-cover" />}
+                        {venue.image_urls?.[0] && venue.id !== 0 && <img src={venue.image_urls?.[0]} alt="" className="w-full h-full object-cover" />}
+                        {!venue.image_urls?.[0] && venue.id !== 0 && <img src={'/images/venue_default_bg.jpg'} alt="" className="w-full h-full object-cover opacity-50" />}
                         <div className="font-semibold p-3 absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-end bg-gradient-to-b from-transparent via-[rgba(255,255,255,0.8)]  to-[rgba(255,255,255,1)] ">
                             {venue.title}
                         </div>
@@ -105,7 +118,7 @@ export default function ScheduleCompactView({ data: initialData, groupDetail, ev
                         {venues.map((venue, venueIndex) => {
                             return (
                                 <div
-                                    key={`empty-${venue}-${time}`}
+                                    key={`empty-${venueIndex}`}
                                     className="border-r border-b border-gray-200"
                                     style={{
                                         gridRow: timeIndex + 1,
