@@ -7,13 +7,14 @@ import Avatar from "@/components/Avatar"
 import { displayProfileName } from "@/utils"
 import { useState } from "react"
 
-export default function VenueViewEventItem({ event, height, top, left, lang, width }: {
+export default function VenueViewEventItem({ event, height, top, left, lang, width , log}: {
     event: IframeSchedulePageDataEventDetail,
     height: string,
     top: string,
     left: string,
     lang: Dictionary,
     width: number,
+    log?: string
 }) {
 
     const [highlighted, setHighlighted] = useState(event.pinned)
@@ -52,6 +53,7 @@ export default function VenueViewEventItem({ event, height, top, left, lang, wid
                 borderColor: borderColor,
             }}>
             <div className="font-semibold leading-[16px] text-xs"> {event.title} </div>
+            <div>{log}</div>
             <div className="flex-row-item-center text-xs truncate">
                 by <Avatar profile={host} size={16}
                     className="mx-1" />
