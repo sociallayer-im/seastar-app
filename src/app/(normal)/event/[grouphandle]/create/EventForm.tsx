@@ -157,8 +157,8 @@ export default function EventForm({
 
   useEffect(() => {
     setTagError(
-      !!draft.tags && draft.tags.filter((t) => !t.startsWith(":")).length > 3
-        ? lang["The maximum number of tags is 3"]
+      !!draft.tags && draft.tags.filter((t) => !t.startsWith(":")).length > 10
+        ? lang["The maximum number of tags is 10"]
         : "",
     );
   }, [draft.tags]);

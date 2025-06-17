@@ -95,8 +95,8 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
 
     return <div>
         <div className="flex flex-row  w-full !items-start">
-            {currProfile ? <Avatar profile={currProfile} size={36} className="mr-2"/>
-                : <img className="w-9 h-9 rounded-full mr-2"
+            {currProfile ? <Avatar profile={currProfile} size={36} className="mr-2 border"/>
+                : <img className="w-9 h-9 rounded-full mr-2 border"
                        src="/images/default_avatar/avatar_1.png" alt=""/>
             }
 
@@ -128,7 +128,7 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
             {comments.map((comment, index) => {
                 return <div key={index} className='w-full'>
                     <div className="flex-row-item-center  text-sm">
-                        <Avatar profile={comment.profile} size={28} className="mr-2"/>
+                        <Avatar profile={comment.profile} size={28} className="mr-2 border"/>
                        <span className="font-semibold">{displayProfileName(comment.profile)}</span>
 
                         <div className="ml-2 text-xs"><DisplayDateTime

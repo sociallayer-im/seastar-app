@@ -18,7 +18,7 @@ export interface EventDetailPageDataProps {
 }
 
 export interface EventDetailPageSearchParams {
-    tab?: 'content' | 'tickets' | 'comments' | 'participants' | string[]
+    tab?: 'content' | 'tickets' | 'participants' | string[]
 }
 
 

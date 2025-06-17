@@ -165,13 +165,13 @@ export default async function Profile({params: {handle}, searchParams: {tab: _ta
 
                 <div className="flex-1 sm:ml-6 px-3 w-full">
                     <div className="tab-titles flex-row-item-center overflow-auto">
-                        <a className={`${buttonVariants({variant: tab === 'groups' ? 'normal' : 'ghost'})} mr-3`}
-                           href={`/profile/${profile.handle}?tab=groups`}>
-                            <span className="font-normal">{lang['Groups']}</span>
-                        </a>
                         <a className={`${buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})} mr-3`}
                            href={`/profile/${profile.handle}?tab=events`}>
                             <span className="font-normal"> {lang['Events']}</span>
+                        </a>
+                        <a className={`${buttonVariants({variant: tab === 'groups' ? 'normal' : 'ghost'})} mr-3`}
+                           href={`/profile/${profile.handle}?tab=groups`}>
+                            <span className="font-normal">{lang['Groups']}</span>
                         </a>
                         <a className={`${buttonVariants({variant: tab === 'badges' ? 'normal' : 'ghost'})} mr-3`}
                            href={`/profile/${profile.handle}?tab=badges`}>

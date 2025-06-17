@@ -26,7 +26,7 @@ export interface ProfileData {
     tab: string,
 }
 
-export async function ProfileData(handle: string, tab='groups'): Promise<ProfileData> {
+export async function ProfileData(handle: string, tab='events'): Promise<ProfileData> {
     const profileDetail = await getProfileDetailByHandle({
         params: {handle: handle},
         clientMode: CLIENT_MODE

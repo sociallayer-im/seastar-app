@@ -138,7 +138,7 @@ export const zh: Dictionary = {
   "Close Event": "关闭活动",
   "People are no longer able to register for the event":
     "用户将无法继续报名该活动",
-  "The maximum number of tags is 3": "标签的最大数量为 3",
+  "The maximum number of tags is 10": "标签的最大数量为 10",
   "Event Name is required": "活动名称是必需的",
   "Choose a badge from you created": "从您创建的徽章中选择",
   "Choose a badge from group": "从群组中选择徽章",
@@ -598,4 +598,5 @@ export const zh: Dictionary = {
   'What is Badge': '什么是徽章',
   'Development Doc': '开发文档',
   'Unhighlighted': '取消高亮',
+  'Where are you based?': '您位于哪个城市？',
 };

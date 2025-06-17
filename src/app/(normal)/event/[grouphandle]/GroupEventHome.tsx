@@ -15,6 +15,7 @@ import useModal from '@/components/client/Modal/useModal'
 import { CLIENT_MODE } from "@/app/config"
 import DialogEventHomeFilter from "@/components/client/DialogEventHomeFilter"
 import { PAGE_SIZE } from "./data"
+import Footer from "@/components/Footer"
 
 interface GroupEventHomeProps {
     lang: Dictionary,
@@ -139,7 +140,6 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                         View More Events
                     </Button>}
                 </div>
-
             </div>
 
             <div className="md:w-[328px] ml-0 flex-col flex order-1 md:order-2 md:ml-6 mb-6">
@@ -217,6 +217,9 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     />
                 </div>
             </div>
+        </div>
+        <div className="page-width">
+            <Footer lang={lang} />
         </div>
     </div>
 }

@@ -91,7 +91,7 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                            endAdornment={<span>{newProfile.nickname?.length || 0}/30</span>}
                            className="w-full mb-4"/>
 
-                    <div className="font-semibold pb-2">{lang['Location']}</div>
+                    <div className="font-semibold pb-2">{lang['Where are you based?']}</div>
                     <Input value={newProfile.location || ''}
                            placeholder={lang['Location']}
                            onChange={e => {

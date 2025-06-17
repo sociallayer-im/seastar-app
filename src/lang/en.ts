@@ -138,7 +138,7 @@ export const en = {
     "Close Event": "Close Event",
     "People are no longer able to register for the event":
         "People are no longer able to register for the event",
-    "The maximum number of tags is 3": "The maximum number of tags is 3",
+    "The maximum number of tags is 10": "The maximum number of tags is 10",
     "Event Name is required": "Event Name is required",
     "Choose a badge from you created": "Choose a badge from you created",
     "Choose a badge from group": "Choose a badge from group",
@@ -616,6 +616,7 @@ export const en = {
     'What is Badge': 'What is Badge',
     'Development Doc': 'Development Doc',
     'Unhighlighted': 'Unhighlighted',
+    'Where are you based?': 'Where are you based?',
 };
 
 export type Dictionary = typeof en;
