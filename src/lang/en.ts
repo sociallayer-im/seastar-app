@@ -617,6 +617,8 @@ export const en = {
     'Development Doc': 'Development Doc',
     'Unhighlighted': 'Unhighlighted',
     'Where are you based?': 'Where are you based?',
+    'Export Event Data': 'Export Event Data',
+    'Export': 'Export',
 };
 
 export type Dictionary = typeof en;

@@ -599,4 +599,6 @@ export const zh: Dictionary = {
   'Development Doc': '开发文档',
   'Unhighlighted': '取消高亮',
   'Where are you based?': '您位于哪个城市？',
+  'Export Event Data': '导出活动数据',
+  'Export': '导出',
 };
