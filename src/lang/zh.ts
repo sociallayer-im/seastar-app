@@ -601,4 +601,5 @@ export const zh: Dictionary = {
   'Where are you based?': '您位于哪个城市？',
   'Export Event Data': '导出活动数据',
   'Export': '导出',
+  'Highlight': '高亮',
 };

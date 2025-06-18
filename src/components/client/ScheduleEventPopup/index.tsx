@@ -119,7 +119,7 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
         <div className="mt-3 flex sm:flex-row flex-col sm:justify-between w-full">
             <div className="sm:order-1 order-2 flex mt-3 justify-center sm:justify-start">
                 {isEventOperator &&
-                    <a href={`/event/edit/${event.id}`} className={`${buttonVariants({ variant: 'ghost' })} mr-3 text-primary-foreground !font-normal  !gap-1.5`}>
+                    <a href={`/event/edit/${event.id}`} className={`${buttonVariants({ variant: 'ghost' })} text-primary-foreground !font-normal  !gap-1.5`}>
                         <i className="uil-edit-alt" />
                         {lang['Edit']}
                     </a>
@@ -130,6 +130,14 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                     starred={!!starred}
                     eventId={event.id}
                     label={lang['Star']} />
+
+                {isEventOperator &&
+                    <HighLightEventBtn
+                        event={event}
+                        lang={lang}
+                        onHighlighted={onHighlighted}
+                        className="" />
+                }
             </div>
             <div className="sm:order-2 order-1 flex sm:flex-row flex-col items-center flex-wrap">
                 {canAccess && !!profile && !attendedEvent && !checkedIn && !event.tickets?.length &&
@@ -147,15 +155,7 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                     </a>
                 }
 
-                {isEventOperator && 
-                    <HighLightEventBtn 
-                    event={event} 
-                    lang={lang} 
-                    onHighlighted={onHighlighted}
-                    className="sm:mr-3 mt-3 sm:w-auto w-full" />
-                }
 
-            
                 {!checkedIn && attendedEvent && !isEventOperator &&
                     <a className={`${buttonVariants({ variant: 'primary' })} sm:mr-3 mt-3 sm:w-auto w-full`}
                         href={`/event/checkin/${event.id}`}>

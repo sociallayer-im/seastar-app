@@ -30,11 +30,13 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
         currProfile,
         members,
         isManager,
+        isOwner,
         filterOpts,
         mapMarkers,
         canPublishEvent,
         highlightedEvents,
-        enableGoogleMap
+        enableGoogleMap,
+
     } = data
 
     const { showLoading, closeModal } = useModal()
@@ -127,9 +129,9 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     isManager={isManager}
                     isFiltered={uiStatus.isFiltered}
                     lang={lang} />
-
                 <div className="my-3">
                     <EventListGroupedByDate
+                        isManager={isManager || isOwner}
                         highlightedEvents={ uiStatus.showHighlight ? highlightedEvents : []}
                         events={eventList}
                         group={groupDetail}

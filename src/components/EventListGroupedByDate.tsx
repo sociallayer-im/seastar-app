@@ -5,11 +5,12 @@ import CardEvent from '@/components/CardEvent'
 import NoData from '@/components/NoData'
 import {Dictionary} from '@/lang'
 
-export default function EventListGroupedByDate({group, events, highlightedEvents, lang}: {
+export default function EventListGroupedByDate({group, events, highlightedEvents, lang, isManager}: {
     lang: Dictionary,
     group?: GroupDetail,
     events: EventWithJoinStatus[],
     highlightedEvents: EventWithJoinStatus[],
+    isManager?: boolean
 }) {
 
     const pinnedEvents = highlightedEvents
@@ -42,7 +43,7 @@ export default function EventListGroupedByDate({group, events, highlightedEvents
         {!!pinnedEvents.length && <div className="relative">
             {
                 pinnedEvents.map((event, index) => {
-                    return <CardEvent className="mb-3" key={index} event={event} lang={lang} highlight={true}/>
+                    return <CardEvent className="mb-3" key={index} event={event} lang={lang} highlight={true} isManager={isManager}/>
                 })
             }
         </div>
@@ -55,7 +56,7 @@ export default function EventListGroupedByDate({group, events, highlightedEvents
                 <div className="text-lg font-semibold mb-2">{item.date}</div>
                 {
                     item.events.map((event, index) => {
-                        return <CardEvent className="mb-3" key={index} event={event} lang={lang} highlight={event.pinned}/>
+                        return <CardEvent className="mb-3" key={index} event={event} lang={lang} highlight={event.pinned} isManager={isManager}/>
                     })
                 }
             </div>

@@ -619,6 +619,7 @@ export const en = {
     'Where are you based?': 'Where are you based?',
     'Export Event Data': 'Export Event Data',
     'Export': 'Export',
+    'Highlight': 'Highlight',
 };
 
 export type Dictionary = typeof en;

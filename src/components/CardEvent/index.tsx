@@ -1,25 +1,30 @@
-import {getLabelColor} from "@/utils/label_color"
-import {checkProcess, eventCoverTimeStr} from "@/utils"
-import {Badge} from "@/components/shadcn/Badge"
-import {CSSProperties, ReactElement} from "react"
+'use client'
+
+import { getLabelColor } from "@/utils/label_color"
+import { checkProcess, eventCoverTimeStr } from "@/utils"
+import { Badge } from "@/components/shadcn/Badge"
+import { CSSProperties, ReactElement, useState } from "react"
 import dynamic from 'next/dynamic'
-import {Dictionary} from '@/lang'
-import {EventWithJoinStatus} from '@sola/sdk'
+import { Dictionary } from '@/lang'
+import { EventWithJoinStatus } from '@sola/sdk'
 
-const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), {ssr: false})
-const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), {ssr: false})
+const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
+const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), { ssr: false })
+const DynamicHighLightEventBtn = dynamic(() => import('@/components/client/HighLightEventBtn'), { ssr: false })
 
-export default function CardEvent({event, className, id, style, lang, highlight, additionalElement}: {
+export default function CardEvent({ event, className, id, style, lang, highlight, additionalElement, isManager }: {
     event: EventWithJoinStatus,
     lang: Dictionary,
     className?: string,
     highlight?: boolean,
     id?: string,
-    additionalElement?: ReactElement
-    style?: CSSProperties
+    additionalElement?: ReactElement,
+    style?: CSSProperties,
+    isManager?: boolean
 }) {
     const eventProcess = checkProcess(event.start_time, event.end_time)
     const status = event.status
+    const [highlighted, setHighlighted] = useState(highlight)
 
     const customHost = event.event_roles?.find(r => r.role === 'custom_host')
     const groupHost = event.event_roles?.find(r => r.role === 'group_host')
@@ -28,14 +33,24 @@ export default function CardEvent({event, className, id, style, lang, highlight,
 
     const customStyle = {
         ...style,
-        background: highlight ? '#fff7e9' : '#fff',
+        background: highlighted ? '#fff7e9' : '#fff',
     }
 
     return <a href={`/event/detail/${event.id}`}
-              id={id}
-              style={customStyle}
-              className={`relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
-        <DynamicEventCardStarBtn eventId={event.id} starred={event.is_starred}/>
+        id={id}
+        style={customStyle}
+        className={`relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
+        <DynamicEventCardStarBtn eventId={event.id} starred={event.is_starred} />
+        {isManager && 
+        <DynamicHighLightEventBtn
+            onHighlighted={(highlighted) => {
+                setHighlighted(highlighted)
+            }}
+            event={event}
+            lang={lang}
+            className="absolute right-11 top-[18px] z-10"
+            compact />
+        }
         <div className="flex-1 mr-2 order-2 xs:order-1">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
@@ -58,7 +73,7 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                     event.tags?.filter(tag => !tag.startsWith(':'))
                         .map((tag, i) => {
                             return <div key={i} className="flex-row-item-center mr-2 shrink-0">
-                                <i className="w-2 h-2 rounded-full mr-1" style={{background: getLabelColor(tag)}}/>
+                                <i className="w-2 h-2 rounded-full mr-1" style={{ background: getLabelColor(tag) }} />
                                 <span>{tag}</span>
                             </div>
                         })
@@ -67,13 +82,13 @@ export default function CardEvent({event, className, id, style, lang, highlight,
             <div className="flex flex-col text-xs sm:text-sm my-1">
                 {event.track &&
                     <div>
-                        <span style={{color: getLabelColor(event.track.title)}}>{event.track.title}</span>
+                        <span style={{ color: getLabelColor(event.track.title) }}>{event.track.title}</span>
                     </div>
                 }
                 <div>hosted by {host}{!!cohosts && !!cohosts.length ? `, ${cohosts.map(c => c.nickname).join(', ')}` : ''}</div>
             </div>
             <div className="min-h-6 flex text-xs sm:text-sm">
-                <i className="uil-calendar-alt mr-1 text-sm"/>
+                <i className="uil-calendar-alt mr-1 text-sm" />
                 <div className="mt-0.5 sm:mt-0"><DynamicFormatEventDuration
                     startDate={event.start_time}
                     endDate={event.end_time}
@@ -81,34 +96,34 @@ export default function CardEvent({event, className, id, style, lang, highlight,
             </div>
             {!!event.venue &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
-                    <i className="uil-location-point mr-1 text-sm"/>
+                    <i className="uil-location-point mr-1 text-sm" />
                     <span
                         className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{event.venue.title}</span>
                 </div>
             }
             {!!event.location && !event.venue &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
-                    <i className="uil-location-point mr-1 text-sm"/>
+                    <i className="uil-location-point mr-1 text-sm" />
                     <span
                         className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{event.location}</span>
                 </div>
             }
             {!!event.meeting_url &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
-                    <i className="uil-link mr-1 text-sm"/>
+                    <i className="uil-link mr-1 text-sm" />
                     <span
                         className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis"> {event.meeting_url}</span>
                 </div>
             }
             {!!additionalElement &&
                 <div className="flex-row-item-center text-xs">
-                {additionalElement}
-            </div>}
+                    {additionalElement}
+                </div>}
         </div>
         {
             !!event.cover_url ?
                 <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
-                    <img className="w-full h-full object-cover" src={event.cover_url} alt=""/>
+                    <img className="w-full h-full object-cover" src={event.cover_url} alt="" />
                 </div>
                 : <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
                     <div className="default-cover w-[452px] h-[452px] sm:scale-[0.309] scale-[0.22]">
@@ -118,7 +133,7 @@ export default function CardEvent({event, className, id, style, lang, highlight,
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">
                             {eventCoverTimeStr(event.start_time!, event.timezone!).date}
-                            <br/>
+                            <br />
                             {eventCoverTimeStr(event.start_time!, event.timezone!).time}
                         </div>
                         {!!event.location &&
