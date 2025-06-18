@@ -167,6 +167,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
                     }}/>
 
                 <ScheduleViewSwitcher
+                    venueUrl={data.venueUrl}
                     compactUrl={data.compactUrl}
                     weeklyUrl={data.weeklyUrl}
                     dailyUrl={data.dailyUrl}
@@ -217,6 +218,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
 
             <div className="ml-3">
                 <ScheduleViewSwitcher
+                    venueUrl={data.venueUrl}
                     dropdown={true}
                     compactUrl={data.compactUrl}
                     weeklyUrl={data.weeklyUrl}

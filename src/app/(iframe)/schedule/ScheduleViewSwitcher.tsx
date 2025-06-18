@@ -3,12 +3,13 @@
 import {buttonVariants} from '@/components/shadcn/Button'
 import DropdownMenu from '@/components/client/DropdownMenu'
 
-export default function ScheduleViewSwitcher({weeklyUrl, dailyUrl, compactUrl, listingUrl, currView, dropdown}: {
+export default function ScheduleViewSwitcher({weeklyUrl, dailyUrl, compactUrl, listingUrl, currView, dropdown, venueUrl}: {
     weeklyUrl: string,
     dailyUrl: string,
     listingUrl: string,
     compactUrl: string,
-    currView: 'week' | 'day' | 'list' | 'compact',
+    venueUrl: string,
+    currView: 'week' | 'day' | 'list' | 'compact' | 'venue',
     dropdown?: boolean
 }) {
     const activeStyle = {
@@ -19,6 +20,7 @@ export default function ScheduleViewSwitcher({weeklyUrl, dailyUrl, compactUrl, l
 
     const opts = [
         {label: 'Compact', value: 'compact', href: compactUrl},
+        {label: 'Venue', value: 'venue', href: venueUrl},
         {label: 'List', value: 'list', href: listingUrl},
         {label: 'Week', value: 'week', href: weeklyUrl},
        //  {label: 'Day', value: 'day', href: dailyUrl}

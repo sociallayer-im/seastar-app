@@ -134,6 +134,7 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
                         }} />
 
                     <ScheduleViewSwitcher
+                        venueUrl={data.venueUrl}
                         compactUrl={data.compactUrl}
                         weeklyUrl={data.weeklyUrl}
                         dailyUrl={data.dailyUrl}
@@ -180,6 +181,7 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
 
                     <div className="mr-3">
                         <ScheduleViewSwitcher
+                            venueUrl={data.venueUrl}
                             dropdown={true}
                             compactUrl={data.compactUrl}
                             weeklyUrl={data.weeklyUrl}

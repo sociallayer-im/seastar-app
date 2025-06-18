@@ -132,6 +132,7 @@ export default function ScheduleCompactView({data: initialData, groupDetail, eve
                     }}/>
 
                 <ScheduleViewSwitcher
+                    venueUrl={data.venueUrl}
                     compactUrl={data.compactUrl}
                     weeklyUrl={data.weeklyUrl}
                     dailyUrl={data.dailyUrl}
@@ -180,6 +181,7 @@ export default function ScheduleCompactView({data: initialData, groupDetail, eve
 
             <div className="ml-3">
                 <ScheduleViewSwitcher
+                    venueUrl={data.venueUrl}
                     dropdown={true}
                     compactUrl={data.compactUrl}
                     weeklyUrl={data.weeklyUrl}

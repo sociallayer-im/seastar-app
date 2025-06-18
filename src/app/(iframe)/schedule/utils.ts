@@ -92,6 +92,7 @@ export interface IframeSchedulePageDataType {
     eventHomeUrl: string
     isIframe?: boolean
     currDate: string
+    venueUrl: string
 }
 
 export interface IframeSchedulePageDataProps {
@@ -185,6 +186,7 @@ export async function IframeSchedulePageData({   searchParams,
     }
     let listingUrl = `/schedule/list/${groupName}${searchParamsToString(searchParams)}`
     let compactUrl = `/schedule/compact/${groupName}${searchParamsToString(searchParams)}`
+    let venueUrl = `/schedule/venue/${groupName}`
 
 
     const isIframe = !currPath?.includes('/event/')
@@ -197,6 +199,7 @@ export async function IframeSchedulePageData({   searchParams,
         }
         listingUrl = `/event/${groupName}/schedule/list${searchParamsToString(searchParams)}`
         compactUrl = `/event/${groupName}/schedule/compact${searchParamsToString(searchParams)}`
+        venueUrl = `/schedule/venue/${groupName}`
     }
 
     const events = data.events
@@ -235,6 +238,7 @@ export async function IframeSchedulePageData({   searchParams,
         compactUrl,
         isFiltered,
         eventHomeUrl,
+        venueUrl,
         isIframe
     }
 }
