@@ -53,22 +53,9 @@ export default function HighLightEventBtn({ event, lang, className, onHighlighte
                 onHighlighted(!highlighted)
             }
         } catch (e: unknown) {
-            console.error('[handleAttendEvent]: ', e)
-
-            const message = e instanceof Error ? e.message : 'Failed to attend event'
-
-            if (message.includes('group membership required for Edge Esmeralda')) {
-                showConfirmDialog({
-                    lang,
-                    title: 'Join Event',
-                    content: 'Please purchase the ticket to join the event. <br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="https://citizen-portal-ten.vercel.app/auth" target="_blank">Go to Purchase Ticket</a>',
-                    type: 'info'
-                })
-                return
-            }
-
+            console.error('[HighlightEvent]: ', e)
             toast({
-                title: message,
+                title: e instanceof Error ? e.message : 'Failed to highlight event',
                 variant: 'destructive'
             })
         } finally {

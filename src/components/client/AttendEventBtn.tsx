@@ -51,7 +51,7 @@ export default function AttendEventBtn({eventId, lang, className, onAttended}: {
                 showConfirmDialog({
                     lang,
                     title: 'Join Event',
-                    content: 'Please purchase the ticket to join the event. <br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="https://citizen-portal-ten.vercel.app/auth" target="_blank">Go to Purchase Ticket</a>',
+                    content: 'Please purchase the ticket to join the event. <br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="https://edgecity.simplefi.tech/auth?popup=edge-esmeralda" target="_blank">Go to Purchase Ticket</a>',
                     type: 'info'
                 })
                 return
