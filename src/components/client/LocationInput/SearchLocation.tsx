@@ -54,7 +54,7 @@ export default function SearchLocation({
             setPredictions(res)
             !!res.length && dropdown.trigger && dropdown.trigger(true)
         })
-    }, 300), [AutocompleteService, dropdown])
+    }, 600), [AutocompleteService])
 
     const handleSelected = (prediction: google.maps.places.QueryAutocompletePrediction) => {
         if (!placesService) return
