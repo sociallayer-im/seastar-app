@@ -417,11 +417,9 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     {!!locationInfo.geo_lat && !!locationInfo.geo_lng &&
                         <div className="ml-11 -mt-4">
                             <div className="flex-row-item-center mb-2">
-                                {enableGoogleMap &&
-                                    <a className="text-xs text-blue-400 cursor-pointer mr-3"
-                                        target={'_blank'}
-                                        href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
-                                }
+                                <a className="text-xs text-blue-400 cursor-pointer mr-3"
+                                   target={'_blank'}
+                                   href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
 
                                 {!!locationInfo.formatted_address &&
                                     <ClickToCopy text={locationInfo.formatted_address}

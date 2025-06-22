@@ -1,7 +1,7 @@
 import {LocationInputProps} from "@/components/client/LocationInput/index"
 import {Input} from "@/components/shadcn/Input"
 import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
-import {useCallback, useEffect, useMemo, useState} from "react"
+import {useCallback, useEffect, useMemo, useRef, useState} from "react"
 import {debounce} from 'lodash'
 import {useMapsLibrary} from '@vis.gl/react-google-maps'
 
@@ -22,11 +22,13 @@ export default function SearchLocation({
         return !!placesLib && new placesLib.PlacesService(document.querySelector('#gmap') as HTMLDivElement)
     }, [placesLib])
 
-
     const [predictions, setPredictions] = useState<google.maps.places.QueryAutocompletePrediction[]>([])
     const dropdown: DropdownTrigger = {trigger: null}
+    const sessionToken = useMemo(() => {
+        return !!placesLib ? new placesLib.AutocompleteSessionToken() : undefined
+    }, [placesLib])
 
-    const handleSearch = useCallback(debounce((keyword: string) => {
+    const handleSearch = useCallback(debounce(async (keyword: string) => {
         if (!AutocompleteService) return
 
         // check if the keyword is geo point
@@ -43,17 +45,19 @@ export default function SearchLocation({
             } as google.maps.places.QueryAutocompletePrediction
         }
 
-        AutocompleteService.getQueryPredictions({
+        const { predictions } = await AutocompleteService.getPlacePredictions({
             input: keyword,
-        }, (predictions) => {
-            let res = customAddress ? [customAddress]  : []
-            if (predictions?.length) {
-                const _predictions = predictions.filter(p => !!p.place_id)
-                res = res.concat(_predictions)
-            }
-            setPredictions(res)
-            !!res.length && dropdown.trigger && dropdown.trigger(true)
+            sessionToken: sessionToken
         })
+
+        console.log('search result: ', predictions, sessionToken)
+        let res = customAddress ? [customAddress]  : []
+        if (predictions?.length) {
+            const _predictions = predictions.filter(p => !!p.place_id)
+            res = res.concat(_predictions)
+           }
+        setPredictions(res)
+        !!res.length && dropdown.trigger && dropdown.trigger(true)
     }, 600), [AutocompleteService])
 
     const handleSelected = (prediction: google.maps.places.QueryAutocompletePrediction) => {

@@ -26,8 +26,11 @@ export default function SearchVenueLocation({
 
     const [predictions, setPredictions] = useState<google.maps.places.QueryAutocompletePrediction[]>([])
     const dropdown: DropdownTrigger = {trigger: null}
+    const sessionToken = useMemo(() => {
+        return !!placesLib ? new placesLib.AutocompleteSessionToken() : undefined
+    }, [placesLib])
 
-    const handleSearch = useCallback(debounce((keyword: string) => {
+    const handleSearch = useCallback(debounce(async (keyword: string) => {
         if (!AutocompleteService) return
 
         // check if the keyword is geo point
@@ -45,18 +48,20 @@ export default function SearchVenueLocation({
             } as google.maps.places.QueryAutocompletePrediction
         }
 
-        AutocompleteService.getQueryPredictions({
+       const {predictions} = await AutocompleteService.getPlacePredictions({
             input: keyword,
-        }, (predictions) => {
-            let res = customAddress ? [customAddress]  : []
-            if (predictions?.length) {
-                const _predictions = predictions.filter(p => !!p.place_id)
-                res = res.concat(_predictions)
-            }
-            setPredictions(res)
-            !!res.length && dropdown.trigger && dropdown.trigger(true)
+            sessionToken: sessionToken
         })
-    }, 300), [AutocompleteService, dropdown])
+
+        let res = customAddress ? [customAddress]  : []
+        if (predictions?.length) {
+            const _predictions = predictions.filter(p => !!p.place_id)
+            res = res.concat(_predictions)
+        }
+        setPredictions(res)
+        !!res.length && dropdown.trigger && dropdown.trigger(true)
+
+    }, 500), [AutocompleteService])
 
     const handleSelected = (prediction: google.maps.places.QueryAutocompletePrediction) => {
         if (!placesService) return
