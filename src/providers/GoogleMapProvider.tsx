@@ -8,7 +8,7 @@ export default function GoogleMapProvider(props: { children: ReactNode, langType
         onError={(e) => {
             console.warn(e)
         }}
-        apiKey={'AIzaSyCNT9TndlC4dSd0oNR_L4vHYWafLDU1gbg'}
+        apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!}
         language={lang}>
         {props.children}
     </APIProvider>
