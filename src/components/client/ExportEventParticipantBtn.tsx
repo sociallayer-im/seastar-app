@@ -8,7 +8,7 @@ import dayjs from "@/libs/dayjs"
 import { useState } from "react"
 import { Input } from "../shadcn/Input";
 
-export default function ExportGroupEventBtn(props: { lang: Dictionary , groupId: number}) {
+export default function ExportEventParticipantBtn(props: { lang: Dictionary , groupId: number}) {
     const { lang, groupId } = props
     
     const { openModal } = useModal()
@@ -19,9 +19,9 @@ export default function ExportGroupEventBtn(props: { lang: Dictionary , groupId:
         })
     }
     
-    return <Button variant="secondary" className="mb-3 w-full sm:w-auto" onClick={handleShowExportModal}>
+    return <Button variant="secondary" className="mb-3 w-full sm:w-auto"  onClick={handleShowExportModal}>
     <div className="flex-row-item-center w-full justify-between">
-        <div>{lang['Export Event Data']}</div>
+        <div>{lang['Export Event Participant Data']}</div>
         <i className="uil-cloud-download text-2xl ml-2" />
     </div>
 </Button>
@@ -42,15 +42,15 @@ function ExportModal(props: { lang: Dictionary, groupId: number, close: () => vo
         }
         setError(null)
     
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/api/event/csv?group_id=${groupId}&start_date=${startDate}&end_date=${endDate}`
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/api/participant/csv?group_id=${groupId}&start_date=${startDate}&end_date=${endDate}`
         const a = document.createElement('a')
         a.href = url
-        a.download = `event_data_${startDate}_${endDate}.csv`
+        a.download = `event_participant_data_${startDate}_${endDate}.csv`
         a.click()
     }
 
-    return <div className="p-4 bg-white rounded-lg shadow w-[320px]">
-        <div className="text-lg font-bold"  >{lang['Export Event Data']}</div>
+    return <div className="p-4 bg-white rounded-lg shadow w-[340px]">
+        <div className="text-lg font-bold"  >{lang['Export Event Participant Data']}</div>
         <div className="flex flex-col gap-2 my-3">
             <div className="flex flex-row gap-2 items-center">
                 <DatePicker initDate={startDate} onChange={setStartDate}>

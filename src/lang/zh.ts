@@ -602,4 +602,5 @@ export const zh: Dictionary = {
   'Export Event Data': '导出活动数据',
   'Export': '导出',
   'Highlight': '高亮',
+  'Export Event Participant Data': '导出活动参与者数据',
 };

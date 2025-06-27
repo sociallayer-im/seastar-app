@@ -620,6 +620,7 @@ export const en = {
     'Export Event Data': 'Export Event Data',
     'Export': 'Export',
     'Highlight': 'Highlight',
+    'Export Event Participant Data': 'Export Event Participant Data',
 };
 
 export type Dictionary = typeof en;

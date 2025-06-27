@@ -1,5 +1,6 @@
 import GroupEventSettingData, { GroupEventSettingDataProps } from "@/app/(normal)/event/[grouphandle]/setting/data"
 import { selectLang } from "@/app/actions"
+import ExportEventParticipantBtn from "@/components/client/ExportEventParticipantBtn"
 import ExportGroupEventBtn from "@/components/client/ExportGroupEventBtn"
 import { buttonVariants } from "@/components/shadcn/Button"
 import { useState } from "react"
@@ -87,7 +88,10 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>
 
-                <ExportGroupEventBtn lang={lang} groupId={groupDetail.id}/>
+                <div className="flex sm:flex-row flex-col items-center justify-end gap-3">
+                    <ExportGroupEventBtn lang={lang} groupId={groupDetail.id} />
+                    <ExportEventParticipantBtn lang={lang} groupId={groupDetail.id} />
+                </div>
             </div>
         </div>
     </div>
