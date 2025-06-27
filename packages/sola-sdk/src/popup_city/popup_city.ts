@@ -26,6 +26,7 @@ export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
     return {
         eventGroups: data.groups as Group[],
         popupCities: sortedPopupCities as PopupCity[],
+        featuredPopupCities: sortedPopupCities.filter((popupCity: PopupCity) => popupCity.group_tags?.includes(':featured')) as PopupCity[],
         events: data.events as Event[],
         popupCityMap
     }

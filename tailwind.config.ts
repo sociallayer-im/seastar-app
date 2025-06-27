@@ -24,6 +24,7 @@ const config: Config = {
                 'destructive-foreground': "hsl(var(--destructive-foreground))",
             },
         },
-    }
+    },
+    plugins: [require("tailwindcss-animate")]
 }
 export default config
