@@ -55,6 +55,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
             || !!currFilter.end_date
             || !!currFilter.venue_id
             || !!currFilter.tags
+            || !!currFilter.track_id
         return {
             isFiltered,
             showHighlight: currFilter.collection === 'upcoming' && !currFilter.search_title && !isFiltered
