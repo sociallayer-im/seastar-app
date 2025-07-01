@@ -468,30 +468,6 @@ export default function EventForm({
             {!!draft.venue_id && isEdgeCityGroup(draft.group_id) && (
               <>
                 <div className="mb-8">
-                  <div className="font-semibold mb-1">
-                    {lang["Seating Arrangement Style"]}
-                  </div>
-                  <div className="flex-row-item-center">
-                    {SeatingStyle.map((s, i) => {
-                      return (
-                        <Button
-                          size={"sm"}
-                          onClick={() => updateRequirementTags(s)}
-                          className="text-sm mr-1"
-                          variant={
-                            draft.requirement_tags?.includes(s)
-                              ? "normal"
-                              : "outline"
-                          }
-                          key={i}
-                        >
-                          {s}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="mb-8">
                   <div className="font-semibold mb-1">{lang["AV Needed"]}</div>
                   <div className="flex-row-item-center">
                     {AVNeeds.map((a, i) => {

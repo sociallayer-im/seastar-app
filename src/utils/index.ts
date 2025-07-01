@@ -16,11 +16,11 @@ import {
     VenueDetail,
     VenueTimeslot,
     Weekday,
-    EventWithJoinStatus, Participant
+    EventWithJoinStatus, Participant, getProfileDetailByEmail, EventRoleDetail
 } from '@sola/sdk'
 import domtoimage from 'dom-to-image'
 import { Dictionary } from '@/lang'
-import { AVAILABLE_PAYMENT_TYPES, SOLA_APP_SUBDOMAINS } from '@/app/config'
+import {AVAILABLE_PAYMENT_TYPES, CLIENT_MODE, SOLA_APP_SUBDOMAINS} from '@/app/config'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -849,6 +849,36 @@ export function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 
                 end: start.format('YYYY-MM-DD')
             }
     }
+}
+
+export async function processEventRoles(eventDraft: EventDraftType) {
+    const eventRole = eventDraft.event_roles
+    const getProfileByEmailTask = []
+    if (eventRole && eventRole.length > 0) {
+        for (const role of eventRole) {
+            if (role.email && !(role as EventRoleDetail)._destroy) {
+                getProfileByEmailTask.push(getProfileDetailByEmail({
+                    params: {email: role.email}, clientMode: CLIENT_MODE
+                }))
+            }
+        }
+    }
+
+    if (getProfileByEmailTask.length !== 0) {
+        const emailProfiles = await Promise.all(getProfileByEmailTask)
+        eventDraft.event_roles = eventRole!.map((role, index) => {
+            const profile = emailProfiles.find(emailProfiles => emailProfiles?.email === role.email)
+            if (profile) {
+                return {
+                    ...role,
+                    item_id: profile.id,
+                }
+            }
+            return role
+        })
+    }
+
+    return eventDraft
 }
 
 

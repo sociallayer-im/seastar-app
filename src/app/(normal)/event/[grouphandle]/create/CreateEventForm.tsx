@@ -3,10 +3,15 @@
 import EventForm from '@/app/(normal)/event/[grouphandle]/create/EventForm'
 import {Dictionary} from '@/lang'
 import {CreateEventPageDataType} from '@/app/(normal)/event/[grouphandle]/create/data'
-import {createEvent, createRecurringEvent, EventDraftType, getEventByRecurringId} from '@sola/sdk'
+import {
+    createEvent,
+    createRecurringEvent,
+    EventDraftType,
+    getEventByRecurringId,
+} from '@sola/sdk'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
-import {getAuth} from '@/utils'
+import {getAuth, processEventRoles} from '@/utils'
 import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatForm'
 import {CLIENT_MODE} from '@/app/config'
 
@@ -18,8 +23,9 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
         const authToken = getAuth()
         const loading = showLoading()
         try {
+            const processedEventRoleDraft = await processEventRoles(eventDraft)
             const event = await createEvent({
-                params: {eventDraft, authToken: authToken!},
+                params: {eventDraft: processedEventRoleDraft, authToken: authToken!},
                 clientMode: CLIENT_MODE
             })
             window.location.href = `/event/share/${event.id}`
@@ -39,9 +45,10 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
         const authToken = getAuth()
         const loading = showLoading()
         try {
+            const processedEventRoleDraft = await processEventRoles(eventDraft)
             const recurring = await createRecurringEvent({
                 params: {
-                    eventDraft,
+                    eventDraft: processedEventRoleDraft,
                     authToken: authToken!,
                     eventCount: repeatForm.event_count!,
                     interval: repeatForm.interval!
@@ -76,5 +83,4 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
 
 
     return <EventForm {...props} onConfirm={onConfirm}/>
-
 }

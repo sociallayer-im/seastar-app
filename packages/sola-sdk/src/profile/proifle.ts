@@ -139,3 +139,20 @@ export const searchProfile = async ({params, clientMode}:SolaSdkFunctionParams<{
 
     return result
 }
+
+/**
+ * Get profile detail by handle
+ * @param email - profile email
+ */
+export const getProfileDetailByEmail = async ({params, clientMode}:SolaSdkFunctionParams<{email: string}>) => {
+
+    const url = `${getSdkConfig(clientMode).api}/profile/get_by_email?email=${params.email}`
+    const response = await fetch(url)
+
+    if (!response.ok) {
+        return null
+    }
+
+    const data = await response.json()
+    return data.profile as ProfileDetail
+}

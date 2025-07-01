@@ -5,7 +5,7 @@ import EventForm from '@/app/(normal)/event/[grouphandle]/create/EventForm'
 import {CreateEventPageDataType} from '@/app/(normal)/event/[grouphandle]/create/data'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
-import {getAuth} from '@/utils'
+import {getAuth, processEventRoles} from '@/utils'
 import {cancelEvent, cancelRecurringEvent, EventDraftType, updateEvent, updateRecurringEvent} from '@sola/sdk'
 import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatForm'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
@@ -23,8 +23,9 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
         const loading = showLoading()
 
         try {
+            const processedEventRoleDraft = await processEventRoles(eventDraft)
             const event = await updateEvent({
-                params: {eventDraft, authToken: authToken!}, clientMode: CLIENT_MODE
+                params: {eventDraft: processedEventRoleDraft, authToken: authToken!}, clientMode: CLIENT_MODE
             })
             window.location.href = `/event/detail/${event.id}`
         } catch (e: unknown) {
@@ -46,10 +47,10 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
         try {
             const startTimeSecondDiff = parseInt(((new Date(eventDraft.start_time).getTime() - new Date(props.data.eventDraft.start_time).getTime()) / 1000).toString())
             const endTimeSecondDiff = parseInt(((new Date(eventDraft.end_time).getTime() - new Date(props.data.eventDraft.end_time).getTime()) / 1000).toString())
-
+            const processedEventRoleDraft = await processEventRoles(eventDraft)
             await updateRecurringEvent({
                 params: {
-                    eventDraft,
+                    eventDraft: processedEventRoleDraft,
                     authToken: authToken!,
                     recurringId: eventDraft.recurring_id!,
                     afterEventId: selector === 'after' ? eventDraft.id! : undefined,

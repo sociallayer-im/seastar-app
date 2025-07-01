@@ -1,6 +1,5 @@
 import {getProfileByHandlesOrAddresses} from './profile'
 import {CLIENT_MODE} from '@/app/config'
-import {VenueTimeslot, Weekday} from './group'
 
 export const checkAndGetProfileByHandlesOrAddresses = async (handlesOrAddresses: string[]) => {
     const {handleResult, addressResult} = await getProfileByHandlesOrAddresses({

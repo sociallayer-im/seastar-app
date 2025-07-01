@@ -203,7 +203,7 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
                 </DropdownMenu>
             </div>
 
-            {!!item.nickname && !item.item_id &&
+            {!!item.nickname && (!item.item_id || !!item.email) &&
                 <Input className="flex-1  ml-3"
                     startAdornment={<i className="uil-envelope text-xl" />}
                     value={item.email || ''}
