@@ -10,9 +10,12 @@ import {analyzeGroupMembershipAndCheckProfilePermissions} from '@/utils'
 import {CreateEventPageDataType} from '@/app/(normal)/event/[grouphandle]/create/data'
 import {CLIENT_MODE} from '@/app/config'
 
-export interface EditEventProps {
+export interface EventEditEventPageProps {
     params: { eventid: number }
     searchParams: { event_badge?: string }
+}
+
+export interface EditEventProps extends EventEditEventPageProps {
     checkPermissions?: boolean
 }
 
