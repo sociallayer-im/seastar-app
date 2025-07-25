@@ -6,7 +6,7 @@ import {ReactNode} from "react"
 import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {selectLang} from '@/app/actions'
-import {poppins, icon} from "@/app/fonts"
+import {poppins, icon, media_icons, editor_icons} from "@/app/fonts"
 
 export const metadata: Metadata = {
     title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
@@ -26,7 +26,7 @@ export default async function IframeLayout({
     const langType = (await selectLang()).type
 
     return (
-        <html lang={langType} className={`${poppins.className} ${icon.variable}`}>
+        <html lang={langType} className={`${poppins.className} ${icon.variable} ${media_icons.variable} ${editor_icons.variable}`}>
             <Head key={'head'}>
                 <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
             </Head>

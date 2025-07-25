@@ -13,7 +13,7 @@ import {useState} from 'react'
 import {Button} from '@/components/shadcn/Button'
 import {CLIENT_MODE} from '@/app/config'
 
-export default function EditEventForm(props: { lang: Dictionary, data: CreateEventPageDataType }) {
+export default function EditEventForm({redirect=true, ...props}: { lang: Dictionary, data: CreateEventPageDataType, redirect?: boolean }) {
     const {showLoading, closeModal, openModal} = useModal()
     const {showConfirmDialog} = useConfirmDialog()
     const {toast} = useToast()
@@ -27,7 +27,11 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
             const event = await updateEvent({
                 params: {eventDraft: processedEventRoleDraft, authToken: authToken!}, clientMode: CLIENT_MODE
             })
-            window.location.href = `/event/detail/${event.id}`
+            if (redirect) {
+                redirect && (window.location.href = `/event/detail/${event.id}`)
+            } else {
+                toast({description: 'Event updated successfully', variant: 'success'})
+            }
         } catch (e: unknown) {
             console.error(e)
             toast({
@@ -58,7 +62,11 @@ export default function EditEventForm(props: { lang: Dictionary, data: CreateEve
                     endTimeDiff: endTimeSecondDiff,
                 }, clientMode: CLIENT_MODE
             })
-            window.location.href = `/event/detail/${eventDraft.id}`
+            if (redirect) {
+                window.location.href = `/event/detail/${eventDraft.id}`
+            } else {
+                toast({description: 'Event updated successfully', variant: 'success'})
+            }
         } catch (e: unknown) {
             console.error(e)
             toast({

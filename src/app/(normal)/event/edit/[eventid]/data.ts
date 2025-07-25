@@ -13,11 +13,12 @@ import {CLIENT_MODE} from '@/app/config'
 export interface EditEventProps {
     params: { eventid: number }
     searchParams: { event_badge?: string }
+    checkPermissions?: boolean
 }
 
-export default async function EditEventData({params: {eventid}, searchParams: {event_badge}}: EditEventProps) {
+export default async function EditEventData({params: {eventid}, searchParams: {event_badge}, checkPermissions=true}: EditEventProps) {
     const currProfile = await getCurrProfile()
-    if (!currProfile) {
+    if (!currProfile && checkPermissions) {
         redirect('/')
     }
 
@@ -47,11 +48,14 @@ export default async function EditEventData({params: {eventid}, searchParams: {e
         isIssuer
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
-    const availableGroupHost = await getAvailableGroupsForEventHost({
+    const availableGroupHost = currProfile ? await getAvailableGroupsForEventHost({
         params: {profileHandle: currProfile.handle},
         clientMode: CLIENT_MODE
-    })
-    const availableHost: Array<Profile | Group> = [currProfile, ...availableGroupHost]
+    }): []
+
+    const availableHost: Array<Profile | Group> = currProfile
+        ? eventDetail.owner.id === currProfile?.id ? [currProfile, ...availableGroupHost] : [eventDetail.owner, ...availableGroupHost]
+        : []
 
     let recurring: Recurring | null = null
     if (!!eventDetail.recurring_id) {
