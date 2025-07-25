@@ -469,7 +469,7 @@ export default function EventForm({
               <>
                 <div className="mb-8">
                   <div className="font-semibold mb-1">{lang["AV Needed"]}</div>
-                  <div className="flex-row-item-center">
+                  <div className="flex-row-item-center !flex-wrap gap-2">
                     {AVNeeds.map((a, i) => {
                       return (
                         <Button

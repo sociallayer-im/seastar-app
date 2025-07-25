@@ -102,7 +102,7 @@ export default function SelectVenue({
         >
             <div
                 className={`${buttonVariants({variant: 'secondary'})} w-full !justify-between items-center cursor-pointer`}>
-                <div className="overflow-hidden whitespace-nowrap overflow-ellipsis font-normal">
+                <div className="overflow-hidden whitespace-nowrap overflow-ellipsis font-normal truncate max-w-[80vw]">
                     <i className="uil-location-point text-lg mr-1"/>
                     {currVenue ? currVenue.title : lang['Select Venue']}
                 </div>
