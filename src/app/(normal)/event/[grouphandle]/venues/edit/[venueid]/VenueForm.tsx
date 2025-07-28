@@ -35,12 +35,13 @@ const getTargetRole = (role?: string) => {
 }
 
 export interface VenueFormProps {
+    isDashboardPage?: boolean
     venueDetail: VenueDetail,
     lang: Dictionary,
     onConfirm?: (venue: VenueDetail) => void,
 }
 
-export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps) {
+export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage}: VenueFormProps) {
     const {editOverride} = useEditOverride()
     const {uploadImage} = useUploadImage()
 
@@ -175,7 +176,7 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
-            <div className="py-6 font-semibold text-center text-xl">{lang['Edit Venue']}</div>
+            {!isDashboardPage && <div className="py-6 font-semibold text-center text-xl">{lang['Edit Venue']}</div>}
 
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Name of venue']}</div>
@@ -202,16 +203,20 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
                 <div className="flex-row-item-center overflow-auto">
                     {
                         (draft.image_urls || []).map((img, index) => {
-                            return <div key={index} className='h-[170px] overflow-hidden flex mr-4 shrink-0 bg-[#f1f1f1] rounded-lg relative'>
+                            return <div key={index}
+                                        className='h-[170px] overflow-hidden flex mr-4 shrink-0 bg-[#f1f1f1] rounded-lg relative'>
                                 <i className="uil-minus-circle text-2xl cursor-pointer absolute right-1 top-1 text-gray-400"
-                                   onClick={()=> removeImage(index)} />
+                                   onClick={() => removeImage(index)}/>
                                 <img src={img} alt="" className='h-[170px] w-auto'/>
                             </div>
                         })
                     }
-                    <div onClick={async () => {const img = await uploadImage(); addImage(img)}}
-                        className="shrink-0 hover:brightness-95 rounded-lg cursor-pointer h-[170px] w-[170px] flex flex-col items-center justify-center bg-secondary">
-                        <i className="uil-plus-circle text-3xl text-gray-400" />
+                    <div onClick={async () => {
+                        const img = await uploadImage();
+                        addImage(img)
+                    }}
+                         className="shrink-0 hover:brightness-95 rounded-lg cursor-pointer h-[170px] w-[170px] flex flex-col items-center justify-center bg-secondary">
+                        <i className="uil-plus-circle text-3xl text-gray-400"/>
                         {lang['Add a photo']}
                     </div>
                 </div>
@@ -248,9 +253,10 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
                                    }}
                                    placeholder="Enter amenities"/>
                             {index === (draft.amenities || []).length - 1 &&
-                                <i className="uil-plus-circle text-3xl text-green-500 cursor-pointer" onClick={addAmenities}/>
+                                <i className="uil-plus-circle text-3xl text-green-500 cursor-pointer"
+                                   onClick={addAmenities}/>
                             }
-                            { index !== (draft.amenities || []).length - 1 &&
+                            {index !== (draft.amenities || []).length - 1 &&
                                 <i onClick={() => removeAmenities(index)}
                                    className="uil-minus-circle text-3xl text-gray-500 cursor-pointer"/>
                             }
@@ -515,9 +521,12 @@ export default function VenueForm({lang, venueDetail, onConfirm}: VenueFormProps
             </div>
 
             <div className="mt-6 flex-row-item-center justify-center">
-                <Button variant={'secondary'} className="mr-3 flex-1" onClick={() => {
-                    window.history.go(-1)
-                }}>{lang['Back']}</Button>
+                {!isDashboardPage &&
+                    <Button variant={'secondary'} className="mr-3 flex-1" onClick={() => {
+                        window.history.go(-1)
+                    }}>{lang['Back']}</Button>
+                }
+
                 <Button variant={'primary'}
                         onClick={handleConfirm}
                         className="mr-3 flex-1">{lang['Save']}</Button>

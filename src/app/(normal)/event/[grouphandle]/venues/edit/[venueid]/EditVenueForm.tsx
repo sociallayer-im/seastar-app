@@ -8,10 +8,11 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
-export default function ({groupDetail, lang, venueDetail}: {
+export default function ({groupDetail, lang, venueDetail, isDashboardPage}: {
     groupDetail: GroupDetail,
     lang: Dictionary,
-    venueDetail: VenueDetail
+    venueDetail: VenueDetail,
+    isDashboardPage?: boolean
 }) {
 
     const {showLoading, closeModal} = useModal()
@@ -40,5 +41,9 @@ export default function ({groupDetail, lang, venueDetail}: {
         }
     }
 
-    return <VenueForm venueDetail={venueDetail} lang={lang} onConfirm={handleSave}/>
+    return <VenueForm
+        isDashboardPage={isDashboardPage}
+        venueDetail={venueDetail}
+        lang={lang}
+        onConfirm={handleSave}/>
 }
