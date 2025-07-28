@@ -9,11 +9,15 @@ export interface EditVenueParams {
     venueid: string
 }
 
-export interface EditVenueDataProps {
+export interface EditVenuePageProps {
     params: EditVenueParams
 }
 
-export default async function EditVenueData({params} : EditVenueDataProps) {
+export interface EditVenueProps extends EditVenuePageProps {
+    checkPermissions?: boolean
+}
+
+export default async function EditVenueData({params, checkPermissions=true} : EditVenueProps) {
     const {grouphandle, venueid} = params
 
     const groupDetail = await getGroupDetailByHandle({
@@ -36,13 +40,13 @@ export default async function EditVenueData({params} : EditVenueDataProps) {
 
     const currProfile = await getCurrProfile()
 
-    if (!currProfile) {
+    if (!currProfile && checkPermissions) {
         redirect(`/event/${groupDetail.handle}`)
     }
 
     const {isManager} = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
-    if (!isManager) {
+    if (!isManager && checkPermissions) {
         redirect(`/event/${groupDetail.handle}`)
     }
 
