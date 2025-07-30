@@ -61,12 +61,12 @@ function FeatureItem(props: { popupCity: PopupCity }) {
                 </div>
                 <div className="flex-row-item-center text-sm">
                     <i className={'uil-location-point mr-0.5'}></i>
-                    <div className="webkit-box-clamp-1 break-all">{props.popupCity.location}</div>
+                    <div className="webkit-box-clamp-1 break-all" style={{ color: textColor }}>{props.popupCity.location}</div>
                 </div>
             </div>
             <div className="flex-row-item-center text-xs">
                 <Avatar profile={props.popupCity.group} size={14} className="mr-1" />
-                <div className="webkit-box-clamp-1">by {displayProfileName(props.popupCity.group)}</div>
+                <div className="webkit-box-clamp-1" style={{ color: textColor }}>by {displayProfileName(props.popupCity.group)}</div>
             </div>
         </div>
     </a>
