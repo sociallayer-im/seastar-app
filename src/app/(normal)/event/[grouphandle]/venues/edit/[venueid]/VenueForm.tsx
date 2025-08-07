@@ -358,6 +358,9 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
                 <div className="flex-row-item-center justify-between">
                     <div className="font-semibold mb-1">{lang['Specify Programs (Optional)']}</div>
                     <Switch onClick={() => {
+                        if (showTracksFilter) {
+                            setDraft({ ...draft, track_ids: [] })
+                        }
                         setShowTracksFilter(!showTracksFilter)
                     }}
                         checked={showTracksFilter} />
