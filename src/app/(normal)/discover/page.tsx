@@ -10,6 +10,8 @@ import ToCreatePopupCity from '@/app/(normal)/discover/ToCreatePopupCity'
 import PopupCities from '@/components/client/PopupCities'
 import Features from '@/components/client/Features'
 
+export const dynamic = 'force-dynamic'; 
+
 export async function generateMetadata() {
     const { lang } = await selectLang()
     return {
