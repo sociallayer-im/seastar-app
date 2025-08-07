@@ -1,6 +1,6 @@
 'use client'
 
-import {GroupDetail, Profile, TrackDetail, Track, updateTrack} from '@sola/sdk'
+import {GroupDetail, Profile, TrackDetail, Track, updateTrackV2} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import TrackForm from '@/app/(normal)/event/[grouphandle]/tracks/edit/[trackid]/TrackForm'
 import useModal from '@/components/client/Modal/useModal'
@@ -21,10 +21,23 @@ export default function EditTrackForm({trackDetail, lang, groupDetail}: {
         const loading = showLoading()
         try {
             const authToken = getAuth()
-            await updateTrack({
+            const oldManagersIds = trackDetail.track_roles.map(r => r.profile_id)
+            const newManagersIds = managers.map(m => m.id)
+            let addManagersIds: number[] = [], removedManagersIds: number[] = []
+            
+            if(oldManagersIds.length) {
+                removedManagersIds =  oldManagersIds.filter(m => !newManagersIds.includes(m))
+            }
+
+            if(newManagersIds.length) {
+                addManagersIds = newManagersIds.filter(m => !oldManagersIds.includes(m))
+            }
+            
+            await updateTrackV2({
                 params: {
                     track: track,
-                    managers: managers,
+                    addManagerIds: addManagersIds,
+                    removeManagerIds: removedManagersIds,
                     authToken: authToken!
                 },
                 clientMode: CLIENT_MODE

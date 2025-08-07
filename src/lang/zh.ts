@@ -603,4 +603,6 @@ export const zh: Dictionary = {
   'Export': '导出',
   'Highlight': '高亮',
   'Export Event Participant Data': '导出活动参与者数据',
+  'Specify Programs (Optional)': '指定项目 （可选）',
+  'Only program members can see and select this venue to create events. You can manager program members in the program setting page. ': '只有项目成员可以查看和选择此场地以创建活动。您可以在项目设置页面管理项目成员。'
 };

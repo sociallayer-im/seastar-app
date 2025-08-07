@@ -29,6 +29,7 @@ export const VENUE_FRAGMENT = gql`
         title
         visibility
         image_urls
+        track_ids
     }`
 
 export const VENUE_DETAIL_FRAGMENT = gql`
@@ -300,6 +301,15 @@ export const GENT_VENUE_DETAIL_BY_ID = gql`
     query GetVenueById($id: bigint!) {
         venues(where: {id: {_eq: $id}}) {
             ...VenueDetailFragment
+        }
+    }
+`
+
+export const GET_TRACK_ROLES_BY_TRACK_IDS = gql`
+    ${TRACK_ROLE_FRAGMENT}
+    query GetTrackRolesByTrackIds($trackIds: [Int!]!) {
+        track_roles(where: {track_id: {_in: $trackIds}}) {
+            ...TrackRoleFragment
         }
     }
 `

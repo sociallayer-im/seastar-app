@@ -61,6 +61,7 @@ export interface Venue {
     title: string,
     visibility: null | 'all' | 'manager' | 'member' | 'everyone',
     image_urls: null | string[]
+    track_ids: number[] | null
 }
 
 export interface VenueDetail extends Venue {

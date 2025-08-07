@@ -8,5 +8,8 @@ export default async function EditVenuePage(props: EditVenuePageProps) {
     const {lang} = await selectLang()
     const {groupDetail, venueDetail} = await EditVenueData(props)
 
-    return <EditVenueForm lang={lang} venueDetail={venueDetail} groupDetail={groupDetail}/>
+    return <EditVenueForm 
+    lang={lang} 
+    venueDetail={venueDetail} 
+    groupDetail={groupDetail}/>
 }

@@ -1,11 +1,11 @@
 'use client'
 
-import {VenueDetail, VenueOverride, VenueRole, VenueTimeslot, Weekday} from '@sola/sdk'
-import {Dictionary} from '@/lang'
-import {Input} from '@/components/shadcn/Input'
-import {Button, buttonVariants} from '@/components/shadcn/Button'
-import {Switch} from '@/components/shadcn/Switch'
-import {useEffect, useState} from 'react'
+import { Track, VenueDetail, VenueOverride, VenueRole, VenueTimeslot, Weekday } from '@sola/sdk'
+import { Dictionary } from '@/lang'
+import { Input } from '@/components/shadcn/Input'
+import { Button, buttonVariants } from '@/components/shadcn/Button'
+import { Switch } from '@/components/shadcn/Switch'
+import { useEffect, useState } from 'react'
 import {
     categorizeTimeslotByWeekDay,
     checkTimeSlotOverlapInWeekDay,
@@ -17,16 +17,16 @@ import DropdownMenu from '@/components/client/DropdownMenu'
 import SearchVenueLocation from '@/components/client/SearchVenueLocation'
 import GoogleMapProvider from '@/providers/GoogleMapProvider'
 import Dayjs from '@/libs/dayjs'
-import {scrollToErrMsg} from '@/components/client/Subscription/uilts'
+import { scrollToErrMsg } from '@/components/client/Subscription/uilts'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import useEditOverride from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/useEditOverride'
 import useUploadImage from '@/hooks/useUploadImage'
-import {divide} from 'lodash'
+import TracksFilter from '@/components/client/TracksFilter'
 
 const ROLE_OPTIONS: { value: VenueRole, label: string }[] = [
-    {value: 'all', label: 'All'},
-    {value: 'member', label: 'Member'},
-    {value: 'manager', label: 'Manager'},
+    { value: 'all', label: 'All' },
+    { value: 'member', label: 'Member' },
+    { value: 'manager', label: 'Manager' },
 ]
 
 const getTargetRole = (role?: string) => {
@@ -37,13 +37,14 @@ const getTargetRole = (role?: string) => {
 export interface VenueFormProps {
     isDashboardPage?: boolean
     venueDetail: VenueDetail,
+    tracks?: Track[]
     lang: Dictionary,
     onConfirm?: (venue: VenueDetail) => void,
 }
 
-export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage}: VenueFormProps) {
-    const {editOverride} = useEditOverride()
-    const {uploadImage} = useUploadImage()
+export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, isDashboardPage }: VenueFormProps) {
+    const { editOverride } = useEditOverride()
+    const { uploadImage } = useUploadImage()
 
     const [draft, setDraft] = useState(venueDetail)
     const [enableTimeslots, setEnableTimeslots] = useState(!!venueDetail.venue_timeslots?.length)
@@ -52,6 +53,7 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
 
     const [titleError, setTitleError] = useState('')
     const [locationError, setLocationError] = useState('')
+    const [showTracksFilter, setShowTracksFilter] = useState(!!draft.track_ids?.length)
 
     useEffect(() => {
         console.log('draft', draft)
@@ -61,9 +63,9 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
 
     const toggleWeekdayTimeslotsDisable = (weekDay: Weekday) => {
         const newTimeslots = timeslots[weekDay].map(timeslot => {
-            return {...timeslot, disabled: !timeslot.disabled}
+            return { ...timeslot, disabled: !timeslot.disabled }
         })
-        setTimeslots({...timeslots, [weekDay]: newTimeslots})
+        setTimeslots({ ...timeslots, [weekDay]: newTimeslots })
     }
 
     const updateTimeslot = (weekDay: Weekday, index: number, newtTimeslot: VenueTimeslot) => {
@@ -74,7 +76,7 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
             return timeslot
         })
 
-        setTimeslots({...timeslots, [weekDay]: newTimeslots})
+        setTimeslots({ ...timeslots, [weekDay]: newTimeslots })
     }
 
     const addNewTimeslot = (weekDay: Weekday) => {
@@ -85,20 +87,20 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
             end_at: '20:00',
             role: 'all'
         }]
-        setTimeslots({...timeslots, [weekDay]: newTimeslots})
+        setTimeslots({ ...timeslots, [weekDay]: newTimeslots })
     }
 
     const removeTimeslot = (weekDay: Weekday, index: number) => {
         const newTimeslots = timeslots[weekDay].filter((_, i) => i !== index)
-        setTimeslots({...timeslots, [weekDay]: newTimeslots})
+        setTimeslots({ ...timeslots, [weekDay]: newTimeslots })
     }
 
     const cleanStarDate = () => {
-        setDraft({...draft, start_date: null})
+        setDraft({ ...draft, start_date: null })
     }
 
     const cleanEndDate = () => {
-        setDraft({...draft, end_date: null})
+        setDraft({ ...draft, end_date: null })
     }
 
     const handleConfirm = () => {
@@ -155,23 +157,23 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
     }
 
     const addAmenities = () => {
-        setDraft({...draft, amenities: draft.amenities ? [...draft.amenities, ''] : ['']})
+        setDraft({ ...draft, amenities: draft.amenities ? [...draft.amenities, ''] : [''] })
     }
 
     const removeAmenities = (index: number) => {
         const newDraft = [...(draft.amenities || [])]
         newDraft.splice(index, 1)
-        setDraft({...draft, amenities: newDraft})
+        setDraft({ ...draft, amenities: newDraft })
     }
 
     const addImage = (img: string) => {
-        setDraft({...draft, image_urls: draft.image_urls ? [...draft.image_urls, img] : [img]})
+        setDraft({ ...draft, image_urls: draft.image_urls ? [...draft.image_urls, img] : [img] })
     }
 
     const removeImage = (index: number) => {
         const newDraft = [...(draft.image_urls || [])]
         newDraft.splice(index, 1)
-        setDraft({...draft, image_urls: newDraft})
+        setDraft({ ...draft, image_urls: newDraft })
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
@@ -181,9 +183,9 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Name of venue']}</div>
                 <Input className="w-full" value={draft.title}
-                       onChange={e => {
-                           setDraft({...draft, title: e.target.value})
-                       }}/>
+                    onChange={e => {
+                        setDraft({ ...draft, title: e.target.value })
+                    }} />
                 {!!titleError && <div className="err-msg text-red-400 mt-3">{titleError}</div>}
             </div>
 
@@ -191,7 +193,7 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                 <div className="font-semibold mb-1">{lang['Default location']}</div>
                 <GoogleMapProvider>
                     <SearchVenueLocation
-                        state={{draft, setDraft}}
+                        state={{ draft, setDraft }}
                         lang={lang}
                     />
                 </GoogleMapProvider>
@@ -204,10 +206,10 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                     {
                         (draft.image_urls || []).map((img, index) => {
                             return <div key={index}
-                                        className='h-[170px] overflow-hidden flex mr-4 shrink-0 bg-[#f1f1f1] rounded-lg relative'>
+                                className='h-[170px] overflow-hidden flex mr-4 shrink-0 bg-[#f1f1f1] rounded-lg relative'>
                                 <i className="uil-minus-circle text-2xl cursor-pointer absolute right-1 top-1 text-gray-400"
-                                   onClick={() => removeImage(index)}/>
-                                <img src={img} alt="" className='h-[170px] w-auto'/>
+                                    onClick={() => removeImage(index)} />
+                                <img src={img} alt="" className='h-[170px] w-auto' />
                             </div>
                         })
                     }
@@ -215,8 +217,8 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                         const img = await uploadImage();
                         addImage(img)
                     }}
-                         className="shrink-0 hover:brightness-95 rounded-lg cursor-pointer h-[170px] w-[170px] flex flex-col items-center justify-center bg-secondary">
-                        <i className="uil-plus-circle text-3xl text-gray-400"/>
+                        className="shrink-0 hover:brightness-95 rounded-lg cursor-pointer h-[170px] w-[170px] flex flex-col items-center justify-center bg-secondary">
+                        <i className="uil-plus-circle text-3xl text-gray-400" />
                         {lang['Add a photo']}
                     </div>
                 </div>
@@ -225,19 +227,19 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Description (Optional)']}</div>
                 <Input className="w-full" value={draft.about || ''}
-                       onChange={e => setDraft({...draft, about: e.target.value})}/>
+                    onChange={e => setDraft({ ...draft, about: e.target.value })} />
             </div>
 
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Venue Capacity (Optional)']}</div>
                 <Input className="w-full"
-                       placeholder={'Unlimited'}
-                       onChange={e => {
-                           setDraft({...draft, capacity: parseInt(e.target.value)})
-                       }}
-                       value={draft.capacity || ''}
-                       type={'number'}
-                       onWheel={(e) => e.currentTarget.blur()}/>
+                    placeholder={'Unlimited'}
+                    onChange={e => {
+                        setDraft({ ...draft, capacity: parseInt(e.target.value) })
+                    }}
+                    value={draft.capacity || ''}
+                    type={'number'}
+                    onWheel={(e) => e.currentTarget.blur()} />
             </div>
 
             <div className="mb-4">
@@ -246,19 +248,19 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                     (draft.amenities?.length ? draft.amenities : ['']).map((tag, index) => {
                         return <div key={index} className="flex-row-item-center w-full mb-3">
                             <Input value={tag} className="flex-1 mr-3"
-                                   onChange={event => {
-                                       const newAmenities = [...(draft.amenities || [])]
-                                       newAmenities[index] = event.target.value
-                                       setDraft({...draft, amenities: newAmenities})
-                                   }}
-                                   placeholder="Enter amenities"/>
+                                onChange={event => {
+                                    const newAmenities = [...(draft.amenities || [])]
+                                    newAmenities[index] = event.target.value
+                                    setDraft({ ...draft, amenities: newAmenities })
+                                }}
+                                placeholder="Enter amenities" />
                             {index === (draft.amenities || []).length - 1 &&
                                 <i className="uil-plus-circle text-3xl text-green-500 cursor-pointer"
-                                   onClick={addAmenities}/>
+                                    onClick={addAmenities} />
                             }
                             {index !== (draft.amenities || []).length - 1 &&
                                 <i onClick={() => removeAmenities(index)}
-                                   className="uil-minus-circle text-3xl text-gray-500 cursor-pointer"/>
+                                    className="uil-minus-circle text-3xl text-gray-500 cursor-pointer" />
                             }
                         </div>
                     })
@@ -268,7 +270,7 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Link (Optional)']}</div>
                 <Input className="w-full" value={draft.link || ''}
-                       onChange={(e) => setDraft({...draft, link: e.target.value})}/>
+                    onChange={(e) => setDraft({ ...draft, link: e.target.value })} />
             </div>
 
             <div className="mb-4">
@@ -277,39 +279,39 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                     <div className="flex-row-item-center mb-3 flex-1">
                         <div className="w-16 text-center">From</div>
                         <DatePicker initDate={draft.start_date || Dayjs().format('YYYY/MM/DD')}
-                                    className={'w-full'}
-                                    format={'YYYY-MM-DD'}
-                                    onChange={date => {
-                                        setDraft({...draft, start_date: date})
-                                    }}>
+                            className={'w-full'}
+                            format={'YYYY-MM-DD'}
+                            onChange={date => {
+                                setDraft({ ...draft, start_date: date })
+                            }}>
                             <Input className="w-full flex-1" readOnly
-                                   value={draft.start_date || ''}
-                                   endAdornment={!!draft.start_date &&
-                                       <i onClick={(e) => {
-                                           cleanStarDate();
-                                           e.stopPropagation()
-                                       }}
-                                          className="uil-times-circle cursor-pointer"/>}
-                                   placeholder={'YYYY/MM/DD'}/>
+                                value={draft.start_date || ''}
+                                endAdornment={!!draft.start_date &&
+                                    <i onClick={(e) => {
+                                        cleanStarDate();
+                                        e.stopPropagation()
+                                    }}
+                                        className="uil-times-circle cursor-pointer" />}
+                                placeholder={'YYYY/MM/DD'} />
                         </DatePicker>
                     </div>
                     <div className="flex-row-item-center mb-3 flex-1">
                         <div className="w-16 text-center">To</div>
                         <DatePicker initDate={draft.end_date || Dayjs().add(1, 'month').format('YYYY/MM/DD')}
-                                    className={'w-full'}
-                                    format={'YYYY-MM-DD'}
-                                    onChange={date => {
-                                        setDraft({...draft, end_date: date})
-                                    }}>
+                            className={'w-full'}
+                            format={'YYYY-MM-DD'}
+                            onChange={date => {
+                                setDraft({ ...draft, end_date: date })
+                            }}>
                             <Input className="w-full flex-1" readOnly
-                                   value={draft.end_date || ''}
-                                   endAdornment={!!draft.end_date &&
-                                       <i onClick={(e) => {
-                                           cleanEndDate();
-                                           e.stopPropagation()
-                                       }}
-                                          className="uil-times-circle cursor-pointer"/>}
-                                   placeholder={'YYYY/MM/DD'}/>
+                                value={draft.end_date || ''}
+                                endAdornment={!!draft.end_date &&
+                                    <i onClick={(e) => {
+                                        cleanEndDate();
+                                        e.stopPropagation()
+                                    }}
+                                        className="uil-times-circle cursor-pointer" />}
+                                placeholder={'YYYY/MM/DD'} />
                         </DatePicker>
                     </div>
                 </div>
@@ -322,23 +324,23 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
 
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Visibility']}</div>
-                <Button onClick={() => setDraft({...draft, visibility: 'all'})}
-                        variant={'secondary'} className="w-full mb-3">
+                <Button onClick={() => setDraft({ ...draft, visibility: 'all' })}
+                    variant={'secondary'} className="w-full mb-3">
                     <div className="flex-row-item-center justify-between w-full">
                         <div className="font-normal">Everyone</div>
                         {(draft.visibility === 'all' || draft.visibility === 'everyone' || !draft.visibility)
-                            ? <i className="uil-check-circle text-green-400 text-2xl"/>
-                            : <i className="uil-circle text-gray-300 text-2xl"/>
+                            ? <i className="uil-check-circle text-green-400 text-2xl" />
+                            : <i className="uil-circle text-gray-300 text-2xl" />
                         }
                     </div>
                 </Button>
-                <Button onClick={() => setDraft({...draft, visibility: 'manager'})}
-                        variant={'secondary'} className='w-full mb-3'>
+                <Button onClick={() => setDraft({ ...draft, visibility: 'manager' })}
+                    variant={'secondary'} className='w-full mb-3'>
                     <div className="flex-row-item-center justify-between w-full">
                         <div className="font-normal">Manager</div>
                         {(draft.visibility === 'manager' || !draft.visibility)
-                            ? <i className="uil-check-circle text-green-400 text-2xl"/>
-                            : <i className="uil-circle text-gray-300 text-2xl"/>
+                            ? <i className="uil-check-circle text-green-400 text-2xl" />
+                            : <i className="uil-circle text-gray-300 text-2xl" />
                         }
                     </div>
                 </Button>
@@ -347,10 +349,39 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
             <div className="my-8 flex-row-item-center justify-between">
                 <div className="font-semibold mb-1">{lang['Require Approval (Optional)']}</div>
                 <Switch onClick={() => {
-                    setDraft({...draft, require_approval: !draft.require_approval})
+                    setDraft({ ...draft, require_approval: !draft.require_approval })
                 }}
-                        checked={draft.require_approval}/>
+                    checked={draft.require_approval} />
             </div>
+
+            <div className='my-8'>
+                <div className="flex-row-item-center justify-between">
+                    <div className="font-semibold mb-1">{lang['Specify Programs (Optional)']}</div>
+                    <Switch onClick={() => {
+                        setShowTracksFilter(!showTracksFilter)
+                    }}
+                        checked={showTracksFilter} />
+                </div>
+                <div className="text-xs text-gray-500 mb-2">
+                    {lang['Only program members can see and select this venue to create events. You can manager program members in the program setting page. ']}
+                </div>
+                {showTracksFilter && (
+                    <div className="mb-4">
+                        <TracksFilter
+                            multiple={true}
+                            lang={lang}
+                            allowResetBtn={false}
+                            tracks={tracks}
+                            values={draft.track_ids || []}
+                            onSelect={(trackIds) => {
+                                setDraft({ ...draft, track_ids: trackIds || [] })
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+
+
 
             <div className="mb-4">
                 <div className="font-semibold mb-2">{lang['Opening Hours']}</div>
@@ -361,9 +392,9 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                         <div className="text-xs text-gray-500">Opening all the time</div>
                     </div>
                     {!enableTimeslots
-                        ? <i className="uil-check-circle text-green-500 text-2xl"/>
+                        ? <i className="uil-check-circle text-green-500 text-2xl" />
                         : <i className="uil-circle text-gray-300 text-2xl cursor-pointer"
-                             onClick={e => setEnableTimeslots(false)}/>
+                            onClick={e => setEnableTimeslots(false)} />
                     }
                 </div>
 
@@ -375,9 +406,9 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                             <div className="text-xs text-gray-500">Opening within specific timeslots</div>
                         </div>
                         {enableTimeslots
-                            ? <i className="uil-check-circle text-green-500 text-2xl"/>
+                            ? <i className="uil-check-circle text-green-500 text-2xl" />
                             : <i className="uil-circle text-gray-300 text-2xl cursor-pointer"
-                                 onClick={e => setEnableTimeslots(true)}/>
+                                onClick={e => setEnableTimeslots(true)} />
                         }
                     </div>
 
@@ -390,36 +421,36 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                                         <div className="mr-2">Closed</div>
                                         <Switch
                                             onClick={() => toggleWeekdayTimeslotsDisable(weekDay)}
-                                            checked={timeslots[weekDay][0]!.disabled}/>
+                                            checked={timeslots[weekDay][0]!.disabled} />
                                     </div>
                                 </div>
                                 {
                                     timeslots[weekDay].map((timeslot, i) => {
                                         const style = timeslot.disabled
-                                            ? {opacity: '0.4', pointerEvents: 'none' as any}
+                                            ? { opacity: '0.4', pointerEvents: 'none' as any }
                                             : undefined
                                         return <div key={i + weekDay}>
                                             <div style={style}
-                                                 className="flex flex-row items-center pb-3 px-2 mt-3 rounded bg-gray-50">
+                                                className="flex flex-row items-center pb-3 px-2 mt-3 rounded bg-gray-50">
                                                 <div
                                                     className="flex sm:flex-row flex-col flex-wrap sm:items-center flex-1 mr-2">
                                                     <div className="flex-row-item-center mt-3 flex-1 text-sm">
                                                         <div className="w-16 text-center">From</div>
                                                         <TimePicker
                                                             onChange={(time) => {
-                                                                const newtTimeslot = {...timeslot, start_at: time}
+                                                                const newtTimeslot = { ...timeslot, start_at: time }
                                                                 updateTimeslot(weekDay, i, newtTimeslot)
                                                             }}
-                                                            initTime={timeslot.start_at || ''}/>
+                                                            initTime={timeslot.start_at || ''} />
                                                     </div>
                                                     <div className="flex-row-item-center mt-3 flex-1 text-sm">
                                                         <div className="w-16 text-center">To</div>
                                                         <TimePicker
                                                             onChange={(time) => {
-                                                                const newtTimeslot = {...timeslot, end_at: time}
+                                                                const newtTimeslot = { ...timeslot, end_at: time }
                                                                 updateTimeslot(weekDay, i, newtTimeslot)
                                                             }}
-                                                            initTime={timeslot.end_at || ''}/>
+                                                            initTime={timeslot.end_at || ''} />
                                                     </div>
                                                     <div className="flex-row-item-center mt-3 flex-1 text-sm">
                                                         <div className="min-w-16 text-center">For</div>
@@ -438,21 +469,21 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                                                                 className="capitalize">{option.value}</div>}
                                                         >
                                                             <Input className="w-full flex-1 !capitalize"
-                                                                   value={getTargetRole(timeslot.role)!.label}
-                                                                   readOnly
-                                                                   endAdornment={<i
-                                                                       className="uil-angle-down text-lg"/>}
-                                                                   placeholder={'role'}/>
+                                                                value={getTargetRole(timeslot.role)!.label}
+                                                                readOnly
+                                                                endAdornment={<i
+                                                                    className="uil-angle-down text-lg" />}
+                                                                placeholder={'role'} />
                                                         </DropdownMenu>
                                                     </div>
                                                 </div>
                                                 {i === timeslots[weekDay].length - 1 &&
                                                     <i className="uil-plus-circle text-3xl text-green-500 cursor-pointer mt-3 mr-1"
-                                                       onClick={e => addNewTimeslot(weekDay)}/>
+                                                        onClick={e => addNewTimeslot(weekDay)} />
                                                 }
                                                 {timeslots[weekDay].length !== 1 &&
                                                     <i onClick={() => removeTimeslot(weekDay, i)}
-                                                       className="uil-minus-circle text-gray-500 text-3xl mt-3 cursor-pointer"/>
+                                                        className="uil-minus-circle text-gray-500 text-3xl mt-3 cursor-pointer" />
                                                 }
                                             </div>
 
@@ -491,10 +522,10 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                                         setOverrides(newOverrides)
                                     }
                                 }}
-                                     className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 justify-between !h-auto`}>
+                                    className={`${buttonVariants({ variant: 'secondary' })} flex-1 mr-3 justify-between !h-auto`}>
                                     <div className="font-normal">
                                         <div className={"font-semibold"}>
-                                            <DisplayDateTime dataTimeStr={override.day} format={'MMMM DD, YYYY'}/>
+                                            <DisplayDateTime dataTimeStr={override.day} format={'MMMM DD, YYYY'} />
                                         </div>
                                         <div className="text-sm">
 
@@ -507,15 +538,15 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                                         </div>
                                     </div>
 
-                                    <i className="uil-edit-alt"/>
+                                    <i className="uil-edit-alt" />
                                 </div>
-                                <i className="uil-minus-circle text-3xl text-gray-500 cursor-pointer"/>
+                                <i className="uil-minus-circle text-3xl text-gray-500 cursor-pointer" />
                             </div>
                         })
                     }
                 </div>
                 <Button variant={'secondary'} className='mt-3' onClick={addNewOverride}>
-                    <i className="uil-plus-circle text-xl"/>
+                    <i className="uil-plus-circle text-xl" />
                     {lang['Add new Override']}
                 </Button>
             </div>
@@ -528,8 +559,8 @@ export default function VenueForm({lang, venueDetail, onConfirm, isDashboardPage
                 }
 
                 <Button variant={'primary'}
-                        onClick={handleConfirm}
-                        className="mr-3 flex-1">{lang['Save']}</Button>
+                    onClick={handleConfirm}
+                    className="mr-3 flex-1">{lang['Save']}</Button>
             </div>
         </div>
     </div>

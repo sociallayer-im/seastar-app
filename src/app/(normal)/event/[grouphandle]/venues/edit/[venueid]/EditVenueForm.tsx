@@ -45,5 +45,6 @@ export default function ({groupDetail, lang, venueDetail, isDashboardPage}: {
         isDashboardPage={isDashboardPage}
         venueDetail={venueDetail}
         lang={lang}
+        tracks={groupDetail.tracks}
         onConfirm={handleSave}/>
 }
