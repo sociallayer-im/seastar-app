@@ -11,6 +11,7 @@ import PopupCities from '@/components/client/PopupCities'
 import Features from '@/components/client/Features'
 
 export const dynamic = 'force-dynamic'; 
+export const revalidate = 0;
 
 export async function generateMetadata() {
     const { lang } = await selectLang()
