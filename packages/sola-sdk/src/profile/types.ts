@@ -10,7 +10,7 @@ export interface ProfileDetail extends Profile {
     address: string | null,
     email: string | null,
     phone?: string | null,
-    status: 'active' | 'freezed'
+    status: 'active' | 'freezed' | 'admin'
     about: string | null,
     location: string | null,
     sol_address: string | null,

@@ -89,3 +89,41 @@ export const updatePopupCity = async ({params, clientMode}: SolaSdkFunctionParam
         throw new Error('fail to update popup-city: ' + (data.message || response.statusText))
     }
 }
+
+export const updatePopupCityGroupTags = async ({params, clientMode}: SolaSdkFunctionParams<{popupCity: PopupCity, authToken: string}>) => {
+    const props = {
+        auth_token: params.authToken,
+        ...params.popupCity
+    }
+
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/update_popup_admin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(props)
+    })
+    
+    if (!response.ok) {
+        throw new Error('fail to update popup-city group tags: ' + response.statusText)
+    }
+}
+
+export const deletePopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{popupCity: PopupCity, authToken: string}>) => {
+    const props = {
+        auth_token: params.authToken,
+        ...params.popupCity
+    }
+
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/delete_popup_admin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(props)
+    })
+
+    if (!response.ok) {
+        throw new Error('fail to delete popup-city: ' + response.statusText)
+    }
+}
