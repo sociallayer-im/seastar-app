@@ -7,14 +7,24 @@ import { Group } from '@sola/sdk'
 export const SeatingStyle = ['theater', 'workshop', 'single table + chairs', 'Yoga mats']
 // export const AVNeeds = ['presentation screen', 'microphone', 'speakers']
 export const AVNeeds = [
-  "no AV needed",
   "projector/TV",
   "microphone",
   "speakers",
+  "Projector/TV",
+  "Microphone",
+  "Speakers",
+  "Soundsystem",
+  "Whiteboard"
 ];
+export const ExternalCatering = [
+  "Time of delivery",
+  "Kitchen needed",
+  "food & beverages",
+  "Cuttlery needed"
+]
 
 export const isEdgeCityGroup = (groupId: number) => {
-    return [3427, 3409, 3463, 3454, 924, 3579].includes(groupId)
+    return [3427, 3409, 3463, 3454, 924, 3579, 924].includes(groupId)
 }
 
 export const tagsGroupNeeded = (groupId: number) => {

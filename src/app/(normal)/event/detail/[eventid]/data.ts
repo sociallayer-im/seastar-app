@@ -10,7 +10,7 @@ import {
     Participant,
     Recurring, Ticket
 } from '@sola/sdk'
-import {AVNeeds, SeatingStyle} from '@/app/configForSpecifyGroup'
+import {AVNeeds, SeatingStyle, ExternalCatering} from '@/app/configForSpecifyGroup'
 import {CLIENT_MODE} from '@/app/config'
 
 export interface EventDetailPageDataProps {
@@ -100,6 +100,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
 
     const seatingStyle = eventDetail.requirement_tags?.filter(tag => SeatingStyle.includes(tag))
     const avNeeds = eventDetail.requirement_tags?.filter(tag => AVNeeds.includes(tag))
+    const externalCatering = eventDetail.requirement_tags?.filter(tag => ExternalCatering.includes(tag))
 
     let recurring: Recurring | null = null
     if (!!eventDetail.recurring_id) {
@@ -154,7 +155,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         showParticipants,
         canAccess,
         ticketsPurchased,
-
+        externalCatering,
         seatingStyle,
         avNeeds,
         enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true',

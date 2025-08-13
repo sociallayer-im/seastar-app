@@ -77,6 +77,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
         isEventClosed,
         showParticipants,
         avNeeds,
+        externalCatering,
         seatingStyle,
         recurring,
         ticketsPurchased,
@@ -538,6 +539,15 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                     {lang['AV Needed']}
                                 </div>
                                 <div>{avNeeds.join(', ')}</div>
+                            </div>
+                        }
+
+                        {!!externalCatering?.length && isEventOperator &&
+                            <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
+                                <div className="font-semibold">
+                                    External Catering
+                                </div>
+                                <div>{externalCatering.join(', ')}</div>
                             </div>
                         }
 

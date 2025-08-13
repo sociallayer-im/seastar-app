@@ -30,14 +30,11 @@ import { getOccupiedTimeEvent, Event, EventDraftType } from "@sola/sdk";
 import { CLIENT_MODE } from "@/app/config";
 import { scrollToErrMsg } from "@/components/client/Subscription/uilts";
 import dayjs from "@/libs/dayjs";
-import {
-  AVNeeds,
-  isEdgeCityGroup,
-  SeatingStyle,
-} from "@/app/configForSpecifyGroup";
+import { isEdgeCityGroup } from "@/app/configForSpecifyGroup";
 import useExternalEvent from "@/hooks/useExternalEvent";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { EditorRef } from "@/components/client/Editor/RichTextEditor";
+import RequirementTagsSelector from "@/components/client/RequirementTagsSelector";
 
 const RichTextEditorDynamic = dynamic(
   () => import("@/components/client/Editor/RichTextEditor"),
@@ -466,30 +463,7 @@ export default function EventForm({
             </div>
 
             {!!draft.venue_id && isEdgeCityGroup(draft.group_id) && (
-              <>
-                <div className="mb-8">
-                  <div className="font-semibold mb-1">{lang["AV Needed"]}</div>
-                  <div className="flex-row-item-center !flex-wrap gap-2">
-                    {AVNeeds.map((a, i) => {
-                      return (
-                        <Button
-                          size={"sm"}
-                          onClick={() => updateRequirementTags(a)}
-                          className="text-sm mr-1"
-                          variant={
-                            draft.requirement_tags?.includes(a)
-                              ? "normal"
-                              : "outline"
-                          }
-                          key={i}
-                        >
-                          {a}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </>
+              <RequirementTagsSelector event={draft} setEvent={setDraft} lang={lang} />
             )}
 
             {!!data.availableHost.length && (
