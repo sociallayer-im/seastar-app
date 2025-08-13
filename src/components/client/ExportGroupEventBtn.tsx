@@ -19,7 +19,7 @@ export default function ExportGroupEventBtn(props: { lang: Dictionary , groupId:
         })
     }
     
-    return <Button variant="secondary" className="mb-3 w-full sm:w-auto" onClick={handleShowExportModal}>
+    return <Button variant="secondary" className="w-full sm:w-auto" onClick={handleShowExportModal}>
     <div className="flex-row-item-center w-full justify-between">
         <div>{lang['Export Event Data']}</div>
         <i className="uil-cloud-download text-2xl ml-2" />

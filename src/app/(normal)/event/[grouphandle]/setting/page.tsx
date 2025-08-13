@@ -91,6 +91,15 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                 <div className="flex sm:flex-row flex-col items-center justify-end gap-3">
                     <ExportGroupEventBtn lang={lang} groupId={groupDetail.id} />
                     <ExportEventParticipantBtn lang={lang} groupId={groupDetail.id} />
+                    <a href={`https://dashboard.sola.day/event/${groupDetail.handle}`}
+                        className={`${buttonVariants({ variant: 'secondary' })} w-full`}>
+                        <div className="flex-row-item-center w-full justify-between">
+                            <div>Dashboard</div>
+                            <div className="font-normal flex-row-item-center">
+                                <i className="uil-arrow-right text-2xl" />
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
