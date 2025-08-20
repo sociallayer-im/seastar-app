@@ -18,7 +18,7 @@ export default function CreateTrackForm({trackDetail, lang, groupDetail}: TrackF
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const handleCreate = async (track: Track, managers: Profile[]) => {
+    const handleCreate = async (track: Track, managers: Profile[], members: Profile[]) => {
         const loading = showLoading()
         try {
             const authToken = getAuth()
@@ -26,6 +26,7 @@ export default function CreateTrackForm({trackDetail, lang, groupDetail}: TrackF
                 params: {
                     track: track,
                     managers: managers,
+                    members: members,
                     authToken: authToken!
                 },
                 clientMode: CLIENT_MODE

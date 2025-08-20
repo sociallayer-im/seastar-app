@@ -50,7 +50,8 @@ export const addTrackRole = async ({params, clientMode}: SolaSdkFunctionParams<{
     group_id: number,
     track_id: number,
     profile_id: number,
-    authToken: string
+    authToken: string,
+    role?: 'manager' | 'member'
 }>) => {
     const props = {
         track_id: params.track_id,
@@ -60,7 +61,7 @@ export const addTrackRole = async ({params, clientMode}: SolaSdkFunctionParams<{
             track_id: params.track_id,
             profile_id: params.profile_id,
             receiver_address: null,
-            role: 'manager',
+            role: params.role || 'manager',
         }
     }
 
@@ -111,6 +112,8 @@ export const updateTrackV2 = async ({params, clientMode}: SolaSdkFunctionParams<
     authToken: string
     addManagerIds?: number[],
     removeManagerIds?: number[],
+    addMemberIds?: number[],
+    removeMemberIds?: number[],
 }>) => {
 
     const props = {
@@ -138,13 +141,34 @@ export const updateTrackV2 = async ({params, clientMode}: SolaSdkFunctionParams<
             group_id: params.track.group_id,
             track_id: params.track.id,
             profile_id: m,
-            authToken: params.authToken
+            authToken: params.authToken,
+            role: 'manager'
         }, clientMode}))
         await Promise.all(addRolesTasks)
     }
 
     if(params.removeManagerIds?.length) {
         const removeRolesTasks = params.removeManagerIds.map(r => removeTrackRole({params: {
+            trackId: params.track.id,
+            profileId: r,
+            authToken: params.authToken
+        }, clientMode}))
+        await Promise.all(removeRolesTasks)
+    }
+
+    if(params.addMemberIds?.length) {
+        const addRolesTasks = params.addMemberIds.map(m => addTrackRole({params: {
+            group_id: params.track.group_id,
+            track_id: params.track.id,
+            profile_id: m,
+            authToken: params.authToken,
+            role: 'member'
+        }, clientMode}))
+        await Promise.all(addRolesTasks)
+    }
+
+    if(params.removeMemberIds?.length) {
+        const removeRolesTasks = params.removeMemberIds.map(r => removeTrackRole({params: {
             trackId: params.track.id,
             profileId: r,
             authToken: params.authToken
@@ -215,6 +239,7 @@ export const createTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
     track: Track,
     authToken: string
     managers?: Profile[],
+    members?: Profile[],
 }>) => {
 
    
@@ -245,7 +270,19 @@ export const createTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
             group_id: params.track.group_id,
             track_id: newTrack.id,
             profile_id: m.id,
-            authToken: params.authToken
+            authToken: params.authToken,
+            role: 'manager'
+        }, clientMode}))
+        await Promise.all(addRolesTasks)
+    }
+
+    if(params.members?.length) {
+        const addRolesTasks = params.members.map(m => addTrackRole({params: {
+            group_id: params.track.group_id,
+            track_id: newTrack.id,
+            profile_id: m.id,
+            authToken: params.authToken,
+            role: 'member'
         }, clientMode}))
         await Promise.all(addRolesTasks)
     }

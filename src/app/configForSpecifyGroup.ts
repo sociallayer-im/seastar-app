@@ -24,7 +24,7 @@ export const ExternalCatering = [
 ]
 
 export const isEdgeCityGroup = (groupId: number) => {
-    return [3427, 3409, 3463, 3454, 924, 3579, 924].includes(groupId)
+    return [3427, 3409, 3463, 3454, 924, 3579, 924, 3627].includes(groupId)
 }
 
 export const tagsGroupNeeded = (groupId: number) => {
