@@ -45,7 +45,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
     const [currFilter, setCurrFilter] = useState<EventListFilterProps>(filterOpts)
     const [hasMore, setHasMore] = useState<boolean>(!!events.length)
 
-    const checkUiStatus = (currFilter: EventListFilterProps):{
+    const checkUiStatus = (currFilter: EventListFilterProps): {
         isFiltered: boolean,
         showHighlight: boolean
     } => {
@@ -125,7 +125,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                 }
                 <EventHomeFilter
                     filterOpts={currFilter}
-                    onFilterChange={(filter) => handleFilterChange({...filter, page: 1})}
+                    onFilterChange={(filter) => handleFilterChange({ ...filter, page: 1 })}
                     groupDetail={groupDetail}
                     isManager={isManager}
                     isFiltered={uiStatus.isFiltered}
@@ -133,13 +133,13 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                 <div className="my-3">
                     <EventListGroupedByDate
                         isManager={isManager || isOwner}
-                        highlightedEvents={ uiStatus.showHighlight ? highlightedEvents : []}
+                        highlightedEvents={uiStatus.showHighlight ? highlightedEvents : []}
                         events={eventList}
                         group={groupDetail}
                         lang={lang} />
 
                     {hasMore && <Button variant="secondary" className="w-full mb-3"
-                    onClick={() => handleFilterChange({...currFilter, page: currFilter.page ? Number(currFilter.page) + 1 : 2})}>
+                        onClick={() => handleFilterChange({ ...currFilter, page: currFilter.page ? Number(currFilter.page) + 1 : 2 })}>
                         View More Events
                     </Button>}
                 </div>
@@ -189,23 +189,28 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                         >{lang['Create an Event']}</a>
                     }
 
-                    <div className="flex-row-item-center mt-3">
-                        <SelectedBadgeWannaSend
-                            className={'flex-1 flex-shrink-0'}
-                            lang={lang}
-                            profileDetail={currProfile}
-                            group={groupDetail}>
-                            <div className={`${buttonVariants({ variant: "secondary" })} w-full cursor-pointer`}
-                            >{lang['Send a Badge']}</div>
-                        </SelectedBadgeWannaSend>
+                    <SelectedBadgeWannaSend
+                        className={'flex-shrink-0 mt-3'}
+                        lang={lang}
+                        profileDetail={currProfile}
+                        group={groupDetail}>
+                        <div className={`${buttonVariants({ variant: "secondary" })} w-full cursor-pointer`}
+                        >{lang['Send a Badge']}</div>
+                    </SelectedBadgeWannaSend>
 
-                        {isManager &&
+
+                    {isManager &&
+                        <div className="flex-row-item-center mt-3 gap-2">
                             <a href={`/event/${groupDetail.handle}/setting`}
-                                className={`${buttonVariants({ variant: "secondary" })} ml-3`}>
+                                className={`${buttonVariants({ variant: "secondary" })} flex-1`}>
                                 {lang['Settings']}
                             </a>
-                        }
-                    </div>
+                            <a href={`https://dashboard.sola.day/event/${groupDetail.handle}`}
+                                className={`${buttonVariants({ variant: "secondary" })} flex-1`}>
+                                Dashboard
+                            </a>
+                        </div>
+                    }
                 </>}
 
                 {!currProfile && <SignInPanel lang={lang} />}
@@ -215,7 +220,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                         filterOpts={currFilter}
                         groupDetail={groupDetail}
                         lang={lang}
-                        onFilterChange={(filter) => handleFilterChange({...filter, page: 1})}
+                        onFilterChange={(filter) => handleFilterChange({ ...filter, page: 1 })}
                         dialogMode="modal"
                     />
                 </div>
