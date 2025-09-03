@@ -20,4 +20,5 @@ export interface ActivityDetail extends Activity {
     initiator: Profile
     group_invite?: InviteDetail
     badge_class?: BadgeClass
+    memo?: string
 }

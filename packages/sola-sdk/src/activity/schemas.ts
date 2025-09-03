@@ -16,6 +16,7 @@ export const ACTIVE_FRAGMENT= gql`
         action
         has_read
         created_at
+        memo
     }`
 
 export const ACTIVE_DETAIL_FRAGMENT = gql`

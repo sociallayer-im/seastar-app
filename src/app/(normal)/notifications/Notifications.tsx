@@ -111,7 +111,7 @@ export default function Notifications({activities, lang}: { activities: Activity
                         </div>
                         {!a.has_read && <i className="bg-red-400 w-3 h-3 rounded-full"/>}
                     </div>
-                    <div>{a.group_invite?.message}</div>
+                    <div>{a.group_invite?.message || a.memo}</div>
                 </div>)
             }
 
