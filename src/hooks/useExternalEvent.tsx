@@ -86,7 +86,7 @@ function DialogInputLumaEventUrl({lang, onConfig, onClose}: {
 
         <Input
             className="w-full"
-            placeholder={'https://lu.ma/...'}
+            placeholder={'https://luma.com/...'}
             value={url} onChange={e => setUrl(e.target.value)}/>
         <div className="text-red-400 text-sm mt-1 mb-3">{err}</div>
 
@@ -95,7 +95,7 @@ function DialogInputLumaEventUrl({lang, onConfig, onClose}: {
             <Button variant={'primary'} className="w-full"
                     disabled={!url.trim()}
                     onClick={() => {
-                        const slug = url.match(/https:\/\/lu\.ma\/([^\/?]+)/)?.[1] || ''
+                        const slug = url.match(/https:\/\/luma\.com\/([^\/?]+)/)?.[1] || ''
                         if (!slug) {
                             setErr('Invalid URL')
                             return
