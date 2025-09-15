@@ -2,7 +2,8 @@ import dayjs from "@/libs/dayjs"
 import {getInterval, pickSearchParam} from "@/utils"
 import {getSdkConfig, GroupDetail, Track} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
-import {Venue} from '@sola/sdk'
+import {Venue, getEvents} from '@sola/sdk'
+import { redirect } from "next/navigation"
 
 export interface IframeSchedulePageSearchParams {
     start_date?: string | string[]
@@ -212,6 +213,26 @@ export async function IframeSchedulePageData({   searchParams,
                 track: groupDetail.tracks.find((track: Track) => track.id === event.track_id) || null
             }
         })
+
+        if (events.length === 0 && !startDate) {
+           const now = dayjs.tz(new Date().getTime(), groupDetail.timezone || 'UTC').format('YYYY-MM-DD')
+           const upcomingEvents = await getEvents({
+            params: {
+                filters: {
+                    group_id: groupDetail.id.toString(),
+                    timezone: groupDetail.timezone || undefined,
+                    collection: 'upcoming',
+                },
+            }, clientMode: CLIENT_MODE
+           })
+           if (upcomingEvents.length > 0) {
+             const newStartDate = dayjs.tz(new Date(upcomingEvents[0].start_time).getTime(), groupDetail.timezone || 'UTC').format('YYYY-MM-DD')
+             const redirectUrl = isIframe 
+             ?  `/schedule/${view}/${groupName}?start_date=${newStartDate}`
+             : `/event/${groupName}/schedule/${view}?start_date=${newStartDate}`
+             redirect(redirectUrl)
+           }
+        }
 
     const isFiltered = filters.tags.length > 0
         || !!filters.venueId

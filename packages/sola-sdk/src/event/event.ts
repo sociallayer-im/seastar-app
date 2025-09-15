@@ -156,6 +156,7 @@ export type EventListFilterProps = {
     skip_recurring?: string
     page?: number,
     pinned?: number,
+    kind?: string
 }
 
 export const getEvents = async ({params: {filters, authToken, limit}, clientMode}: SolaSdkFunctionParams<{

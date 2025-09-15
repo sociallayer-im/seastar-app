@@ -43,6 +43,7 @@ export const EVENT_FRAGMENT = gql`
         geo_lng
         formatted_address
         display
+        kind
     }`
 
 export const EVENT_ROLE_DETAIL_FRAGMENT = gql`

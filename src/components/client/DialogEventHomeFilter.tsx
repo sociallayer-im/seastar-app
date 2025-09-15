@@ -1,4 +1,4 @@
-import {EventListFilterProps, GroupDetail} from '@sola/sdk'
+import {EventListFilterProps, GroupDetail, EventKind} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {Button} from '@/components/shadcn/Button'
 import {useEffect, useMemo, useState} from 'react'
@@ -9,6 +9,7 @@ import {Input} from '@/components/shadcn/Input'
 import TagsFilter from '@/components/client/TagsFilter'
 import TagGroupsFilter from '@/components/client/TagGroupsFilter'
 import { tagsGroupNeeded } from '@/app/configForSpecifyGroup'
+import { eventKinds } from '@/app/configForSpecifyGroup'
 
 export interface DialogEventHomeFilterProp {
     filterOpts: EventListFilterProps,
@@ -62,7 +63,8 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             end_date: undefined,
             venue_id: undefined,
             tags: undefined,
-            track_id: undefined
+            track_id: undefined,
+            kind: undefined
         }
         setOpts(newOpts)
         dialogMode === 'modal' && onFilterChange(newOpts)
@@ -119,7 +121,31 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
                         endAdornment={<i className="uil-angle-down text-lg"/>}
                     />
                 </DropdownMenu>
-            </div>
+        </div>
+
+        <div className="my-3 text-sm">
+            <div className="font-semibold mb-1">{lang['Kind']}</div>
+            <DropdownMenu
+                options={eventKinds}
+                value={opts.kind ? eventKinds.filter(k => k.value === opts.kind) : undefined}
+                onSelect={(kind) => {
+                    const newOpts = {
+                        ...opts,
+                        kind: kind[0].value ? kind[0].value as string : undefined
+                    }
+                    setOpts(newOpts)
+                    dialogMode === 'modal' && onFilterChange(newOpts)
+                }}
+                renderOption={(option) => option.label}
+                valueKey="value">
+                <Input
+                  readOnly
+                  endAdornment={<img src="/images/dropdown_icon.svg" alt="" />}
+                  value={opts.kind || ''}
+                  className="w-full capitalize"
+                  placeholder={lang['Select Kind']} />
+              </DropdownMenu>
+        </div>
 
         
         <div className={`${dialogMode === 'dialog' ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>

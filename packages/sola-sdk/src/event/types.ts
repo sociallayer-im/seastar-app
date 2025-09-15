@@ -2,6 +2,8 @@ import {Profile} from '../profile'
 import {Group, Track, VenueDetail} from '../group'
 import {BadgeClass} from '../badge'
 
+export type EventKind = null | "talk" | "panel" | "workshop" | "activity" | "seminar" | "conference" | "meetup" | "networking" | "training" | "exhibition" | "other"
+
 export interface Event {
     id: number,
     title: string,
@@ -25,6 +27,7 @@ export interface Event {
     display: string | null,
     track?: Track | null,
     venue: VenueDetail | null,
+    kind: EventKind
 }
 
 export interface EventWithJoinStatus extends Event {
@@ -144,7 +147,7 @@ export interface TicketDraft  extends Pick<Ticket, 'title' | 'content' | 'check_
     id?: number
 }
 
-export interface EventDraftType extends Pick<EventDetail, | 'recurring_id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'requirement_tags'> {
+export interface EventDraftType extends Pick<EventDetail, | 'recurring_id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'requirement_tags' | 'kind'> {
     id?: number
     timezone: string | null
     tickets: TicketDraft[]

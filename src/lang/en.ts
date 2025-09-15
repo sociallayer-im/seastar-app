@@ -622,7 +622,10 @@ export const en = {
     'Highlight': 'Highlight',
     'Export Event Participant Data': 'Export Event Participant Data',
     'Specify Programs (Optional)': 'Specify Programs (Optional)',
-    'Only program members can see and select this venue to create events. You can manager program members in the program setting page. ': 'Only program members can see and select this venue to create events. You can manager program members in the program setting page. '
+    'Only program members can see and select this venue to create events. You can manager program members in the program setting page. ': 'Only program members can see and select this venue to create events. You can manager program members in the program setting page. ',
+    'Kind(Optional)': 'Kind(Optional)',
+    'Select Kind': 'Select Kind',
+    'Kind': 'Kind',
 };
 
 export type Dictionary = typeof en;

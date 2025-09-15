@@ -26,15 +26,16 @@ import RepeatForm, {
 } from "@/app/(normal)/event/[grouphandle]/create/RepeatForm";
 import TracksFilter from "@/components/client/TracksFilter";
 import TagsFilter from "@/components/client/TagsFilter";
-import { getOccupiedTimeEvent, Event, EventDraftType } from "@sola/sdk";
+import { getOccupiedTimeEvent, Event, EventDraftType, EventKind } from "@sola/sdk";
 import { CLIENT_MODE } from "@/app/config";
 import { scrollToErrMsg } from "@/components/client/Subscription/uilts";
 import dayjs from "@/libs/dayjs";
-import { isEdgeCityGroup } from "@/app/configForSpecifyGroup";
+import { isEdgeCityGroup, eventKinds } from "@/app/configForSpecifyGroup";
 import useExternalEvent from "@/hooks/useExternalEvent";
 import useConfirmDialog from "@/hooks/useConfirmDialog";
 import { EditorRef } from "@/components/client/Editor/RichTextEditor";
 import RequirementTagsSelector from "@/components/client/RequirementTagsSelector";
+import DropdownMenu from "@/components/client/DropdownMenu";
 
 const RichTextEditorDynamic = dynamic(
   () => import("@/components/client/Editor/RichTextEditor"),
@@ -164,9 +165,9 @@ export default function EventForm({
     setTrackDayError(
       draft.track_id
         ? checkTrackSuitable(
-            draft,
-            data.tracks.find((t) => t.id === draft.track_id)!,
-          )
+          draft,
+          data.tracks.find((t) => t.id === draft.track_id)!,
+        )
         : "",
     );
   }, [draft.track_id, draft.start_time, draft.end_time, draft.timezone]);
@@ -234,7 +235,7 @@ export default function EventForm({
       title: lang["External Event Imported Successfully"],
       content:
         lang[
-          "Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details."
+        "Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details."
         ],
       type: "info",
       hiddenCancelBtn: true,
@@ -350,6 +351,25 @@ export default function EventForm({
 
             <div className="mb-8">
               <div className="font-semibold mb-1">
+                {lang["Kind(Optional)"]}
+              </div>
+              <DropdownMenu
+                options={eventKinds}
+                value={draft.kind ? eventKinds.filter(k => k.value === draft.kind) : undefined}
+                onSelect={(kind) => setDraft({ ...draft, kind: kind[0].value as EventKind })}
+                renderOption={(option) => option.label}
+                valueKey="value">
+                <Input
+                  readOnly
+                  endAdornment={<img src="/images/dropdown_icon.svg" alt="" />}
+                  value={draft.kind || ''}
+                  className="w-full"
+                  placeholder={lang['Select Kind']} />
+              </DropdownMenu>
+            </div>
+
+            <div className="mb-8">
+              <div className="font-semibold mb-1">
                 {lang["When will it happen"]}
               </div>
               <EventDateTimeInput
@@ -380,7 +400,7 @@ export default function EventForm({
                 <div className="text-red-400 mt-2 text-xs err-msg">
                   {
                     lang[
-                      "The selected time slot is occupied by another event at the current venue. Occupying event:"
+                    "The selected time slot is occupied by another event at the current venue. Occupying event:"
                     ]
                   }
                   <a
@@ -597,7 +617,7 @@ export default function EventForm({
                         <div className="text-gray-500 text-xs">
                           {
                             lang[
-                              "When an event participant checks in, he or she automatically receives a badge at the end of the event"
+                            "When an event participant checks in, he or she automatically receives a badge at the end of the event"
                             ]
                           }
                         </div>
@@ -661,7 +681,7 @@ export default function EventForm({
                           <div className="text-gray-500 text-xs font-normal">
                             {
                               lang[
-                                "Select a normal event, the event you created is shown to all users."
+                              "Select a normal event, the event you created is shown to all users."
                               ]
                             }
                           </div>
@@ -685,7 +705,7 @@ export default function EventForm({
                           <div className="text-gray-500 text-xs font-normal">
                             {
                               lang[
-                                "Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page."
+                              "Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page."
                               ]
                             }
                           </div>
@@ -709,7 +729,7 @@ export default function EventForm({
                           <div className="text-gray-500 text-xs font-normal">
                             {
                               lang[
-                                "Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility."
+                              "Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility."
                               ]
                             }
                           </div>
@@ -731,7 +751,7 @@ export default function EventForm({
                           <div className="text-gray-500 text-xs">
                             {
                               lang[
-                                "Select a highlight event, the event you created will display on the top of the day"
+                              "Select a highlight event, the event you created will display on the top of the day"
                               ]
                             }
                           </div>
@@ -754,7 +774,7 @@ export default function EventForm({
                           <div className="text-xs text-amber-500">
                             {
                               lang[
-                                "People are no longer able to register for the event"
+                              "People are no longer able to register for the event"
                               ]
                             }
                           </div>

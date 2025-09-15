@@ -7,6 +7,7 @@ import { CSSProperties, ReactElement, useState } from "react"
 import dynamic from 'next/dynamic'
 import { Dictionary } from '@/lang'
 import { EventWithJoinStatus } from '@sola/sdk'
+import EventKindLabel from "@/components/EventKind"
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), { ssr: false })
@@ -66,7 +67,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
 
             </div>
             <div className="my-1 flex-row-item-center font-semibold text-sm sm:text-base webkit-box-clamp-2">
-                {event.title}
+            <EventKindLabel kind={event.kind} />{event.title}
             </div>
             <div className="flex-row-item-center !flex-wrap text-xs mt-1 mb-3">
                 {

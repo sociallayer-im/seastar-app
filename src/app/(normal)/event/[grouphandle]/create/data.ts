@@ -73,6 +73,7 @@ export const emptyEvent: EventDraftType = {
   tickets: [],
   recurring_id: null,
   requirement_tags: [],
+  kind: null
 };
 
 export const emptyPaymentMethod: PaymentMethod = {

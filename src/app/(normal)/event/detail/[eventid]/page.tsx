@@ -31,6 +31,7 @@ import { cache } from 'react'
 import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventParticipantTab'
 import VenueDetailBtn from '@/components/client/VenueDetailBtn'
 import { getLabelColor } from '@/utils/label_color'
+import EventKindLabel from "@/components/EventKind"
 
 const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 
@@ -162,7 +163,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div className="default-cover w-[452px] h-[452px]" style={{ transform: 'scale(0.716814)' }}>
                                 <div
                                     className="font-semibold text-[27px] webkit-box-clamp-2 max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
-                                    {eventDetail.title}
+                                  {eventDetail.title}
                                 </div>
                                 <div
                                     className="text-lg absolute font-semibold left-[76px] top-[178px]">
@@ -266,7 +267,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
             <div className="flex-1 sm:mr-9 order-2 sm:order-1">
                 <div className="text-4xl font-semibold w-full">
-                    {eventDetail.title}
+                <EventKindLabel kind={eventDetail.kind} />{eventDetail.title}
                 </div>
 
                 {eventDetail.track && <div className="flex-row-item-center gap-1.5 text-lg mt-1"

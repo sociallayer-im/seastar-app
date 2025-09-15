@@ -98,7 +98,13 @@ export default async function GroupEventHomeData({
     console.log('eventsWithTrack', highlightedEventsWithTrack.length)
 
     if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0) {
-        redirect(`/event/${groupDetail.handle}?collection=past`)
+        const pastEvents = await getEvents({
+            params: {filters: {...filterOpts, page: 1, collection: 'past'}, authToken, limit: PAGE_SIZE * (filterOpts.page ?? 1)},
+            clientMode: CLIENT_MODE,
+        })
+        if (!!pastEvents.length) {
+            redirect(`/event/${groupDetail.handle}?collection=past`)
+        }
     }
 
     let mapMarkers: GoogleMapMarkerProps[] = []
