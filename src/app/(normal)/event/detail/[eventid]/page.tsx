@@ -32,6 +32,7 @@ import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventPart
 import VenueDetailBtn from '@/components/client/VenueDetailBtn'
 import { getLabelColor } from '@/utils/label_color'
 import EventKindLabel from "@/components/EventKind"
+import GoToBuyTicket from '@/components/client/GoToBuyTicket'
 
 const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 
@@ -192,6 +193,12 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div className="my-2">{lang['Welcome! To join the event, please register below.']}</div>}
                         {!canAccess && <div
                             className="my-2">{lang['This event is only for {}'].replace('{}', groupDetail.can_join_event === 'member' ? lang['members'] : lang['managers'])}</div>}
+
+                        {!canAccess && groupDetail.id === 3635 &&
+                         <div className="flex-row-item-center mb-2">
+                            <GoToBuyTicket lang={lang} />
+                         </div>
+                        }
 
 
                         <div className="flex-row-item-center">
