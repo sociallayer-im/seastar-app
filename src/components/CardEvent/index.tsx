@@ -3,11 +3,12 @@
 import { getLabelColor } from "@/utils/label_color"
 import { checkProcess, eventCoverTimeStr } from "@/utils"
 import { Badge } from "@/components/shadcn/Badge"
-import { CSSProperties, ReactElement, useState } from "react"
+import { CSSProperties, ReactElement, useState, type MouseEvent } from "react"
 import dynamic from 'next/dynamic'
 import { Dictionary } from '@/lang'
 import { EventWithJoinStatus } from '@sola/sdk'
 import EventKindLabel from "@/components/EventKind"
+import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), { ssr: false })
@@ -26,6 +27,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
     const eventProcess = checkProcess(event.start_time, event.end_time)
     const status = event.status
     const [highlighted, setHighlighted] = useState(highlight)
+    const { showPopup } = useScheduleEventPopup()
 
     const customHost = event.event_roles?.find(r => r.role === 'custom_host')
     const groupHost = event.event_roles?.find(r => r.role === 'group_host')
@@ -37,20 +39,32 @@ export default function CardEvent({ event, className, id, style, lang, highlight
         background: highlighted ? '#fff7e9' : '#fff',
     }
 
+    const handleShowPopup = (e: MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault()
+        showPopup(event.id,
+            ((event as any).group?.id || event.group_id || ''),
+            event.is_starred,
+            lang,
+            (highlighted) => {
+                setHighlighted(highlighted)
+            })
+    }
+
     return <a href={`/event/detail/${event.id}`}
+        onClick={handleShowPopup}
         id={id}
         style={customStyle}
         className={`relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
         <DynamicEventCardStarBtn eventId={event.id} starred={event.is_starred} />
-        {isManager && 
-        <DynamicHighLightEventBtn
-            onHighlighted={(highlighted) => {
-                setHighlighted(highlighted)
-            }}
-            event={event}
-            lang={lang}
-            className="absolute right-11 top-[18px] z-10"
-            compact />
+        {isManager &&
+            <DynamicHighLightEventBtn
+                onHighlighted={(highlighted) => {
+                    setHighlighted(highlighted)
+                }}
+                event={event}
+                lang={lang}
+                className="absolute right-11 top-[18px] z-10"
+                compact />
         }
         <div className="flex-1 mr-2 order-2 xs:order-1">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
@@ -67,7 +81,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
 
             </div>
             <div className="my-1 flex-row-item-center font-semibold text-sm sm:text-base webkit-box-clamp-2">
-            <EventKindLabel kind={event.kind} />{event.title}
+                <EventKindLabel kind={event.kind} />{event.title}
             </div>
             <div className="flex-row-item-center !flex-wrap text-xs mt-1 mb-3">
                 {
