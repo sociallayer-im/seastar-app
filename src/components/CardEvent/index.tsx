@@ -130,6 +130,14 @@ export default function CardEvent({ event, className, id, style, lang, highlight
                         className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis"> {event.meeting_url}</span>
                 </div>
             }
+            {!!(event as any).group &&
+                <div className="h-6 flex-row-item-center text-xs sm:text-sm">
+                    <i className="uil-users-alt mr-1 text-sm" />
+                    <span
+                        className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">
+                        {(event as any).group.nickname || (event as any).group.handle}</span>
+                </div>
+            }
             {!!additionalElement &&
                 <div className="flex-row-item-center text-xs">
                     {additionalElement}

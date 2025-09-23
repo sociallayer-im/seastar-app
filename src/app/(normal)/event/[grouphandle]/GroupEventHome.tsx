@@ -200,6 +200,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
 
 
                     {isManager &&
+                        <>
                         <div className="flex-row-item-center mt-3 gap-2">
                             <a href={`/event/${groupDetail.handle}/setting`}
                                 className={`${buttonVariants({ variant: "secondary" })} flex-1`}>
@@ -210,6 +211,13 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                                 Dashboard
                             </a>
                         </div>
+                        <div className="flex-row-item-center mt-3 gap-2">
+                        <a href={`/my-events/pending-requests`}
+                                className={`${buttonVariants({ variant: "secondary" })} flex-1`}>
+                                {lang['Pending Requests']}
+                            </a>
+                        </div>
+                        </>
                     }
                 </>}
 
