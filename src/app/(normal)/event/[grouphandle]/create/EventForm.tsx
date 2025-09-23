@@ -312,7 +312,7 @@ export default function EventForm({
           </div>
 
           <div className="sm:order-1 sm:mr-8 flex-1 max-w-[644px]">
-            {!!data.tracks.length && data.isGroupManager && (
+            {!!data.tracks.length && (
               <>
                 <div className="font-semibold mb-1">
                   {lang["Event Programs"]}

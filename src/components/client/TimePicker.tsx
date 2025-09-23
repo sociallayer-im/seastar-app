@@ -17,7 +17,7 @@ interface TimeListProps extends Omit<TimePickerProps, 'children'> {
 }
 
 export function TimeList(props: TimeListProps) {
-    const minutesStep = 15
+    const minutesStep = 30
     const id = useId()
 
     const timeList = useMemo(() => {
