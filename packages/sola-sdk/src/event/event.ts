@@ -48,6 +48,7 @@ export const getMyPendingApprovalEvent = async ({params: {authToken}, clientMode
         throw new Error('authToken is required')
     }
 
+    
     const url = `${getSdkConfig(clientMode).api}/event/pending_approval_list?auth_token=${authToken}`
     try {
         const res = await fetch(url)
@@ -56,7 +57,9 @@ export const getMyPendingApprovalEvent = async ({params: {authToken}, clientMode
         }
 
         const data = await res.json()
-        return data.events.slice(0, 30).map((e: any) => {
+        return data.events
+        .sort((a: Event, b: Event) => new Date(b.start_time!).getTime() - new Date(a.start_time!).getTime())
+        .slice(0, 30).map((e: any) => {
             return {
                 ...e,
                 owner: e.profile,
