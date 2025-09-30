@@ -11,10 +11,6 @@
     "semi": [
       "error",
       "never"
-    ],
-    "indent": [
-      "error",
-      1
     ]
   }
 }
