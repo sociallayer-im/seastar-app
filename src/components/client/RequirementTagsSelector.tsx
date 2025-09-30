@@ -6,11 +6,11 @@ import {
     isEdgeCityGroup,
     SeatingStyle,
     ExternalCatering
-} from "@/app/configForSpecifyGroup";
-import { Button, buttonVariants } from "@/components/shadcn/Button";
+} from "@/app/configForSpecifyGroup"
+import { Button, buttonVariants } from "@/components/shadcn/Button"
 import { EventDraftType } from '@sola/sdk'
-import { Dictionary } from "@/lang";
-import { Switch } from "@/components/shadcn/Switch";
+import { Dictionary } from "@/lang"
+import { Switch } from "@/components/shadcn/Switch"
 
 export interface RequirementTagsSelectorProps {
     event: EventDraftType
@@ -27,27 +27,27 @@ export default function RequirementTagsSelector({ event, setEvent, lang }: Requi
             setEvent({
                 ...event,
                 requirement_tags: event.requirement_tags.filter((t) => t !== tag),
-            });
+            })
         } else {
             setEvent({
                 ...event,
                 requirement_tags: [...(event.requirement_tags || []), tag],
-            });
+            })
         }
-    };
+    }
 
     const handleClearAvNeeds = () => {
         setEvent({
             ...event,
             requirement_tags: event.requirement_tags?.filter(t => !AVNeeds.includes(t)) || null,
-        });
+        })
     }
 
     const handleClearExternalCatering = () => {
         setEvent({
             ...event,
             requirement_tags: event.requirement_tags?.filter(t => !ExternalCatering.includes(t)) || null,
-        });
+        })
     }
 
     const handleSwitchExternalCatering = () => {
@@ -90,7 +90,7 @@ export default function RequirementTagsSelector({ event, setEvent, lang }: Requi
                             >
                                 {t}
                             </Button>
-                        );
+                        )
                     })}
                 </div>
             )}
@@ -115,7 +115,7 @@ export default function RequirementTagsSelector({ event, setEvent, lang }: Requi
                             >
                                 {t}
                             </Button>
-                        );
+                        )
                     })}
                 </div>
             )}

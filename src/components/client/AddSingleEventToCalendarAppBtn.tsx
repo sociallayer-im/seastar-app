@@ -5,7 +5,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {Dictionary} from '@/lang'
 import {Button} from '@/components/shadcn/Button'
 import {to_plain_text} from '@/utils/markdown'
-import {google, outlook, office365, yahoo, ics, CalendarEvent} from "calendar-link";
+import {google, outlook, office365, yahoo, ics, CalendarEvent} from "calendar-link"
 
 export interface AddSingleEventToCalendarAppProps {
     event: EventDetail,

@@ -1,56 +1,56 @@
-"use client";
+"use client"
 
-import type { Dictionary } from "@/lang";
-import { CreateEventPageDataType } from "@/app/(normal)/event/[grouphandle]/create/data";
-import { useEffect, useRef, useState } from "react";
-import { Button, buttonVariants } from "@/components/shadcn/Button";
-import useUploadImage from "@/hooks/useUploadImage";
-import { Input } from "@/components/shadcn/Input";
-import dynamic from "next/dynamic";
-import { Switch } from "@/components/shadcn/Switch";
-import LocationInput from "@/components/client/LocationInput";
+import type { Dictionary } from "@/lang"
+import { CreateEventPageDataType } from "@/app/(normal)/event/[grouphandle]/create/data"
+import { useEffect, useRef, useState } from "react"
+import { Button, buttonVariants } from "@/components/shadcn/Button"
+import useUploadImage from "@/hooks/useUploadImage"
+import { Input } from "@/components/shadcn/Input"
+import dynamic from "next/dynamic"
+import { Switch } from "@/components/shadcn/Switch"
+import LocationInput from "@/components/client/LocationInput"
 import {
   checkTrackSuitable,
   eventCoverTimeStr,
   isEventTimeSuitable,
-} from "@/utils";
-import SelectedEventHost from "@/components/client/SelectedEventHost";
-import useModal from "@/components/client/Modal/useModal";
-import SelectedEventBadge from "@/components/client/SelectedEventBadge";
-import EventRoleInput from "@/components/client/EventRoleInput";
+} from "@/utils"
+import SelectedEventHost from "@/components/client/SelectedEventHost"
+import useModal from "@/components/client/Modal/useModal"
+import SelectedEventBadge from "@/components/client/SelectedEventBadge"
+import EventRoleInput from "@/components/client/EventRoleInput"
 import TicketForm, {
   Checker,
-} from "@/app/(normal)/event/[grouphandle]/create/TicketForm";
+} from "@/app/(normal)/event/[grouphandle]/create/TicketForm"
 import RepeatForm, {
   RepeatFormType,
-} from "@/app/(normal)/event/[grouphandle]/create/RepeatForm";
-import TracksFilter from "@/components/client/TracksFilter";
-import TagsFilter from "@/components/client/TagsFilter";
-import { getOccupiedTimeEvent, Event, EventDraftType, EventKind } from "@sola/sdk";
-import { CLIENT_MODE } from "@/app/config";
-import { scrollToErrMsg } from "@/components/client/Subscription/uilts";
-import dayjs from "@/libs/dayjs";
-import { isEdgeCityGroup, eventKinds } from "@/app/configForSpecifyGroup";
-import useExternalEvent from "@/hooks/useExternalEvent";
-import useConfirmDialog from "@/hooks/useConfirmDialog";
-import { EditorRef } from "@/components/client/Editor/RichTextEditor";
-import RequirementTagsSelector from "@/components/client/RequirementTagsSelector";
-import DropdownMenu from "@/components/client/DropdownMenu";
+} from "@/app/(normal)/event/[grouphandle]/create/RepeatForm"
+import TracksFilter from "@/components/client/TracksFilter"
+import TagsFilter from "@/components/client/TagsFilter"
+import { getOccupiedTimeEvent, Event, EventDraftType, EventKind } from "@sola/sdk"
+import { CLIENT_MODE } from "@/app/config"
+import { scrollToErrMsg } from "@/components/client/Subscription/uilts"
+import dayjs from "@/libs/dayjs"
+import { isEdgeCityGroup, eventKinds } from "@/app/configForSpecifyGroup"
+import useExternalEvent from "@/hooks/useExternalEvent"
+import useConfirmDialog from "@/hooks/useConfirmDialog"
+import { EditorRef } from "@/components/client/Editor/RichTextEditor"
+import RequirementTagsSelector from "@/components/client/RequirementTagsSelector"
+import DropdownMenu from "@/components/client/DropdownMenu"
 
 const RichTextEditorDynamic = dynamic(
   () => import("@/components/client/Editor/RichTextEditor"),
   { ssr: false },
-);
+)
 const EventDateTimeInput = dynamic(
   () => import("@/components/client/EventDateTimeInput"),
   { ssr: false },
-);
+)
 
 export interface EventFormProps {
-  lang: Dictionary;
-  data: CreateEventPageDataType;
-  onConfirm?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void;
-  onCancel?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void;
+  lang: Dictionary
+  data: CreateEventPageDataType
+  onConfirm?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void
+  onCancel?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void
 }
 
 export default function EventForm({
@@ -59,62 +59,62 @@ export default function EventForm({
   onConfirm,
   onCancel,
 }: EventFormProps) {
-  const [draft, setDraft] = useState(data.eventDraft);
-  const { uploadImage } = useUploadImage();
-  const { showLoading, closeModal } = useModal();
-  const { showConfirmDialog } = useConfirmDialog();
-  const ticketCheckerRef = useRef<Checker>({ check: undefined });
+  const [draft, setDraft] = useState(data.eventDraft)
+  const { uploadImage } = useUploadImage()
+  const { showLoading, closeModal } = useModal()
+  const { showConfirmDialog } = useConfirmDialog()
+  const ticketCheckerRef = useRef<Checker>({ check: undefined })
 
   // ui
-  const [enableNote, setEnableNote] = useState(!!draft.notes);
-  const [enableMoreSetting, setEnableMoreSetting] = useState(false);
-  const [enableTicket, setEnableTicket] = useState(!!draft.tickets?.length);
+  const [enableNote, setEnableNote] = useState(!!draft.notes)
+  const [enableMoreSetting, setEnableMoreSetting] = useState(false)
+  const [enableTicket, setEnableTicket] = useState(!!draft.tickets?.length)
 
   // repeat form
   const [repeatForm, setRepeatForm] = useState<RepeatFormType>({
     interval: data.recurring?.interval || null,
     event_count: data.recurring?.event_count || 1,
-  });
+  })
 
   //editor ref
-  const contentEditorRef = useRef<EditorRef>(null);
+  const contentEditorRef = useRef<EditorRef>(null)
 
   // errors
-  const [timeError, setTimeError] = useState("");
-  const [trackDayError, setTrackDayError] = useState("");
-  const [occupiedEvent, setOccupiedEvent] = useState<Event | null>(null);
-  const [tagError, setTagError] = useState("");
-  const [titleError, setTitleError] = useState("");
+  const [timeError, setTimeError] = useState("")
+  const [trackDayError, setTrackDayError] = useState("")
+  const [occupiedEvent, setOccupiedEvent] = useState<Event | null>(null)
+  const [tagError, setTagError] = useState("")
+  const [titleError, setTitleError] = useState("")
 
   const setCover = async () => {
-    const picUrl = await uploadImage();
-    setDraft({ ...draft, cover_url: picUrl });
-  };
+    const picUrl = await uploadImage()
+    setDraft({ ...draft, cover_url: picUrl })
+  }
 
   useEffect(() => {
-    console.log("draft", draft);
-    console.log("repeatForm", repeatForm);
+    console.log("draft", draft)
+    console.log("repeatForm", repeatForm)
     // onConfirm?.(draft, repeatForm)
-  }, [draft, repeatForm]);
+  }, [draft, repeatForm])
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const currUrl = new URL(window.location.href);
-      const preset_event_badge = currUrl.searchParams.get("event_badge");
+      const currUrl = new URL(window.location.href)
+      const preset_event_badge = currUrl.searchParams.get("event_badge")
       if (preset_event_badge) {
-        setEnableMoreSetting(true);
+        setEnableMoreSetting(true)
         setTimeout(() => {
           document
             .querySelector('div[test-id="selected-event-badge"]')
-            ?.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 400);
+            ?.scrollIntoView({ behavior: "smooth", block: "center" })
+        }, 400)
       }
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     (async () => {
-      const venue = data.venues.find((v) => v.id === draft.venue_id);
+      const venue = data.venues.find((v) => v.id === draft.venue_id)
       const errorMsg = isEventTimeSuitable(
         draft.timezone!,
         draft.start_time!,
@@ -122,10 +122,10 @@ export default function EventForm({
         data.isGroupManager,
         data.isGroupMember,
         venue,
-      );
-      setTimeError(lang[errorMsg as keyof Dictionary]);
+      )
+      setTimeError(lang[errorMsg as keyof Dictionary])
 
-      const loading = showLoading();
+      const loading = showLoading()
       try {
         const occupiedEvents = await getOccupiedTimeEvent({
           params: {
@@ -136,30 +136,30 @@ export default function EventForm({
             excludeEventId: draft.id,
           },
           clientMode: CLIENT_MODE,
-        });
+        })
 
-        setOccupiedEvent(occupiedEvents);
+        setOccupiedEvent(occupiedEvents)
       } catch (e: unknown) {
-        console.error(e);
+        console.error(e)
       } finally {
-        closeModal(loading);
+        closeModal(loading)
       }
-    })();
+    })()
   }, [
     draft.end_time,
     draft.id,
     draft.start_time,
     draft.timezone,
     draft.venue_id,
-  ]);
+  ])
 
   useEffect(() => {
     setTagError(
       !!draft.tags && draft.tags.filter((t) => !t.startsWith(":")).length > 10
         ? lang["The maximum number of tags is 10"]
         : "",
-    );
-  }, [draft.tags]);
+    )
+  }, [draft.tags])
 
   useEffect(() => {
     setTrackDayError(
@@ -169,16 +169,16 @@ export default function EventForm({
           data.tracks.find((t) => t.id === draft.track_id)!,
         )
         : "",
-    );
-  }, [draft.track_id, draft.start_time, draft.end_time, draft.timezone]);
+    )
+  }, [draft.track_id, draft.start_time, draft.end_time, draft.timezone])
 
   const handleConfirm = async () => {
     if (!draft.title) {
-      setTitleError(lang["Event Name is required"]);
-      scrollToErrMsg();
-      return;
+      setTitleError(lang["Event Name is required"])
+      scrollToErrMsg()
+      return
     } else {
-      setTitleError("");
+      setTitleError("")
     }
 
     if (
@@ -188,47 +188,47 @@ export default function EventForm({
       !!trackDayError ||
       (ticketCheckerRef.current.check && !ticketCheckerRef.current.check())
     ) {
-      scrollToErrMsg();
-      return;
+      scrollToErrMsg()
+      return
     }
 
-    const _draft = { ...draft };
+    const _draft = { ...draft }
     if (!enableTicket) {
-      _draft.tickets = [];
+      _draft.tickets = []
     }
 
-    onConfirm?.(draft, repeatForm);
-  };
+    onConfirm?.(draft, repeatForm)
+  }
 
   const handleCancelEvent = async () => {
-    onCancel?.(draft, repeatForm);
-  };
+    onCancel?.(draft, repeatForm)
+  }
 
   const updateRequirementTags = (tag: string) => {
     if (draft.requirement_tags?.includes(tag)) {
       setDraft({
         ...draft,
         requirement_tags: draft.requirement_tags.filter((t) => t !== tag),
-      });
+      })
     } else {
       setDraft({
         ...draft,
         requirement_tags: [...(draft.requirement_tags || []), tag],
-      });
+      })
     }
-  };
+  }
 
-  const { getLumaEvent } = useExternalEvent();
+  const { getLumaEvent } = useExternalEvent()
 
   const handleImportLumaEvent = async () => {
-    const eventData = await getLumaEvent(lang);
+    const eventData = await getLumaEvent(lang)
     if (!eventData) {
-      return;
+      return
     }
-    console.log("luma event data", eventData);
-    setDraft({ ...draft, ...eventData });
+    console.log("luma event data", eventData)
+    setDraft({ ...draft, ...eventData })
     if (contentEditorRef.current) {
-      contentEditorRef.current.initText?.(eventData.content || "");
+      contentEditorRef.current.initText?.(eventData.content || "")
     }
     showConfirmDialog({
       lang: lang,
@@ -239,8 +239,8 @@ export default function EventForm({
         ],
       type: "info",
       hiddenCancelBtn: true,
-    });
-  };
+    })
+  }
 
   return (
     <div className="min-h-[100svh] w-full">
@@ -324,7 +324,7 @@ export default function EventForm({
                     tracks={data.tracks}
                     values={draft.track_id ? [draft.track_id] : undefined}
                     onSelect={(trackIds) => {
-                      setDraft({ ...draft, track_id: trackIds?.[0] || null });
+                      setDraft({ ...draft, track_id: trackIds?.[0] || null })
                     }}
                   />
                 </div>
@@ -431,7 +431,7 @@ export default function EventForm({
                 className="w-full"
                 placeholder={lang["Input meeting url"]}
                 onChange={(e) => {
-                  setDraft({ ...draft, meeting_url: e.target.value });
+                  setDraft({ ...draft, meeting_url: e.target.value })
                 }}
                 startAdornment={<i className="uil-link text-lg" />}
                 value={draft.meeting_url || ""}
@@ -446,7 +446,7 @@ export default function EventForm({
                 editorRef={contentEditorRef}
                 initText={draft.content || ""}
                 onChange={(md) => {
-                  setDraft({ ...draft, content: md });
+                  setDraft({ ...draft, content: md })
                 }}
               />
             </div>
@@ -462,7 +462,7 @@ export default function EventForm({
                   </div>
                   <Switch
                     onClick={() => {
-                      setEnableNote(!enableNote);
+                      setEnableNote(!enableNote)
                     }}
                     checked={enableNote}
                     aria-readonly
@@ -476,7 +476,7 @@ export default function EventForm({
                 <RichTextEditorDynamic
                   initText={draft.notes || ""}
                   onChange={(md) => {
-                    setDraft({ ...draft, notes: md });
+                    setDraft({ ...draft, notes: md })
                   }}
                 />
               </div>
@@ -519,7 +519,7 @@ export default function EventForm({
                   tags={data.tags}
                   lang={lang}
                   onSelected={(tags) => {
-                    setDraft({ ...draft, tags: tags?.length ? tags : null });
+                    setDraft({ ...draft, tags: tags?.length ? tags : null })
                   }}
                   values={draft.tags || []}
                 />
@@ -559,7 +559,7 @@ export default function EventForm({
                 <Switch
                   checked={enableTicket}
                   onClick={() => {
-                    setEnableTicket(!enableTicket);
+                    setEnableTicket(!enableTicket)
                   }}
                 />
               </div>
@@ -582,13 +582,13 @@ export default function EventForm({
               <div className="border border-gray-200 rounded-lg">
                 <div
                   onClick={() => {
-                    setEnableMoreSetting(!enableMoreSetting);
+                    setEnableMoreSetting(!enableMoreSetting)
                     setTimeout(() => {
                       window.scrollTo({
                         top: document.body.scrollHeight,
                         behavior: "smooth",
-                      });
-                    }, 500);
+                      })
+                    }, 500)
                   }}
                   className={`${buttonVariants({ variant: "ghost" })} flex w-full justify-between items-center cursor-pointer`}
                 >
@@ -646,7 +646,7 @@ export default function EventForm({
                           setDraft({
                             ...draft,
                             max_participant: parseInt(e.target.value),
-                          });
+                          })
                         }}
                         value={draft.max_participant || ""}
                         endAdornment={
@@ -654,7 +654,7 @@ export default function EventForm({
                             <i
                               className="uil-times-circle text-lg cursor-pointer"
                               onClick={() => {
-                                setDraft({ ...draft, max_participant: null });
+                                setDraft({ ...draft, max_participant: null })
                               }}
                             />
                           ) : (
@@ -670,7 +670,7 @@ export default function EventForm({
                       </div>
                       <div
                         onClick={() => {
-                          setDraft({ ...draft, display: "normal" });
+                          setDraft({ ...draft, display: "normal" })
                         }}
                         className={`flex-row-item-center justify-between border cursor-pointer p-2 rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
                       >
@@ -694,7 +694,7 @@ export default function EventForm({
                       </div>
                       <div
                         onClick={() => {
-                          setDraft({ ...draft, display: "private" });
+                          setDraft({ ...draft, display: "private" })
                         }}
                         className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
                       >
@@ -718,7 +718,7 @@ export default function EventForm({
                       </div>
                       <div
                         onClick={() => {
-                          setDraft({ ...draft, display: "public" });
+                          setDraft({ ...draft, display: "public" })
                         }}
                         className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
                       >
@@ -759,7 +759,7 @@ export default function EventForm({
                         <Switch
                           checked={draft.pinned}
                           onClick={() => {
-                            setDraft({ ...draft, pinned: !draft.pinned });
+                            setDraft({ ...draft, pinned: !draft.pinned })
                           }}
                         />
                       </div>
@@ -790,7 +790,7 @@ export default function EventForm({
                                     ? "open"
                                     : draft.status
                                   : "closed",
-                            });
+                            })
                           }}
                         />
                       </div>
@@ -806,7 +806,7 @@ export default function EventForm({
                   variant={"secondary"}
                   className="w-full"
                   onClick={() => {
-                    window.history.go(-1);
+                    window.history.go(-1)
                   }}
                 >
                   {lang["Back"]}
@@ -825,7 +825,7 @@ export default function EventForm({
                   variant={"secondary"}
                   className="w-full"
                   onClick={() => {
-                    window.history.go(-1);
+                    window.history.go(-1)
                   }}
                 >
                   {lang["Back"]}
@@ -843,5 +843,5 @@ export default function EventForm({
         </div>
       </div>
     </div>
-  );
+  )
 }

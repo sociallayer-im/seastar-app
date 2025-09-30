@@ -49,7 +49,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
         const id = dayjs(dateString).format('MMM DD')
         const element = document.getElementById(id)
         if (element) {
-            element.style.scrollMarginTop = "80px";
+            element.style.scrollMarginTop = "80px"
             element.scrollIntoView({behavior: 'smooth', block: 'start'})
         }
     }
@@ -105,11 +105,11 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
             const id = dayjs(data.currDate).format('MMM DD')
             const element = document.getElementById(id)
             if (element) {
-                element.style.scrollMarginTop = "80px";
+                element.style.scrollMarginTop = "80px"
                 element.scrollIntoView({behavior: 'smooth', block: 'start'})
             }
         }
-    }, []);
+    }, [])
 
     return <div className="min-h-[100svh] relative pb-12 bg-[#F8F9F8] w-full">
     <div className="schedule-bg"></div>

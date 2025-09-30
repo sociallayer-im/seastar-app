@@ -205,7 +205,7 @@ export async function IframeSchedulePageData({   searchParams,
 
     const events = data.events
         .filter((event: IframeSchedulePageDataEvent) => {
-            return filters.applied ? event.is_attending : true;
+            return filters.applied ? event.is_attending : true
         })
         .map((event: IframeSchedulePageDataEvent) => {
             return {

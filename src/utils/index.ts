@@ -33,8 +33,8 @@ export const getAuth = () => {
 }
 
 export const pickSearchParam = (param?: string | string[]): string | undefined => {
-    const value = Array.isArray(param) ? param[0] : param;
-    return value === 'undefined' ? undefined : value;
+    const value = Array.isArray(param) ? param[0] : param
+    return value === 'undefined' ? undefined : value
 }
 
 export const clientRedirectToReturn = () => {
@@ -364,8 +364,8 @@ export function getGroupSubdomain(url?: string | null) {
         }
         return null
     } catch (e) {
-        console.error("Invalid URL:", e);
-        return null;
+        console.error("Invalid URL:", e)
+        return null
     }
 }
 
@@ -750,7 +750,7 @@ export const checkDomainInput = (domain: string) => {
         return false
     }
 
-    return !domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im);
+    return !domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)
 }
 
 export const getPaymentMethodIcon = (payment: PaymentMethod) => {
@@ -792,15 +792,15 @@ export const prefixUrl = (url: string) => {
 
 export const formatVenueDate = (venue: VenueDetail, lang: Dictionary) => {
     if (!venue.start_date && !venue.end_date) {
-        return lang['Unlimited'];
+        return lang['Unlimited']
     }
 
     if (venue.start_date && !venue.end_date) {
-        return lang['After {date}'].replace('{date}', venue.start_date);
+        return lang['After {date}'].replace('{date}', venue.start_date)
     }
 
     if (!venue.start_date && venue.end_date) {
-        return lang['Before {date}'].replace('{date}', venue.end_date);
+        return lang['Before {date}'].replace('{date}', venue.end_date)
     }
 
     const startDate = dayjs(venue.start_date!)

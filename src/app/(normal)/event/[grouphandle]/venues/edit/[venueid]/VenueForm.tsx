@@ -214,7 +214,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
                         })
                     }
                     <div onClick={async () => {
-                        const img = await uploadImage();
+                        const img = await uploadImage()
                         addImage(img)
                     }}
                         className="shrink-0 hover:brightness-95 rounded-lg cursor-pointer h-[170px] w-[170px] flex flex-col items-center justify-center bg-secondary">
@@ -288,7 +288,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
                                 value={draft.start_date || ''}
                                 endAdornment={!!draft.start_date &&
                                     <i onClick={(e) => {
-                                        cleanStarDate();
+                                        cleanStarDate()
                                         e.stopPropagation()
                                     }}
                                         className="uil-times-circle cursor-pointer" />}
@@ -307,7 +307,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
                                 value={draft.end_date || ''}
                                 endAdornment={!!draft.end_date &&
                                     <i onClick={(e) => {
-                                        cleanEndDate();
+                                        cleanEndDate()
                                         e.stopPropagation()
                                     }}
                                         className="uil-times-circle cursor-pointer" />}

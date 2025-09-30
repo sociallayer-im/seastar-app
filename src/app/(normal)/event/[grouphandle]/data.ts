@@ -107,7 +107,7 @@ export default async function GroupEventHomeData({
         }
     }
 
-    let mapMarkers: GoogleMapMarkerProps[] = []
+    const mapMarkers: GoogleMapMarkerProps[] = []
     if (groupDetail.map_enabled) {
         const mapEvents = filteredEvents.filter((e) => e.geo_lat && e.geo_lng)
         mapEvents.reverse().forEach((event: Event) => {

@@ -60,7 +60,7 @@ export default async function PromoCodeDetail(props: PromoCodeDetailPageProps) {
             {!records.length && <NoData/>}
             {
                 records.map((record, i) => {
-                    return <div className="flex-row-item-center border-b-[1px] py-3 justify-between">
+                    return <div key={i} className="flex-row-item-center border-b-[1px] py-3 justify-between">
                         <div className="flex-row-item-center mr-2">
                             <Avatar profile={record.profile} size={24} className="mr-2"/>
                             {displayProfileName(record.profile)}

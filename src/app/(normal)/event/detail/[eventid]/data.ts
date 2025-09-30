@@ -107,7 +107,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         recurring = await getRecurringById({params: {recurringId: eventDetail.recurring_id}, clientMode: CLIENT_MODE})
     }
 
-    let ticketsPurchased: Ticket[] = []
+    const ticketsPurchased: Ticket[] = []
     if (!!currProfile && !!eventDetail.tickets?.length) {
         const ticketItems = await getPurchasedTicketItemsByProfileHandleAndEventId({
             params: {profileHandle: currProfile.handle, eventId: eventDetail.id},

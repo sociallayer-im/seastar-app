@@ -59,7 +59,7 @@ export default function EventMap(props: EventMapProps) {
 
     useEffect(() => {
         eventBarRef.current!.scrollLeft = 0
-    }, [currGroupEventsKey]);
+    }, [currGroupEventsKey])
 
     const center = targetEvent
         ? {lat: Number(targetEvent.geo_lat!), lng: Number(targetEvent.geo_lng!)}

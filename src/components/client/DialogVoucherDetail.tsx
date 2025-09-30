@@ -1,6 +1,6 @@
 'use client'
 
-import {VoucherDetail, Profile, useVoucher, getVoucherCode, rejectVoucher} from '@sola/sdk'
+import {VoucherDetail, Profile, useVoucher as _useVoucher, getVoucherCode, rejectVoucher} from '@sola/sdk'
 import Image from 'next/image'
 import {Button, buttonVariants} from '@/components/shadcn/Button'
 import {Dictionary} from '@/lang'
@@ -56,7 +56,7 @@ export default function DialogVoucherDetail({
             && !currProfileHasAccepted
     }
 
-    let canSendAgain = voucherDetail.strategy !== 'remember'
+    const canSendAgain = voucherDetail.strategy !== 'remember'
 
     const handleAccept = async () => {
         const loading = showLoading()
@@ -72,12 +72,12 @@ export default function DialogVoucherDetail({
                         clientMode: CLIENT_MODE
                     })
                 }
-                await useVoucher({
+                await _useVoucher({
                     params: {voucherId: voucherDetail.id, code: voucherCode!, authToken: authToken!},
                     clientMode: CLIENT_MODE
                 })
             } else {
-                await useVoucher({
+                await _useVoucher({
                     params: {voucherId: voucherDetail.id, authToken: authToken!},
                     clientMode: CLIENT_MODE
                 })

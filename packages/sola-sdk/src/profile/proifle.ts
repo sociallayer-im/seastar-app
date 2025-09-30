@@ -124,7 +124,7 @@ export const searchProfile = async ({params, clientMode}:SolaSdkFunctionParams<{
         variables: {keyword: params.query, limit: params.limit || 50}
     })
 
-    let result = [] as  Profile[]
+    const result = [] as  Profile[]
     response.data.exact.forEach((profile: Profile) => {
         if (!result.find((r: Profile) => r.id === profile.id)) {
             result.push(profile)

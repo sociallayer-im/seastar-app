@@ -28,19 +28,19 @@ export default function Features(props: { featuredPopupCities: PopupCity[] }) {
 }
 
 function FeatureItem(props: { popupCity: PopupCity }) {
-    const [dominantColor, setDominantColor] = useState<string>('rgba(0,0,0,0)');
-    const [textColor, setTextColor] = useState<string>('#333');
+    const [dominantColor, setDominantColor] = useState<string>('rgba(0,0,0,0)')
+    const [textColor, setTextColor] = useState<string>('#333')
     useEffect(() => {
         if (props.popupCity.image_url) {
             getDominantColor(props.popupCity.image_url).then((color) => {
                 // 从透明色到dominantColor的渐变
-                const transparentColor = 'rgba(0,0,0,0)';
-                const gradient = `linear-gradient(to bottom, ${transparentColor} 1%, ${color} 50%)`;
-                setDominantColor(gradient);
-                setTextColor(getTextColor(color));
-            });
+                const transparentColor = 'rgba(0,0,0,0)'
+                const gradient = `linear-gradient(to bottom, ${transparentColor} 1%, ${color} 50%)`
+                setDominantColor(gradient)
+                setTextColor(getTextColor(color))
+            })
         }
-    }, [props.popupCity.image_url]);
+    }, [props.popupCity.image_url])
 
     return <a className='h-[300px] relative' href={`/event/${props.popupCity.group.handle}`}>
         {props.popupCity.image_url &&
@@ -74,41 +74,41 @@ function FeatureItem(props: { popupCity: PopupCity }) {
 
 function getDominantColor(imgUrl: string): Promise<string> {
     return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = 'Anonymous';
-        img.src = imgUrl;
+        const img = new Image()
+        img.crossOrigin = 'Anonymous'
+        img.src = imgUrl
         img.onload = function () {
-            const canvas = document.createElement('canvas');
-            const ctx: any = canvas.getContext('2d');
-            canvas.width = 64; // 缩小尺寸提升性能
-            canvas.height = 64;
-            ctx.drawImage(img, 0, 0, 64, 64);
-            const pixelData = ctx.getImageData(0, 0, 64, 64).data;
+            const canvas = document.createElement('canvas')
+            const ctx: any = canvas.getContext('2d')
+            canvas.width = 64 // 缩小尺寸提升性能
+            canvas.height = 64
+            ctx.drawImage(img, 0, 0, 64, 64)
+            const pixelData = ctx.getImageData(0, 0, 64, 64).data
 
             // 统计颜色频率
-            const colorCounts: any = {};
+            const colorCounts: any = {}
             for (let i = 0; i < pixelData.length; i += 4) {
-                const rgb = `${pixelData[i]},${pixelData[i + 1]},${pixelData[i + 2]}`;
-                colorCounts[rgb] = (colorCounts[rgb] || 0) + 1;
+                const rgb = `${pixelData[i]},${pixelData[i + 1]},${pixelData[i + 2]}`
+                colorCounts[rgb] = (colorCounts[rgb] || 0) + 1
             }
             // 取最高频颜色
-            const dominantColor = Object.entries(colorCounts).sort((a: any, b: any) => b[1] - a[1])[0][0];
-            console.log(dominantColor);
-            resolve(`rgb(${dominantColor}, 0.8)`);
-        };
+            const dominantColor = Object.entries(colorCounts).sort((a: any, b: any) => b[1] - a[1])[0][0]
+            console.log(dominantColor)
+            resolve(`rgb(${dominantColor}, 0.8)`)
+        }
     })
 }
 
 // 实现一个函数，根据背景颜色，获取文本颜色，目的是增大文字和背景的对比度
 function getTextColor(bgColor: string): string {
-    const rgb = bgColor.match(/\d+/g);
+    const rgb = bgColor.match(/\d+/g)
     if (!rgb) {
-        return 'white';
+        return 'white'
     }
-    const r = parseInt(rgb[0]);
-    const g = parseInt(rgb[1]);
-    const b = parseInt(rgb[2]);
-    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-    return yiq >= 128 ? '#333' : '#fff';
+    const r = parseInt(rgb[0])
+    const g = parseInt(rgb[1])
+    const b = parseInt(rgb[2])
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000
+    return yiq >= 128 ? '#333' : '#fff'
 }
 

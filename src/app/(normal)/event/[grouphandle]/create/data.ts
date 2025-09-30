@@ -1,9 +1,9 @@
 import {
   analyzeGroupMembershipAndCheckProfilePermissions,
   getPrefillEventDateTime,
-} from "@/utils";
-import { redirect } from "next/navigation";
-import { getCurrProfile } from "@/app/actions";
+} from "@/utils"
+import { redirect } from "next/navigation"
+import { getCurrProfile } from "@/app/actions"
 import {
   getGroupDetailByHandle,
   Group,
@@ -19,31 +19,31 @@ import {
   Recurring,
   ProfileDetail,
   getTrackRolesByTrackIds,
-} from "@sola/sdk";
-import { CLIENT_MODE } from "@/app/config";
+} from "@sola/sdk"
+import { CLIENT_MODE } from "@/app/config"
 
 export interface CreateEventPageDataProps {
-  grouphandle: string;
+  grouphandle: string
 }
 
 export interface CreateEventDataProps {
-  params: CreateEventPageDataProps;
+  params: CreateEventPageDataProps
 }
 
 export interface CreateEventPageDataType {
-  currProfile: ProfileDetail;
-  eventDraft: EventDraftType;
-  groupDetail: GroupDetail;
-  memberships: Membership[];
-  isGroupOwner: boolean;
-  isGroupManager: boolean;
-  isGroupMember: boolean;
-  isGroupIssuer: boolean;
-  availableHost: Array<Profile>;
-  tracks: Track[];
-  venues: VenueDetail[];
-  tags: string[];
-  recurring: Recurring | null;
+  currProfile: ProfileDetail
+  eventDraft: EventDraftType
+  groupDetail: GroupDetail
+  memberships: Membership[]
+  isGroupOwner: boolean
+  isGroupManager: boolean
+  isGroupMember: boolean
+  isGroupIssuer: boolean
+  availableHost: Array<Profile>
+  tracks: Track[]
+  venues: VenueDetail[]
+  tags: string[]
+  recurring: Recurring | null
 }
 
 export const emptyEvent: EventDraftType = {
@@ -74,7 +74,7 @@ export const emptyEvent: EventDraftType = {
   recurring_id: null,
   requirement_tags: [],
   kind: null
-};
+}
 
 export const emptyPaymentMethod: PaymentMethod = {
   item_type: "Ticket",
@@ -84,7 +84,7 @@ export const emptyPaymentMethod: PaymentMethod = {
   receiver_address: "",
   price: 1,
   protocol: "",
-};
+}
 
 export const emptyTicket: TicketDraft = {
   title: "",
@@ -95,42 +95,42 @@ export const emptyTicket: TicketDraft = {
   payment_methods: [],
   tracks_allowed: [],
   ticket_type: "event",
-};
+}
 
 export default async function CreateEventPageData({
   params,
 }: CreateEventDataProps) {
-  const currProfile = await getCurrProfile();
+  const currProfile = await getCurrProfile()
   if (!currProfile) {
-    redirect("/");
+    redirect("/")
   }
 
   const groupDetail = await getGroupDetailByHandle({
     params: { groupHandle: params.grouphandle },
     clientMode: CLIENT_MODE,
-  });
+  })
 
   if (!groupDetail) {
-    redirect("/404");
+    redirect("/404")
   }
 
   const { isManager, isOwner, isMember, isIssuer } =
-    analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile);
+    analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
   const availableGroupHost = await getAvailableGroupsForEventHost({
     params: { profileHandle: currProfile.handle },
     clientMode: CLIENT_MODE,
-  });
+  })
   const availableHost: Array<Profile | Group> = [
     currProfile,
     ...availableGroupHost,
-  ];
+  ]
 
-  const availableTrackIds = groupDetail.tracks?.map((track) => track.id) || [];
+  const availableTrackIds = groupDetail.tracks?.map((track) => track.id) || []
   const trackRoles = await getTrackRolesByTrackIds({
     params: { trackIds: availableTrackIds },
     clientMode: CLIENT_MODE,
-  });
+  })
   const availableVenues = (groupDetail?.venues || []).filter(
     (venue) =>
       isOwner ||
@@ -142,7 +142,7 @@ export default async function CreateEventPageData({
           .filter((role) => role.track_id === trackId)
           .some((role) => role.profile_id === currProfile.id)
       )
-  );
+  )
 
   return {
     currProfile,
@@ -162,5 +162,5 @@ export default async function CreateEventPageData({
     tracks: groupDetail?.tracks || [],
     venues: availableVenues,
     tags: groupDetail?.event_tags || [],
-  } as CreateEventPageDataType;
+  } as CreateEventPageDataType
 }

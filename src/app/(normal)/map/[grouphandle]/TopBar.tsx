@@ -170,7 +170,7 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
                 onCancel={close}
                 markerDraft={draft}
                 onConfirm={async (draft) => {
-                    await handleCreateMarker(draft);
+                    await handleCreateMarker(draft)
                     close()
                 }}
                 lang={lang}

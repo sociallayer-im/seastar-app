@@ -13,7 +13,7 @@ import {
     mintRemember,
     ProfileDetail, Profile, BadgeClass
 } from '@sola/sdk'
-// import DialogBindEmail from "./DialogBindEmail";
+// import DialogBindEmail from "./DialogBindEmail"
 import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -49,7 +49,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
     const searchParams = useSearchParams()
 
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             const loading = showLoading()
             try {
                 const metadata = await getRememberMetadata({clientMode: CLIENT_MODE})
@@ -69,7 +69,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
                 closeModal(loading)
             }
         })()
-    }, []);
+    }, [])
 
 
     async function handleCreateRememberVoucher(checkLogin = true) {
@@ -98,7 +98,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
     }
 
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             if (!user!.id) {
                 setJoinedTargetUser(null)
                 setJoinedUser([])
@@ -117,7 +117,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
 
     useEffect(() => {
         // reset after success
-        ;(async () => {
+        (async () => {
             if (success) {
                 setJoinedTargetUser(null)
                 setJoinedUser([])
@@ -126,7 +126,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
                 setVoucherId(null)
             }
         })()
-    }, [success]);
+    }, [success])
 
     useEffect(() => {
         let interval: any = null
@@ -154,7 +154,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
 
             return () => clearInterval(interval)
         }
-    }, [voucherId, isJoinedOtherVoucherId]);
+    }, [voucherId, isJoinedOtherVoucherId])
 
     useEffect(() => {
         if (joinedUser.length) {
@@ -164,10 +164,10 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
             })
                 .then(res => setJoinedUserPopupcitys(res))
         }
-    }, [joinedUser]);
+    }, [joinedUser])
 
     const totalPopUpCitys = useMemo(() => {
-        let res: { id: number, handle: string, image_url: null | string }[] = []
+        const res: { id: number, handle: string, image_url: null | string }[] = []
         Object.values(joinedUserPopupcitys).map(g => {
             g.groups.map(c => {
                 if (!res.some(r => r.id === c.id)) {

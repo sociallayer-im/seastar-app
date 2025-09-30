@@ -1,4 +1,4 @@
-import { Group } from "@sola/sdk";
+import { Group } from "@sola/sdk"
 
 // some of the requirement_tags for the edge city group
 export const SeatingStyle = [
@@ -6,7 +6,7 @@ export const SeatingStyle = [
   "workshop",
   "single table + chairs",
   "Yoga mats",
-];
+]
 // export const AVNeeds = ['presentation screen', 'microphone', 'speakers']
 export const AVNeeds = [
   "projector/TV",
@@ -17,21 +17,21 @@ export const AVNeeds = [
   "Speakers",
   "Soundsystem",
   "Whiteboard",
-];
+]
 export const ExternalCatering = [
   "Time of delivery",
   "Kitchen needed",
   "food & beverages",
   "Cuttlery needed",
-];
+]
 
 export const isEdgeCityGroup = (groupId: number) => {
-  return [3427, 3409, 3463, 3454, 924, 3579, 924, 3627].includes(groupId);
-};
+  return [3427, 3409, 3463, 3454, 924, 3579, 924, 3627].includes(groupId)
+}
 
 export const tagsGroupNeeded = (groupId: number) => {
-  return [3579].includes(groupId);
-};
+  return [3579].includes(groupId)
+}
 
 export const edgeTagsGroups = [
   {
@@ -80,7 +80,7 @@ export const edgeTagsGroups = [
       "Enlightment",
     ],
   },
-];
+]
 
 export const eventKinds = [
   {
@@ -135,4 +135,4 @@ export const eventKinds = [
     label: "Other",
     value: "other",
   },
-];
+]

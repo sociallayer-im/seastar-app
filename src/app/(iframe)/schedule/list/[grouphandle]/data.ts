@@ -25,7 +25,7 @@ export async function ListViewData({
     const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'list'})
     const timezone = groupDetail.timezone || 'UTC'
     
-    let dayEvents = [] as IframeSchedulePageDataEventDetail[]
+    const dayEvents = [] as IframeSchedulePageDataEventDetail[]
     data.events.forEach(event => {
         dayEvents.push({
             ...event,

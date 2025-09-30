@@ -37,7 +37,7 @@ export function GoogleMapInner({
     const [mapCenter, setMapCenter] = useState(center)
     const [pickingLocation, setPickingLocation] = useState(false)
 
-    const geocodingLib = useMapsLibrary('geocoding');
+    const geocodingLib = useMapsLibrary('geocoding')
     useEffect(() => {
         if (!!geocodingLib) {
             !!onReady && onReady()

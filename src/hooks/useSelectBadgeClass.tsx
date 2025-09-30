@@ -76,7 +76,7 @@ export function DialogSelectedBadge({lang, close, toProfileHandle, group, ...pro
                     {props.profileBadgeClasses.map(b => {
                         return <div onClick={() => {
                             {
-                                props.onSelect?.(b);
+                                props.onSelect?.(b)
                                 close?.()
                             }
                         }}
@@ -98,7 +98,7 @@ export function DialogSelectedBadge({lang, close, toProfileHandle, group, ...pro
                 <div className="flex-row-item-center overflow-y-hidden overflow-x-scroll py-2">
                     {props.groupBadgeClasses.map(b => {
                         return <div onClick={() => {
-                            props.onSelect?.(b);
+                            props.onSelect?.(b)
                             close?.()
                         }}
                                     className="p-2 flex-shrink-0 flex-grow-0 mr-2 cursor-pointer w-16 h-16 rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"

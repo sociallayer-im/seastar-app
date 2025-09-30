@@ -33,7 +33,7 @@ export default function DialogPresetAvatar({close, lang, onSelect}: DialogPreset
 
         <div onClick={() => uploadAvatar({
             onUploaded: (image: string) => {
-                onSelect?.(image);
+                onSelect?.(image)
                 close()
             }
         })}

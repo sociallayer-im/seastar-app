@@ -1,5 +1,5 @@
-import { getLabelColor, getLightColor } from "@/utils/label_color";
-import { EventKind } from "@sola/sdk";
+import { getLabelColor, getLightColor } from "@/utils/label_color"
+import { EventKind } from "@sola/sdk"
 
 
 export default function EventKindLabel({ kind }: { kind: EventKind }) {
@@ -8,5 +8,5 @@ export default function EventKindLabel({ kind }: { kind: EventKind }) {
     return kind ? <>
         <span style={{ color: lightColor }} className="capitalize">{kind}</span>
         <span className="capitalize mx-1">·</span>
-    </> : null;
+    </> : null
 }

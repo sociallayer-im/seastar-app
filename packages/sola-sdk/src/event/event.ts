@@ -108,8 +108,8 @@ export const getGroupEventByHandle = async ({params: {handle}, clientMode}: Sola
 export const getEventIcsUrl = ({params: {groupHandle}, clientMode}: SolaSdkFunctionParams<{ groupHandle: string }>) => {
     const nonce = new Date().getTime()
     const url = `${getSdkConfig(clientMode).api}/group/icalendar?group_name=${groupHandle}&nonce=${nonce}`
-    const googleCalendarLink = `https://www.google.com/calendar/render?cid=${encodeURIComponent(url.replace('https', 'http'))}`;
-    const outlookCalendarLink = `https://outlook.live.com/calendar/0/addcalendar?url=${encodeURIComponent(url)}`;
+    const googleCalendarLink = `https://www.google.com/calendar/render?cid=${encodeURIComponent(url.replace('https', 'http'))}`
+    const outlookCalendarLink = `https://outlook.live.com/calendar/0/addcalendar?url=${encodeURIComponent(url)}`
     const systemCalendarLink = url.replace('https', 'webcal')
 
     return {

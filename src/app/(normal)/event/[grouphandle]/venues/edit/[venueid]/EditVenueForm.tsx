@@ -8,7 +8,7 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
-export default function ({groupDetail, lang, venueDetail, isDashboardPage}: {
+export default function EditVenueForm({groupDetail, lang, venueDetail, isDashboardPage}: {
     groupDetail: GroupDetail,
     lang: Dictionary,
     venueDetail: VenueDetail,

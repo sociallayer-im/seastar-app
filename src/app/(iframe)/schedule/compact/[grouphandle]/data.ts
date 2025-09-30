@@ -26,7 +26,6 @@ export async function calculateGridPosition({
     const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'compact'})
     const timezone = groupDetail.timezone || 'UTC'
 
-
     let dayEvents = [] as IframeSchedulePageDataEventDetail[]
     data.events.forEach(event => {
         const current = dayjs.tz(data.currDate, timezone)

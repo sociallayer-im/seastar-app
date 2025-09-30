@@ -28,7 +28,7 @@ export const MARKER_FRAGMENT = gql`
         map_checkins_count
         marker_state
     }
-`;
+`
 
 export const MARKER_DETAIL_FRAGMENT = gql`
     ${MARKER_FRAGMENT}
@@ -47,7 +47,7 @@ export const MARKER_DETAIL_FRAGMENT = gql`
             ...BadgeClassFragment
         }
     }
-`;
+`
 
 export const GET_MARKERS_BY_GROUP_HANDLE_AND_CATEGORY = gql`
     ${MARKER_FRAGMENT}
@@ -56,7 +56,7 @@ export const GET_MARKERS_BY_GROUP_HANDLE_AND_CATEGORY = gql`
             ...MarkerFragment
         }
     }
-`;
+`
 
 export const GET_MARKERS_BY_GROUP_HANDLE = gql`
     ${MARKER_FRAGMENT}
@@ -65,7 +65,7 @@ export const GET_MARKERS_BY_GROUP_HANDLE = gql`
             ...MarkerFragment
         }
     }
-`;
+`
 
 export const GET_MARKER_DETAIL_BY_ID = gql`
     ${MARKER_DETAIL_FRAGMENT}

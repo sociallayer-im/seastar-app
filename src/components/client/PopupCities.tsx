@@ -27,8 +27,8 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                     if (filter === 'ongoing') return startDate <= now && endDate >= now
                     if (filter === 'upcoming') return startDate > now
                     if (filter === 'past') return endDate < now
-                    return true;
-                });
+                    return true
+                })
 
                 const sortByStartDateDesc = (a: SolaPopupCity, b: SolaPopupCity) =>
                     new Date(b.start_date!).getTime() - new Date(a.start_date!).getTime()
@@ -37,7 +37,7 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                 // const normal = list.filter(city => !city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
 
                 return list.sort(sortByStartDateDesc)
-            };
+            }
 
     const filteredCities = filterPopupCities(popupCities)
 

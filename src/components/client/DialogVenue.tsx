@@ -65,7 +65,7 @@ export default function DialogVenue({venue, isManager, lang, groupHandle, close}
                        <div className="font-semibold mb-1 text-lg">{lang['Amenities']}</div>
                        <div className="flex flex-row flex-wrap text-sm">
                            {venue.amenities.map((amenitie, index) => {
-                               return <div className="mr-4 shrink-0 whitespace-nowrap">{amenitie}</div>
+                               return <div key={index} className="mr-4 shrink-0 whitespace-nowrap">{amenitie}</div>
                            })}
                        </div>
                    </div>

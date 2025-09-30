@@ -626,6 +626,6 @@ export const en = {
     'Kind(Optional)': 'Kind(Optional)',
     'Select Kind': 'Select Kind',
     'Kind': 'Kind',
-};
+}
 
 export type Dictionary = typeof en;

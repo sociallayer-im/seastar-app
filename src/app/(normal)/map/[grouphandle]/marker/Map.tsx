@@ -50,7 +50,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
         if (markerBarRef) {
             document.querySelector(`#marker-${selectedMarkerId}`)?.scrollIntoView({behavior: 'smooth', block: 'center'})
         }
-    }, [selectedMarkerId]);
+    }, [selectedMarkerId])
 
     useEffect(() => {
         if (typeof window === 'undefined') return

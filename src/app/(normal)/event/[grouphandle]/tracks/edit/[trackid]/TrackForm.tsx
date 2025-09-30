@@ -35,7 +35,7 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
     useEffect(() => {
         console.log('draft', draft)
         console.log('members', members)
-    }, [draft, members]);
+    }, [draft, members])
 
     const handleSelectManager = () => {
         openModal({
@@ -299,7 +299,7 @@ function DialogSelectorMember({ lang, onChange, close, memberships }: DialogSele
                 <Button variant={"secondary"} onClick={close}>{lang['Cancel']}</Button>
                 <Button variant={"primary"}
                     onClick={() => {
-                        onChange(selected);
+                        onChange(selected)
                         close()
                     }}>
                     {lang['Select']}

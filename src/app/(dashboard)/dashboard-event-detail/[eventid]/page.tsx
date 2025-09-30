@@ -177,7 +177,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         eventDetail.tags?.map(tag => {
                             const color = getLabelColor(tag)
 
-                            return <div className="flex-row-item-center gap-1.5 text-sm">
+                            return <div className="flex-row-item-center gap-1.5 text-sm" key={tag}>
                                 <i className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
                                 <div>{tag}</div>
                             </div>

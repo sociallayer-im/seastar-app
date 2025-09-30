@@ -37,20 +37,20 @@ function ShareScheduleModal({ lang, close, view , groupHandle}: { lang: Dictiona
     const iframeCode = `<iframe src="${iframeSrc}" width="100%" height="600px" frameborder="0" allowfullscreen></iframe>`
 
     const handleCopyLink = () => {
-        navigator.clipboard.writeText(currentUrl);
+        navigator.clipboard.writeText(currentUrl)
         toast({
             description: lang['Copied'],
             variant: "success"
-        });
-    };
+        })
+    }
 
     const handleCopyIframe = () => {
-        navigator.clipboard.writeText(iframeCode);
+        navigator.clipboard.writeText(iframeCode)
         toast({
             description: lang['Copied'],
             variant: "success"
-        });
-    };
+        })
+    }
 
     return (
         <div className="max-w-[600px] rounded-lg bg-background shadow p-6" style={{ width: '90vw' }}>
@@ -88,5 +88,5 @@ function ShareScheduleModal({ lang, close, view , groupHandle}: { lang: Dictiona
                 </Button>
             </div>
         </div>
-    );
+    )
 }

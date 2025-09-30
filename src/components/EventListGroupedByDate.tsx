@@ -15,7 +15,7 @@ export default function EventListGroupedByDate({group, events, highlightedEvents
 
     const pinnedEvents = highlightedEvents
     const listGroupedByDate = useMemo(() => {
-        let res: {
+        const res: {
             date: string,
             events: EventWithJoinStatus[]
         }[] = []

@@ -26,7 +26,7 @@ export default function PopupCityMap(props: PopupCityMapProps){
 }
 
 export  function PopupCityMapInner({lang, mapMarkers, langType}: PopupCityMapProps) {
-    const geocodingLib = useMapsLibrary('geocoding');
+    const geocodingLib = useMapsLibrary('geocoding')
     useEffect(() => {
         !!geocodingLib && console.log('Map library loaded')
     },[geocodingLib])

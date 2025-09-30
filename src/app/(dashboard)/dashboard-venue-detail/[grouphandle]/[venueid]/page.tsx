@@ -70,7 +70,7 @@ function VenueDetailPage({venue, lang }:{venue: VenueDetail ,lang: Dictionary })
                     <div className="font-semibold mb-1 text-lg">{lang['Amenities']}</div>
                     <div className="flex flex-row flex-wrap text-sm">
                         {venue.amenities.map((amenitie, index) => {
-                            return <div className="mr-4 shrink-0 whitespace-nowrap">{amenitie}</div>
+                            return <div className="mr-4 shrink-0 whitespace-nowrap" key={index}>{amenitie}</div>
                         })}
                     </div>
                 </div>

@@ -9,7 +9,7 @@ import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 
-export default function ({lang, groupDetail}: {groupDetail: GroupDetail, lang: Dictionary}) {
+export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDetail, lang: Dictionary}) {
     const [draft, setDraft] = useState(groupDetail)
 
     const {showLoading, closeModal} = useModal()
