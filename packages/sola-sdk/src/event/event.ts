@@ -634,6 +634,7 @@ export const updateRecurringEvent = async ({
                                            }: SolaSdkFunctionParams<UpdateRecurringEventProps>) => {
     const props = {
         ...eventDraft,
+        event_roles_attributes: eventDraft.event_roles || [],
         auth_token: authToken,
         recurring_id: recurringId,
         after_event_id: afterEventId,

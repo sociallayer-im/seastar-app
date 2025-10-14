@@ -9,7 +9,6 @@ import Header from "@/components/Header"
 import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
 import Subscription from '@/components/client/Subscription'
 // import { TrackJSInstall } from "@/app/trackjs_loader"
-import HyperDx from '@/components/client/HyperDx'
 import { headers } from "next/headers"
 
 // TrackJSInstall()
@@ -53,7 +52,6 @@ export default async function RootLayout({
         </div>
         <div className="relative z-[9998]"><Modals/></div>
         <div className="relative z-[9999]"><Toaster/></div>
-        <HyperDx />
         {!!currProfile && <Subscription lang={lang} profile={currProfile}/>}
         </body>
         </html>
