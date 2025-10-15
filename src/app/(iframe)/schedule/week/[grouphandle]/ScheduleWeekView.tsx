@@ -77,7 +77,7 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
         <div className="page-width z-10 relative">
             <div className="py-3 sm:py-5 max-w-[100vw] flex flex-row justify-between">
                 <div className="sm:text-2xl text-xl">
-                    <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2" target={data.isIframe ? "_blank" : "_self"}>
+                    <a href={data.group.handle === 'edgepatagonia' ? 'https://www.edgecity.live/patagonia': data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2" target={data.isIframe ? "_blank" : "_self"}>
                         {data.group.nickname || data.group.handle}
                     </a>
                     <span className="whitespace-nowrap">{lang['Event Schedule']}</span>

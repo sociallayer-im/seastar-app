@@ -113,7 +113,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
         <div className="w-full overflow-auto flex flex-col h-[100svh]">
             <div className="py-2 sm:py-5 w-full flex flex-row items-center px-4 schedule-gradient">
                 <div>
-                    <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2" target={data.isIframe ? "_blank" : "_self"}>
+                    <a href={data.group.handle === 'edgepatagonia' ? 'https://www.edgecity.live/patagonia': data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2" target={data.isIframe ? "_blank" : "_self"}>
                         {data.group.nickname || data.group.handle}
                     </a>
                     <span className="whitespace-nowrap">{lang['Event Schedule']}</span>
