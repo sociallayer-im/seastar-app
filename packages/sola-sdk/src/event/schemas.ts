@@ -66,14 +66,13 @@ export const EVENT_ROLE_DETAIL_FRAGMENT = gql`
 
 export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
     ${EVENT_FRAGMENT}
-    ${EVENT_ROLE_DETAIL_FRAGMENT}
     query GetProfileEventsByHandle($handle: String!) {
         attends: participants(where: {
             status: {_neq: "cancelled"},
             _or:[ {payment_status: {_is_null: true}},  {payment_status: {_eq: "succeeded"}}],
             profile: {handle: {_eq: $handle}},
             event: {status: {_neq: "cancelled"}}
-            }, order_by: {id: desc}) {
+            }, order_by: {event: {start_time: desc}}) {
                 id
                 event {
                     ...EventFragment
@@ -82,18 +81,18 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
         hosting: events(where: {
             owner: {handle: {_eq: $handle}},
             status: {_neq: "cancelled"}
-            }, order_by: {id: desc}) {
+            }, order_by: {start_time: desc}) {
                 ...EventFragment
         }
         coHosting: event_roles(where: {
             role: {_eq: "co_host"},
             profile: {handle: {_eq: $handle}}
-        }, order_by: {id: desc}) {
+        }, order_by: {event: {start_time: desc}}) {
             event {
                 ...EventFragment
              }
         },
-        starred: comments(where: {profile:{handle: {_eq: $handle}}, item_type: {_eq: "Event"}, comment_type: {_eq: "star"}}, order_by: {id: desc}) {
+        starred: comments(where: {profile:{handle: {_eq: $handle}}, item_type: {_eq: "Event"}, comment_type: {_eq: "star"}}, order_by: {event: {start_time: desc}}) {
             event {
                 ...EventFragment
              }
