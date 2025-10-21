@@ -598,7 +598,9 @@ export const getEventByRecurringId = async ({params: {recurringId}, clientMode}:
         variables: {recurringId}
     })
 
-    return response.data.events.map((e: Event) => fixDate(e)) as Event[]
+    return response.data.events
+    .map((e: Event) => fixDate(e))
+    .sort((a: Event, b: Event) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime()) as Event[]
 }
 
 export const getRecurringById = async ({params: {recurringId}, clientMode}: SolaSdkFunctionParams<{
