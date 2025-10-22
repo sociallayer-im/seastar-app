@@ -231,6 +231,7 @@ export const getEvents = async ({params: {filters, authToken, limit}, clientMode
     }
 
     const url = `${getSdkConfig(clientMode).api}/api/event/list?${searchParams.toString()}`
+    // console.log('url', url)
     const res = await fetch(url)
 
     if (!res.ok) {
