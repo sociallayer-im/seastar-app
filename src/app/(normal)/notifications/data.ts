@@ -1,6 +1,6 @@
 import {getCurrProfile} from '@/app/actions'
 import {redirect} from 'next/navigation'
-import {getProfileActivities} from '@sola/sdk/src/activity/activity'
+import {getProfileActivities} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 
 export default async function NotificationData() {

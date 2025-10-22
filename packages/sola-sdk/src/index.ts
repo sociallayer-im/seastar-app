@@ -12,3 +12,5 @@ export * from './service'
 export * from './comment'
 export * from './activity'
 export * from './remember'
+export * from './activity'
+

@@ -2,7 +2,6 @@ import {useEffect, useId, useMemo, useRef, useState} from "react"
 import dayjs, {Dayjs} from "dayjs"
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/shadcn/Popover"
 import {Input} from "@/components/shadcn/Input"
-import {className} from 'postcss-selector-parser'
 
 interface TimePickerProps {
     initTime: string,

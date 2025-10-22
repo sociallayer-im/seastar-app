@@ -1,6 +1,5 @@
 import {useState, useEffect, useRef} from 'react'
 import Cropper, { ReactCropperElement } from 'react-cropper'
-import 'cropperjs/dist/cropper.css'
 import {Button} from "@/components/shadcn/Button"
 import {Slider} from "@/components/shadcn/Slider"
 
