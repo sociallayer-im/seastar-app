@@ -12,6 +12,41 @@ import dayjs from '@/libs/dayjs'
 import {gql} from '@apollo/client'
 import {SolaSdkFunctionParams} from '../types'
 
+export const sortEventsByTime = (a: Event, b: Event): number => {
+    const now = new Date().getTime()
+    const aStartTime = new Date(a.start_time).getTime()
+    const aEndTime = new Date(a.end_time).getTime()
+    const bStartTime = new Date(b.start_time).getTime()
+    const bEndTime = new Date(b.end_time).getTime()
+    
+    // 判断活动状态
+    const aIsOngoing = aStartTime <= now && now <= aEndTime
+    const bIsOngoing = bStartTime <= now && now <= bEndTime
+    const aIsFuture = aStartTime > now
+    const bIsFuture = bStartTime > now
+    
+    // 正在进行中的活动排在顶部
+    if (aIsOngoing && !bIsOngoing) return -1
+    if (!aIsOngoing && bIsOngoing) return 1
+    
+    // 如果都是正在进行中的活动，按开始时间升序排列
+    if (aIsOngoing && bIsOngoing) {
+        return aStartTime - bStartTime
+    }
+    
+    // 未来活动排在已结束活动前面
+    if (aIsFuture && !bIsFuture) return -1
+    if (!aIsFuture && bIsFuture) return 1
+    
+    // 如果都是未来活动，按时间升序排列（早的在前）
+    if (aIsFuture && bIsFuture) {
+        return aStartTime - bStartTime
+    }
+    
+    // 如果都是已结束活动，按结束时间降序排列（最近结束的在前）
+    return bEndTime - aEndTime
+}
+
 export const getStaredEvent = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{
     authToken: string
 }>) => {
@@ -58,7 +93,7 @@ export const getMyPendingApprovalEvent = async ({params: {authToken}, clientMode
 
         const data = await res.json()
         return data.events
-        .sort((a: Event, b: Event) => new Date(b.start_time!).getTime() - new Date(a.start_time!).getTime())
+        .sort(sortEventsByTime)
         .slice(0, 30).map((e: any) => {
             return {
                 ...e,
@@ -79,43 +114,23 @@ export const getProfileEventByHandle = async ({params: {handle}, clientMode}: So
     const client = getGqlClient(clientMode)
     const response = await client.query({
         query: GET_PROFILE_EVENTS_BY_HANDLE,
-        variables: {handle}
+        variables: {handle, now: new Date().toISOString()}
     })
 
     return {
         attends: response.data.attends
             .filter((a: { event?: Event }) => !!a.event)
             .map((a: { event: Event }) => fixDate(a.event))
-            .sort((a: Event, b: Event) => {
-                const now = new Date().getTime()
-                const diffA = new Date(a.start_time).getTime() - now
-                const diffB = new Date(b.start_time).getTime() - now
-                return diffB - diffA
-            }) as Event[],
+            .sort(sortEventsByTime) as Event[],
         hosting: response.data.hosting
             .map((e: Event) => fixDate(e))
-            .sort((a: Event, b: Event) => {
-                const now = new Date().getTime()
-                const diffA = new Date(a.start_time).getTime() - now
-                const diffB = new Date(b.start_time).getTime() - now
-                return diffB - diffA 
-            }) as Event[],
+            .sort(sortEventsByTime) as Event[],
         coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event))
-            .sort((a: Event, b: Event) => {
-                const now = new Date().getTime()
-                const diffA = new Date(a.start_time).getTime() - now
-                const diffB = new Date(b.start_time).getTime() - now
-                return diffB - diffA
-            }) as Event[],
+            .sort(sortEventsByTime) as Event[],
         starred: response.data.starred
             .filter((a: { event?: Event }) => !!a.event)
             .map((a: { event: Event }) => fixDate(a.event))
-            .sort((a: Event, b: Event) => {
-                const now = new Date().getTime()
-                const diffA = new Date(a.start_time).getTime() - now
-                const diffB = new Date(b.start_time).getTime() - now
-                return diffB - diffA
-            }) as Event[],
+            .sort(sortEventsByTime) as Event[],
     }
 
 }

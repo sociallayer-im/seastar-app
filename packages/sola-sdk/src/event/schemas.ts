@@ -66,12 +66,12 @@ export const EVENT_ROLE_DETAIL_FRAGMENT = gql`
 
 export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
     ${EVENT_FRAGMENT}
-    query GetProfileEventsByHandle($handle: String!) {
+    query GetProfileEventsByHandle($handle: String!, $now: timestamp!) {
         attends: participants(where: {
             status: {_neq: "cancelled"},
             _or:[ {payment_status: {_is_null: true}},  {payment_status: {_eq: "succeeded"}}],
             profile: {handle: {_eq: $handle}},
-            event: {status: {_neq: "cancelled"}}
+            event: {status: {_neq: "cancelled"}, end_time: {_gte: $now}}
             }, order_by: {event: {start_time: desc}}) {
                 id
                 event {
@@ -80,13 +80,15 @@ export const GET_PROFILE_EVENTS_BY_HANDLE = gql`
         }
         hosting: events(where: {
             owner: {handle: {_eq: $handle}},
-            status: {_neq: "cancelled"}
+            status: {_neq: "cancelled"}, 
+            end_time: {_gte: $now}
             }, order_by: {start_time: desc}) {
                 ...EventFragment
         }
         coHosting: event_roles(where: {
             role: {_eq: "co_host"},
-            profile: {handle: {_eq: $handle}}
+            profile: {handle: {_eq: $handle}}, 
+            event: {end_time: {_gte: $now}}
         }, order_by: {event: {start_time: desc}}) {
             event {
                 ...EventFragment
