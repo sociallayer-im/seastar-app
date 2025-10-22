@@ -85,13 +85,37 @@ export const getProfileEventByHandle = async ({params: {handle}, clientMode}: So
     return {
         attends: response.data.attends
             .filter((a: { event?: Event }) => !!a.event)
-            .map((a: { event: Event }) => fixDate(a.event)) as Event[],
+            .map((a: { event: Event }) => fixDate(a.event))
+            .sort((a: Event, b: Event) => {
+                const now = new Date().getTime()
+                const diffA = new Date(a.start_time).getTime() - now
+                const diffB = new Date(b.start_time).getTime() - now
+                return diffB - diffA
+            }) as Event[],
         hosting: response.data.hosting
-            .map((e: Event) => fixDate(e)) as Event[],
-        coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event)) as Event[],
+            .map((e: Event) => fixDate(e))
+            .sort((a: Event, b: Event) => {
+                const now = new Date().getTime()
+                const diffA = new Date(a.start_time).getTime() - now
+                const diffB = new Date(b.start_time).getTime() - now
+                return diffB - diffA 
+            }) as Event[],
+        coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event))
+            .sort((a: Event, b: Event) => {
+                const now = new Date().getTime()
+                const diffA = new Date(a.start_time).getTime() - now
+                const diffB = new Date(b.start_time).getTime() - now
+                return diffB - diffA
+            }) as Event[],
         starred: response.data.starred
             .filter((a: { event?: Event }) => !!a.event)
-            .map((a: { event: Event }) => fixDate(a.event)) as Event[]
+            .map((a: { event: Event }) => fixDate(a.event))
+            .sort((a: Event, b: Event) => {
+                const now = new Date().getTime()
+                const diffA = new Date(a.start_time).getTime() - now
+                const diffB = new Date(b.start_time).getTime() - now
+                return diffB - diffA
+            }) as Event[],
     }
 
 }
