@@ -520,7 +520,10 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     {showParticipants && <a href={'?tab=participants'}
                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <div className="z-10">
-                            {lang['Participants']}
+                            {lang['Participants']} 
+                            {!!eventDetail.participants?.length &&
+                                <span className="text-sm ml-1">({eventDetail.participants?.length})</span>
+                            }
                         </div>
                         {tab === 'participants' &&
                             <img width={90} height={12}

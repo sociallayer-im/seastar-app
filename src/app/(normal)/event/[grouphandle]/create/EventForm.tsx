@@ -377,15 +377,13 @@ export default function EventForm({
                 venues={data.venues}
                 state={{ event: draft, setEvent: setDraft }}
               />
-              {data.isGroupManager && (
-                <RepeatForm
+              <RepeatForm
                   disabled={!!draft.id}
                   lang={lang}
                   event={draft}
                   repeatForm={repeatForm}
                   onChange={(repeatForm) => setRepeatForm(repeatForm)}
                 />
-              )}
               {!!timeError && (
                 <div className="text-red-400 mt-2 text-xs err-msg">
                   {timeError}

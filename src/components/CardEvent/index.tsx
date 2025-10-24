@@ -54,7 +54,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
         onClick={handleShowPopup}
         id={id}
         style={customStyle}
-        className={`relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
+        className={`overflow-hidden relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
         <DynamicEventCardStarBtn eventId={event.id} starred={event.is_starred} />
         {isManager &&
             <DynamicHighLightEventBtn
@@ -66,6 +66,10 @@ export default function CardEvent({ event, className, id, style, lang, highlight
                 className="absolute right-11 top-[18px] z-10"
                 compact />
         }
+        {highlighted &&
+            <div className="z-10 w-[300px] font-semibold text-center absolute bottom-0 right-12 translate-x-[140px] translate-y-[-40px] bg-orange-500 py-1 text-xs text-white transform rotate-[-45deg] origin-center">
+                {lang['Highlighted']}
+            </div>}
         <div className="flex-1 mr-2 order-2 xs:order-1">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
