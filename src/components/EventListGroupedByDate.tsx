@@ -41,6 +41,7 @@ export default function EventListGroupedByDate({group, events, highlightedEvents
     return <div className="grid grid-cols-1 gap-3">
         {!listGroupedByDate.length && <NoData/>}
         {!!pinnedEvents.length && <div className="relative">
+            <div className="text-lg font-semibold mb-2">{lang['Highlighted Events']}</div>
             {
                 pinnedEvents.map((event, index) => {
                     return <CardEvent className="mb-3" key={index} event={event} lang={lang} highlight={true} isManager={isManager}/>
