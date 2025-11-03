@@ -37,7 +37,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "copy-to-clipboard": "^3.3.3",
-    "cropperjs": "^2.1.0",
+    "cropperjs": "2.1.0",
     "dayjs": "^1.11.13",
     "dom-to-image": "^2.6.0",
     "embla-carousel-autoplay": "^8.6.0",
