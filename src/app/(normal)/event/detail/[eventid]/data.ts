@@ -96,7 +96,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const showParticipants = !eventDetail?.tickets?.length || isEventOperator
 
     // check if the current user can access the event
-    const canAccess = (isEventOperator || canJoinEvent) && eventDetail.status !== 'cancelled'
+    const canAccess = (isEventOperator || canJoinEvent) && eventDetail.status !== 'cancelled' && eventDetail.status !== 'closed'
 
     const seatingStyle = eventDetail.requirement_tags?.filter(tag => SeatingStyle.includes(tag))
     const avNeeds = eventDetail.requirement_tags?.filter(tag => AVNeeds.includes(tag))
