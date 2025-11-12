@@ -608,5 +608,6 @@ export const zh: Dictionary = {
   'Kind(Optional)': '类型（可选）',
   'Select Kind': '选择类型',
   'Kind': '类型',
-  'Highlighted Events': '置顶活动'
+  'Highlighted Events': '置顶活动',
+  'Cancelled': '已取消'
 }

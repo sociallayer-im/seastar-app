@@ -71,7 +71,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
                 {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
                 {event.display === 'private' && <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
                 {status === 'pending' && <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
-                {status === 'cancel' && <Badge variant='cancel' className="mr-1">{lang['Canceled']}</Badge>}
+                {status === 'cancelled' && <Badge variant='cancel' className="mr-1">{lang['Cancelled']}</Badge>}
 
                 {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">{lang['Ongoing']}</Badge>}
                 {eventProcess === 'upcoming' && <Badge variant='upcoming' className="mr-1">{lang['Upcoming']}</Badge>}

@@ -289,8 +289,8 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
                     {eventDetail.status === 'pending' &&
                         <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
-                    {eventDetail.status === 'cancel' &&
-                        <Badge variant='cancel' className="mr-1">{lang['Canceled']}</Badge>}
+                    {eventDetail.status === 'cancelled' &&
+                        <Badge variant='cancel' className="mr-1">{lang['Cancelled']}</Badge>}
                     {isEventClosed && <Badge variant='cancel' className="mr-1">Closed</Badge>}
 
                     {eventProcess === 'ongoing' && <Badge variant='ongoing' className="mr-1">{lang['Ongoing']}</Badge>}

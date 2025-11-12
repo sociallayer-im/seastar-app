@@ -627,6 +627,7 @@ export const en = {
     'Select Kind': 'Select Kind',
     'Kind': 'Kind',
     'Highlighted Events': 'Highlighted Events',
+    'Cancelled': 'Cancelled',
 }
 
 export type Dictionary = typeof en;
