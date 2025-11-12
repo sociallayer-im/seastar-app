@@ -164,7 +164,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div className="default-cover w-[452px] h-[452px]" style={{ transform: 'scale(0.716814)' }}>
                                 <div
                                     className="font-semibold text-[27px] webkit-box-clamp-2 max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
-                                  {eventDetail.title}
+                                    {eventDetail.title}
                                 </div>
                                 <div
                                     className="text-lg absolute font-semibold left-[76px] top-[178px]">
@@ -194,12 +194,11 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         {!canAccess && <div
                             className="my-2">{lang['This event is only for {}'].replace('{}', groupDetail.can_join_event === 'member' ? lang['members'] : lang['managers'])}</div>}
 
-                        {!canAccess && groupDetail.id === 3635 &&
-                         <div className="flex-row-item-center mb-2">
-                            <GoToBuyTicket lang={lang} />
-                         </div>
+                        {!canAccess && groupDetail.id === 3635 && eventDetail.status !== 'cancelled' && eventDetail.status !== 'closed' &&
+                            <div className="flex-row-item-center mb-2">
+                                <GoToBuyTicket lang={lang} />
+                            </div>
                         }
-
 
                         <div className="flex-row-item-center">
                             <AddSingleEventToCalendarApp
@@ -222,7 +221,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div className="flex-row-item-center mt-2">
                                 <a href={`/event/detail/${eventDetail.id}?tab=tickets`}
                                     className={`${buttonVariants({ variant: 'special' })} text-xs flex-1`}>
-                                    {lang['Join Event(RSVP)']}
+                                    {lang['Join Event(RSVP)']} 1
                                 </a>
                             </div>
                         }
@@ -274,7 +273,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
             <div className="flex-1 sm:mr-9 order-2 sm:order-1">
                 <div className="text-4xl font-semibold w-full">
-                <EventKindLabel kind={eventDetail.kind} />{eventDetail.title}
+                    <EventKindLabel kind={eventDetail.kind} />{eventDetail.title}
                 </div>
 
                 {eventDetail.track && <div className="flex-row-item-center gap-1.5 text-lg mt-1"
@@ -427,8 +426,8 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         <div className="ml-11 -mt-4">
                             <div className="flex-row-item-center mb-2">
                                 <a className="text-xs text-blue-400 cursor-pointer mr-3"
-                                   target={'_blank'}
-                                   href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
+                                    target={'_blank'}
+                                    href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
 
                                 {!!locationInfo.formatted_address &&
                                     <ClickToCopy text={locationInfo.formatted_address}
@@ -520,7 +519,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     {showParticipants && <a href={'?tab=participants'}
                         className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
                         <div className="z-10">
-                            {lang['Participants']} 
+                            {lang['Participants']}
                             {!!eventDetail.participants?.length &&
                                 <span className="text-sm ml-1">({eventDetail.participants?.length})</span>
                             }
