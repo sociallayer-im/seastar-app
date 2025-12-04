@@ -86,7 +86,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             setError('You are not logged in')
             return
         }
-        await sendCodeInvite({
+        const newInvite = await sendCodeInvite({
             params: {
                 groupId: group.id,
                 role,
@@ -95,7 +95,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             },
             clientMode: CLIENT_MODE
         })
-        window.location.href = `/group/${group.handle}/management/invite/success?role=${role}`
+        window.location.href = `/group/${group.handle}/management/invite/success?role=${role}&id=${newInvite.id}`
     }
 
     const handleSendAccountInvite = async () => {

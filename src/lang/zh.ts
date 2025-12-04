@@ -614,4 +614,5 @@ export const zh: Dictionary = {
   'Highlighted Events': '置顶活动',
   'Cancelled': '已取消',
   'You have accepted the invite': '您已接受邀请',
+  'The other party has successfully joined the group': '对方已成功加入群组',
 }

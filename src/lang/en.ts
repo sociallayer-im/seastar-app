@@ -632,6 +632,7 @@ export const en = {
     'Highlighted Events': 'Highlighted Events',
     'Cancelled': 'Cancelled',
     'You have accepted the invite':'You have accepted the invite',
+    'The other party has successfully joined the group': 'The other party has successfully joined the group',
 }
 
 export type Dictionary = typeof en;
