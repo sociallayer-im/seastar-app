@@ -36,7 +36,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
         canPublishEvent,
         highlightedEvents,
         enableGoogleMap,
-
+        unionVenues,
     } = data
 
     const { showLoading, closeModal } = useModal()
@@ -128,6 +128,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     onFilterChange={(filter) => handleFilterChange({ ...filter, page: 1 })}
                     groupDetail={groupDetail}
                     isManager={isManager}
+                    unionVenues={unionVenues}
                     isFiltered={uiStatus.isFiltered}
                     lang={lang} />
                 <div className="my-3">
@@ -227,6 +228,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     <DialogEventHomeFilter
                         filterOpts={currFilter}
                         groupDetail={groupDetail}
+                        unionVenues={unionVenues}
                         lang={lang}
                         onFilterChange={(filter) => handleFilterChange({ ...filter, page: 1 })}
                         dialogMode="modal"

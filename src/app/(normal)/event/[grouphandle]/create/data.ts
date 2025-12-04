@@ -19,6 +19,7 @@ import {
   Recurring,
   ProfileDetail,
   getTrackRolesByTrackIds,
+  getGroupDetailById,
 } from "@sola/sdk"
 import { CLIENT_MODE } from "@/app/config"
 
@@ -44,6 +45,7 @@ export interface CreateEventPageDataType {
   venues: VenueDetail[]
   tags: string[]
   recurring: Recurring | null
+  unionVenues: VenueDetail[]
 }
 
 export const emptyEvent: EventDraftType = {
@@ -144,6 +146,18 @@ export default async function CreateEventPageData({
       )
   )
 
+  let unionVenues:VenueDetail[] = []
+  if (groupDetail.venue_union) {
+    const unionGroups = await Promise.all(groupDetail.venue_union.map(async (groupId) => {
+      const group = await getGroupDetailById({
+        params: { groupId },
+        clientMode: CLIENT_MODE,
+      })
+      return group
+    }))
+    unionVenues = unionGroups.map((group) => group?.venues || []).flat()
+  }
+
   return {
     currProfile,
     recurring: null,
@@ -162,5 +176,6 @@ export default async function CreateEventPageData({
     tracks: groupDetail?.tracks || [],
     venues: availableVenues,
     tags: groupDetail?.event_tags || [],
+    unionVenues,
   } as CreateEventPageDataType
 }

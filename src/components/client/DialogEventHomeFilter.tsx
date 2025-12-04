@@ -10,17 +10,19 @@ import TagsFilter from '@/components/client/TagsFilter'
 import TagGroupsFilter from '@/components/client/TagGroupsFilter'
 import { tagsGroupNeeded } from '@/app/configForSpecifyGroup'
 import { eventKinds } from '@/app/configForSpecifyGroup'
+import { VenueDetail } from '@sola/sdk'
 
 export interface DialogEventHomeFilterProp {
     filterOpts: EventListFilterProps,
     groupDetail: GroupDetail,
+    unionVenues: VenueDetail[],
     lang: Dictionary,
     close?: () => void,
     onFilterChange: (filter: EventListFilterProps) => void,
     dialogMode?: 'dialog' | 'modal'
 }
 
-export default function DialogEventHomeFilter({filterOpts, groupDetail, close, lang, onFilterChange, dialogMode='dialog'}: DialogEventHomeFilterProp) {
+export default function DialogEventHomeFilter({filterOpts, groupDetail, unionVenues, close, lang, onFilterChange, dialogMode='dialog'}: DialogEventHomeFilterProp) {
     const [opts, setOpts] = useState(filterOpts)
 
     useEffect(() => {
@@ -217,7 +219,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
             <div className="my-3 text-sm">
                 <div className="font-semibold mb-1">{lang['Venues']}</div>
                 <DropdownMenu
-                    options={groupDetail.venues}
+                    options={[...groupDetail.venues, ...unionVenues]}
                     renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}</div>}
                     valueKey={'id'}
                     onSelect={(opt) => {
@@ -230,12 +232,12 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, close, l
                             dialogMode === 'modal' && onFilterChange(newOpts)
                         }
                     }}
-                    value={opts.venue_id ? [groupDetail.venues.find(v => v.id.toString() === opts.venue_id)!] : undefined}
+                    value={opts.venue_id ? [[...groupDetail.venues, ...unionVenues].find(v => v.id.toString() === opts.venue_id)!] : undefined}
                 >
                     <Input
                         type="text"
                         readOnly
-                        value={groupDetail.venues.find((v => v.id.toString() === opts.venue_id))?.title || lang['All Venues']}
+                        value={[...groupDetail.venues, ...unionVenues].find((v => v.id.toString() === opts.venue_id))?.title || lang['All Venues']}
                         className="cursor-pointer w-full"
                         endAdornment={<i className="uil-angle-down text-lg"/>}
                     />

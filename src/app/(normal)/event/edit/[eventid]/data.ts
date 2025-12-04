@@ -8,6 +8,8 @@ import {
   Group,
   Profile,
   Recurring,
+  getGroupDetailById,
+  VenueDetail,
 } from "@sola/sdk"
 import { getCurrProfile } from "@/app/actions"
 import { redirect } from "next/navigation"
@@ -98,6 +100,18 @@ export default async function EditEventData({
       )
   )
 
+ let unionVenues:VenueDetail[] = []
+  if (groupDetail.venue_union) {
+    const unionGroups = await Promise.all(groupDetail.venue_union.map(async (groupId) => {
+      const group = await getGroupDetailById({
+        params: { groupId },
+        clientMode: CLIENT_MODE,
+      })
+      return group
+    }))
+    unionVenues = unionGroups.map((group) => group?.venues || []).flat()
+  }
+
   return {
     currProfile,
     eventDraft: eventDetail as EventDraftType,
@@ -112,5 +126,6 @@ export default async function EditEventData({
     tracks: groupDetail?.tracks || [],
     venues: availableVenues,
     tags: groupDetail?.event_tags || [],
+    unionVenues
   } as CreateEventPageDataType
 }

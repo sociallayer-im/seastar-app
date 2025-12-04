@@ -37,7 +37,8 @@ export interface GroupDetail extends Group {
     memberships: Membership[],
     tracks: Track[]
     venues: VenueDetail[],
-    popup_cities: PopupCity[]
+    popup_cities: PopupCity[],
+    venue_union?: number[]
 }
 
 export interface Membership {
