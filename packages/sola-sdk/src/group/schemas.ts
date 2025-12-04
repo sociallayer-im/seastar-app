@@ -147,6 +147,7 @@ export const GROUP_DETAIL_FRAGMENT = gql`
         main_event_id
         start_date
         end_date
+        venue_union
         memberships(order_by: {id: asc}){
            ...MembershipFragment
         }

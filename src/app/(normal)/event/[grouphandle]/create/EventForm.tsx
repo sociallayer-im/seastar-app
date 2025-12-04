@@ -114,7 +114,7 @@ export default function EventForm({
 
   useEffect(() => {
     (async () => {
-      const venue = data.venues.find((v) => v.id === draft.venue_id)
+      const venue = [...data.venues, ...data.unionVenues].find((v) => v.id === draft.venue_id)
       const errorMsg = isEventTimeSuitable(
         draft.timezone!,
         draft.start_time!,
@@ -124,6 +124,11 @@ export default function EventForm({
         venue,
       )
       setTimeError(lang[errorMsg as keyof Dictionary])
+      if (data.unionVenues.length > 0 && data.unionVenues.some((v) => v.id === draft.venue_id)) {
+        // 如果venue_id是union venue，则不检查occupied
+        console.log("Union venue, skip occupied check")
+        return
+      }
 
       const loading = showLoading()
       try {
@@ -418,7 +423,7 @@ export default function EventForm({
                 lang={lang}
                 isManager={data.isGroupManager}
                 isMember={data.isGroupMember}
-                venues={data.venues}
+                venues={[...data.venues, ...data.unionVenues]}
                 state={{ event: draft, setEvent: setDraft }}
               />
             </div>

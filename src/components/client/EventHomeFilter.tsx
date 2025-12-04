@@ -1,6 +1,6 @@
 'use client'
 
-import {EventListFilterProps, GroupDetail} from '@sola/sdk'
+import {EventListFilterProps, GroupDetail, VenueDetail} from '@sola/sdk'
 import {Input} from '@/components/shadcn/Input'
 import {Button, buttonVariants} from '@/components/shadcn/Button'
 import AddToCalendarAppBtn from '@/components/client/AddtoCalendarApp'
@@ -13,13 +13,14 @@ import DialogEventHomeFilter from '@/components/client/DialogEventHomeFilter'
 export interface EventHomeFilterProps {
     filterOpts: EventListFilterProps
     groupDetail: GroupDetail
+    unionVenues: VenueDetail[]
     lang: Dictionary
     isManager?: boolean
     onFilterChange: (filter: EventListFilterProps) => void
     isFiltered?: boolean
 }
 
-export default function EventHomeFilter({filterOpts, groupDetail, lang, isManager, isFiltered ,onFilterChange}: EventHomeFilterProps) {
+export default function EventHomeFilter({filterOpts, groupDetail, lang, isManager, unionVenues,  isFiltered ,onFilterChange}: EventHomeFilterProps) {
     const [search, setSearch] = useState(filterOpts.search_title || '')
     const {openModal} = useModal()
 
@@ -29,6 +30,7 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                 lang={lang}
                 filterOpts={filterOpts}
                 groupDetail={groupDetail}
+                unionVenues={unionVenues}
                 onFilterChange={onFilterChange}
                 close={close!}/>
         })

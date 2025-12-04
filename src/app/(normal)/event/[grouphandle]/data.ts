@@ -1,5 +1,5 @@
 import {
-    Event, getEvents, EventListFilterProps, GroupDetail, EventWithJoinStatus
+    Event, getEvents, EventListFilterProps, GroupDetail, EventWithJoinStatus, getGroupDetailById, VenueDetail
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
@@ -125,6 +125,18 @@ export default async function GroupEventHomeData({
         })
     }
 
+    let unionVenues:VenueDetail[] = []
+    if (groupDetail.venue_union) {
+      const unionGroups = await Promise.all(groupDetail.venue_union.map(async (groupId) => {
+        const group = await getGroupDetailById({
+          params: { groupId },
+          clientMode: CLIENT_MODE,
+        })
+        return group
+      }))
+      unionVenues = unionGroups.map((group) => group?.venues || []).flat()
+    }
+
     return {
         mapMarkers,
         filterOpts,
@@ -139,5 +151,6 @@ export default async function GroupEventHomeData({
         isIssuer,
         canPublishEvent,
         enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true',
+        unionVenues,
     }
 }
