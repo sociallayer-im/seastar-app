@@ -5,7 +5,7 @@ import {Button} from "@/components/shadcn/Button"
 import {useEffect, useState} from "react"
 import ProfileInput from "@/components/client/ProfileInput"
 import {Textarea} from "@/components/shadcn/Textarea"
-import {Group, Profile, sendInvite} from '@sola/sdk'
+import {Group, Profile, sendInvite, sendCodeInvite} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import {displayProfileName, getAuth} from '@/utils'
 import DropdownMenu from '@/components/client/DropdownMenu'
@@ -13,6 +13,7 @@ import {Input} from '@/components/shadcn/Input'
 import resolveLocalCsvFile from '@/utils/markdown/resolveLocalCsvFile'
 import useModal from '@/components/client/Modal/useModal'
 import {CLIENT_MODE} from '@/app/config'
+import Radio from '@/components/client/Radio'
 
 
 export interface InviteFormProps {
@@ -28,6 +29,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
     const [reason, setReason] = useState('')
     const [role, setRole] = useState('member')
     const [error, setError] = useState('')
+    const [isCodeInvite, setIsCodeInvite] = useState(false)
     const {showLoading, closeModal} = useModal()
 
     const roleOptions: RoleOpt[] = [
@@ -46,6 +48,10 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             .replace('[1]', displayProfileName(group))
             .replace('[2]', roleLabel))
     }, [role])
+
+    useEffect(() => {
+        setError('')
+    }, [isCodeInvite])
 
     const handleImportCsv = async () => {
         try {
@@ -74,34 +80,63 @@ export default function InviteForm({lang, group}: InviteFormProps) {
         // window.open('/files/invite_temp.csv', '_blank')
     }
 
-    const handleSend = async () => {
-        const loading = showLoading()
-        const handles = receivers.map(r => r.handle || r.nickname) as string[]
-        try {
-            const authToken = getAuth()
-            if (!authToken) {
-                closeModal(loading)
-                setError('You are not logged in')
-                return
-            }
-            await sendInvite({
-                params: {
-                    groupId: group.id,
-                    receivers: handles,
-                    role,
-                    message: reason,
-                    authToken
-                },
-                clientMode: CLIENT_MODE
-            })
-            closeModal(loading)
-            window.location.href = `/group/${group.handle}/management/invite/success?role=${role}`
-        } catch (e: unknown) {
-            console.error(e)
-            closeModal(loading)
-            setError(e instanceof Error ? e.message : 'Send invite failed')
+    const handleSendCodeInvite = async () => {
+        const authToken = getAuth()
+        if (!authToken) {
+            setError('You are not logged in')
+            return
+        }
+        await sendCodeInvite({
+            params: {
+                groupId: group.id,
+                role,
+                message: reason,
+                authToken
+            },
+            clientMode: CLIENT_MODE
+        })
+        window.location.href = `/group/${group.handle}/management/invite/success?role=${role}`
+    }
+
+    const handleSendAccountInvite = async () => {
+        if (!receivers.length) {
+            setError('Please enter receivers')
+            return
         }
 
+        const authToken = getAuth()
+        if (!authToken) {
+            setError('You are not logged in')
+            return
+        }
+        const handles = receivers.map(r => r.handle || r.nickname) as string[]
+        await sendInvite({
+            params: {
+                groupId: group.id,
+                receivers: handles,
+                role,
+                message: reason,
+                authToken
+            },
+            clientMode: CLIENT_MODE
+        })
+        window.location.href = `/group/${group.handle}/management/invite/success?role=${role}`
+    }
+
+    const handleSend = async () => {
+        const loading = showLoading()
+        try {
+            if (isCodeInvite) {
+                await handleSendCodeInvite()
+            } else {
+                await handleSendAccountInvite()
+            }
+        } catch (e: unknown) {
+            console.error(e)
+            setError(e instanceof Error ? e.message : 'Send invite failed')
+        } finally {
+            closeModal(loading)
+        }
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
@@ -142,28 +177,52 @@ export default function InviteForm({lang, group}: InviteFormProps) {
                           onChange={e => setReason(e.target.value)}/>
             </div>
 
-            <div className="mb-8">
-                <div className="font-semibold mb-1">{lang['Receivers']}</div>
-                <div
-                    className="text-sm mb-1">{lang['Input the username or email of the people can receive the invite.']}</div>
-                <Button
-                    onClick={handleDownloadCsv}
-                    size="xs" variant="secondary" className="text-xs mr-2 mb-2">
-                    <i className="uil-import"/>
-                    {lang['Download CSV Template']}
-                </Button>
-                <Button size="xs" variant="secondary"
-                        onClick={handleImportCsv}
-                        className="text-xs mb-2">
-                    <i className="uil-upload"/>
-                    {lang['Import From CSV File']}
-                </Button>
+            <div className="flex flex-col mx-auto mb-8 rounded-lg">
+                <div className={`${!isCodeInvite ? 'border' : ''} p-3 rounded-lg`}>
+                    <div className="flex-row-item-center justify-between">
+                        <div className="font-semibold">{lang['Receivers']}</div>
+                        <Radio checked={!isCodeInvite} className="mr-1"
+                               onChange={() => setIsCodeInvite(false)} />
+                    </div>
+                    <div className="max-h-0 overflow-auto mt-3"
+                         style={!isCodeInvite ? {maxHeight: 'initial'} : undefined}>
+                        <div
+                            className="text-sm mb-1">{lang['Input the username or email of the people can receive the invite.']}</div>
+                        <Button
+                            onClick={handleDownloadCsv}
+                            size="xs" variant="secondary" className="text-xs mr-2 mb-2">
+                            <i className="uil-import"/>
+                            {lang['Download CSV Template']}
+                        </Button>
+                        <Button size="xs" variant="secondary"
+                                onClick={handleImportCsv}
+                                className="text-xs mb-2">
+                            <i className="uil-upload"/>
+                            {lang['Import From CSV File']}
+                        </Button>
 
-                <ProfileInput
-                    lang={lang}
-                    value={receivers}
-                    onChange={setReceivers}
-                />
+                        <ProfileInput
+                            lang={lang}
+                            value={receivers}
+                            onChange={setReceivers}
+                        />
+                    </div>
+                </div>
+
+                <div className={`${isCodeInvite ? 'border' : ''} p-3 rounded-lg`}>
+                    <div className="flex-row-item-center justify-between">
+                        <div className="font-semibold">{lang['Create Invite Link']}</div>
+                        <Radio checked={isCodeInvite} className="mr-1"
+                               onChange={() => {setIsCodeInvite(true)}} />
+                    </div>
+                    <div className="max-h-0 overflow-auto mt-3"
+                         style={isCodeInvite ? {maxHeight: 'initial'} : undefined}>
+                        <div className="text-sm text-gray-500">
+                            {lang['Users join the group via a link']}
+                        </div>
+                    </div>
+                </div>
+
                 <div className="text-red-400 text-sm my-3">{error}</div>
             </div>
 
@@ -175,7 +234,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
                     {lang['Cancel']}
                 </Button>
                 <Button variant="special"
-                        disabled={!receivers.length}
+                        disabled={!isCodeInvite && !receivers.length}
                         onClick={handleSend}>
                     {lang['Send Invite']}
                 </Button>

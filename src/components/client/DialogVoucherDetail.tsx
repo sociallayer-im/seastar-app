@@ -1,15 +1,15 @@
 'use client'
 
-import {VoucherDetail, Profile, useVoucher as _useVoucher, getVoucherCode, rejectVoucher} from '@sola/sdk'
+import { VoucherDetail, Profile, useVoucher as _useVoucher, getVoucherCode, rejectVoucher } from '@sola/sdk'
 import Image from 'next/image'
-import {Button, buttonVariants} from '@/components/shadcn/Button'
-import {Dictionary} from '@/lang'
+import { Button, buttonVariants } from '@/components/shadcn/Button'
+import { Dictionary } from '@/lang'
 import dynamic from 'next/dynamic'
 import Avatar from '@/components/Avatar'
-import {useState} from 'react'
+import { useState } from 'react'
 import useModal from '@/components/client/Modal/useModal'
-import {getAuth, clientToSignIn, displayProfileName} from '@/utils'
-import {CLIENT_MODE} from '@/app/config'
+import { getAuth, clientToSignIn, displayProfileName } from '@/utils'
+import { CLIENT_MODE } from '@/app/config'
 
 export interface VoucherDetailProps {
     voucherDetail: VoucherDetail
@@ -22,21 +22,21 @@ export interface VoucherDetailProps {
 
 const DynamicDisplayDateTime = dynamic(
     () => import('@/components/client/DisplayDateTime'),
-    {ssr: false}
+    { ssr: false }
 )
 
 
 export default function DialogVoucherDetail({
-                                                voucherDetail,
-                                                lang,
-                                                close,
-                                                voucherCode,
-                                                currProfile,
-                                                receiver
-                                            }: VoucherDetailProps) {
+    voucherDetail,
+    lang,
+    close,
+    voucherCode,
+    currProfile,
+    receiver
+}: VoucherDetailProps) {
 
 
-    const {showLoading, closeModal} = useModal()
+    const { showLoading, closeModal } = useModal()
     const [error, setError] = useState('')
 
     const isOwner = currProfile?.id === voucherDetail.sender.id
@@ -73,12 +73,12 @@ export default function DialogVoucherDetail({
                     })
                 }
                 await _useVoucher({
-                    params: {voucherId: voucherDetail.id, code: voucherCode!, authToken: authToken!},
+                    params: { voucherId: voucherDetail.id, code: voucherCode!, authToken: authToken! },
                     clientMode: CLIENT_MODE
                 })
             } else {
                 await _useVoucher({
-                    params: {voucherId: voucherDetail.id, authToken: authToken!},
+                    params: { voucherId: voucherDetail.id, authToken: authToken! },
                     clientMode: CLIENT_MODE
                 })
             }
@@ -121,14 +121,14 @@ export default function DialogVoucherDetail({
                 <div> {lang['Badge Detail']}</div>
                 {!!close
                     ? <i className="uil-times-circle cursor-pointer text-xl text-gray-400"
-                         onClick={close}/>
-                    : <div/>
+                        onClick={close} />
+                    : <div />
                 }
             </div>
             <div className="flex-row-item-center justify-center my-3">
                 <Image className="rounded-full"
-                       src={voucherDetail.badge_class.image_url!}
-                       width={94} height={94} alt=""/>
+                    src={voucherDetail.badge_class.image_url!}
+                    width={94} height={94} alt="" />
             </div>
 
             <div className="font-semibold text-center my-3">
@@ -137,15 +137,15 @@ export default function DialogVoucherDetail({
 
             <div className="text-center">
                 <a href={`/profile/${voucherDetail.sender.handle}`}
-                   className="!inline-flex whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-6">
+                    className="!inline-flex whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-6">
                     <div className="font-semibold">{lang['Creator']}</div>
-                    <Avatar profile={voucherDetail.sender} size={24} className="mx-2"/>
+                    <Avatar profile={voucherDetail.sender} size={24} className="mx-2" />
                     <div>{displayProfileName(voucherDetail.sender)}</div>
                 </a>
             </div>
 
             <div className="my-3 p-3 rounded-lg border border-white text-sm"
-                 style={{background: 'rgba(245,245,245,0.6)'}}>
+                style={{ background: 'rgba(245,245,245,0.6)' }}>
 
                 {!!voucherDetail.message &&
                     <>
@@ -156,47 +156,40 @@ export default function DialogVoucherDetail({
                     </>
                 }
 
-                <div className="font-semibold mb-1">
-                    {lang['Receivers']}
-                </div>
-                <div className="mb-3 flex flex-row flex-wrap gap-1">
-                    {!!receiver ?
-                        <div className="flex-row-item-center font-semibold">
-                            <Avatar profile={receiver} size={32} className="mr-2"/>
-                            {displayProfileName(receiver)}
-                        </div>
-                        : <>
-                            {voucherDetail.badges.map((badge, index) => {
-                                return <Avatar key={index} profile={badge.owner} size={32}/>
-                            })}
-                            {new Array(voucherDetail.counter).fill('').map((_, index) => {
-                                return <Image src="/images/presend_default_avatar.png"
-                                              key={index}
-                                              className="rounded-full"
-                                              width={32} height={32} alt=""/>
-                            })}
-                        </>
-                    }
-                </div>
+                {!!receiver && <>
+                    <div className="font-semibold mb-1">
+                        {lang['Receivers']}
+                    </div>
+                    <div className="mb-3 flex flex-row flex-wrap gap-1">
+                        {!!receiver &&
+                            <div className="flex-row-item-center font-semibold">
+                                <Avatar profile={receiver} size={32} className="mr-2" />
+                                {displayProfileName(receiver)}
+                            </div>
+
+                        }
+                    </div>
+                </>
+                }
 
                 <div className="font-semibold mb-1">
                     {lang['Issuance Time']}
                 </div>
                 <div className="mb-3 capitalize">
-                    <DynamicDisplayDateTime dataTimeStr={voucherDetail.created_at}/>
+                    <DynamicDisplayDateTime dataTimeStr={voucherDetail.created_at} />
                 </div>
 
                 <div className="font-semibold mb-1">
                     {lang['Valid Date']}
                 </div>
                 <div className="capitalize">
-                    <DynamicDisplayDateTime dataTimeStr={voucherDetail.expires_at!}/>
+                    <DynamicDisplayDateTime dataTimeStr={voucherDetail.expires_at!} />
                 </div>
             </div>
 
             {currProfileHasAccepted &&
                 <div className="p-2 bg-amber-50 text-amber-500 mb-3 flex items-center rounded-lg">
-                    <i className="uil-info-circle text-lg mr-1"/>
+                    <i className="uil-info-circle text-lg mr-1" />
                     {lang['You have accepted']}
                 </div>
             }
@@ -206,29 +199,29 @@ export default function DialogVoucherDetail({
             <div className="flex-row-item-center gap-2">
                 {canSandAgain && canSendAgain && voucherDetail.strategy === 'code' &&
                     <a href={`/voucher/${voucherDetail.id}/share`}
-                       className={`${buttonVariants({variant: "secondary"})} flex-1`}>
+                        className={`${buttonVariants({ variant: "secondary" })} flex-1`}>
                         {lang['Sand Again']}
                     </a>
                 }
 
                 {canAccept && voucherDetail.strategy === 'account' &&
                     <Button variant={'secondary'}
-                            onClick={handleReject}
-                            className="flex-1">
+                        onClick={handleReject}
+                        className="flex-1">
                         {lang['Reject']}
                     </Button>
                 }
                 {canAccept &&
                     <Button variant={'primary'}
-                            onClick={handleAccept}
-                            className="flex-1">
+                        onClick={handleAccept}
+                        className="flex-1">
                         {lang['Accept']}
                     </Button>
                 }
                 {!currProfile &&
                     <Button variant={'primary'}
-                            onClick={clientToSignIn}
-                            className="flex-1">
+                        onClick={clientToSignIn}
+                        className="flex-1">
                         {lang['Sign In']}
                     </Button>
                 }

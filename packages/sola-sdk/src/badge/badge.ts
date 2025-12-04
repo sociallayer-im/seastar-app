@@ -116,8 +116,6 @@ export const getBadgeClassAndInviteByGroupHandle = async ({params, clientMode}: 
         variables: {handle: params.groupHandle, now: new Date().toISOString()}
     })
 
-    console.log('response.data.group_invites', response.data.group_invites)
-
     return {
         badgeClasses: response.data.badge_classes as BadgeClassDetail[],
         groupInvites: response.data.group_invites as Invite[]

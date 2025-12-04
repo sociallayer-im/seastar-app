@@ -282,6 +282,9 @@ export const en = {
         "Are you sure you want to leave the group?",
     "Invite Member": "Invite Member",
     "Invite Message (Optional)": "Invite Message (Optional)",
+    "Create Invite Link": "Create Invite Link",
+    "Users join the group via a link":
+        "Users join the group via a link",
     Receivers: "Receivers",
     Role: "Role",
     Manager: "Manager",
@@ -628,6 +631,7 @@ export const en = {
     'Kind': 'Kind',
     'Highlighted Events': 'Highlighted Events',
     'Cancelled': 'Cancelled',
+    'You have accepted the invite':'You have accepted the invite',
 }
 
 export type Dictionary = typeof en;

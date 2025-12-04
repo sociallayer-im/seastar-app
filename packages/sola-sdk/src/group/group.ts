@@ -7,6 +7,7 @@ import {
     GET_PROFILE_MEMBERSHIPS
 } from "./schemas"
 import {Group, GroupDetail, GroupWithOwner, MembershipDetail} from "./types"
+import {InviteDetail} from '../badge/types'
 import {checkAndGetProfileByHandlesOrAddresses} from '../uitls'
 import {SolaSdkFunctionParams} from '../types'
 
@@ -360,5 +361,76 @@ export const createGroup = async ({params, clientMode}: SolaSdkFunctionParams<{h
 
     const data = await response.json()
     return data.group as Group
+}
+
+/**
+ * Send invite with code
+ * @param groupId - group id
+ * @param role - supported roles: member, manager, owner, issuer
+ * @param message - optional invite message
+ * @param authToken - auth token
+ */
+export const sendCodeInvite = async (
+    {params, clientMode}: SolaSdkFunctionParams<{
+        groupId: number,
+        role: string,
+        message?: string,
+        authToken: string,
+    }>
+) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/send_invite_with_code`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            group_id: params.groupId,
+            role: params.role,
+            message: params.message,
+            auth_token: params.authToken
+        })
+    })
+
+    if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.message || `Send code invite failed code: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return data.group_invite as InviteDetail
+}
+
+/**
+ * Accept invite with code
+ * @param groupInviteId - group invite id
+ * @param code - invite code
+ * @param authToken - auth token
+ */
+export const acceptCodeInvite = async (
+    {params, clientMode}: SolaSdkFunctionParams<{
+        groupInviteId: number,
+        code: string,
+        authToken: string,
+    }>
+) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/accept_invite_with_code`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            group_invite_id: params.groupInviteId,
+            code: params.code,
+            auth_token: params.authToken
+        })
+    })
+
+    if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.message || `Accept code invite failed code: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return data.result as string
 }
 

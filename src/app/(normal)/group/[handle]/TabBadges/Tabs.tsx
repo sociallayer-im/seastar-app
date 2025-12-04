@@ -5,9 +5,11 @@ import {Button, buttonVariants} from "@/components/shadcn/Button"
 import type {Dictionary} from "@/lang"
 import NoData from "@/components/NoData"
 import {getAvatar} from "@/utils"
-import {Invite, BadgeClass, ProfileDetail, Group} from '@sola/sdk'
+import {Invite, BadgeClass, ProfileDetail, Group, getInviteDetailByInviteId} from '@sola/sdk'
 import Image from 'next/image'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
+import useModal from '@/components/client/Modal/useModal'
+import DialogInviteDetail from '@/components/client/DialogInviteDetail'
 
 export interface TabBadgesProps {
     group: Group
@@ -22,6 +24,19 @@ export interface TabBadgesProps {
 
 export default function Tabs({created, lang, isManager, inviting, isIssuer, group, isMember, currProfile}: TabBadgesProps) {
     const [tab, setTab] = useState<'created' | 'inviting'>('created')
+    const {openModal} = useModal()
+
+    const handleShowInvite = async(invite: Invite) => {
+        const inviteDetail = await getInviteDetailByInviteId(invite.id)
+        
+        openModal({
+            content: (close) => <DialogInviteDetail
+                inviteDetail={inviteDetail!}
+                close={close!}
+                isManager={isManager}
+                lang={lang}/>
+        })
+    }
 
     return <div className="py-4">
         <div className="flex-row-item-center justify-between">
@@ -100,7 +115,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-4">
                 {
                     inviting.map((invite, i) => {
-                        return <div key={i}
+                        return <div key={i} onClick={() => handleShowInvite(invite)}
                             className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
                             <div
                                 className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">

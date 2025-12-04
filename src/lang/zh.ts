@@ -280,6 +280,9 @@ export const zh: Dictionary = {
   "Are you sure you want to leave the group?": "您确定要离开群组吗？",
   "Invite Member": "邀请成员",
   "Invite Message (Optional)": "邀请消息（可选）",
+  "Create Invite Link": "创建邀请链接",
+  "Users join the group via a link":
+    "用户通过链接加入群组",
   Receivers: "接收者",
   Role: "角色",
   Manager: "管理员",
@@ -609,5 +612,6 @@ export const zh: Dictionary = {
   'Select Kind': '选择类型',
   'Kind': '类型',
   'Highlighted Events': '置顶活动',
-  'Cancelled': '已取消'
+  'Cancelled': '已取消',
+  'You have accepted the invite': '您已接受邀请',
 }

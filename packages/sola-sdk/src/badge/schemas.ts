@@ -181,7 +181,6 @@ export const GET_BADGE_CLASS_AND_INVITE_BY_GROUP_HANDLE = gql`
             ...BadgeClassFragment
         }
         group_invites(where: {
-            status: {_eq: "sending"}, 
             expires_at: {_gt: $now}, 
             group: {handle: {_eq: $handle}}} order_by: {id: desc}) {
             ...InviteFragment
