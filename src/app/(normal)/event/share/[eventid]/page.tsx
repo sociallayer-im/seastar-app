@@ -6,6 +6,7 @@ import {headers} from 'next/headers'
 import {eventCoverTimeStr, getGmtOffset, pickSearchParam} from '@/utils'
 import dynamic from 'next/dynamic'
 import {cache} from 'react'
+import SocialShareBtn from './SocialShareBtn'
 
 const DynamicShareActionsBtn = dynamic(() => import('@/app/(normal)/event/share/[eventid]/ShareActionsBtn'), {ssr: false})
 
@@ -107,6 +108,7 @@ export default async function ShareEventPage({params:{eventid},searchParams:{tab
                 </div>
 
                 <div className="my-3 w-[335px] mx-auto">
+                    <SocialShareBtn shareUrl={shareUrl} />
                     <DynamicShareActionsBtn lang={lang} eventDetail={eventDetail} groupHandle={groupDetail.handle}/>
                 </div>
             </div>
