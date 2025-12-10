@@ -25,7 +25,7 @@ export async function generateMetadata() {
 }
 
 export default async function DiscoverPage() {
-    const { eventGroups, popupCities, events, currProfile, popupCityMap, enableGoogleMap, featuredPopupCities } = await DiscoverPageData()
+    const { eventGroups, popupCities, currProfile, popupCityMap, enableGoogleMap, featuredPopupCities } = await DiscoverPageData()
     const { lang, type } = await selectLang()
 
     const mapMarkers = popupCityMap.map((event) => {

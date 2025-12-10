@@ -48,7 +48,7 @@ function FeatureItem(props: { popupCity: PopupCity }) {
                 alt={props.popupCity.title}
                 className='h-[300px] min-w-full top-0 object-cover' />
         }
-        <div className='absolute bottom-0 left-0 right-0 sm:pt-[140px] pt-[100px] px-6 h-[250px]' style={{ background: dominantColor }}>
+        <div className='hidden absolute bottom-0 left-0 right-0 sm:pt-[140px] pt-[100px] px-6 h-[250px]' style={{ background: dominantColor }}>
             <h3 className='text-white text-3xl font-bold mb-1' style={{ color: textColor }}>{props.popupCity.title}</h3>
             <div className="flex sm:flex-row flex-col sm:gap-4 mb-2">
                 <div className="webkit-box-clamp-1 text-sm"
