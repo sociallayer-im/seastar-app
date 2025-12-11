@@ -90,6 +90,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
             || isEventCreator
             || eventDetail.event_roles?.some(role => role.role === 'co_host' && role.item_id === currProfile.id)
             || eventDetail.event_roles?.some(role => role.role === 'speaker' && role.item_id === currProfile.id)
+            || eventDetail.event_roles?.some(role => role.role === 'custom_host' && role.item_id === currProfile.id)
         )
 
 
