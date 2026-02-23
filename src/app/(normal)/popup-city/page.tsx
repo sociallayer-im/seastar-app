@@ -42,7 +42,7 @@ export default async function PopupCityListPage() {
                     className="h-[292px] rounded shadow p-3 duration-200 hover:translate-y-[-6px] relative">
                     {!!currProfile && currProfile.status === 'admin' && <ManagActions popupCity={popupCity} lang={lang} />}
                     <div className="rounded h-[148px] mb-3">
-                        <Image className="object-cover w-full h-full rounded"
+                        <img className="object-cover w-full h-full rounded"
                             width={227} height={148}
                             src={popupCity.image_url!} alt="" />
                     </div>

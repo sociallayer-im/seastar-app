@@ -49,7 +49,7 @@ export default function Tabs({labels, created, owned, isSelf}: {
                                     Top
                                 </div>
                             }
-                            <Image className="w-[90px] h-[90px] rounded-full" width={90} height={90}
+                            <img className="w-[90px] h-[90px] rounded-full" width={90} height={90}
                                    src={cover!} alt=""/>
                         </div>
                         <div
@@ -75,7 +75,7 @@ export default function Tabs({labels, created, owned, isSelf}: {
                                 className="bg-[#ffdc62] rounded-br-lg px-3 py-1 font-semibold absolute left-0 top-0">Top
                             </div>
                             }
-                            <Image className="w-[90px] h-[90px] rounded-full" width={90} height={90}
+                            <img className="w-[90px] h-[90px] rounded-full" width={90} height={90}
                                 src={cover!} alt=""/>
                         </div>
                         <div

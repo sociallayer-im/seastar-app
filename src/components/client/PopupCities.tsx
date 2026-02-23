@@ -95,7 +95,7 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                     return <a key={index} href={`/event/${popupCity.group.handle}`}
                               className="h-[292px] rounded shadow p-3 duration-200 hover:translate-y-[-6px]">
                         <div className="rounded h-[148px] mb-3">
-                            <Image className="object-cover w-full h-full rounded"
+                            <img className="object-cover w-full h-full rounded"
                                    width={227} height={148}
                                    src={popupCity.image_url || ''} alt=""/>
                         </div>

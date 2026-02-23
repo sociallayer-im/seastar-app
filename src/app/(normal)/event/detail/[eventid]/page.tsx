@@ -486,7 +486,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                 <div className="flex-1 whitespace-pre-line">
                                     {lang['Registration for the event, upon completion, will be rewarded with POAP*1']}
                                 </div>
-                                <Image className="min-w-9 min-h-9 rounded-full"
+                                <img className="min-w-9 min-h-9 rounded-full"
                                     src={eventDetail.badge_class.image_url!} width={36} height={36} alt="" />
                             </div>
                         </a>}
