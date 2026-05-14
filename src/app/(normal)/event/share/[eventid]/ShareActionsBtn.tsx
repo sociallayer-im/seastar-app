@@ -18,20 +18,35 @@ export default function ShareActionsBtn({eventDetail, lang, groupHandle}: ShareA
 
     const handleSaveDomImage = async () => {
         const dom = document.querySelector('.share-card') as HTMLElement
-        if (!dom) return
-       try {
-           await saveDomImage({
-               dom,
-               fileName: `${eventDetail.title}`,
-               scaleFactor: 2
-           })
-       } catch (e: unknown) {
-            console.error(e)
+        if (!dom) {
             toast({
-                description: e instanceof Error  ? e.message : 'Save image failed',
+                description: 'Event card not found. Please try again.',
                 variant: 'destructive'
             })
-       }
+            return
+        }
+        try {
+            toast({
+                description: 'Preparing image...',
+                variant: 'default'
+            })
+            await saveDomImage({
+                dom,
+                fileName: `${eventDetail.title}`,
+                scaleFactor: 2
+            })
+            toast({
+                description: 'Image saved successfully',
+                variant: 'success'
+            })
+        } catch (e: unknown) {
+            console.error('Failed to save image:', e)
+            toast({
+                title: 'Failed to save image',
+                description: e instanceof Error ? e.message : 'An error occurred while saving the image',
+                variant: 'destructive'
+            })
+        }
     }
 
     const handleCopyLink = () => {

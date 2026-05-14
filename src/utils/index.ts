@@ -586,26 +586,65 @@ export const saveDomImage = async ({ dom, fileName, scaleFactor = 1 }: {
     dom: HTMLElement,
     fileName: string,
     scaleFactor: number
-}) => {
+}): Promise<void> => {
+    // Wait for all images to load before converting to PNG
+    const images = dom.querySelectorAll('img')
+    const imageLoadPromises = Array.from(images).map(img => {
+        return new Promise<void>((resolve) => {
+            if (img.complete) {
+                // Image is already loaded
+                resolve()
+            } else {
+                // Wait for image to load or fail
+                const onLoad = () => {
+                    img.removeEventListener('load', onLoad)
+                    img.removeEventListener('error', onError)
+                    resolve()
+                }
+                const onError = () => {
+                    img.removeEventListener('load', onLoad)
+                    img.removeEventListener('error', onError)
+                    resolve() // Continue even if image fails to load
+                }
+                img.addEventListener('load', onLoad)
+                img.addEventListener('error', onError)
+            }
+        })
+    })
+
+    // Wait for all images with timeout
+    await Promise.race([
+        Promise.all(imageLoadPromises),
+        new Promise<void>(resolve => setTimeout(resolve, 5000)) // 5 second timeout
+    ])
+
     const originWidth = dom.clientWidth
     const originHeight = dom.clientHeight
 
     const scaleWidth = originWidth * scaleFactor
     const scaleHeight = originHeight * scaleFactor
-    const dataUrl = await domtoimage.toPng(dom, {
-        width: scaleWidth,
-        height: scaleHeight,
-        style: {
-            transform: `scale(${scaleFactor})`,
-            transformOrigin: 'top left',
-            borderRadius: '0',
-            boxShadow: 'none'
-        }
-    })
-    const a = document.createElement('a')
-    a.href = dataUrl
-    a.download = `${fileName}.png`
-    a.click()
+
+    try {
+        const dataUrl = await domtoimage.toPng(dom, {
+            width: scaleWidth,
+            height: scaleHeight,
+            style: {
+                transform: `scale(${scaleFactor})`,
+                transformOrigin: 'top left',
+                borderRadius: '0',
+                boxShadow: 'none'
+            }
+        })
+
+        const a = document.createElement('a')
+        a.href = dataUrl
+        a.download = `${fileName}.png`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+    } catch (error) {
+        throw new Error(`Failed to capture image: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
 }
 
 export const checkTrackSuitable = (event: EventDraftType, track?: Track): string => {
