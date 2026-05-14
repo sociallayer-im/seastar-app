@@ -1,0 +1,21 @@
+src/utils/index.ts
+  s_212b3fb8ecd46f::t_e08fbdca30de32 589-620,626-647
+src/app/(normal)/event/share/[eventid]/ShareActionsBtn.tsx
+  s_212b3fb8ecd46f::t_2e68af55d10b24 21,23,26-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "05666a9651added1832141a0e4032ae550498ff2",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-haiku-4-5-20251001"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
