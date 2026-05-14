@@ -505,7 +505,12 @@ export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
     })
 
     if (!response.ok) {
-        throw new Error('Update failed')
+        try {
+            const errorData = await response.json()
+            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
+        } catch (e) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        }
     }
 
     const data = await response.json()
