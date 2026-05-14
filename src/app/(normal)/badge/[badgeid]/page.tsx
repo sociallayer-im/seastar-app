@@ -28,7 +28,7 @@ async function PublicBadge({badge, isOwner, groupCreator}: Awaited<ReturnType<ty
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
         <div className="w-full flex flex-col justify-start items-start">
             <div className="w-full max-w-[500px] mx-auto flex-shrink-0 grid grid-cols-1 gap-6">
-                <Image src={badge.badge_class.image_url!}
+                <img src={badge.badge_class.image_url!}
                        width={160} height={160}
                        alt=""
                        className="w-[160px] h-[160px]  mx-auto object-cover rounded-full"/>
@@ -97,7 +97,7 @@ async function PrivateBadge({groupCreator, badge}: Awaited<ReturnType<typeof Bad
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
         <div className="w-full flex flex-col justify-start items-start">
             <div className="w-full max-w-[500px] mx-auto flex-shrink-0 grid grid-cols-1 gap-6">
-                <Image src={"/images/badge_private.png"}
+                <img src={"/images/badge_private.png"}
                        width={160} height={160}
                        alt=""
                        className="w-[160px] h-[160px]  mx-auto object-cover rounded-full"/>

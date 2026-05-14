@@ -20,7 +20,7 @@ export default async function Header({sticky = true}:{sticky?: boolean}) {
                     <img src={process.env.NEXT_PUBLIC_APP_LOGO || '/images/logo_horizontal.svg'} width={102} height={32} alt={process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}/>
                 </a>
                 <a href="/" className="sm:hidden block">
-                    <Image src="/images/sola_logo_compact.png" width={32} height={32} alt="Social Layer"/>
+                    <img src="/images/sola_logo_compact.png" width={32} height={32} alt="Social Layer"/>
                 </a>
                 <a href="/discover"
                    className={`ml-3 text-xs font-semibold ${currentPath?.includes('discover') ? 'text-primary-foreground' : ''}`}>

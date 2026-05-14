@@ -51,7 +51,7 @@ export default function DialogPresetAvatar({close, lang, onSelect}: DialogPreset
                             key={index}
                             onClick={() => {onSelect?.(url); close()}}
                             className="mr-1 cursor-pointer hover:brightness-95 rounded-lg bg-secondary w-20 h-20 flex-row-item-center justify-center  flex-shrink-0">
-                            <Image src={url} width={64} height={64}
+                            <img src={url} width={64} height={64}
                                    className="rounded-full w-[64px] h-[64px]"
                                    alt=""/>
                         </div>

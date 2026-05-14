@@ -126,7 +126,7 @@ export default function DialogVoucherDetail({
                 }
             </div>
             <div className="flex-row-item-center justify-center my-3">
-                <Image className="rounded-full"
+                <img className="rounded-full w-[94px] h-[94px]"
                     src={voucherDetail.badge_class.image_url!}
                     width={94} height={94} alt="" />
             </div>

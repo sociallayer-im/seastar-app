@@ -141,7 +141,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                                           className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
                                     <div
                                         className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
-                                        <Image width={90} height={90}
+                                        <img width={90} height={90}
                                                src={badgeClass.image_url!}
                                                alt=""
                                                className="-[90px] h-[90px] rounded-full"/>

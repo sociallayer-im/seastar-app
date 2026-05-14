@@ -10,7 +10,7 @@ export type AvatarProps = {
     className?: string
 }
 export default function Avatar({profile, size, className}: AvatarProps) {
-    return <Image
+    return <img
         src={getAvatar(profile.id, profile.image_url)}
         width={size}
         height={size}

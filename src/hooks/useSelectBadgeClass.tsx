@@ -82,7 +82,7 @@ export function DialogSelectedBadge({lang, close, toProfileHandle, group, ...pro
                         }}
                                     className="p-2 flex-shrink-0 flex-grow-0 mr-2 cursor-pointer rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"
                                     key={b.id}>
-                            <Image src={b.image_url!} width={48} height={48} alt=""
+                            <img src={b.image_url!} width={48} height={48} alt=""
                                    className="rounded-full w-12 h-12"/>
                         </div>
                     })}
@@ -103,7 +103,7 @@ export function DialogSelectedBadge({lang, close, toProfileHandle, group, ...pro
                         }}
                                     className="p-2 flex-shrink-0 flex-grow-0 mr-2 cursor-pointer w-16 h-16 rounded-lg bg-[#ecf2ee] flex-row-item-center justify-center"
                                     key={b.id}>
-                            <Image src={b.image_url!} width={50} height={50} alt="" className="rounded-full"/>
+                            <img src={b.image_url!} width={50} height={50} alt="" className="rounded-full w-[50px] h-[50px]"/>
                         </div>
                     })}
                 </div>
