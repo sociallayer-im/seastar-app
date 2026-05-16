@@ -49,7 +49,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
 
     const venueWidth = 150
     const venueHeight = 110
-    const timeHeight = 34
+    const timeHeight = 20
     const timeWidth = 80
     const pageWidth = venues.length * venueWidth + timeWidth + 'px'
     const timeStep = 15
