@@ -64,17 +64,31 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
     }, [now, data.currDate, groupDetail.timezone])
 
     useEffect(() => {
-        // scroll cursor to view
-        const cursor = document.getElementById('curr-time-cursor')
-        if (cursor) {
-            cursor.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const interval = setInterval(() => {
+            setNow(dayjs.tz(new Date(), groupDetail.timezone!))
+        }, 1000 * 60)
 
-
-            const interval = setInterval(() => {
-                setNow(dayjs.tz(new Date(), groupDetail.timezone!))
-            }, 1000 * 60)
-            return () => clearInterval(interval)
+        // Scroll to first event's start time, fallback to current time cursor
+        const eventsWithVenue = events.filter(e => e.venue)
+        if (eventsWithVenue.length > 0) {
+            const firstEvent = eventsWithVenue.reduce((earliest, e) =>
+                e.start_time < earliest.start_time ? e : earliest
+            )
+            const firstStart = dayjs.tz(new Date(firstEvent.start_time), groupDetail.timezone!)
+            const minutesFromMidnight = firstStart.hour() * 60 + firstStart.minute()
+            const topPx = minutesFromMidnight / timeStep * timeHeight
+            const scrollContainer = document.querySelector('.max-w-full.overflow-auto.flex-1')
+            if (scrollContainer) {
+                scrollContainer.scrollTop = Math.max(0, topPx - 100)
+            }
+        } else {
+            const cursor = document.getElementById('curr-time-cursor')
+            if (cursor) {
+                cursor.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }
         }
+
+        return () => clearInterval(interval)
     }, [])
 
     const handleDateChange = async (date: string) => {
