@@ -1,0 +1,22 @@
+package.json
+  s_395c9c799a6085::t_236f1bc3708d81 40
+  s_395c9c799a6085::t_8f0220fc136d39 55,71,73
+src/hooks/useUploadAvatar/DialogCropper.tsx
+  s_395c9c799a6085::t_4ed34d3674791d 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "add4f7adc0d2141cc907cc9b8b1207eb76da706c",
+  "prompts": {},
+  "sessions": {
+    "s_395c9c799a6085": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019e2ef1-7ad4-70d1-b980-6a3fe96b7b32",
+        "model": "gpt-5.5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
