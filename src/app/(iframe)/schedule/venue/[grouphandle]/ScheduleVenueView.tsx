@@ -26,13 +26,10 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
     const [events, setEvents] = useState<IframeSchedulePageDataEventDetail[]>(initialEvents)
     const { showLoading, closeModal } = useModal()
 
-    // 生成时间标签，每15分钟一个
-    const timeLabels = [] as string[]
-    for (let hour = 0; hour < 24; hour++) {
-        for (let minute = 0; minute < 60; minute += 15) {
-            timeLabels.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`)
-        }
-    }
+    // One label per hour — grid lines are hourly, events are still positioned by minute
+    const timeLabels = Array.from({length: 24}, (_, h) =>
+        `${h.toString().padStart(2, '0')}:00`
+    )
 
     // 获取所有唯一的场馆
     const venues = useMemo(() => {
@@ -166,7 +163,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
 
                 <div className="grid relative" style={{
                     gridTemplateColumns: `${timeWidth}px repeat(${venues.length}, ${venueWidth}px)`,
-                    gridTemplateRows: `repeat(${timeLabels.length}, ${timeHeight}px)`,
+                    gridTemplateRows: `repeat(${timeLabels.length}, ${timeHeight * 4}px)`,
                 }}>
 
                     {timeLabels.map((time, timeIndex) => (
