@@ -5,7 +5,7 @@ import { IframeSchedulePageDataType } from "@/app/(iframe)/schedule/utils"
 import { Dictionary } from "@/lang"
 import { IframeSchedulePageDataEventDetail, calculateGridPosition } from "./data"
 import dayjs from "@/libs/dayjs"
-import { Fragment, useEffect, useMemo, useState } from "react"
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import VenueViewEventItem from "./VenueViewEventItem"
 import DatePicker from "@/components/client/DatePicker"
 import { Input } from "@/components/shadcn/Input"
@@ -24,6 +24,7 @@ interface ScheduleVenueViewProps {
 export default function ScheduleVenueView({ data: initialData, groupDetail, events: initialEvents, lang, authToken }: ScheduleVenueViewProps) {
     const [data, setData] = useState<IframeSchedulePageDataType>(initialData)
     const [events, setEvents] = useState<IframeSchedulePageDataEventDetail[]>(initialEvents)
+    const scrollContainerRef = useRef<HTMLDivElement>(null)
     const { showLoading, closeModal } = useModal()
 
     // One label per hour — grid lines are hourly, events are still positioned by minute
@@ -60,12 +61,12 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
         return now.isSame(dayjs.tz(data.currDate, groupDetail.timezone!), 'date')
     }, [now, data.currDate, groupDetail.timezone])
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setNow(dayjs.tz(new Date(), groupDetail.timezone!))
-        }, 1000 * 60)
+    useLayoutEffect(() => {
+        const scrollContainer = scrollContainerRef.current
+        if (!scrollContainer) {
+            return
+        }
 
-        // Scroll to first event's start time, fallback to current time cursor
         const eventsWithVenue = events.filter(e => e.venue)
         if (eventsWithVenue.length > 0) {
             const firstEvent = eventsWithVenue.reduce((earliest, e) =>
@@ -74,19 +75,22 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
             const firstStart = dayjs.tz(new Date(firstEvent.start_time), groupDetail.timezone!)
             const minutesFromMidnight = firstStart.hour() * 60 + firstStart.minute()
             const topPx = minutesFromMidnight / timeStep * timeHeight
-            const scrollContainer = document.querySelector('.max-w-full.overflow-auto.flex-1')
-            if (scrollContainer) {
-                scrollContainer.scrollTop = Math.max(0, topPx - 100)
-            }
+            scrollContainer.scrollTop = Math.max(0, topPx)
         } else {
             const cursor = document.getElementById('curr-time-cursor')
             if (cursor) {
                 cursor.scrollIntoView({ behavior: 'smooth', block: 'center' })
             }
         }
+    }, [events, groupDetail.timezone])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setNow(dayjs.tz(new Date(), groupDetail.timezone!))
+        }, 1000 * 60)
 
         return () => clearInterval(interval)
-    }, [])
+    }, [groupDetail.timezone])
 
     const handleDateChange = async (date: string) => {
         const loading = showLoading()
@@ -141,7 +145,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
                     />
                 </DatePicker>
             </div>
-          <div className="max-w-full overflow-auto flex-1" >
+          <div ref={scrollContainerRef} className="max-w-full overflow-auto flex-1" >
           <div className="min-w-full" style={{ width: pageWidth }}>
                 <div className="grid sticky top-0 z-20" style={{
                     gridTemplateColumns: `${timeWidth}px repeat(${venues.length}, ${venueWidth}px)`,

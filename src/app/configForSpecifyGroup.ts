@@ -130,6 +130,26 @@ export const eventKinds = [
     label: "Exhibition",
     value: "exhibition",
   },
+  {
+    label: "Hackathon",
+    value: "hackathon",
+  },
+  {
+    label: "Demo Day",
+    value: "demoday",
+  },
+  {
+    label: "Social",
+    value: "social",
+  },
+  {
+    label: "OpenMic",
+    value: "openmic",
+  },
+  {
+    label: "Wellness",
+    value: "wellness",
+  },
 
   {
     label: "Other",

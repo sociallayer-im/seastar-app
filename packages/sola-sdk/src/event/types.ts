@@ -2,7 +2,7 @@ import {Profile} from '../profile'
 import {Group, Track, VenueDetail} from '../group'
 import {BadgeClass} from '../badge'
 
-export type EventKind = null | "talk" | "panel" | "workshop" | "activity" | "seminar" | "conference" | "meetup" | "networking" | "training" | "exhibition" | "other"
+export type EventKind = null | "talk" | "panel" | "workshop" | "activity" | "seminar" | "conference" | "meetup" | "networking" | "training" | "exhibition" | "other" | "hackathon" | "demoday" | "social" | "openmic" | "wellness"
 
 export interface Event {
     id: number,
