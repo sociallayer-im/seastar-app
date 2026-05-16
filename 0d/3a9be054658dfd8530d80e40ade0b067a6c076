@@ -1,0 +1,20 @@
+src/app/(iframe)/schedule/venue/[grouphandle]/ScheduleVenueView.tsx
+  s_212b3fb8ecd46f::t_2bcbcec3cc7925 29-32
+  s_212b3fb8ecd46f::t_b1feb5a38b857b 166
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "0d3a9be054658dfd8530d80e40ade0b067a6c076",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
