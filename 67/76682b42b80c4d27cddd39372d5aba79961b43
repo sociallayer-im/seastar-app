@@ -1,0 +1,154 @@
+src/app/(normal)/group/[handle]/BtnGroupQrcode.tsx
+  s_212b3fb8ecd46f::t_732333da8f485d 6
+  s_212b3fb8ecd46f::t_d2218ab06bdd22 39
+src/app/(normal)/remember/Remember.tsx
+  s_212b3fb8ecd46f::t_3aabdab4afd2cb 214
+  s_212b3fb8ecd46f::t_1da482a636bb64 21
+src/utils/index.ts
+  s_212b3fb8ecd46f::t_0590823d45efbf 91-111
+src/components/CardEvent/index.tsx
+  s_212b3fb8ecd46f::t_eb235176f45fe3 4
+  s_212b3fb8ecd46f::t_d04713f592d2fe 149
+src/app/(normal)/badge-class/[badgeclassid]/send-badge/SendBadgeForm.tsx
+  s_212b3fb8ecd46f::t_6c87386ba36b37 101
+  s_212b3fb8ecd46f::t_7f06933a08e5dc 10
+src/app/(normal)/map/[grouphandle]/marker/Map.tsx
+  s_212b3fb8ecd46f::t_89c03dc59b8d5f 11
+  s_212b3fb8ecd46f::t_01c480b633ced7 128
+src/app/(normal)/marker/detail/[markerid]/page.tsx
+  s_212b3fb8ecd46f::t_878419dfc69670 4
+  s_212b3fb8ecd46f::t_649abe8a5b5335 37
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_212b3fb8ecd46f::t_a96674b1cd9f09 474
+  s_212b3fb8ecd46f::t_a51997bcd7cf25 29
+src/app/(normal)/popup-city/page.tsx
+  s_212b3fb8ecd46f::t_2a05d89cb2c48d 5
+  s_212b3fb8ecd46f::t_aa612ec9f6a7c1 47
+src/app/(normal)/event/share/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_bf989112c5d68d 6
+  s_212b3fb8ecd46f::t_2fb8ba9af82117 38
+src/app/(normal)/event/checkin-for-participants/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_79d62ef9a6623b 17
+  s_212b3fb8ecd46f::t_f9f168d616a8d4 5
+src/app/(dashboard)/dashboard-event-detail/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_88ffa7e0ab4eca 197
+  s_212b3fb8ecd46f::t_113d49628127b2 6
+  s_212b3fb8ecd46f::t_c0fc06177e944c 124
+  s_212b3fb8ecd46f::t_b80c8166926cf7 234,253
+  s_212b3fb8ecd46f::t_31680c80d9b0bb 363
+src/app/(normal)/event/[grouphandle]/banner/BannerForm.tsx
+  s_212b3fb8ecd46f::t_845961251bcde2 11
+  s_212b3fb8ecd46f::t_d95faee10010c2 58
+src/app/(normal)/popup-city/create/Step2.tsx
+  s_212b3fb8ecd46f::t_b9ac872a70dfcf 11
+  s_212b3fb8ecd46f::t_8cd5fa6d034cde 61
+src/components/client/DialogTicket.tsx
+  s_212b3fb8ecd46f::t_d8e9de0f9a66b0 11
+  s_212b3fb8ecd46f::t_16e0d776330921 299
+  s_212b3fb8ecd46f::t_587e90c3f305a9 337
+src/app/(normal)/event/[grouphandle]/venues/components/VenueCard.tsx
+  s_212b3fb8ecd46f::t_47ad3949c08048 60
+  s_212b3fb8ecd46f::t_f4b82ec4756ee2 8
+src/app/(normal)/event/[grouphandle]/GroupEventHome.tsx
+  s_212b3fb8ecd46f::t_9ff6d42aeb1b20 5
+  s_212b3fb8ecd46f::t_705fd4c1540272 153
+  s_212b3fb8ecd46f::t_5b92f1f5fa87c6 172
+src/app/(normal)/voucher/[voucherid]/share/page.tsx
+  s_212b3fb8ecd46f::t_245b3a4ca3bb3d 18
+  s_212b3fb8ecd46f::t_84fd3e9c0ef44d 5
+src/components/Avatar.tsx
+  s_212b3fb8ecd46f::t_6fe8ce84c48dff 13
+  s_212b3fb8ecd46f::t_0009647c9d9065 2
+src/app/(normal)/event/[grouphandle]/popup-city/edit/[popupcityid]/PopupCityForm.tsx
+  s_212b3fb8ecd46f::t_10971a8038b76e 13
+  s_212b3fb8ecd46f::t_31334d08d981b4 117
+src/app/(normal)/profile/[handle]/BtnProfileQrcode.tsx
+  s_212b3fb8ecd46f::t_36cb26f6291a84 6
+  s_212b3fb8ecd46f::t_432e4208210175 39
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_eb19ddea901a55 362,381
+  s_212b3fb8ecd46f::t_ff1bf70b403d65 6
+  s_212b3fb8ecd46f::t_426839e4b28231 325
+  s_212b3fb8ecd46f::t_37fe4c674e2fc6 162
+  s_212b3fb8ecd46f::t_47f6de42c36161 491
+src/components/client/Features.tsx
+  s_212b3fb8ecd46f::t_fd44e99d06fe10 13
+  s_212b3fb8ecd46f::t_e5ab13f2bdbb1e 47
+src/components/client/PopupCities.tsx
+  s_212b3fb8ecd46f::t_ad8e4446140e59 4
+  s_212b3fb8ecd46f::t_0a301d62430eb2 100
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_212b3fb8ecd46f::t_23daf687bbe122 13
+  s_212b3fb8ecd46f::t_0b2b065836282a 306
+src/app/(normal)/group/[handle]/management/transfer-owner/TransferOwnerForm.tsx
+  s_212b3fb8ecd46f::t_6bbc7193f0a657 87
+  s_212b3fb8ecd46f::t_009ecfb8fe233f 4
+src/app/(normal)/search/SearchResult.tsx
+  s_212b3fb8ecd46f::t_edc49412ea2118 145
+  s_212b3fb8ecd46f::t_e811b6506de862 9
+src/app/(normal)/group/[handle]/TabMembers/TabMembers.tsx
+  s_212b3fb8ecd46f::t_669faa0d7a437c 111
+  s_212b3fb8ecd46f::t_b2e8badaff8912 5
+src/components/client/ProfileInput.tsx
+  s_212b3fb8ecd46f::t_e5759bddc05c10 158
+  s_212b3fb8ecd46f::t_5782fcd98037f5 5
+  s_212b3fb8ecd46f::t_46746e2154fb9a 147
+src/components/client/CardVoucher.tsx
+  s_212b3fb8ecd46f::t_61ee279f67a4ba 21
+  s_212b3fb8ecd46f::t_42e57c8c89f4e4 7
+src/app/(normal)/badge-class/[badgeclassid]/page.tsx
+  s_212b3fb8ecd46f::t_6c00e765a05a9e 4
+  s_212b3fb8ecd46f::t_89785c4a07472c 42
+  s_212b3fb8ecd46f::t_d2e0d57ff889cd 93
+src/app/(normal)/group/[handle]/management/manager/ManagerManagementForm.tsx
+  s_212b3fb8ecd46f::t_bff7841c8ecbf6 2
+  s_212b3fb8ecd46f::t_9a73590e109af7 44
+src/components/client/SelectedEventHost.tsx
+  s_212b3fb8ecd46f::t_471eeaf4eb544f 4
+  s_212b3fb8ecd46f::t_325d8b567f3ddb 65
+  s_212b3fb8ecd46f::t_fe8e211b72e166 54
+src/components/client/DialogVoucherDetail.tsx
+  s_212b3fb8ecd46f::t_4f50d304ab6c99 11
+  s_212b3fb8ecd46f::t_08c25347fb4b34 130
+src/app/(iframe)/schedule/week/[grouphandle]/WeeklyViewEventItem.tsx
+  s_212b3fb8ecd46f::t_628c95010b648e 8
+  s_212b3fb8ecd46f::t_de5fd8e93a4fd1 100
+src/app/(normal)/group/[handle]/TabVouchers/TabVouchers.tsx
+  s_212b3fb8ecd46f::t_6c91bc38fd9205 17
+  s_212b3fb8ecd46f::t_d8269867f13c3c 4
+src/components/client/SelectedEventBadge.tsx
+  s_212b3fb8ecd46f::t_03fa391de25229 6
+  s_212b3fb8ecd46f::t_19cc0c53284aef 101
+src/app/(normal)/profile/[handle]/follower/FollowerList.tsx
+  s_212b3fb8ecd46f::t_2aa4c47f1b0f4f 47,63
+  s_212b3fb8ecd46f::t_17226280cf7f24 3
+src/app/(normal)/group/[handle]/TabBadges/Tabs.tsx
+  s_212b3fb8ecd46f::t_9b01afc3e4132a 123
+  s_212b3fb8ecd46f::t_305721c403bfe0 7
+src/app/(iframe)/schedule/venue/[grouphandle]/ScheduleVenueView.tsx
+  s_212b3fb8ecd46f::t_362666aac1aab9 159
+  s_212b3fb8ecd46f::t_771a9573318806 12
+src/components/client/EventRoleInput.tsx
+  s_212b3fb8ecd46f::t_b9157bf9489582 192
+  s_212b3fb8ecd46f::t_66eda686d0b9b7 5
+src/app/(normal)/badge/[badgeid]/page.tsx
+  s_212b3fb8ecd46f::t_b8919044cf3192 63
+  s_212b3fb8ecd46f::t_87bf4775c9d30f 31
+  s_212b3fb8ecd46f::t_42caaf44dfdad8 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "6776682b42b80c4d27cddd39372d5aba79961b43",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
