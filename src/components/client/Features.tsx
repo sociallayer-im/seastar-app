@@ -10,7 +10,7 @@ import { PopupCity } from "@sola/sdk"
 import { useEffect, useState } from "react"
 import DisplayDateTime from "./DisplayDateTime"
 import Avatar from "../Avatar"
-import { displayProfileName } from "@/utils"
+import { cfImage, displayProfileName } from "@/utils"
 
 
 export default function Features(props: { featuredPopupCities: PopupCity[] }) {
@@ -44,7 +44,7 @@ function FeatureItem(props: { popupCity: PopupCity }) {
 
     return <a className='h-[300px] relative' href={`/event/${props.popupCity.group.handle}`}>
         {props.popupCity.image_url &&
-            <img src={props.popupCity.image_url}
+            <img src={cfImage(props.popupCity.image_url, { width: 454, height: 296, fit: 'cover' })}
                 alt={props.popupCity.title}
                 className='h-[300px] min-w-full top-0 object-cover' />
         }

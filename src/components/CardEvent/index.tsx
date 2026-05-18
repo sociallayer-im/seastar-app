@@ -1,7 +1,7 @@
 'use client'
 
 import { getLabelColor } from "@/utils/label_color"
-import { checkProcess, eventCoverTimeStr } from "@/utils"
+import { cfImage, checkProcess, eventCoverTimeStr } from "@/utils"
 import { Badge } from "@/components/shadcn/Badge"
 import { CSSProperties, ReactElement, useState, type MouseEvent } from "react"
 import dynamic from 'next/dynamic'
@@ -146,7 +146,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
         {
             !!event.cover_url ?
                 <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
-                    <img className="w-full h-full object-cover" src={event.cover_url} alt="" />
+                    <img className="w-full h-full object-cover" src={cfImage(event.cover_url, { width: 280, height: 280, fit: 'cover' })} alt="" />
                 </div>
                 : <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
                     <div className="default-cover w-[452px] h-[452px] sm:scale-[0.309] scale-[0.22]">

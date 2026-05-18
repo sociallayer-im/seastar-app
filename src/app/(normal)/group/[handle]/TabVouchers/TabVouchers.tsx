@@ -1,6 +1,7 @@
 import NoData from "@/components/NoData"
 import GroupVouchersData from "@/app/(normal)/group/[handle]/TabVouchers/data"
 import Image from 'next/image'
+import {cfImage} from '@/utils'
 
 export default async function TabVouchers(props: {handle: string}) {
     const vouchers = await GroupVouchersData(props.handle)
@@ -13,7 +14,7 @@ export default async function TabVouchers(props: {handle: string}) {
                     <div
                         className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
                         <img width={90} height={90} className="w-[90px] h-[90px] rounded-full"
-                            src={voucher.badge_class.image_url!} alt=""/>
+                            src={cfImage(voucher.badge_class.image_url, { width: 180, height: 180, fit: 'cover' })} alt=""/>
                     </div>
                     <div
                         className="font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">

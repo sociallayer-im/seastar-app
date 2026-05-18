@@ -5,7 +5,7 @@ import {VenueDetail} from '@sola/sdk'
 import {buttonVariants, Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
 import DialogVenue from '@/components/client/DialogVenue'
-import {formatVenueDate} from '@/utils'
+import {cfImage, formatVenueDate} from '@/utils'
 
 
 interface VenueCardProps {
@@ -57,7 +57,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
                 {!!venue.image_urls?.length &&
                     <div className="w-[140px] h-[140px] rounded-lg overflow-hidden flex-shrink-0  order-1 sm:order-2">
                         <img
-                            src={venue.image_urls[0]}
+                            src={cfImage(venue.image_urls[0], { width: 400, height: 300, fit: 'cover' })}
                             alt={venue.title}
                             className="w-full h-full object-cover"
                         />

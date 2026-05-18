@@ -5,7 +5,7 @@ import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"
 import {useEffect, useState} from "react"
-import {genGoogleMapLink, getAvatar} from "@/utils"
+import {cfImage, genGoogleMapLink, getAvatar} from "@/utils"
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 import {Dictionary} from '@/lang'
 
@@ -97,7 +97,7 @@ export default function WeeklyViewEventItem({event, timezone, lang}: {event: Ifr
         </div>
         <div>
             <div className="flex-row-item-center">
-                <img src={getAvatar(host.id, host.image_url)} width={12} height={12} className="rounded-full mr-1"
+                <img src={cfImage(getAvatar(host.id, host.image_url), { width: 24, height: 24, fit: 'cover' })} width={12} height={12} className="rounded-full mr-1"
                     alt=""/>
                 <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
                    by {host.nickname || host.handle}

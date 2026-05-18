@@ -3,6 +3,7 @@ import EventDetailPage, {
     EventDetailPageSearchParams
 } from "@/app/(normal)/event/detail/[eventid]/data"
 import {
+    cfImage,
     displayProfileName,
     eventCoverTimeStr,
     genGoogleMapLinkByEvent,
@@ -158,7 +159,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                 {
                     !!eventDetail.cover_url
                         ? <img className="max-w-[450px] w-full mx-auto"
-                            src={eventDetail.cover_url} alt="" />
+                            src={cfImage(eventDetail.cover_url, { width: 900, format: 'auto', quality: 85 })} alt="" />
                         :
                         <div className="w-[324px] h-[324px] overflow-hidden mx-auto">
                             <div className="default-cover w-[452px] h-[452px]" style={{ transform: 'scale(0.716814)' }}>
@@ -321,7 +322,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                 className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
                                 href={customHost.item_id ? `/profile/${customHost.profile!.handle}` : '#'}>
                                 <img className="w-11 h-11 rounded-full mr-2"
-                                    src={getAvatar(customHost.item_id, customHost.image_url)} alt="" />
+                                    src={cfImage(getAvatar(customHost.item_id, customHost.image_url), { width: 48, height: 48, fit: 'cover' })} alt="" />
                                 <div>
                                     <div className="font-semibold text-sm text-nowrap">
                                         {customHost.nickname}
@@ -358,7 +359,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                     className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
                                     href={role.item_id ? `/profile/${role.profile!.handle}` : '#'}>
                                     <img className="w-11 h-11 rounded-full mr-2"
-                                        src={getAvatar(role.item_id, role.image_url)} alt="" />
+                                        src={cfImage(getAvatar(role.item_id, role.image_url), { width: 48, height: 48, fit: 'cover' })} alt="" />
                                     <div>
                                         <div className="font-semibold text-sm text-nowrap">
                                             {role.nickname}
@@ -377,7 +378,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                     className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
                                     href={role.item_id ? `/profile/${role.profile!.handle}` : undefined}>
                                     <img className="w-11 h-11 rounded-full mr-2"
-                                        src={getAvatar(role.item_id, role.image_url)} alt="" />
+                                        src={cfImage(getAvatar(role.item_id, role.image_url), { width: 48, height: 48, fit: 'cover' })} alt="" />
                                     <div>
                                         <div className="font-semibold text-sm text-nowrap">
                                             {role.nickname}
@@ -487,7 +488,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                     {lang['Registration for the event, upon completion, will be rewarded with POAP*1']}
                                 </div>
                                 <img className="min-w-9 min-h-9 rounded-full"
-                                    src={eventDetail.badge_class.image_url!} width={36} height={36} alt="" />
+                                    src={cfImage(eventDetail.badge_class.image_url, { width: 72, height: 72, fit: 'cover' })} width={36} height={36} alt="" />
                             </div>
                         </a>}
                 </div>

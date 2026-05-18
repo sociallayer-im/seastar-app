@@ -7,7 +7,7 @@ import ProfileInput from "@/components/client/ProfileInput"
 import {Input} from "@/components/shadcn/Input"
 import {Textarea} from "@/components/shadcn/Textarea"
 import {BadgeClassDetail, Profile, sendAccountVoucher, sendCodeVoucher} from '@sola/sdk'
-import {getAuth} from '@/utils'
+import {cfImage, getAuth} from '@/utils'
 import useModal from '@/components/client/Modal/useModal'
 import {CLIENT_MODE} from '@/app/config'
 import Radio from '@/components/client/Radio'
@@ -98,7 +98,7 @@ export default function SendBadgeForm({badgeClass, lang, toProfile, isPrivate}: 
 
             <div className="flex flex-col max-w-[500px] mx-auto">
                 <div className="mb-8 rounded-lg h-[200px] bg-secondary flex flex-col justify-center items-center">
-                    <img src={badgeClass.image_url!}
+                    <img src={cfImage(badgeClass.image_url, { width: 180, height: 180, fit: 'cover' })}
                          className="w-24 h-24 rounded-full mb-2 border-2 border-white shadow" alt=""/>
                     <div className="font-semibold">{badgeClass.title}</div>
                 </div>

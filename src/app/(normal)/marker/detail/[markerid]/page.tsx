@@ -1,7 +1,7 @@
 import MarkerDetailData, {MarkerDetailPageDataProps} from '@/app/(normal)/marker/detail/[markerid]/data'
 import {Badge} from '@/components/shadcn/Badge'
 import Avatar from '@/components/Avatar'
-import {displayProfileName} from '@/utils'
+import {cfImage, displayProfileName} from '@/utils'
 import {selectLang} from '@/app/actions'
 import NoData from '@/components/NoData'
 import RichTextDisplayer from '@/components/client/Editor/Displayer'
@@ -34,7 +34,7 @@ export default async function MarkerDetailPage(props: MarkerDetailPageDataProps)
             <div className="min-w-[324px] sm:max-w-[324px] mb-8 order-1 sm:order-2 sm:mb-0">
                 {!!markerDetail.cover_image_url ?
                     <img className="max-w-[450px] w-full mx-auto"
-                         src={markerDetail.cover_image_url} alt=""/>
+                         src={cfImage(markerDetail.cover_image_url, { width: 400 })} alt=""/>
 
                     : <div className="w-[350px] h-[350px] mx-auto bg-secondary flex-row-item-center justify-center">
                         <i className="uil-location-pin-alt text-gray-300 text-[200px]"/>

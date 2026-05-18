@@ -88,6 +88,27 @@ export const getAvatar = (id?: number | null, url?: string | null) => {
     return defAvatars[avatarIndex]
 }
 
+const CF_IMAGE_HOST = 'https://datastore.sola.day'
+
+export interface CfImageOptions {
+    width?: number
+    height?: number
+    quality?: number
+    format?: 'auto' | 'webp' | 'avif' | 'jpeg' | 'png'
+    fit?: 'scale-down' | 'contain' | 'cover' | 'crop' | 'pad'
+}
+
+export const cfImage = (url: string | null | undefined, options: CfImageOptions = {}): string => {
+    if (!url || !url.startsWith(CF_IMAGE_HOST)) return url || ''
+    const opts: CfImageOptions = { format: 'auto', quality: 85, ...options }
+    const params = (Object.entries(opts) as [string, string | number][])
+        .filter(([, v]) => v !== undefined)
+        .map(([k, v]) => `${k}=${v}`)
+        .join(',')
+    const path = url.slice(CF_IMAGE_HOST.length)
+    return `${CF_IMAGE_HOST}/cdn-cgi/image/${params}${path}`
+}
+
 export const getScrollBarWidth = () => {
     const el = document.createElement("div")
     el.style.cssText = "overflow:scroll; visibility:hidden; position:absolute;"

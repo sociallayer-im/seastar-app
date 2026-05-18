@@ -3,6 +3,7 @@ import {Button} from "@/components/shadcn/Button"
 import useModal from "@/components/client/Modal/useModal"
 import {useEffect, useState} from "react"
 import useSelectBadgeClass from "@/hooks/useSelectBadgeClass"
+import {cfImage} from "@/utils"
 import {
     EventDraftType,
     BadgeClass,
@@ -97,7 +98,7 @@ export default function SelectedEventBadge({
             {!!badgeClass &&
                 <div
                     className="relative w-[114px] h-[114px] rounded-lg bg-[#ecf2ee] flex flex-col justify-center items-center">
-                    <img className="w-[60px] h-[60px] rounded-full mb-2" src={badgeClass.image_url!} alt=""/>
+                    <img className="w-[60px] h-[60px] rounded-full mb-2" src={cfImage(badgeClass.image_url, { width: 120, height: 120, fit: 'cover' })} alt=""/>
                     <div className="text-xs w-[80%] mx-auto webkit-box-clamp-1 text-center">{badgeClass.title}</div>
                     <i onClick={resetBadge}
                        className="uil-times cursor-pointer opacity-50 hover:opacity-100 text-lg right-2 top-1 absolute"/>

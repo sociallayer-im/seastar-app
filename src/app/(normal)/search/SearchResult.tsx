@@ -6,7 +6,7 @@ import {Input} from '@/components/shadcn/Input'
 import {useState} from 'react'
 import {Button,} from '@/components/shadcn/Button'
 import CardEvent from '@/components/CardEvent'
-import {displayProfileName} from '@/utils'
+import {cfImage, displayProfileName} from '@/utils'
 import Avatar from '@/components/Avatar'
 import Image from 'next/image'
 
@@ -142,7 +142,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                                     <div
                                         className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
                                         <img width={90} height={90}
-                                               src={badgeClass.image_url!}
+                                               src={cfImage(badgeClass.image_url, { width: 180, height: 180, fit: 'cover' })}
                                                alt=""
                                                className="-[90px] h-[90px] rounded-full"/>
                                     </div>

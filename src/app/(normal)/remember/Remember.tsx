@@ -18,7 +18,7 @@ import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import Avatar from '@/components/Avatar'
-import {clientToSignIn, displayProfileName, getAuth} from '@/utils'
+import {cfImage, clientToSignIn, displayProfileName, getAuth} from '@/utils'
 import {Button} from '@/components/shadcn/Button'
 import QrCode from '@/components/client/QRcode'
 import useScanQrcode from '@/hooks/useScanQrcode'
@@ -211,7 +211,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
             content: (close: any) => {
                 return <div className={styles['show-res']}>
                     <div className={styles['title']}>You have received</div>
-                    <img className={styles['img']} src={badge_item.image_url!} alt=""/>
+                    <img className={styles['img']} src={cfImage(badge_item.image_url, { width: 180, height: 180, fit: 'cover' })} alt=""/>
                     <div className={styles['name']}>{badge_item.title}</div>
                     <svg className={styles['btn']}
                          onClick={() => {

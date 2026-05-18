@@ -8,6 +8,7 @@ import {
 } from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {
+    cfImage,
     clientToSignIn,
     displayMethodPrice,
     formatEventTime,
@@ -295,7 +296,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             </div>
             {!!eventDetail.cover_url ?
                 <div className="w-[80px] h-[80px]">
-                    <img className="w-full h-full object-cover rounded-lg" src={eventDetail.cover_url} alt=""/>
+                    <img className="w-full h-full object-cover rounded-lg" src={cfImage(eventDetail.cover_url, { width: 900, format: 'auto', quality: 85 })} alt=""/>
                 </div>
                 : <div className="w-[80px] h-[80px] flex-shrink-0 flex-grow-0">
                     <div className="default-cover w-[452px] h-[452px] scale-[0.17]">
@@ -333,7 +334,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             <div className="my-3 border-t pt-2">
                 <div className="font-semibold mb-2">{lang['Badge Needed']}</div>
                 <div className="flex-row-item-center">
-                    <img src={ticket.check_badge_class.image_url!}
+                    <img src={cfImage(ticket.check_badge_class.image_url, { width: 120, height: 120, fit: 'cover' })}
                          className="w-12 h-12 rounded-full bg-gray-50 mr-3" alt=""/>
                     <div>
                         <div className="font-semibold">{ticket.check_badge_class.title}</div>

@@ -4,6 +4,7 @@ import {Voucher} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import Image from 'next/image'
 import useShowVoucher from '@/hooks/useShowVoucher'
+import {cfImage} from '@/utils'
 
 export default function CardVoucher({voucher, lang}: {voucher: Voucher, lang: Dictionary}) {
     const {showVoucher} = useShowVoucher()
@@ -17,7 +18,7 @@ export default function CardVoucher({voucher, lang}: {voucher: Voucher, lang: Di
         <div
             className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
             <img className="w-[90px] h-[90px] rounded-full" width={90} height={90}
-                   src={voucher.badge_class.image_url!} alt=""/>
+                   src={cfImage(voucher.badge_class.image_url, { width: 180, height: 180, fit: 'cover' })} alt=""/>
         </div>
         <div
             className="font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">

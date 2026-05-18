@@ -2,7 +2,7 @@ import {EventDetailDataProps} from '@/app/(normal)/event/detail/[eventid]/data'
 import {selectLang} from '@/app/actions'
 import CheckInData from '@/app/(normal)/event/checkin-for-participants/[eventid]/data'
 import EventParticipantList from '@/components/client/EventParticipantList'
-import {eventCoverTimeStr} from '@/utils'
+import {cfImage, eventCoverTimeStr} from '@/utils'
 import CheckinBtn from '@/app/(normal)/event/checkin-for-participants/[eventid]/CheckinBtn'
 import QrCode from '@/components/client/QRcode'
 
@@ -14,7 +14,7 @@ export default async function CheckinForParticipants(props: EventDetailDataProps
         <div className="text-lg font-semibold text-center my-3">{lang['Check-In For Participants']}</div>
         <div className="w-full shadow py-6 rounded-lg mb-8 flex-col flex items-center">
             {!!eventDetail.cover_url
-                ? <img src={eventDetail.cover_url}
+                ? <img src={cfImage(eventDetail.cover_url, { width: 900, format: 'auto', quality: 85 })}
                        className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg" alt=""/>
                 : <div className="flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
                     <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>

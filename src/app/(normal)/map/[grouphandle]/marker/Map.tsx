@@ -8,6 +8,7 @@ import {GroupDetail, Marker, ProfileDetail} from '@sola/sdk'
 import TopBar from '@/app/(normal)/map/[grouphandle]/TopBar'
 import {Badge} from '@/components/shadcn/Badge'
 import {Button} from '@/components/shadcn/Button'
+import {cfImage} from '@/utils'
 
 export interface MarkerMapProps {
     markers: Marker[]
@@ -124,7 +125,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
                             {!!marker.cover_image_url &&
                                 <div
                                     className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px]">
-                                    <img className="w-full h-full object-cover" src={marker.cover_image_url} alt=""/>
+                                    <img className="w-full h-full object-cover" src={cfImage(marker.cover_image_url, { width: 400, height: 300, fit: 'cover' })} alt=""/>
                                 </div>
                             }
                         </a>

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import {displayProfileName, prefixUrl} from '@/utils'
+import {cfImage, displayProfileName, prefixUrl} from '@/utils'
 import Avatar from '@/components/Avatar'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import {Button} from '@/components/shadcn/Button'
@@ -97,7 +97,7 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                         <div className="rounded h-[148px] mb-3">
                             <img className="object-cover w-full h-full rounded"
                                    width={227} height={148}
-                                   src={popupCity.image_url || ''} alt=""/>
+                                   src={cfImage(popupCity.image_url || '', { width: 454, height: 296, fit: 'cover' })} alt=""/>
                         </div>
                         <div className="webkit-box-clamp-1 sm:text-sm text-xs">
                             <DisplayDateTime format={'MMM DD'}

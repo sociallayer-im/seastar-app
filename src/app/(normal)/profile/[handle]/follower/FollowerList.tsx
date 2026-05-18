@@ -1,6 +1,6 @@
 'use client'
 
-import {displayProfileName, getAvatar} from '@/utils'
+import {cfImage, displayProfileName, getAvatar} from '@/utils'
 import {Profile} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {useState} from 'react'
@@ -44,7 +44,7 @@ export default function FollowerList({profile, followers, followings, lang}: Fol
                             <div className="relative mr-2">
                                 <img
                                     className="w-7 h-7 rounded-full"
-                                    src={getAvatar(follower.id, follower.image_url)} alt=""/>
+                                    src={cfImage(getAvatar(follower.id, follower.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                             </div>
                             <div>{displayProfileName(follower)}</div>
                         </a>
@@ -60,7 +60,7 @@ export default function FollowerList({profile, followers, followings, lang}: Fol
                             <div className="relative mr-2">
                                 <img
                                     className="w-7 h-7 rounded-full"
-                                    src={getAvatar(follower.id, follower.image_url)} alt=""/>
+                                    src={cfImage(getAvatar(follower.id, follower.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                             </div>
                             <div>{displayProfileName(follower)}</div>
                         </a>

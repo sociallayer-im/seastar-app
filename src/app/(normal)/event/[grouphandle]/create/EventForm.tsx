@@ -10,6 +10,7 @@ import dynamic from "next/dynamic"
 import { Switch } from "@/components/shadcn/Switch"
 import LocationInput from "@/components/client/LocationInput"
 import {
+  cfImage,
   checkTrackSuitable,
   eventCoverTimeStr,
   isEventTimeSuitable,
@@ -302,7 +303,7 @@ export default function EventForm({
               </div>
             ) : (
               <img
-                src={draft.cover_url}
+                src={cfImage(draft.cover_url, { width: 400, format: 'auto' })}
                 alt=""
                 className="w-[324px] h-auto mb-4"
               />

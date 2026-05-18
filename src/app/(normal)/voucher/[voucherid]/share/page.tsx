@@ -2,6 +2,7 @@ import ShareVoucherPageData, {ShareVoucherPageDataProps} from "@/app/(normal)/vo
 import {selectLang} from "@/app/actions"
 import VoucherQRCode from "@/app/(normal)/voucher/[voucherid]/share/VoucherQRCode"
 import ShareVoucherAction from "@/app/(normal)/voucher/[voucherid]/share/ShareVoucherAction"
+import {cfImage} from '@/utils'
 
 export default async function ShareVoucherPage(props: ShareVoucherPageDataProps) {
     const {voucher, voucherCode} = await ShareVoucherPageData(props)
@@ -14,7 +15,7 @@ export default async function ShareVoucherPage(props: ShareVoucherPageDataProps)
             <div
                 className="w-[330px] h-[420px] flex flex-col items-center justify-center rounded-lg border-white border-2 mx-auto bg-gray-100">
                 <div className="flex flex-row-item-center w-[80%] mx-auto">
-                    <img src={voucher.badge_class.image_url!}
+                    <img src={cfImage(voucher.badge_class.image_url, { width: 320, height: 320, fit: 'cover' })}
                         className="w-12 h-12 rounded-full mr-3"
                         alt=""/>
                     <div>

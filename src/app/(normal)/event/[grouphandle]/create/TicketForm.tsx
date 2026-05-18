@@ -26,7 +26,7 @@ import {
     EventRole,
     getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerHandle, getBadgeClassDetailByBadgeClassId
 } from '@sola/sdk'
-import {isAvailablePaymentType} from '@/utils'
+import {cfImage, isAvailablePaymentType} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
 export interface TicketFormProps {
@@ -471,7 +471,7 @@ function TicketItem({
             {!!badgeClass &&
                 <div
                     className="mb-3 relative w-[114px] h-[114px] rounded-lg bg-[#ecf2ee] flex flex-col justify-center items-center">
-                    <img className="w-[60px] h-[60px] rounded-full mb-2" src={badgeClass.image_url!} alt=""/>
+                    <img className="w-[60px] h-[60px] rounded-full mb-2" src={cfImage(badgeClass.image_url, { width: 120, height: 120, fit: 'cover' })} alt=""/>
                     <div className="text-xs w-[80%] mx-auto webkit-box-clamp-1 text-center">{badgeClass.title}</div>
                     <i onClick={() => {
                         setBadgeClass(null)

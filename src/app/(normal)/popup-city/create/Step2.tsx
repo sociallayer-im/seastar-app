@@ -8,6 +8,7 @@ import Dayjs from '@/libs/dayjs'
 import {Button} from '@/components/shadcn/Button'
 import useUploadImage from '@/hooks/useUploadImage'
 import {useState} from 'react'
+import {cfImage} from '@/utils'
 
 export default function Step2({lang, groupDetailState, popupCityState, onNext, onBack}:CreatePopupCityStepProps) {
     const {uploadImage} = useUploadImage()
@@ -57,7 +58,7 @@ export default function Step2({lang, groupDetailState, popupCityState, onNext, o
                      className="cursor-pointer bg-secondary rounded-lg h-[120px] flex-col flex justify-center items-center">
                     {popupCityState[0].image_url
                         ? <img className="max-h-[100px]"
-                               src={popupCityState[0].image_url} alt=""/>
+                               src={cfImage(popupCityState[0].image_url, { width: 400, format: 'auto' })} alt=""/>
                         : <img className="w-[100px] h-[100px] rounded-full"
                                src='/images/upload_default.png' alt=""/>
                     }

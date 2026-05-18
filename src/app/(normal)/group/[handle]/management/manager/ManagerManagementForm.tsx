@@ -1,5 +1,5 @@
 import {Dictionary} from "@/lang"
-import {getAvatar} from "@/utils"
+import {cfImage, getAvatar} from "@/utils"
 import {Membership, Group} from '@sola/sdk'
 
 export interface ManagerManagementFormProps {
@@ -41,7 +41,7 @@ export default function ManagerManagementForm({lang, members}: ManagerManagement
                         <div className="flex-row-item-center">
                             <img
                                 className="w-7 h-7 rounded-full mr-2"
-                                src={getAvatar(member.profile.id, member.profile.image_url)} alt=""/>
+                                src={cfImage(getAvatar(member.profile.id, member.profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                             <div>{member.profile.nickname || member.profile.handle}</div>
                         </div>
                         <i className="uil-minus-circle text-2xl text-gray-500"></i>

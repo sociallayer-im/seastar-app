@@ -2,7 +2,7 @@
 
 import {Button} from "@/components/shadcn/Button"
 import NoData from "@/components/NoData"
-import {getAvatar} from "@/utils"
+import {cfImage, getAvatar} from "@/utils"
 import type {Dictionary} from "@/lang"
 import {Badge} from "@/components/shadcn/Badge"
 import {useMemo, useState} from "react"
@@ -108,7 +108,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                     <div className="relative mr-2">
                             <img
                                 className="w-7 h-7 rounded-full"
-                                src={getAvatar(member.profile.id, member.profile.image_url)} alt=""/>
+                                src={cfImage(getAvatar(member.profile.id, member.profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                             {
                                 member.role === 'owner' &&
                                 <img src="/images/icon_owner.png"

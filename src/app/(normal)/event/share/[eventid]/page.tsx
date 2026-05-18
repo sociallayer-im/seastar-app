@@ -3,7 +3,7 @@ import {selectLang} from '@/app/actions'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import QrCode from '@/components/client/QRcode'
 import {headers} from 'next/headers'
-import {eventCoverTimeStr, getGmtOffset, pickSearchParam} from '@/utils'
+import {cfImage, eventCoverTimeStr, getGmtOffset, pickSearchParam} from '@/utils'
 import dynamic from 'next/dynamic'
 import {cache} from 'react'
 import SocialShareBtn from './SocialShareBtn'
@@ -35,7 +35,7 @@ export default async function ShareEventPage({params:{eventid},searchParams:{tab
                 <div
                     className="share-card shadow w-[335px] h-auto flex-shrink-0 bg-[#F1FCF8] p-5 pt-6 box-border overflow-hidden rounded-lg">
                     {!!eventDetail.cover_url
-                        ? <img src={eventDetail.cover_url}
+                        ? <img src={cfImage(eventDetail.cover_url, { width: 900, format: 'auto', quality: 85 })}
                                className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg"/>
                         : <div className="mb-4 flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
                             <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>

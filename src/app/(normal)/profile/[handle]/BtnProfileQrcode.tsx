@@ -3,7 +3,7 @@
 import useModal from "@/components/client/Modal/useModal"
 import {ReactNode, useRef} from "react"
 import QRcode from "@/components/client/QRcode"
-import {getAvatar} from "@/utils"
+import {cfImage, getAvatar} from "@/utils"
 
 export default function BtnProfileQrcode(props: { profile: Solar.ProfileSample, children: ReactNode }) {
     const {openModal, showLoading, closeModal} = useModal()
@@ -36,7 +36,7 @@ function ProfileCard(props: {profile: Solar.ProfileSample,  close: () => void })
                 <QRcode size={[104, 104]} text={url}/>
             </div>
             <img className='avatar w-[32px] h-[32px] rounded-full block absolute left-[142px] top-[222px]'
-                src={getAvatar(props.profile.id, props.profile.image_url)} alt=""/>
+                src={cfImage(getAvatar(props.profile.id, props.profile.image_url), { width: 80, height: 80, fit: 'cover' })} alt=""/>
             <div className="absolute font-semibold text-base text-center top-[330px] leading-[22px] w-full">
                 {props.profile.nickname || props.profile.handle}
             </div>

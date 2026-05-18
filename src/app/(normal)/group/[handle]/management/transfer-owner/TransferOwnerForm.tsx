@@ -1,7 +1,7 @@
 'use client'
 
 import {Dictionary} from "@/lang"
-import {getAuth, getAvatar} from "@/utils"
+import {cfImage, getAuth, getAvatar} from "@/utils"
 import {useState} from "react"
 import {Button} from "@/components/shadcn/Button"
 import {Membership, Group, transferGroup} from '@sola/sdk'
@@ -84,7 +84,7 @@ export default function TransferOwnerForm({members, lang, group}: MemberManageme
                         <div className='flex-row-item-center'>
                             <img
                                 className="w-7 h-7 rounded-full mr-2"
-                                src={getAvatar(member.profile.id, member.profile.image_url)} alt=""/>
+                                src={cfImage(getAvatar(member.profile.id, member.profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                             <div>{member.profile.nickname || member.profile.handle}</div>
                         </div>
                         {

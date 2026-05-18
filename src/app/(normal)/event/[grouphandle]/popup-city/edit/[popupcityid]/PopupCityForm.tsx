@@ -10,7 +10,7 @@ import {Dictionary} from '@/lang'
 import useUploadImage from '@/hooks/useUploadImage'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useModal from '@/components/client/Modal/useModal'
-import {getAuth} from '@/utils'
+import {cfImage, getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
 export default function EditPopupCityForm({popupCity, lang}: { popupCity: PopupCityDraft, lang: Dictionary }) {
@@ -114,7 +114,7 @@ export default function EditPopupCityForm({popupCity, lang}: { popupCity: PopupC
                          className="cursor-pointer bg-secondary rounded-lg h-[170px] flex-col flex justify-center items-center">
                         {draft.image_url
                             ? <img className="max-h-[150px]"
-                                   src={draft.image_url} alt=""/>
+                                   src={cfImage(draft.image_url, { width: 400, format: 'auto' })} alt=""/>
                             : <img className="w-[100px] h-[100px] rounded-full"
                                    src='/images/upload_default.png' alt=""/>
                         }

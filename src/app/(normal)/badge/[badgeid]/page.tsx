@@ -1,5 +1,5 @@
 import BadgePageData, {BadgePageDataProps} from "@/app/(normal)/badge/[badgeid]/data"
-import {displayProfileName, getAvatar} from "@/utils"
+import {cfImage, displayProfileName, getAvatar} from "@/utils"
 import {Button} from "@/components/shadcn/Button"
 import dynamic from "next/dynamic"
 import Image from 'next/image'
@@ -28,7 +28,7 @@ async function PublicBadge({badge, isOwner, groupCreator}: Awaited<ReturnType<ty
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
         <div className="w-full flex flex-col justify-start items-start">
             <div className="w-full max-w-[500px] mx-auto flex-shrink-0 grid grid-cols-1 gap-6">
-                <img src={badge.badge_class.image_url!}
+                <img src={cfImage(badge.badge_class.image_url, { width: 320, height: 320, fit: 'cover' })}
                        width={160} height={160}
                        alt=""
                        className="w-[160px] h-[160px]  mx-auto object-cover rounded-full"/>
@@ -60,7 +60,7 @@ async function PublicBadge({badge, isOwner, groupCreator}: Awaited<ReturnType<ty
                        className="flex-row-item-center">
                         <img
                             className="w-6 h-6 rounded-full mr-2"
-                            src={getAvatar(badge.owner.id, badge.owner.image_url)} alt=""/>
+                            src={cfImage(getAvatar(badge.owner.id, badge.owner.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                         {badge.owner.nickname || badge.owner.handle}
                     </a>
                 </div>

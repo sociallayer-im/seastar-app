@@ -4,7 +4,7 @@ import {useState} from "react"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import type {Dictionary} from "@/lang"
 import NoData from "@/components/NoData"
-import {getAvatar} from "@/utils"
+import {cfImage, getAvatar} from "@/utils"
 import {Invite, BadgeClass, ProfileDetail, Group, getInviteDetailByInviteId} from '@sola/sdk'
 import Image from 'next/image'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
@@ -120,7 +120,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                             <div
                                 className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
                                 <img width={90} height={90}
-                                       src={getAvatar(invite.group.id, invite.group.image_url)}
+                                       src={cfImage(getAvatar(invite.group.id, invite.group.image_url), { width: 48, height: 48, fit: 'cover' })}
                                        alt=""
                                        className="w-[90px] h-[90px] rounded-full" />
                             </div>

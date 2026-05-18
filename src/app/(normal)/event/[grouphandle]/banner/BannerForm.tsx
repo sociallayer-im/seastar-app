@@ -8,7 +8,7 @@ import {useState} from 'react'
 import useUploadImage from '@/hooks/useUploadImage'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
-import {getAuth} from '@/utils'
+import {cfImage, getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
 export default function GroupBannerForm({groupDetail, lang}: { groupDetail: GroupDetail, lang: Dictionary }) {
@@ -55,7 +55,7 @@ export default function GroupBannerForm({groupDetail, lang}: { groupDetail: Grou
                     draft.banner_image_url
                         ? <img
                             className="max-w-[100%] max-h-[100px]"
-                            src={draft.banner_image_url} alt=""/>
+                            src={cfImage(draft.banner_image_url, { width: 656, format: 'auto', quality: 85 })} alt=""/>
                         : <img className="w-[100px] h-[100px] rounded-full"
                                src={'/images/upload_default.png'} alt=""/>
                 }

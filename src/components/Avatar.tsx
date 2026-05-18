@@ -1,6 +1,5 @@
 import {Group, Profile} from '@sola/sdk'
-import {getAvatar} from '@/utils'
-import Image from 'next/image'
+import {cfImage, getAvatar} from '@/utils'
 
 export type ProfileLike = Profile | Group
 
@@ -11,7 +10,7 @@ export type AvatarProps = {
 }
 export default function Avatar({profile, size, className}: AvatarProps) {
     return <img
-        src={getAvatar(profile.id, profile.image_url)}
+        src={cfImage(getAvatar(profile.id, profile.image_url), { width: size * 2, height: size * 2, fit: 'cover' })}
         width={size}
         height={size}
         style={{width: `${size}px`, height: `${size}px`}}

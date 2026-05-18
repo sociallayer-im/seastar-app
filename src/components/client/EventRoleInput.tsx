@@ -2,7 +2,7 @@ import { Dictionary } from "@/lang"
 import { Input } from "@/components/shadcn/Input"
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
 import DropdownMenu, { DropdownTrigger } from "@/components/client/DropdownMenu"
-import { getAvatar } from "@/utils"
+import { cfImage, getAvatar } from "@/utils"
 import { debounce } from 'lodash'
 import useUploadAvatar from "@/hooks/useUploadAvatar"
 import { EventDraftType, EventRole, EventRoleDetail, EventRoleType, searchProfile } from '@sola/sdk'
@@ -189,7 +189,7 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
                     }}
                     renderOption={(profile) => <div className="flex-row-item-center">
                         <img className="w-6 h-6 rounded-full mr-1"
-                            src={getAvatar(profile.id, profile.image_url)} alt="" />
+                            src={cfImage(getAvatar(profile.id, profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt="" />
                         {profile.handle} {profile.nickname && `(${profile.nickname})`}
                     </div>}
                     trigger={dropDownTrigger}>

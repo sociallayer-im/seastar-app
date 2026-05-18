@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic'
 import Avatar from '@/components/Avatar'
 import { useState } from 'react'
 import useModal from '@/components/client/Modal/useModal'
-import { getAuth, clientToSignIn, displayProfileName } from '@/utils'
+import { cfImage, getAuth, clientToSignIn, displayProfileName } from '@/utils'
 import { CLIENT_MODE } from '@/app/config'
 
 export interface VoucherDetailProps {
@@ -127,7 +127,7 @@ export default function DialogVoucherDetail({
             </div>
             <div className="flex-row-item-center justify-center my-3">
                 <img className="rounded-full w-[94px] h-[94px]"
-                    src={voucherDetail.badge_class.image_url!}
+                    src={cfImage(voucherDetail.badge_class.image_url, { width: 320, height: 320, fit: 'cover' })}
                     width={94} height={94} alt="" />
             </div>
 

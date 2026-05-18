@@ -2,7 +2,7 @@ import { getCurrProfile, selectLang } from '@/app/actions'
 import { getPopupCities } from '@sola/sdk'
 import Image from 'next/image'
 import Avatar from '@/components/Avatar'
-import { displayProfileName } from '@/utils'
+import { cfImage, displayProfileName } from '@/utils'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import ManagActions from '@/components/client/ManagActions'
 import { CLIENT_MODE } from '@/app/config'
@@ -44,7 +44,7 @@ export default async function PopupCityListPage() {
                     <div className="rounded h-[148px] mb-3">
                         <img className="object-cover w-full h-full rounded"
                             width={227} height={148}
-                            src={popupCity.image_url!} alt="" />
+                            src={cfImage(popupCity.image_url, { width: 454, height: 296, fit: 'cover' })} alt="" />
                     </div>
                     <div className="webkit-box-clamp-1 text-xs">
                         <DisplayDateTime format={'MMM DD'}

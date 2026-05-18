@@ -1,7 +1,7 @@
 import DropdownMenu from "@/components/client/DropdownMenu"
 import {Dictionary} from "@/lang"
 import {useMemo} from "react"
-import {getAvatar} from "@/utils"
+import {cfImage, getAvatar} from "@/utils"
 import {buttonVariants} from "@/components/shadcn/Button"
 import {Badge} from "@/components/shadcn/Badge"
 import {EventDraftType, Profile, Group} from '@sola/sdk'
@@ -51,7 +51,7 @@ export default function SelectedEventHost({
         options={availableHost}
         value={currHost ? [currHost] : undefined}
         renderOption={(creator, index) => <div className="flex-row-item-center">
-            <img src={getAvatar(creator.id, creator.image_url)} className="w-6 h-6 rounded-full mr-2" alt=""/>
+            <img src={cfImage(getAvatar(creator.id, creator.image_url), { width: 48, height: 48, fit: 'cover' })} className="w-6 h-6 rounded-full mr-2" alt=""/>
             {creator.nickname || creator.handle}
             {index === 0
                 ? <Badge variant="ongoing" className="ml-2">{lang['Profile']}</Badge>
@@ -62,7 +62,7 @@ export default function SelectedEventHost({
             className={`${buttonVariants({variant: 'secondary'})} w-full !justify-between items-center cursor-pointer`}>
             <div className="overflow-hidden whitespace-nowrap overflow-ellipsis font-normal flex-row-item-center">
                 <img className="w-6 h-6 rounded-full mr-2"
-                    src={getAvatar(currHost.id, currHost.image_url)} alt=""/>
+                    src={cfImage(getAvatar(currHost.id, currHost.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                 {currHost.nickname || currHost.handle}
             </div>
 

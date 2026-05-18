@@ -1,7 +1,7 @@
 import BadgeClassPageData, {
     BadgeClassPageDataProps
 } from "@/app/(normal)/badge-class/[badgeclassid]/data"
-import {displayProfileName, getAvatar} from "@/utils"
+import {cfImage, displayProfileName, getAvatar} from "@/utils"
 import dynamic from "next/dynamic"
 import {selectLang} from '@/app/actions'
 import {buttonVariants} from '@/components/shadcn/Button'
@@ -39,7 +39,7 @@ async function PublicBadgeClassPage({badgeClass, badges, isOwner, groupCreator}:
     return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
         <div className="w-full flex flex-col sm:flex-row justify-start items-start">
             <div className="w-full sm:w-[300px] flex-shrink-0 grid grid-cols-1 gap-6">
-                <img src={badgeClass.image_url!}
+                <img src={cfImage(badgeClass.image_url, { width: 320, height: 320, fit: 'cover' })}
                      alt=""
                      className="w-[224px] h-[224px]  mx-auto object-cover rounded-full"/>
 
@@ -90,7 +90,7 @@ async function PublicBadgeClassPage({badgeClass, badges, isOwner, groupCreator}:
                                    className="flex-row-item-center">
                                     <img
                                         className="w-6 h-6 rounded-full mr-2"
-                                        src={getAvatar(badge.owner.id, badge.owner.image_url)} alt=""/>
+                                        src={cfImage(getAvatar(badge.owner.id, badge.owner.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                                     {badge.owner.nickname || badge.owner.handle}
                                 </a>
                             </div>
