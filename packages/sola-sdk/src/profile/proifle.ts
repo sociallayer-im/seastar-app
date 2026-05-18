@@ -1,7 +1,4 @@
-import {getGqlClient, getSdkConfig} from "../client"
-import {
-    GET_PROFILE_BY_HANDLES_OR_ADDRESSES
-} from "./schemas"
+import {getSdkConfig} from "../client"
 import {ProfileDetail, Profile} from "./types"
 import {SolaSdkFunctionParams} from '../types'
 
@@ -91,15 +88,14 @@ export const getProfileFollowerAndFollowing = async ({params, clientMode}:SolaSd
 }
 
 export const getProfileByHandlesOrAddresses  = async ({params, clientMode}:SolaSdkFunctionParams<{handlesOrAddresses: string[]}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_PROFILE_BY_HANDLES_OR_ADDRESSES,
-        variables: {handles: params.handlesOrAddresses}
-    })
-
+    const apiUrl = getSdkConfig(clientMode).api
+    const handles = params.handlesOrAddresses.join(',')
+    const resp = await fetch(`${apiUrl}/profile/batch?handles=${encodeURIComponent(handles)}`)
+    if (!resp.ok) return { handleResult: [] as Profile[], addressResult: [] as Profile[] }
+    const data = await resp.json()
     return {
-        handleResult: response.data.handleResult as Profile[],
-        addressResult: response.data.addressResult as Profile[]
+        handleResult: (data.handle_result || []) as Profile[],
+        addressResult: (data.address_result || []) as Profile[]
     }
 }
 

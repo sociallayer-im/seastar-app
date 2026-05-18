@@ -1,14 +1,8 @@
 import {SolaSdkFunctionParams} from '../types'
-import {getGqlClient, getSdkConfig} from '../client'
+import {getSdkConfig} from '../client'
 import {Coupon, DiscountType, Participant, PaymentMethod, TicketItem} from './types'
 import {genDaimoLink} from '../service'
 import {Profile} from '../profile'
-import {
-    GET_COUPON_BY_EVENT_ID,
-    GET_COUPON_BY_ID,
-    GET_TICKET_ITEM_BY_COUPON,
-    GET_PURCHASED_TICKET_ITEMS_BY_PROFILE_HANDLE_AND_EVENT_ID
-} from './schemas'
 import {fixDate} from '../uitls'
 
 export interface TicketPayment {
@@ -90,25 +84,19 @@ export const getPurchasedTicketItemsByProfileHandleAndEventId = async ({params, 
     profileHandle: string,
     eventId: number
 }>) => {
-    const client = getGqlClient(clientMode)
-
-    const response = await client.query({
-        query: GET_PURCHASED_TICKET_ITEMS_BY_PROFILE_HANDLE_AND_EVENT_ID,
-        variables: {profileHandle: params.profileHandle, eventId: params.eventId}
-    })
-
-    return response.data.ticket_items as TicketItem[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/ticket/list?profile_handle=${encodeURIComponent(params.profileHandle)}&event_id=${params.eventId}&status=succeeded`)
+    if (!resp.ok) return [] as TicketItem[]
+    const data = await resp.json()
+    return (data.ticket_items || []) as TicketItem[]
 }
 
 export const getCouponByEventId = async ({params, clientMode}: SolaSdkFunctionParams<{ eventId: number }>) => {
-    const client = getGqlClient(clientMode)
-
-    const response = await client.query({
-        query: GET_COUPON_BY_EVENT_ID,
-        variables: {eventId: params.eventId}
-    })
-
-    return response.data.coupons as Coupon[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/ticket/coupons?event_id=${params.eventId}`)
+    if (!resp.ok) return [] as Coupon[]
+    const data = await resp.json()
+    return (data.coupons || []) as Coupon[]
 }
 
 export const getCouponCodeById = async ({params, clientMode}: SolaSdkFunctionParams<{
@@ -130,20 +118,15 @@ export const getCouponCodeById = async ({params, clientMode}: SolaSdkFunctionPar
 export const getCouponById = async ({params, clientMode}: SolaSdkFunctionParams<{
     couponId: number,
 }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_COUPON_BY_ID,
-        variables: {id: params.couponId}
-    })
-
-    if (response.data.coupons[0]) {
-        if (response.data.coupons[0].expires_at) {
-            response.data.coupons[0].expires_at = response.data.coupons[0].expires_at + 'Z'
-        }
-        return response.data.coupons[0] as Coupon
-    } else {
-        return null
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/ticket/coupon?id=${params.couponId}`)
+    if (!resp.ok) return null
+    const data = await resp.json()
+    if (!data.coupon) return null
+    if (data.coupon.expires_at) {
+        data.coupon.expires_at = data.coupon.expires_at + 'Z'
     }
+    return data.coupon as Coupon
 }
 
 export interface CouponUsageRecord extends TicketItem {
@@ -151,13 +134,11 @@ export interface CouponUsageRecord extends TicketItem {
 }
 
 export const getCouponUsageRecord = async ({params, clientMode}: SolaSdkFunctionParams<{ couponId: number }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_TICKET_ITEM_BY_COUPON,
-        variables: {couponId: params.couponId}
-    })
-
-    return response.data.ticket_items.map((t: CouponUsageRecord) =>fixDate(t)) as CouponUsageRecord[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/ticket/coupon_usage?coupon_id=${params.couponId}`)
+    if (!resp.ok) return [] as CouponUsageRecord[]
+    const data = await resp.json()
+    return (data.ticket_items || []).map((t: CouponUsageRecord) => fixDate(t)) as CouponUsageRecord[]
 }
 
 export interface CouponDraft {
