@@ -1,5 +1,4 @@
-import {getGqlClient, getSdkConfig} from "../client"
-import {GET_VOUCHER_DETAIL_BY_ID, GET_VOUCHER_DETAIL_BY_HANDLE, GET_GROUP_VOUCHER_BY_HANDLE} from "./schemas"
+import {getSdkConfig} from "../client"
 import {type Voucher, VoucherDetail,} from "./types"
 import {Badge} from '../badge'
 import {checkAndGetProfileByHandlesOrAddresses, fixDate} from '../uitls'
@@ -10,15 +9,10 @@ import {SolaSdkFunctionParams} from '../types'
  * @param handle - handle
  */
 export const getVoucherByHandle = async ({params, clientMode}:SolaSdkFunctionParams<{handle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const expiresAt = new Date().toISOString()
-
-    const response = await client.query({
-        query: GET_VOUCHER_DETAIL_BY_HANDLE,
-        variables: { handle: params.handle, expires_at: expiresAt }
-    })
-
-    return response.data.vouchers.map((v:Voucher) => fixDate(v)) as Voucher[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/voucher/list?sender_handle=${encodeURIComponent(params.handle)}`)
+    const data = await resp.json()
+    return (data.vouchers as Voucher[]).map((v:Voucher) => fixDate(v)) as Voucher[]
 }
 
 /**
@@ -26,25 +20,18 @@ export const getVoucherByHandle = async ({params, clientMode}:SolaSdkFunctionPar
  * @param id - id
  */
 export const getVoucherDetailById = async ({params, clientMode}: SolaSdkFunctionParams<{id: number}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_VOUCHER_DETAIL_BY_ID,
-        variables: {id: params.id}
-    })
-
-    return response.data.vouchers[0] ? fixDate(response.data.vouchers[0]) as VoucherDetail : null
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/voucher/get?id=${params.id}`)
+    const data = await resp.json()
+    return data.voucher ? fixDate(data.voucher) as VoucherDetail : null
 }
 
 
 export const getGroupVoucherByHandle = async ({params, clientMode}: SolaSdkFunctionParams<{groupHandle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const expiresAt = new Date().toISOString()
-    const response = await client.query({
-        query: GET_GROUP_VOUCHER_BY_HANDLE,
-        variables: { handle: params.groupHandle, now: expiresAt }
-    })
-
-    return response.data.vouchers.map((v:Voucher) => fixDate(v)) as Voucher[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/voucher/list?group_handle=${encodeURIComponent(params.groupHandle)}`)
+    const data = await resp.json()
+    return (data.vouchers as Voucher[]).map((v:Voucher) => fixDate(v)) as Voucher[]
 }
 
 

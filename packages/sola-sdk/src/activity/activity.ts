@@ -1,16 +1,12 @@
-import {getGqlClient, getSdkConfig} from '../client'
+import {getSdkConfig} from '../client'
 import {SolaSdkFunctionParams} from '../types'
-import {GET_PROFILE_ACTIVITIES} from './schemas'
 import {ActivityDetail} from './types'
 
 export const getProfileActivities = async ({params, clientMode}: SolaSdkFunctionParams<{ profile_id: number }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_PROFILE_ACTIVITIES,
-        variables: {profile_id: params.profile_id}
-    })
-
-    return response.data.activities as ActivityDetail[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/activity/list?profile_id=${params.profile_id}&limit=20`)
+    const data = await resp.json()
+    return data.activities as ActivityDetail[]
 }
 
 export const setActivityRead = async ({params, clientMode}: SolaSdkFunctionParams<{

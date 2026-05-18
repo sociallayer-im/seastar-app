@@ -1,6 +1,5 @@
 import {SolaSdkFunctionParams} from '../types'
-import {CommentItemType, CommentType, getGqlClient, getSdkConfig} from '@sola/sdk'
-import {GET_COMMENTS_BY_ITEM_ID_AND_ITEM_TYPE} from './schemas'
+import {CommentItemType, CommentType, getSdkConfig} from '@sola/sdk'
 import {Comment} from './types'
 
 export interface CreateCommentParams {
@@ -49,15 +48,8 @@ export const createComment = async ({params, clientMode}: SolaSdkFunctionParams<
 }
 
 export const getCommentsByItemIdAndType = async ({params, clientMode}: SolaSdkFunctionParams<{itemId: number, itemType: CommentItemType, commentType: CommentType}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_COMMENTS_BY_ITEM_ID_AND_ITEM_TYPE,
-        variables: {
-            item_id: params.itemId,
-            item_type: params.itemType,
-            comment_type: params.commentType,
-        },
-    })
-
-    return response.data.comments as Comment[]
+    const qs = new URLSearchParams({comment_type: params.commentType, item_type: params.itemType, item_id: String(params.itemId)})
+    const resp = await fetch(`${getSdkConfig(clientMode).api}/comment/list?${qs}`)
+    const data = await resp.json()
+    return data.comments as Comment[]
 }

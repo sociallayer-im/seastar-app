@@ -1,15 +1,6 @@
 import {Event, EventDetail, EventDraftType, EventWithJoinStatus, Participant, Recurring} from './types'
-import {getGqlClient, getSdkConfig} from '../client'
-import {
-    GET_EVENT_DETAIL_BY_ID,
-    GET_GROUP_EVENT_BY_HANDLE,
-    GET_MAP_EVENTS_BY_GROUP_HANDLE,
-    GET_PROFILE_EVENTS_BY_HANDLE,
-    GET_EVENTS_BY_RECURRING_ID, GET_RECURRING_BY_ID
-} from './schemas'
+import {getSdkConfig} from '../client'
 import {fixDate} from '../uitls'
-import dayjs from '@/libs/dayjs'
-import {gql} from '@apollo/client'
 import {SolaSdkFunctionParams} from '../types'
 
 export const sortEventsByTime = (a: Event, b: Event): number => {
@@ -111,40 +102,37 @@ export const getMyPendingApprovalEvent = async ({params: {authToken}, clientMode
 export const getProfileEventByHandle = async ({params: {handle}, clientMode}: SolaSdkFunctionParams<{
     handle: string
 }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_PROFILE_EVENTS_BY_HANDLE,
-        variables: {handle, now: new Date().toISOString()}
-    })
-
-    return {
-        attends: response.data.attends
-            .filter((a: { event?: Event }) => !!a.event)
-            .map((a: { event: Event }) => fixDate(a.event))
-            .sort(sortEventsByTime) as Event[],
-        hosting: response.data.hosting
-            .map((e: Event) => fixDate(e))
-            .sort(sortEventsByTime) as Event[],
-        coHosting: response.data.coHosting.map((a: { event: Event }) => fixDate(a.event))
-            .sort(sortEventsByTime) as Event[],
-        starred: response.data.starred
-            .filter((a: { event?: Event }) => !!a.event)
-            .map((a: { event: Event }) => fixDate(a.event))
-            .sort(sortEventsByTime) as Event[],
+    const apiUrl = getSdkConfig(clientMode).api
+    const fetchType = async (type: 'attended' | 'hosting' | 'co_hosting' | 'starred'): Promise<Event[]> => {
+        const resp = await fetch(`${apiUrl}/event/by_profile?handle=${encodeURIComponent(handle)}&type=${type}`)
+        if (!resp.ok) return []
+        const data = await resp.json()
+        return (data.events || []) as Event[]
     }
 
+    const [attends, hosting, coHosting, starred] = await Promise.all([
+        fetchType('attended'),
+        fetchType('hosting'),
+        fetchType('co_hosting'),
+        fetchType('starred'),
+    ])
+
+    return {
+        attends: (attends.map((e: Event) => fixDate(e)) as Event[]).sort(sortEventsByTime),
+        hosting: (hosting.map((e: Event) => fixDate(e)) as Event[]).sort(sortEventsByTime),
+        coHosting: (coHosting.map((e: Event) => fixDate(e)) as Event[]).sort(sortEventsByTime),
+        starred: (starred.map((e: Event) => fixDate(e)) as Event[]).sort(sortEventsByTime),
+    }
 }
 
 export const getGroupEventByHandle = async ({params: {handle}, clientMode}: SolaSdkFunctionParams<{
     handle: string
 }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_GROUP_EVENT_BY_HANDLE,
-        variables: {handle}
-    })
-
-    return response.data.events.map((e: Event) => fixDate(e)) as Event[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/event/list?group_id=${encodeURIComponent(handle)}&collection=past`)
+    if (!resp.ok) return [] as Event[]
+    const data = await resp.json()
+    return (data.events || []).map((e: Event) => fixDate(e)) as Event[]
 }
 
 export const getEventIcsUrl = ({params: {groupHandle}, clientMode}: SolaSdkFunctionParams<{ groupHandle: string }>) => {
@@ -252,35 +240,28 @@ export const getEvents = async ({params: {filters, authToken, limit}, clientMode
 export const getEventDetailById = async ({params: {eventId}, clientMode}: SolaSdkFunctionParams<{
     eventId: number
 }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_EVENT_DETAIL_BY_ID,
-        variables: {id: eventId}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/event/get?id=${eventId}`)
+    if (!resp.ok) return null
+    const data = await resp.json()
+    const event = data.event
+    if (!event) return null
 
-    if (response.data.events.length === 0) {
-        return null
+    if (event.tickets) {
+        event.tickets = event.tickets.map((t: any) => ({
+            ...t,
+            end_time: t.end_time ? t.end_time + 'Z' : null,
+        }))
     }
 
-    if (response.data.events[0].tickets) {
-        response.data.events[0].tickets = response.data.events[0].tickets.map((t: any) => {
-            return {
-                ...t,
-                end_time: t.end_time ? t.end_time + 'Z' : null,
-            }
-        })
+    if (event.ticket_items) {
+        event.ticket_items = event.ticket_items.map((t: any) => ({
+            ...t,
+            create_at: t.create_at ? t.create_at + 'Z' : null,
+        }))
     }
 
-    if (response.data.events[0].ticket_items) {
-        response.data.events[0].ticket_items = response.data.events[0].ticket_items.map((t: any) => {
-            return {
-                ...t,
-                create_at: t.create_at ? t.create_at + 'Z' : null,
-            }
-        })
-    }
-
-    return fixDate(response.data.events[0]) as EventDetail
+    return fixDate(event) as EventDetail
 }
 
 export const sendEventFeedback = async ({params, clientMode}: SolaSdkFunctionParams<{
@@ -388,41 +369,17 @@ export const getOccupiedTimeEvent = async ({
                                                params: {
                                                    startTime,
                                                    endTime,
-                                                   timezone,
                                                    venueId,
                                                    excludeEventId
                                                }, clientMode
                                            }: SolaSdkFunctionParams<GetOccupiedTimeEventProps>) => {
     if (!venueId) return null
 
-    const doc = gql`query MyQuery {
-        events(where: {venue_id: {_eq: ${venueId}}, 
-        status: {_neq: "cancelled"}${excludeEventId ? `,id: {_neq:${excludeEventId}}` : ''}}) {
-            id
-            title
-            start_time
-            end_time
-        }
-    }`
-
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: doc
-    })
-
-    const events = response.data.events.map((e: Event) => fixDate(e)) as Event[]
-    return events.find((e) => {
-        const eventStartTime = new Date(e.start_time!).getTime()
-        const eventEndTime = new Date(e.end_time!).getTime()
-        const selectedStartTime = new Date(startTime).getTime()
-        const selectedEndTime = new Date(endTime).getTime()
-        const eventIsAllDay = dayjs.tz(eventStartTime, timezone).hour() === 0 && (eventEndTime - eventStartTime + 60000) % 8640000 === 0
-        const selectedIsAllDay = dayjs.tz(selectedStartTime, timezone).hour() === 0 && (selectedEndTime - selectedStartTime + 60000) % 8640000 === 0
-        return ((selectedStartTime < eventStartTime && selectedEndTime > eventStartTime) ||
-                (selectedStartTime >= eventStartTime && selectedEndTime <= eventEndTime) ||
-                (selectedStartTime < eventEndTime && selectedEndTime > eventEndTime)) &&
-            (!eventIsAllDay && !selectedIsAllDay)
-    }) || null
+    const qs = new URLSearchParams({venue_id: String(venueId), start_time: startTime, end_time: endTime})
+    if (excludeEventId) qs.append('exclude_event_id', String(excludeEventId))
+    const resp = await fetch(`${getSdkConfig(clientMode).api}/event/check_venue_conflict?${qs}`)
+    const data = await resp.json()
+    return (data.events?.[0] as Event) || null
 }
 
 export interface CreateRecurringEventParams {
@@ -620,43 +577,26 @@ export const sendEventPoap = async ({params: {eventId, authToken}, clientMode}: 
     }
 }
 
-export const getMapEvents = async ({params: {groupHandle}, clientMode}: SolaSdkFunctionParams<{
-    groupHandle: string
-}>) => {
-    const client = getGqlClient(clientMode)
-    const now = dayjs().toISOString()
-    const response = await client.query({
-        query: GET_MAP_EVENTS_BY_GROUP_HANDLE,
-        variables: {handle: groupHandle, now}
-    })
-
-    return response.data.events.map((e: Event) => fixDate(e)) as Event[]
-}
-
 export const getEventByRecurringId = async ({params: {recurringId}, clientMode}: SolaSdkFunctionParams<{
     recurringId: number
 }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_EVENTS_BY_RECURRING_ID,
-        variables: {recurringId}
-    })
-
-    return response.data.events
-    .map((e: Event) => fixDate(e))
-    .sort((a: Event, b: Event) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime()) as Event[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/event/by_recurring?recurring_id=${recurringId}`)
+    if (!resp.ok) return [] as Event[]
+    const data = await resp.json()
+    return (data.events || [])
+        .map((e: Event) => fixDate(e))
+        .sort((a: Event, b: Event) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime()) as Event[]
 }
 
 export const getRecurringById = async ({params: {recurringId}, clientMode}: SolaSdkFunctionParams<{
     recurringId: number
 }>) => {
-    const client = getGqlClient()
-    const response = await client.query({
-        query: GET_RECURRING_BY_ID,
-        variables: {id: recurringId}
-    })
-
-    return response.data.recurrings[0] as Recurring || null
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/recurring/get?id=${recurringId}`)
+    if (!resp.ok) return null
+    const data = await resp.json()
+    return (data.recurring as Recurring) || null
 }
 
 export type UpdateRecurringEventProps = {

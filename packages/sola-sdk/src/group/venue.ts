@@ -1,7 +1,6 @@
 import {SolaSdkFunctionParams} from '../types'
 import {VenueDetail, VenueOverride, VenueTimeslot} from './types'
-import {getGqlClient, getSdkConfig} from '../client'
-import {GENT_VENUE_DETAIL_BY_ID} from './schemas'
+import {getSdkConfig} from '../client'
 
 export const removeVenue = async function ({params: {venueId, authToken}, clientMode}: SolaSdkFunctionParams<{
     venueId: number,
@@ -23,13 +22,9 @@ export const removeVenue = async function ({params: {venueId, authToken}, client
 export const getVenueDetailById = async function ({params: {venueId}, clientMode}: SolaSdkFunctionParams<{
     venueId: number
 }>) {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GENT_VENUE_DETAIL_BY_ID,
-        variables: {id: venueId}
-    })
-
-    return response.data.venues[0] as VenueDetail || null
+    const resp = await fetch(`${getSdkConfig(clientMode).api}/venue/get?id=${venueId}`)
+    const data = await resp.json()
+    return data.venue as VenueDetail || null
 }
 
 export const updateVenue = async function ({params: {venue, authToken}, clientMode}: SolaSdkFunctionParams<{

@@ -1,8 +1,6 @@
 import {getGqlClient, getSdkConfig} from "../client"
 import {
-    GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE,
-    GET_PROFILE_BY_HANDLE,
-    GET_PROFILE_BY_HANDLES_OR_ADDRESSES, GET_PROFILE_BY_ID, SEARCH_PROFILE
+    GET_PROFILE_BY_HANDLES_OR_ADDRESSES
 } from "./schemas"
 import {ProfileDetail, Profile} from "./types"
 import {SolaSdkFunctionParams} from '../types'
@@ -12,21 +10,11 @@ import {SolaSdkFunctionParams} from '../types'
  * @param handle - profile handle
  */
 export const getProfileDetailByHandle = async ({params, clientMode}:SolaSdkFunctionParams<{handle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_PROFILE_BY_HANDLE,
-        variables: {handle: params.handle}
-    })
-
-    if (!response.data.profiles || !response.data.profiles.length) {
-        return null
-    }
-
-    return  {
-        ...response.data.profiles[0],
-        follower_count: response.data.follower_count.aggregate.count,
-        following_count: response.data.following_count.aggregate.count
-    } as ProfileDetail
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/profile/get_by_handle?handle=${encodeURIComponent(params.handle)}`)
+    if (!resp.ok) return null
+    const data = await resp.json()
+    return (data.profile as ProfileDetail) || null
 }
 
 /**
@@ -35,17 +23,11 @@ export const getProfileDetailByHandle = async ({params, clientMode}:SolaSdkFunct
  */
 
 export const getProfileDetailById = async ({params, clientMode}:SolaSdkFunctionParams<{id: number}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_PROFILE_BY_ID,
-        variables: {id: params.id}
-    })
-
-    if (!response.data.profiles || !response.data.profiles.length) {
-        return null
-    }
-
-    return response.data.profiles[0] as ProfileDetail
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/profile/get_by_id?id=${params.id}`)
+    if (!resp.ok) return null
+    const data = await resp.json()
+    return (data.profile as ProfileDetail) || null
 }
 
 /**
@@ -91,16 +73,20 @@ export const updateProfile = async ({params, clientMode}:SolaSdkFunctionParams<{
 
 
 export const getProfileFollowerAndFollowing = async ({params, clientMode}:SolaSdkFunctionParams<{handle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_FOLLOWING_AND_FOLLOWER_BY_HANDLE,
-        variables: {handle: params.handle}
-    })
-
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/profile/followers?handle=${encodeURIComponent(params.handle)}`)
+    if (!resp.ok) {
+        return {
+            profile: null,
+            followers: [] as Profile[],
+            followings: [] as Profile[]
+        }
+    }
+    const data = await resp.json()
     return {
-        profile: response.data.profile[0] as Profile || null,
-        followers: response.data.followers.map((f: any) => f.source) as Profile[],
-        followings: response.data.followings.map((f: any) => f.target) as Profile[]
+        profile: (data.profile as Profile) || null,
+        followers: (data.followers || []) as Profile[],
+        followings: (data.following || []) as Profile[]
     }
 }
 
@@ -118,26 +104,9 @@ export const getProfileByHandlesOrAddresses  = async ({params, clientMode}:SolaS
 }
 
 export const searchProfile = async ({params, clientMode}:SolaSdkFunctionParams<{query: string, limit?: number}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: SEARCH_PROFILE,
-        variables: {keyword: params.query, limit: params.limit || 50}
-    })
-
-    const result = [] as  Profile[]
-    response.data.exact.forEach((profile: Profile) => {
-        if (!result.find((r: Profile) => r.id === profile.id)) {
-            result.push(profile)
-        }
-    })
-
-    response.data.predict.forEach((profile: Profile) => {
-        if (!result.find((r: Profile) => r.id === profile.id)) {
-            result.push(profile)
-        }
-    })
-
-    return result
+    const resp = await fetch(`${getSdkConfig(clientMode).api}/profile/search?keyword=${encodeURIComponent(params.query)}&limit=${params.limit || 50}`)
+    const data = await resp.json()
+    return data.profiles as Profile[]
 }
 
 /**

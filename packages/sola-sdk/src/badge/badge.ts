@@ -1,167 +1,101 @@
-import {ClientMode, getGqlClient, getSdkConfig} from "../client"
-import {
-    GET_BADGE_BY_OWNER_HANDLE,
-    GET_BADGE_CLASS_BY_OWNER_HANDLE,
-    GET_BADGE_AND_BADGE_CLASS_BY_OWNER_HANDLE,
-    GET_BADGE_CLASS_DETAIL_BY_BADGE_CLASS_ID,
-    GET_BADGE_DETAIL_BY_BADGE_ID,
-    GET_INVITE_DETAIL_BY_ID,
-    GET_BADGE_CLASS_BY_GROUP_ID,
-    GET_BADGE_CLASS_AND_INVITE_BY_GROUP_HANDLE,
-    CHECK_BADGE_OWNERSHIP
-} from "./schemas"
+import {getSdkConfig} from "../client"
 import {BadgeDetail, Badge, BadgeClassDetail, Invite, InviteDetail, BadgeClass} from "./types"
 import {SolaSdkFunctionParams} from '../types'
 
-/**
- * Get badge detail by owner handle
- * @param handle - owner handle
- */
 export const getBadgeDetailByOwnerHandle = async ({params, clientMode} : SolaSdkFunctionParams<{handle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_BADGE_BY_OWNER_HANDLE,
-        variables: {handle: params.handle}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/badge/list?owner_handle=${encodeURIComponent(params.handle)}&status=accepted`)
+    const data = await resp.json()
 
-    if (!response.data.badges || !response.data.badges.length) {
+    if (!data.badges || !data.badges.length) {
         return null
     }
 
-    return response.data.badges[0] as BadgeDetail
+    return data.badges[0] as BadgeDetail
 }
 
-/**
- * Get badge class detail by owner handle
- * @param handle - owner handle
- */
 export const getBadgeClassDetailByOwnerHandle = async ({params, clientMode} : SolaSdkFunctionParams<{ handle: string }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_BADGE_CLASS_BY_OWNER_HANDLE,
-        variables: {handle: params.handle}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/badge_class/list?creator_handle=${encodeURIComponent(params.handle)}&status=accepted`)
+    const data = await resp.json()
 
-    if (!response.data.badge_classes || !response.data.badge_classes.length) {
+    if (!data.badge_classes || !data.badge_classes.length) {
         return null
     }
 
-    return response.data.badge_classes[0] as BadgeClassDetail
+    return data.badge_classes[0] as BadgeClassDetail
 }
 
-/**
- * Get badge and badge class detail by owner handle
- * @param handle - owner handle
- */
 export const getBadgeAndBadgeClassByOwnerHandle = async ({params, clientMode} : SolaSdkFunctionParams<{ handle: string }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_BADGE_AND_BADGE_CLASS_BY_OWNER_HANDLE,
-        variables: {handle: params.handle}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const [badgesResp, badgeClassesResp] = await Promise.all([
+        fetch(`${apiUrl}/badge/list?owner_handle=${encodeURIComponent(params.handle)}&status=accepted,minted`),
+        fetch(`${apiUrl}/badge_class/list?creator_handle=${encodeURIComponent(params.handle)}`)
+    ])
+    const badgesData = await badgesResp.json()
+    const badgeClassesData = await badgeClassesResp.json()
 
     return {
-        badges: response.data.badges as Badge[],
-        badgeClasses: response.data.badge_classes as BadgeClassDetail[]
+        badges: (badgesData.badges || []) as Badge[],
+        badgeClasses: (badgeClassesData.badge_classes || []) as BadgeClassDetail[]
     }
 }
-
-/**
- * Get badge class detail by badge class id
- * @param badgeClassId - badge class id
- */
 
 export const getBadgeClassDetailByBadgeClassId = async ({params, clientMode}: SolaSdkFunctionParams<{badgeClassId: number}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_BADGE_CLASS_DETAIL_BY_BADGE_CLASS_ID,
-        variables: {id: params.badgeClassId}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/badge_class/get?id=${params.badgeClassId}`)
+    const data = await resp.json()
 
-    if (!response.data.badge_classes || !response.data.badge_classes.length) {
+    if (!data.badge_class) {
         return null
     }
 
-    return response.data.badge_classes[0] as BadgeClassDetail
+    return data.badge_class as BadgeClassDetail
 }
-
-/**
- * Get badge detail by badge id
- * @param badgeId - badge id
- */
 
 export const getBadgeDetailByBadgeId = async ({params, clientMode}: SolaSdkFunctionParams<{badgeId: number}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_BADGE_DETAIL_BY_BADGE_ID,
-        variables: {id: params.badgeId}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/badge/get?id=${params.badgeId}`)
+    const data = await resp.json()
 
-    if (!response.data.badges || !response.data.badges.length) {
+    if (!data.badge) {
         return null
     }
 
-    return response.data.badges[0] as BadgeDetail
+    return data.badge as BadgeDetail
 }
-
-/**
- * Get badge class and invite by handle
- * @param groupHandle - group handle
- */
 
 export const getBadgeClassAndInviteByGroupHandle = async ({params, clientMode}: SolaSdkFunctionParams<{groupHandle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_BADGE_CLASS_AND_INVITE_BY_GROUP_HANDLE,
-        variables: {handle: params.groupHandle, now: new Date().toISOString()}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/badge_class/invites?group_handle=${encodeURIComponent(params.groupHandle)}`)
+    const data = await resp.json()
 
     return {
-        badgeClasses: response.data.badge_classes as BadgeClassDetail[],
-        groupInvites: response.data.group_invites as Invite[]
+        badgeClasses: (data.badge_classes || []) as BadgeClassDetail[],
+        groupInvites: (data.invites || []) as Invite[]
     }
 }
 
-
-/**
- * Get badge class by group id
- * @param groupId
- */
-
 export const getBadgeClassByGroupId = async ({params, clientMode}:SolaSdkFunctionParams<{groupId: number}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_BADGE_CLASS_BY_GROUP_ID,
-        variables: {id: params.groupId}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/badge_class/list?group_id=${params.groupId}`)
+    const data = await resp.json()
 
-    return response.data.badge_classes as BadgeClassDetail[]
+    return (data.badge_classes || []) as BadgeClassDetail[]
 }
 
-/**
- * Get invite detail by invite id
- * @param inviteId - invite id
- */
-
 export const getInviteDetailByInviteId = async (inviteId: number) => {
-    const client = getGqlClient()
-    const response = await client.query({
-        query: GET_INVITE_DETAIL_BY_ID,
-        variables: {id: inviteId}
-    })
+    const apiUrl = getSdkConfig().api
+    const resp = await fetch(`${apiUrl}/group_invite/get?id=${inviteId}`)
+    const data = await resp.json()
 
-    if (!response.data.group_invites || !response.data.group_invites.length) {
+    if (!data.group_invite) {
         return null
     }
 
-    return response.data.group_invites[0] as InviteDetail
+    return data.group_invite as InviteDetail
 }
 
-/**
- * Create badge class
- * @param props.badgeClass - badge class detail
- * @param props.authToken - auth token
- */
 export const createBadgeClass = async ({params, clientMode}:SolaSdkFunctionParams<{badgeClass: BadgeClass, authToken: string }>) => {
     const response = await fetch(`${getSdkConfig(clientMode).api}/badge_class/create`, {
         method: 'POST',
@@ -190,13 +124,11 @@ export const createBadgeClass = async ({params, clientMode}:SolaSdkFunctionParam
 }
 
 export const checkBadgeOwnership = async ({params, clientMode}: SolaSdkFunctionParams<{badgeId: number, handle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: CHECK_BADGE_OWNERSHIP,
-        variables: {badgeId: params.badgeId, handle: params.handle}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/badge/list?owner_handle=${encodeURIComponent(params.handle)}&badge_class_id=${params.badgeId}`)
+    const data = await resp.json()
 
-    return response.data.badges.length > 0
+    return (data.badges || []).length > 0
 }
 
 export async function swapBadge({clientMode, params}: SolaSdkFunctionParams<{ authToken: string, badgeId: number, swapToken: string }>) {

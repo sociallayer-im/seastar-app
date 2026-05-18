@@ -1,7 +1,6 @@
-import {ClientMode, getGqlClient, getSdkConfig} from '../client'
+import {ClientMode, getSdkConfig} from '../client'
 import {Event, Group, getGroupDetailById, GroupDetail, getGroupEventByHandle, PopupCityDraft} from '@sola/sdk'
 import {PopupCity} from './types'
-import {GET_POPUP_CITIES, GET_POPUP_CITIES_BY_ID} from './schemas'
 import {SolaSdkFunctionParams} from '../types'
 
 export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
@@ -33,12 +32,10 @@ export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
 }
 
 export const getPopupCities = async ({clientMode}: {clientMode: ClientMode}) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_POPUP_CITIES
-    })
-
-    return response.data.popup_cities as PopupCity[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/popup_city/list`)
+    const data = await resp.json()
+    return data.popup_cities as PopupCity[]
 }
 
 export const createPopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{popupCityDraft: PopupCityDraft, authToken: string}>) => {
@@ -61,13 +58,10 @@ export const createPopupCity = async ({params, clientMode}: SolaSdkFunctionParam
 }
 
 export const getPopupCityById = async ({params, clientMode}: SolaSdkFunctionParams<{id: number}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_POPUP_CITIES_BY_ID,
-        variables: params
-    })
-
-    return response.data.popup_cities[0] as PopupCity || null
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/popup_city/get?id=${params.id}`)
+    const data = await resp.json()
+    return (data.popup_city as PopupCity) || null
 }
 
 export const updatePopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{popupCity: PopupCity, authToken: string}>) => {

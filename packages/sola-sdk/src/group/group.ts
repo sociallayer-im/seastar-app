@@ -1,11 +1,4 @@
-import {ClientMode, getGqlClient, getSdkConfig} from "../client"
-import {
-    GET_AVAILABLE_GROUPS_FOR_BADGE_CLASS_CREATOR, GET_AVAILABLE_GROUPS_FOR_EVENT_HOST, GET_EVENT_GROUPS,
-    GET_GROUP_DETAIL_BY_HANDLE, GET_GROUP_DETAIL_BY_ID,
-    GET_MEMBERSHIP_BY_GROUP_ID,
-    GET_PROFILE_GROUP,
-    GET_PROFILE_MEMBERSHIPS
-} from "./schemas"
+import {ClientMode, getSdkConfig} from "../client"
 import {Group, GroupDetail, GroupWithOwner, MembershipDetail} from "./types"
 import {InviteDetail} from '../badge/types'
 import {checkAndGetProfileByHandlesOrAddresses} from '../uitls'
@@ -17,31 +10,27 @@ import {SolaSdkFunctionParams} from '../types'
  * @param clientMode
  */
 export const getGroupDetailByHandle = async ({params: {groupHandle}, clientMode}:SolaSdkFunctionParams<{groupHandle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_GROUP_DETAIL_BY_HANDLE,
-        variables: {handle: groupHandle}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/group/get?group_id=${encodeURIComponent(groupHandle)}&include_detail=true`)
+    const data = await resp.json()
 
-    if (!response.data.groups || !response.data.groups.length) {
+    if (!data.group) {
         return null
     }
 
-    return response.data.groups[0] as GroupDetail
+    return data.group as GroupDetail
 }
 
-export const getGroupDetailById = async ({params: {groupId}}: SolaSdkFunctionParams<{groupId: number}>) => {
-    const client = getGqlClient()
-    const response = await client.query({
-        query: GET_GROUP_DETAIL_BY_ID,
-        variables: {id: groupId}
-    })
+export const getGroupDetailById = async ({params: {groupId}, clientMode}: SolaSdkFunctionParams<{groupId: number}>) => {
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/group/get?group_id=${groupId}&include_detail=true`)
+    const data = await resp.json()
 
-    if (!response.data.groups || !response.data.groups.length) {
+    if (!data.group) {
         return null
     }
 
-    return response.data.groups[0] as GroupDetail
+    return data.group as GroupDetail
 }
 
 /**
@@ -49,25 +38,21 @@ export const getGroupDetailById = async ({params: {groupId}}: SolaSdkFunctionPar
  * @param profileHandle
  */
 export const getProfileMemberships = async ({params: {profileHandle}, clientMode}: SolaSdkFunctionParams<{profileHandle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_PROFILE_MEMBERSHIPS,
-        variables: {handle: profileHandle}
-    })
-    return response.data.memberships as MembershipDetail[]
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(profileHandle)}`)
+    const data = await resp.json()
+    return (data.groups || []) as MembershipDetail[]
 }
 
 export const getProfileGroup = async ({params: {profileHandle}, clientMode}:SolaSdkFunctionParams<{profileHandle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_PROFILE_GROUP,
-        variables: {handle: profileHandle}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(profileHandle)}&role=owner,member,manager`)
+    const data = await resp.json()
 
-    return response.data.groups.map((group: GroupDetail) => {
+    return (data.groups || []).map((group: GroupDetail) => {
         return {
             ...group,
-            owner: group.memberships[0]!.profile
+            owner: group.memberships && group.memberships[0] ? group.memberships[0].profile : undefined
         }
     }) as GroupWithOwner[]
 }
@@ -219,13 +204,11 @@ export const leaveGroup = async ({params, clientMode}:SolaSdkFunctionParams<{pro
  */
 
 export const getMembershipByGroupId = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_MEMBERSHIP_BY_GROUP_ID,
-        variables: {id: params.groupId}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/group/members?group_id=${params.groupId}`)
+    const data = await resp.json()
 
-    return response.data.memberships as MembershipDetail[]
+    return (data.memberships || []) as MembershipDetail[]
 }
 
 /**
@@ -312,32 +295,27 @@ export const rejectInvite = async ({params, clientMode}:SolaSdkFunctionParams<{i
 }
 
 export const getAvailableGroupsForBadgeClassCreator = async ({params, clientMode}: SolaSdkFunctionParams<{profileHandle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_AVAILABLE_GROUPS_FOR_BADGE_CLASS_CREATOR,
-        variables: {handle: params.profileHandle}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(params.profileHandle)}&role=owner,manager,issuer`)
+    const data = await resp.json()
 
-    return response.data.groups as Group[]
+    return (data.groups || []) as Group[]
 }
 
 export const getEventGroups = async ({clientMode}: {clientMode?: ClientMode}) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_EVENT_GROUPS,
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/group/featured?tag=:top`)
+    const data = await resp.json()
 
-    return response.data.groups as Group[]
+    return (data.groups || []) as Group[]
 }
 
 export const getAvailableGroupsForEventHost = async ({params, clientMode}:SolaSdkFunctionParams<{profileHandle: string}>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_AVAILABLE_GROUPS_FOR_EVENT_HOST,
-        variables: {handle: params.profileHandle}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(params.profileHandle)}&role=owner,manager`)
+    const data = await resp.json()
 
-    return response.data.groups as Group[]
+    return (data.groups || []) as Group[]
 }
 
 export const createGroup = async ({params, clientMode}: SolaSdkFunctionParams<{handle: string, authToken: string}>) => {

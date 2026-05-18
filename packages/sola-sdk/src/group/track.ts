@@ -1,6 +1,5 @@
 import {SolaSdkFunctionParams} from '../types'
-import {GET_TRACK_DETAIL_BY_ID, GET_TRACK_ROLE_BY_TRACK_ID, GET_TRACK_ROLES_BY_TRACK_IDS} from './schemas'
-import {getGqlClient, getSdkConfig} from '../client'
+import {getSdkConfig} from '../client'
 import {Profile} from '../profile'
 import {Track, TrackDetail, TrackRole} from './types'
 
@@ -27,23 +26,19 @@ export const removeTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
 }
 
 export const getTrackDetailById = async ({params, clientMode}: SolaSdkFunctionParams<{ trackId: number }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_TRACK_DETAIL_BY_ID,
-        variables: {id: params.trackId}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/group/track_detail?track_id=${params.trackId}`)
+    const data = await resp.json()
 
-    return response.data.tracks[0] as TrackDetail || null
+    return (data.track as TrackDetail) || null
 }
 
 export const getTrackRoleByTrackId = async ({params, clientMode}: SolaSdkFunctionParams<{ trackId: number }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_TRACK_ROLE_BY_TRACK_ID,
-        variables: {trackId: params.trackId}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/group/track_roles?track_id=${params.trackId}`)
+    const data = await resp.json()
 
-    return response.data.track_roles as TrackRole[] || []
+    return (data.track_roles as TrackRole[]) || []
 }
 
 export const addTrackRole = async ({params, clientMode}: SolaSdkFunctionParams<{
@@ -293,11 +288,9 @@ export const createTrack = async ({params, clientMode}: SolaSdkFunctionParams<{
 export const getTrackRolesByTrackIds = async ({params, clientMode}: SolaSdkFunctionParams<{
     trackIds: number[],
 }>) => {
-    const client = getGqlClient(clientMode)
-    const response = await client.query({
-        query: GET_TRACK_ROLES_BY_TRACK_IDS,
-        variables: {trackIds: params.trackIds}
-    })
+    const apiUrl = getSdkConfig(clientMode).api
+    const resp = await fetch(`${apiUrl}/group/track_roles?track_ids=${params.trackIds.join(',')}`)
+    const data = await resp.json()
 
-    return response.data.track_roles as TrackRole[] || []
+    return (data.track_roles as TrackRole[]) || []
 }

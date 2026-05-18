@@ -1,5 +1,3 @@
-import {gql, request} from "graphql-request"
-import dayjs from "@/libs/dayjs"
 import {EventDraftType} from '@sola/sdk'
 
 
@@ -85,116 +83,39 @@ export const updateProfile = async (profile: Solar.Profile, auth_token: string) 
 
 export const getOccupiedTimeEvent = async (startTime: string, endTime: string, timezone: string, venueId: number | null, excludeEventId?: number) => {
     if (!venueId) return null
-
-    const doc = gql`query MyQuery {
-        events(where: {venue_id: {_eq: ${venueId}}, status: {_neq: ["cancelled"]}${excludeEventId ? `,id: {_neq:${excludeEventId}}` : ''}}) {
-            id
-            title
-            start_time
-            end_time
-        }
-    }`
-
-    const {events} = await request<{ events: Solar.Event[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
-
-    // console.log('events', events)
-
-    return events.find((e) => {
-        const eventStartTime = new Date(e.start_time!).getTime()
-        const eventEndTime = new Date(e.end_time!).getTime()
-        const selectedStartTime = new Date(startTime).getTime()
-        const selectedEndTime = new Date(endTime).getTime()
-        const eventIsAllDay = dayjs.tz(eventStartTime, timezone).hour() === 0 && (eventEndTime - eventStartTime + 60000) % 8640000 === 0
-        const selectedIsAllDay = dayjs.tz(selectedStartTime, timezone).hour() === 0 && (selectedEndTime - selectedStartTime + 60000) % 8640000 === 0
-        return ((selectedStartTime < eventStartTime && selectedEndTime > eventStartTime) ||
-                (selectedStartTime >= eventStartTime && selectedEndTime <= eventEndTime) ||
-                (selectedStartTime < eventEndTime && selectedEndTime > eventEndTime)) &&
-            (!eventIsAllDay && !selectedIsAllDay)
-    }) || null
-
+    const params = new URLSearchParams({
+        venue_id: venueId.toString(),
+        start_time: startTime,
+        end_time: endTime,
+    })
+    if (excludeEventId) params.append('exclude_event_id', excludeEventId.toString())
+    const response = await fetch(`${api}/event/check_venue_conflict?${params}`)
+    const data = await response.json()
+    return data.events?.[0] || null
 }
 
 export async function getBadgeClassDetailById(id: number) {
-    const doc = gql`query MyQuery {
-        badge_classes(where: {id: {_eq: ${id}}}) {
-            id
-            title
-            image_url
-            group_id
-        }
-    }`
-
-    const badgeClasses = await request<{ badge_classes: Solar.BadgeClass[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
-    return badgeClasses.badge_classes[0]
+    const response = await fetch(`${api}/badge_class/get?id=${id}`)
+    const data = await response.json()
+    return data.badge_class as Solar.BadgeClass
 }
 
 export async function getUserBadgeClasses(userHandle: string) {
-    const doc = gql`query MyQuery {
-        badge_classes(where: {group: {memberships: {profile: {handle: {_eq: "${userHandle}"}}}}}) {
-            id
-            title
-            image_url
-            group_id
-            metadata
-            content
-            group_id
-            transferable
-            badge_type
-            permissions
-            created_at
-            display
-        }
-    }`
-
-    const badgeClasses = await request<{ badge_classes: Solar.BadgeClass[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
-    return badgeClasses.badge_classes
+    const response = await fetch(`${api}/badge_class/by_user?handle=${userHandle}`)
+    const data = await response.json()
+    return data.badge_classes as Solar.BadgeClass[]
 }
 
 export async function getGroupBadgeClasses(groupId: number, limit = 20) {
-    const doc = gql`query MyQuery {
-        badge_classes(where: {group_id: {_eq: ${groupId}}, badge_type:{_eq: "badge"}}, ${limit ? `limit: ${limit}` : ''}) {
-            id
-            title
-            image_url
-            group_id
-            metadata
-            content
-            group_id
-            transferable
-            badge_type
-            permissions
-            created_at
-            display
-        }
-    }`
-
-    const badgeClasses = await request<{ badge_classes: Solar.BadgeClass[] }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
-    return badgeClasses.badge_classes
+    const response = await fetch(`${api}/badge_class/list?group_id=${groupId}&badge_type=badge&limit=${limit}`)
+    const data = await response.json()
+    return data.badge_classes as Solar.BadgeClass[]
 }
 
 export async function SearchProfile(keyword: string, limit = 5) {
-    const doc = gql`query MyQuery {
-          exact : profiles(where: {_or: [{handle: {_eq: "${keyword}"}}, { nickname:{_eq: "${keyword}"}}]}, limit: ${limit}){
-            id
-            handle
-            username
-            nickname
-            image_url
-          }
-          predict: profiles(where: {_or: [{nickname: {_iregex: "${keyword}"}}, { handle:{_iregex: "${keyword}"}}]}, limit: ${limit}){
-            id
-            handle
-            username
-            nickname
-            image_url
-          }
-        }`
-
-    const {exact, predict} = await request<{
-        exact: Solar.ProfileSample[],
-        predict: Solar.ProfileSample[]
-    }>(process.env.NEXT_PUBLIC_GRAPH_URL!, doc)
-    return [...exact, ...predict]
+    const response = await fetch(`${api}/profile/search?keyword=${encodeURIComponent(keyword)}&limit=${limit}`)
+    const data = await response.json()
+    return data.profiles as Solar.ProfileSample[]
 }
 
 export interface CreateEventProps extends EventDraftType {
