@@ -1,0 +1,30 @@
+src/app/(normal)/invite/[inviteid]/page.tsx
+  s_212b3fb8ecd46f::t_a58b0b73b17875 9,18
+src/app/(normal)/group/[handle]/management/invite/success/InviteSuccessAction.tsx
+  s_212b3fb8ecd46f::t_3068c095fa8fb9 7,11-12
+src/app/(normal)/group/[handle]/management/invite/success/page.tsx
+  s_212b3fb8ecd46f::t_1f20a057617cde 49
+  s_212b3fb8ecd46f::t_c4a873c7fcbf31 56
+src/components/client/DialogInviteDetail.tsx
+  s_212b3fb8ecd46f::t_4e498fdd965a76 19,22,39-43,47
+src/app/(normal)/invite/[inviteid]/data.ts
+  s_212b3fb8ecd46f::t_6d80b96fb9ce9d 11,14,26-27
+src/app/(normal)/group/[handle]/management/invite/success/InviteQrcode.tsx
+  s_212b3fb8ecd46f::t_735cab0735d363 6,11-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "8370c2227c49caf5c8a4736420b0761b1ed74c54",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
