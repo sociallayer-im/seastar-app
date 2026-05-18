@@ -1,0 +1,27 @@
+packages/sola-sdk/src/event/ticket.ts
+  s_212b3fb8ecd46f::t_5d4d6b4d074d0b 2
+  s_212b3fb8ecd46f::t_f41ab600bcb9d9 87-91,95-99
+  s_212b3fb8ecd46f::t_3e90e7f5f33b4b 121-127,129,137-141
+packages/sola-sdk/src/service.tsx
+  s_212b3fb8ecd46f::t_98068e49381494 2-5
+  s_212b3fb8ecd46f::t_5f976207c2f718 30-33,35-38
+packages/sola-sdk/src/profile/proifle.ts
+  s_212b3fb8ecd46f::t_853d06755642b6 91-95,97-98
+  s_212b3fb8ecd46f::t_3cd9564d3c0f4f 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "d6688ef3452cfb597ae5a412f37b33dac9e8dfe5",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
