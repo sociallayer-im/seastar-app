@@ -1,0 +1,9 @@
+pnpm-lock.yaml
+  ai_agent 1-13698
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "23badb66d8424dc5e1ea0ff45d615a61a3220735",
+  "prompts": {}
+}
