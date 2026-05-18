@@ -94,10 +94,10 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                 {filteredCities.map((popupCity, index) => {
                     return <a key={index} href={`/event/${popupCity.group.handle}`}
                               className="h-[292px] rounded shadow p-3 duration-200 hover:translate-y-[-6px]">
-                        <div className="rounded h-[148px] mb-3">
-                            <img className="object-cover w-full h-full rounded"
+                        <div className="rounded h-[148px] mb-3 bg-gray-100 flex items-center justify-center">
+                            <img className="object-contain w-full h-full rounded"
                                    width={227} height={148}
-                                   src={cfImage(popupCity.image_url || '', { width: 454, height: 296, fit: 'cover' })} alt=""/>
+                                   src={cfImage(popupCity.image_url || '', { width: 454, height: 296, fit: 'scale-down' })} alt=""/>
                         </div>
                         <div className="webkit-box-clamp-1 sm:text-sm text-xs">
                             <DisplayDateTime format={'MMM DD'}

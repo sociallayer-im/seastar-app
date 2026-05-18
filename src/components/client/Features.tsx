@@ -42,11 +42,11 @@ function FeatureItem(props: { popupCity: PopupCity }) {
         }
     }, [props.popupCity.image_url])
 
-    return <a className='h-[300px] relative' href={`/event/${props.popupCity.group.handle}`}>
+    return <a className='relative block' href={`/event/${props.popupCity.group.handle}`}>
         {props.popupCity.image_url &&
-            <img src={cfImage(props.popupCity.image_url, { width: 454, height: 296, fit: 'cover' })}
+            <img src={cfImage(props.popupCity.image_url, { width: 900, fit: 'scale-down' })}
                 alt={props.popupCity.title}
-                className='h-[300px] min-w-full top-0 object-cover' />
+                className='w-full h-auto' />
         }
         <div className='hidden absolute bottom-0 left-0 right-0 sm:pt-[140px] pt-[100px] px-6 h-[250px]' style={{ background: dominantColor }}>
             <h3 className='text-white text-3xl font-bold mb-1' style={{ color: textColor }}>{props.popupCity.title}</h3>
