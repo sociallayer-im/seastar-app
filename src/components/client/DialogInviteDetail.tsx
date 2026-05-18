@@ -16,9 +16,10 @@ export interface DialogInviteDetailProps {
     isManager?: boolean
     lang: Dictionary
     close?: () => void
+    code?: string | null
 }
 
-export default function DialogInviteDetail({ inviteDetail, isManager, lang, close }: DialogInviteDetailProps) {
+export default function DialogInviteDetail({ inviteDetail, isManager, lang, close, code }: DialogInviteDetailProps) {
     const { showLoading, closeModal } = useModal()
     const [error, setError] = useState('')
 
@@ -35,10 +36,15 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
             }
 
             if (inviteDetail.receiver_address_type === 'code') {
+                if (!code) {
+                    closeModal(loading)
+                    setError('Invalid invite link: missing code')
+                    return
+                }
                 await acceptCodeInvite({
                     params: {
                         groupInviteId: inviteDetail.id,
-                        code: inviteDetail.receiver_address!,
+                        code,
                         authToken
                     },
                     clientMode: CLIENT_MODE

@@ -46,14 +46,14 @@ export default async function InviteSuccess(props: InviteSuccessDataProps) {
                         </div>
                         <div className="font-semibold text-xl mt-6">{lang['Scan the QR Code']}</div>
                         <div className="p-4 bg-white my-3 mx-0">
-                            <InviteQrcode id={inviteDetail?.id?.toString() || ''} />
+                            <InviteQrcode id={inviteDetail?.id?.toString() || ''} code={inviteDetail?.receiver_address || undefined} />
                         </div>
                     </div>
                 ): <div className="text-center">
                     {lang["The other party has successfully joined the group"]}
                     </div>
             }
-            <InviteSuccessAction groupHandle={group.handle} lang={lang} id={inviteDetail?.id} />
+            <InviteSuccessAction groupHandle={group.handle} lang={lang} id={inviteDetail?.id} code={inviteDetail?.receiver_address || undefined} />
         </div>
     </div>
 }

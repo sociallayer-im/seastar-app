@@ -4,11 +4,12 @@ import { Button } from "@/components/shadcn/Button"
 import { Dictionary } from "@/lang"
 import { toast, useToast } from "@/components/shadcn/Toast/use-toast"
 
-export default function InviteSuccessAction({ groupHandle, lang, id }: { groupHandle: string, lang: Dictionary, id?: number }) {
+export default function InviteSuccessAction({ groupHandle, lang, id, code }: { groupHandle: string, lang: Dictionary, id?: number, code?: string }) {
     const { toast } = useToast()
 
     const handleCopyLink = () => {
-        const url = `${window.location.origin}/invite/${id}`
+        const base = `${window.location.origin}/invite/${id}`
+        const url = code ? `${base}?code=${code}` : base
         navigator.clipboard.writeText(url.toString())
         toast({
             title: 'Link Copied'

@@ -6,6 +6,7 @@ export default async function InvitePage(props: InvitePageDataProps) {
     const {
         inviteDetail,
         currProfile,
+        code,
     } = await InvitePageData(props)
     const { lang } = await selectLang()
 
@@ -14,6 +15,7 @@ export default async function InvitePage(props: InvitePageDataProps) {
             <DialogInviteDetail
                 inviteDetail={inviteDetail}
                 lang={lang}
+                code={code}
             />
         </div>
     </div>

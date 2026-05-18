@@ -8,9 +8,10 @@ export interface InvitePageParams {
 
 export interface InvitePageDataProps {
     params: InvitePageParams
+    searchParams: { code?: string }
 }
 
-export default async function InvitePageData({params}: InvitePageDataProps) {
+export default async function InvitePageData({params, searchParams}: InvitePageDataProps) {
     const {inviteid} = params
     const inviteDetail = await getInviteDetailByInviteId(parseInt(inviteid))
 
@@ -22,7 +23,8 @@ export default async function InvitePageData({params}: InvitePageDataProps) {
 
     return {
         inviteDetail,
-        currProfile
+        currProfile,
+        code: searchParams.code || null
     }
 }
 
