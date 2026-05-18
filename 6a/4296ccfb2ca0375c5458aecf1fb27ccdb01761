@@ -1,0 +1,20 @@
+src/components/client/PopupCities.tsx
+  s_212b3fb8ecd46f::t_2989cb1738d4bd 100
+  s_212b3fb8ecd46f::t_c07c1a5e149ea7 96-98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "6a4296ccfb2ca0375c5458aecf1fb27ccdb01761",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
