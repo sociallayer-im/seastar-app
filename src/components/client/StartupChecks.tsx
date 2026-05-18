@@ -5,18 +5,18 @@ import {getProfileActivities, getInviteDetailByInviteId, ProfileDetail} from '@s
 import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 import DialogInviteDetail from '@/components/client/DialogInviteDetail'
-import useShowVoucher from '@/hooks/useShowVoucher'
+// import useShowVoucher from '@/hooks/useShowVoucher'
 import {
     addDisplayedInvite,
-    addDisplayedVoucher,
+    // addDisplayedVoucher,
     newInviteDisplayed,
-    newVoucherDisplayed
+    // newVoucherDisplayed
 } from '@/components/client/Subscription/uilts'
 import {CLIENT_MODE} from '@/app/config'
 
 export default function StartupChecks({lang, profile}: { lang: Dictionary, profile: ProfileDetail }) {
     const {openModal} = useModal()
-    const {showVoucher} = useShowVoucher()
+    // const {showVoucher} = useShowVoucher()
 
     useEffect(() => {
         const check = async () => {
@@ -34,12 +34,13 @@ export default function StartupChecks({lang, profile}: { lang: Dictionary, profi
                 }
 
                 for (const activity of activities) {
-                    if (activity.action === 'voucher/send_badge' && activity.item_id) {
-                        if (!newVoucherDisplayed(activity.item_id)) {
-                            addDisplayedVoucher(activity.item_id)
-                            showVoucher(activity.item_id, lang)
-                        }
-                    } else if (activity.action === 'group_invite/send' && activity.item_id) {
+                    // if (activity.action === 'voucher/send_badge' && activity.item_id) {
+                    //     if (!newVoucherDisplayed(activity.item_id)) {
+                    //         addDisplayedVoucher(activity.item_id)
+                    //         showVoucher(activity.item_id, lang)
+                    //     }
+                    // } else
+                    if (activity.action === 'group_invite/send' && activity.item_id) {
                         if (!newInviteDisplayed(activity.item_id)) {
                             addDisplayedInvite(activity.item_id)
                             const inviteDetail = await getInviteDetailByInviteId(activity.item_id)
