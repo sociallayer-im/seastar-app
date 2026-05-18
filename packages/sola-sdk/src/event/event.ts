@@ -244,8 +244,8 @@ export const getEventDetailById = async ({params: {eventId}, clientMode}: SolaSd
     const resp = await fetch(`${apiUrl}/event/get?id=${eventId}`)
     if (!resp.ok) return null
     const data = await resp.json()
-    const event = data.event
-    if (!event) return null
+    const event = data.event ?? data
+    if (!event?.id) return null
 
     if (event.tickets) {
         event.tickets = event.tickets.map((t: any) => ({
