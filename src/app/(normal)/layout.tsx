@@ -6,6 +6,7 @@ import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {getCurrProfile, selectLang} from '@/app/actions'
 import Header from "@/components/Header"
+import StartupChecks from "@/components/client/StartupChecks"
 import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
 // import { TrackJSInstall } from "@/app/trackjs_loader"
 import { headers } from "next/headers"
@@ -49,6 +50,7 @@ export default async function RootLayout({
                 {children}
             </div>
         </div>
+        {!!currProfile && <StartupChecks lang={lang} profile={currProfile}/>}
         <div className="relative z-[9998]"><Modals/></div>
         <div className="relative z-[9999]"><Toaster/></div>
         </body>
