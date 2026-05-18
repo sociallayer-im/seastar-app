@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 import { getProfileByToken } from '@/service/solar'
 import { sha3_256 } from 'js-sha3'
-import dayjs from "dayjs"
+import dayjs from "@/libs/dayjs"
 import BigNumber from "bignumber.js"
 import { Payments, PaymentsType } from "@/utils/payment_setting"
 import {
