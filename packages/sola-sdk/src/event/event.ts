@@ -241,11 +241,16 @@ export const getEventDetailById = async ({params: {eventId}, clientMode}: SolaSd
     eventId: number
 }>) => {
     const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/event/get?id=${eventId}`)
+    const resp = await fetch(`${apiUrl}/event/get?id=${eventId}&include_participants=true`)
     if (!resp.ok) return null
     const data = await resp.json()
     const event = data.event ?? data
     if (!event?.id) return null
+
+    // sails returns the event creator under `profile` key; map to `owner`
+    if (!event.owner && event.profile) {
+        event.owner = event.profile
+    }
 
     if (event.tickets) {
         event.tickets = event.tickets.map((t: any) => ({
