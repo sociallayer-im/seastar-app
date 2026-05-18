@@ -7,7 +7,6 @@ import Modals from '@/components/client/Modal/Modals'
 import {getCurrProfile, selectLang} from '@/app/actions'
 import Header from "@/components/Header"
 import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
-import Subscription from '@/components/client/Subscription'
 // import { TrackJSInstall } from "@/app/trackjs_loader"
 import { headers } from "next/headers"
 
@@ -52,7 +51,6 @@ export default async function RootLayout({
         </div>
         <div className="relative z-[9998]"><Modals/></div>
         <div className="relative z-[9999]"><Toaster/></div>
-        {!!currProfile && <Subscription lang={lang} profile={currProfile}/>}
         </body>
         </html>
     )
