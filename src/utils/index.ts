@@ -443,7 +443,7 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
     const isManager = groupDetail.memberships.some(m => m.profile.handle === profile?.handle && (m.role === 'manager' || m.role === 'owner'))
     const isMember = groupDetail.memberships.some(m => m.profile.handle === profile?.handle)
     const isIssuer = groupDetail.memberships.some(m => m.profile.handle === profile?.handle && m.role === 'issuer')
-    const isOwner = owner?.profile.handle === profile?.handle
+    const isOwner = owner?.profile?.handle === profile?.handle
 
     const canPublishEvent = (!groupDetail.can_publish_event || groupDetail.can_publish_event === 'all' || groupDetail.can_publish_event === 'everyone')
         || (groupDetail.can_publish_event === 'manager' && isManager)

@@ -107,7 +107,7 @@ export const getProfileEventByHandle = async ({params: {handle}, clientMode}: So
         const resp = await fetch(`${apiUrl}/event/by_profile?handle=${encodeURIComponent(handle)}&type=${type}`)
         if (!resp.ok) return []
         const data = await resp.json()
-        return (data.events || []) as Event[]
+        return (data.events || []).map((e: any) => ({...e, owner: e.owner || e.profile})) as Event[]
     }
 
     const [attends, hosting, coHosting, starred] = await Promise.all([
@@ -132,7 +132,7 @@ export const getGroupEventByHandle = async ({params: {handle}, clientMode}: Sola
     const resp = await fetch(`${apiUrl}/event/list?group_id=${encodeURIComponent(handle)}&collection=past`)
     if (!resp.ok) return [] as Event[]
     const data = await resp.json()
-    return (data.events || []).map((e: Event) => fixDate(e)) as Event[]
+    return (data.events || []).map((e: any) => fixDate({...e, owner: e.owner || e.profile})) as Event[]
 }
 
 export const getEventIcsUrl = ({params: {groupHandle}, clientMode}: SolaSdkFunctionParams<{ groupHandle: string }>) => {
@@ -231,6 +231,7 @@ export const getEvents = async ({params: {filters, authToken, limit}, clientMode
     return data.events.map((e: any) => {
         return {
             ...e,
+            owner: e.owner || e.profile,
             geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
             geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
         }

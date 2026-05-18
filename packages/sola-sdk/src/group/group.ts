@@ -9,6 +9,14 @@ import {SolaSdkFunctionParams} from '../types'
  * @param groupHandle
  * @param clientMode
  */
+const normalizeGroupDetail = (group: any): GroupDetail => ({
+    ...group,
+    memberships: group.memberships || [],
+    tracks: group.tracks || [],
+    venues: group.venues || [],
+    popup_cities: group.popup_cities || [],
+})
+
 export const getGroupDetailByHandle = async ({params: {groupHandle}, clientMode}:SolaSdkFunctionParams<{groupHandle: string}>) => {
     const apiUrl = getSdkConfig(clientMode).api
     const resp = await fetch(`${apiUrl}/group/get?group_id=${encodeURIComponent(groupHandle)}&include_detail=true`)
@@ -18,7 +26,7 @@ export const getGroupDetailByHandle = async ({params: {groupHandle}, clientMode}
         return null
     }
 
-    return data.group as GroupDetail
+    return normalizeGroupDetail(data.group) as GroupDetail
 }
 
 export const getGroupDetailById = async ({params: {groupId}, clientMode}: SolaSdkFunctionParams<{groupId: number}>) => {
@@ -30,7 +38,7 @@ export const getGroupDetailById = async ({params: {groupId}, clientMode}: SolaSd
         return null
     }
 
-    return data.group as GroupDetail
+    return normalizeGroupDetail(data.group) as GroupDetail
 }
 
 /**
