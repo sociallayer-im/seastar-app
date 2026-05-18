@@ -8,7 +8,10 @@ import {getCurrProfile, selectLang} from '@/app/actions'
 import Header from "@/components/Header"
 import StartupChecks from "@/components/client/StartupChecks"
 import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
+import { TrackJSInstall } from "@/app/trackjs_loader"
 import { headers } from "next/headers"
+
+TrackJSInstall()
 
 export const metadata: Metadata = {
     title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
@@ -36,8 +39,6 @@ export default async function RootLayout({
               className={`${poppins.className} ${icon.variable} ${media_icons.variable} ${editor_icons.variable}`}>
         <head>
             <script src="https://analytics.wamo.club/js/script.js" async data-domain="app.sola.day" type="text/javascript" />
-            <script src="https://cdn.trackjs.com/agent/v3/latest/t.js" crossOrigin="anonymous"/>
-            <script dangerouslySetInnerHTML={{__html: `window.TrackJS && TrackJS.install({ token: "52a6f8006a3349a09d6846c3aa7d8226" })`}} />
         </head>
         <Head>
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
