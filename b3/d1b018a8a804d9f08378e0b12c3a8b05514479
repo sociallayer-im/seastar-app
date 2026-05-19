@@ -1,0 +1,20 @@
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_212b3fb8ecd46f::t_b1e59e91feba89 68
+  s_212b3fb8ecd46f::t_dae901ac7be479 78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "b3d1b018a8a804d9f08378e0b12c3a8b05514479",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
