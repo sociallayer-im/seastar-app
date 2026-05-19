@@ -1,0 +1,19 @@
+src/components/client/StartupChecks.tsx
+  s_212b3fb8ecd46f::t_3c52dc73ff821e 37-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "a97a13d70ac40bdf97daf0f6eeb1cac325d60a35",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
