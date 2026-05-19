@@ -18,7 +18,7 @@ const normalizeGroupDetail = (group: any): GroupDetail => ({
 
 export const getGroupDetailByHandle = async ({params: {groupHandle}, clientMode}:SolaSdkFunctionParams<{groupHandle: string}>) => {
     const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/group/get?group_id=${encodeURIComponent(groupHandle)}&include_detail=true`)
+    const resp = await fetch(`${apiUrl}/group/get?group_id=${encodeURIComponent(groupHandle)}&include_detail=true`, {cache: 'no-store'})
     const data = await resp.json()
 
     if (!data.group) {

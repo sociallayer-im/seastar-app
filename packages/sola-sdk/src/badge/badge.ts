@@ -86,7 +86,7 @@ export const getBadgeClassByGroupId = async ({params, clientMode}:SolaSdkFunctio
 
 export const getInviteDetailByInviteId = async (inviteId: number) => {
     const apiUrl = getSdkConfig().api
-    const resp = await fetch(`${apiUrl}/group_invite/get?id=${inviteId}`)
+    const resp = await fetch(`${apiUrl}/group_invite/get?id=${inviteId}`, {cache: 'no-store'})
     const data = await resp.json()
 
     if (!data.group_invite) {
