@@ -34,7 +34,9 @@ export default function StartupChecks({lang, profile}: { lang: Dictionary, profi
                         if (!newInviteDisplayed(activity.item_id)) {
                             addDisplayedInvite(activity.item_id)
                             const inviteDetail = await getInviteDetailByInviteId(activity.item_id)
-                            if (inviteDetail) {
+                            const isPending = inviteDetail?.status === 'sending'
+                            const isNotExpired = inviteDetail?.expires_at && new Date(inviteDetail.expires_at) > new Date()
+                            if (inviteDetail && isPending && isNotExpired) {
                                 openModal({
                                     content: (close) => <DialogInviteDetail
                                         inviteDetail={inviteDetail}
