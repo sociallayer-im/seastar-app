@@ -14,7 +14,6 @@ const normalizeGroupDetail = (group: any): GroupDetail => ({
     memberships: group.memberships || [],
     tracks: group.tracks || [],
     venues: group.venues || [],
-    popup_cities: group.popup_cities || [],
 })
 
 export const getGroupDetailByHandle = async ({params: {groupHandle}, clientMode}:SolaSdkFunctionParams<{groupHandle: string}>) => {

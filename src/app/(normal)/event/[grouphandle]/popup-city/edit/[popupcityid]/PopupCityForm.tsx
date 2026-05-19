@@ -1,6 +1,6 @@
 'use client'
 
-import {PopupCity, PopupCityDraft, updatePopupCity} from '@sola/sdk'
+import {PopupCity, updatePopupCity} from '@sola/sdk'
 import {useState} from 'react'
 import {Input} from '@/components/shadcn/Input'
 import DatePicker from '@/components/client/DatePicker'
@@ -13,12 +13,12 @@ import useModal from '@/components/client/Modal/useModal'
 import {cfImage, getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
-export default function EditPopupCityForm({popupCity, lang}: { popupCity: PopupCityDraft, lang: Dictionary }) {
+export default function EditPopupCityForm({popupCity, lang}: { popupCity: PopupCity, lang: Dictionary }) {
     const {uploadImage} = useUploadImage()
     const {toast} = useToast()
     const {showLoading, closeModal} = useModal()
 
-    const [draft, setDraft] = useState<PopupCityDraft>(popupCity)
+    const [draft, setDraft] = useState<PopupCity>(popupCity)
     const [titleErr, setTitleErr] = useState('')
     const [coverErr, setCoverErr] = useState('')
     const [locationErr, setLocationErr] = useState('')
@@ -65,7 +65,7 @@ export default function EditPopupCityForm({popupCity, lang}: { popupCity: PopupC
             const authToken = getAuth()
             await updatePopupCity({
                 params: {
-                    popupCity: draft as PopupCity,
+                    popupCity: draft,
                     authToken: authToken!
                 },
                 clientMode: CLIENT_MODE

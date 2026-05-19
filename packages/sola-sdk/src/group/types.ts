@@ -1,5 +1,4 @@
 import {Profile, SocialMedia} from '../profile'
-import {PopupCity} from '../popup_city'
 
 
 
@@ -34,10 +33,10 @@ export interface GroupDetail extends Group {
     main_event_id: number | null,
     start_date: string | null,
     end_date: string | null,
+    website: string | null,
     memberships: Membership[],
     tracks: Track[]
     venues: VenueDetail[],
-    popup_cities: PopupCity[],
     venue_union?: number[]
 }
 

@@ -1,12 +1,12 @@
 'use client'
 
-import {createPopupCity, getGroupDetailByHandle, Group, GroupDetail, PopupCityDraft, updateGroup} from '@sola/sdk'
+import {createPopupCity, getGroupDetailByHandle, Group, GroupDetail, updateGroup} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {useEffect, useMemo, useState} from 'react'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {CLIENT_MODE} from '@/app/config'
-import Step0 from '@/app/(normal)/popup-city/create/Step0'
+import Step0, {PopupCityFormDraft} from '@/app/(normal)/popup-city/create/Step0'
 import Step1 from '@/app/(normal)/popup-city/create/Step1'
 import Step2 from '@/app/(normal)/popup-city/create/Step2'
 import Step3 from '@/app/(normal)/popup-city/create/Step3'
@@ -33,7 +33,7 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
     }, [availableGroups])
 
     const [step, setStep] = useState(0)
-    const [draft, setDraft] = useState<PopupCityDraft>({
+    const [draft, setDraft] = useState<PopupCityFormDraft>({
         image_url: null,
         location: null,
         title: '',
@@ -73,17 +73,27 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
         const loading = showLoading()
         try {
             const authToken = getAuth()
-            if (groupDetail?.timezone) {
+            if (groupDetail) {
                 await updateGroup({
                     params: {
-                        group: groupDetail,
+                        group: {...groupDetail, nickname: draft.title || groupDetail.nickname},
                         authToken: authToken!
                     },
                     clientMode: CLIENT_MODE
                 })
             }
             await createPopupCity({
-                params: {popupCityDraft: draft, authToken: authToken!},
+                params: {
+                    popupCityDraft: {
+                        image_url: draft.image_url,
+                        location: draft.location,
+                        website: draft.website,
+                        start_date: draft.start_date,
+                        end_date: draft.end_date,
+                        group_id: draft.group_id!
+                    },
+                    authToken: authToken!
+                },
                 clientMode: CLIENT_MODE
             })
             setStep(3)

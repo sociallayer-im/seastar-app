@@ -1,5 +1,5 @@
 import {redirect} from "next/navigation"
-import {getGroupDetailByHandle} from '@sola/sdk'
+import {getGroupDetailByHandle, PopupCity} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {analyzeGroupMembershipAndCheckProfilePermissions} from '@/utils'
 import {getCurrProfile} from '@/app/actions'
@@ -33,7 +33,19 @@ export default async function GroupEventSettingData(props: GroupEventSettingData
         groupDetail: groupDetail,
         venues: groupDetail.venues,
         tracks: groupDetail.tracks,
-        popupCities: groupDetail.popup_cities,
+        popupCities: groupDetail.start_date ? [{
+            id: groupDetail.id,
+            title: groupDetail.nickname || groupDetail.handle,
+            handle: groupDetail.handle,
+            image_url: groupDetail.image_url,
+            location: groupDetail.location,
+            start_date: groupDetail.start_date,
+            end_date: groupDetail.end_date,
+            website: groupDetail.website,
+            group_tags: groupDetail.group_tags,
+            group_id: groupDetail.id,
+            group: {id: groupDetail.id, handle: groupDetail.handle, nickname: groupDetail.nickname, image_url: groupDetail.image_url}
+        } as PopupCity] : [],
         isManager
     }
 }

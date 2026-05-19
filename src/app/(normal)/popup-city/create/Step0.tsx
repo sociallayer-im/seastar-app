@@ -1,6 +1,6 @@
 'use client'
 
-import {PopupCityDraft, GroupDetail, Group} from '@sola/sdk'
+import {GroupDetail, Group} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {displayProfileName} from '@/utils'
@@ -9,8 +9,18 @@ import {Input} from '@/components/shadcn/Input'
 import {Button} from '@/components/shadcn/Button'
 import {useMemo} from 'react'
 
+export interface PopupCityFormDraft {
+    title: string
+    image_url: string | null
+    location: string | null
+    website: string | null
+    start_date: string | null
+    end_date: string | null
+    group_id: number | null
+}
+
 export interface CreatePopupCityStepProps {
-    popupCityState: [PopupCityDraft, (draft: PopupCityDraft) => void]
+    popupCityState: [PopupCityFormDraft, (draft: PopupCityFormDraft) => void]
     groupDetailState?: [GroupDetail, (groupDetail: GroupDetail) => void]
     availableGroups?: Group[]
     lang: Dictionary,
