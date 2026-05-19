@@ -2,7 +2,7 @@
 
 import { buttonVariants, Button } from "@/components/shadcn/Button"
 import GroupEventHomeData from '@/app/(normal)/event/[grouphandle]/data'
-import { cfImage, displayProfileName, getAuth } from '@/utils'
+import { cfImage, displayProfileName, getAuth, prefixUrl } from '@/utils'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import SignInPanel from '@/components/SignInPanel'
 import EventHomeFilter from '@/components/client/EventHomeFilter'
@@ -167,7 +167,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                 </a>
 
                 {!!groupDetail.banner_image_url &&
-                    <a href={groupDetail.banner_link_url || '/'} className="mt-3">
+                    <a href={groupDetail.banner_link_url ? prefixUrl(groupDetail.banner_link_url) : '/'} className="mt-3">
                         <img className="w-full h-auto"
                             src={cfImage(groupDetail.banner_image_url, { width: 656, format: 'auto', quality: 85 })} alt="" />
                     </a>
