@@ -38,6 +38,10 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         redirect('/404')
     }
 
+    if (!eventDetail.group?.handle) {
+        redirect('/404')
+    }
+
     const groupDetail = await getGroupDetailByHandle({
         params: {groupHandle: eventDetail.group.handle},
         clientMode: CLIENT_MODE
@@ -82,7 +86,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         return item.profile.id === currProfile?.id && item.status === 'checked'
     })
 
-    const isEventCreator = eventDetail.owner.id === currProfile?.id
+    const isEventCreator = !!eventDetail.owner && eventDetail.owner.id === currProfile?.id
 
     // check if the current user is an operator of the event, operator can edit the event
     const isEventOperator = !!currProfile

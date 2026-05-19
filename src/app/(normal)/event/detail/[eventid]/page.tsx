@@ -320,7 +320,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         {!!customHost ?
                             <a key={customHost.id}
                                 className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                href={customHost.item_id ? `/profile/${customHost.profile!.handle}` : '#'}>
+                                href={customHost.profile?.handle ? `/profile/${customHost.profile.handle}` : '#'}>
                                 <img className="w-11 h-11 rounded-full mr-2"
                                     src={cfImage(getAvatar(customHost.item_id, customHost.image_url), { width: 48, height: 48, fit: 'cover' })} alt="" />
                                 <div>
@@ -332,8 +332,8 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             </a> : !!groupHost ?
                                 (groupHost.group ? <a
                                     className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                    href={groupHost.group ? `/group/${groupHost.group!.handle}` : undefined}>
-                                    <Avatar profile={groupHost.group!} size={44} className="mr-2" />
+                                    href={groupHost.group?.handle ? `/group/${groupHost.group.handle}` : undefined}>
+                                    <Avatar profile={groupHost.group} size={44} className="mr-2" />
                                     <div>
                                         <div className="font-semibold text-sm text-nowrap">
                                             {groupHost.nickname}
@@ -357,7 +357,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             eventDetail.event_roles?.filter(role => role.role === 'co_host').map(role => {
                                 return <a key={role.id}
                                     className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                    href={role.item_id ? `/profile/${role.profile!.handle}` : '#'}>
+                                    href={role.profile?.handle ? `/profile/${role.profile.handle}` : '#'}>
                                     <img className="w-11 h-11 rounded-full mr-2"
                                         src={cfImage(getAvatar(role.item_id, role.image_url), { width: 48, height: 48, fit: 'cover' })} alt="" />
                                     <div>
@@ -376,7 +376,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             eventDetail.event_roles?.filter(role => role.role === 'speaker').map(role => {
                                 return <a key={role.id}
                                     className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                                    href={role.item_id ? `/profile/${role.profile!.handle}` : undefined}>
+                                    href={role.profile?.handle ? `/profile/${role.profile.handle}` : undefined}>
                                     <img className="w-11 h-11 rounded-full mr-2"
                                         src={cfImage(getAvatar(role.item_id, role.image_url), { width: 48, height: 48, fit: 'cover' })} alt="" />
                                     <div>
