@@ -1,0 +1,43 @@
+src/app/(normal)/group/create/page.tsx
+  s_212b3fb8ecd46f::t_a46499a8e538c2 4,21
+src/app/(normal)/popup-city/create/Step0.tsx
+  s_212b3fb8ecd46f::t_7c63445570390e 3,12-21,23
+packages/sola-sdk/src/popup_city/types.ts
+  s_212b3fb8ecd46f::t_91620aed4fbb84 3-5,8-9,14,16-17,26-27
+packages/sola-sdk/src/popup_city/popup_city.ts
+  s_212b3fb8ecd46f::t_7ff15ab3181077 2-3,16-17,23-24,34,37-42,44-45,48-52,60,64-73,82,86-91,93,99,103-107,113
+packages/sola-sdk/src/group/types.ts
+  s_212b3fb8ecd46f::t_e2eea3160a99f5 36
+src/app/(normal)/group/create/RegisterForm.tsx
+  s_212b3fb8ecd46f::t_8ab44befa26546 14
+  s_212b3fb8ecd46f::t_de650b840509ba 56
+src/app/(normal)/event/[grouphandle]/popup-city/edit/[popupcityid]/PopupCityForm.tsx
+  s_212b3fb8ecd46f::t_6a457f5966361c 16
+  s_212b3fb8ecd46f::t_05a27a1cbaea7b 3
+  s_212b3fb8ecd46f::t_965a11c5a2103f 21
+  s_212b3fb8ecd46f::t_692f879a19d45c 68
+src/app/(normal)/event/[grouphandle]/setting/data.ts
+  s_212b3fb8ecd46f::t_c46dc16a5fa007 36-48
+  s_212b3fb8ecd46f::t_019e11d7324c95 2
+src/app/(normal)/popup-city/create/CreatePopupCityForm.tsx
+  s_212b3fb8ecd46f::t_c20c929c4e5cda 3
+  s_212b3fb8ecd46f::t_99b8c1aeebef57 9
+  s_212b3fb8ecd46f::t_6884d5a3968bbd 76,79,86-96
+  s_212b3fb8ecd46f::t_e9dc3729fe1b76 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "b01f2df00c4467fc47a1bd78c6a5f445620deda8",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
