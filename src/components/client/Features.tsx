@@ -51,14 +51,13 @@ function FeatureItem(props: { popupCity: PopupCity }) {
         <div className='hidden absolute bottom-0 left-0 right-0 sm:pt-[140px] pt-[100px] px-6 h-[250px]' style={{ background: dominantColor }}>
             <h3 className='text-white text-3xl font-bold mb-1' style={{ color: textColor }}>{props.popupCity.title}</h3>
             <div className="flex sm:flex-row flex-col sm:gap-4 mb-2">
-                <div className="webkit-box-clamp-1 text-sm"
+                {props.popupCity.start_date && props.popupCity.end_date && <div className="webkit-box-clamp-1 text-sm"
                     style={{ color: textColor }}>
                     <i className={'uil-calendar-alt mr-0.5'}></i>
-                    <DisplayDateTime format={'MMM DD'}
-                        dataTimeStr={props.popupCity.start_date!} />
+                    <DisplayDateTime format={'MMM DD'} dataTimeStr={props.popupCity.start_date} />
                     <span className="mx-1">-</span>
-                    <DisplayDateTime format={'MMM DD, YYYY'} dataTimeStr={props.popupCity.end_date!} />
-                </div>
+                    <DisplayDateTime format={'MMM DD, YYYY'} dataTimeStr={props.popupCity.end_date} />
+                </div>}
                 <div className="flex-row-item-center text-sm">
                     <i className={'uil-location-point mr-0.5'}></i>
                     <div className="webkit-box-clamp-1 break-all" style={{ color: textColor }}>{props.popupCity.location}</div>

@@ -1,6 +1,4 @@
 import DiscoverPageData from '@/app/(normal)/discover/data'
-import { displayProfileName } from '@/utils'
-import Avatar from '@/components/Avatar'
 import { selectLang } from '@/app/actions'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import Footer from '@/components/Footer'
@@ -43,34 +41,6 @@ export default async function DiscoverPage() {
         <ToCreatePopupCity lang={lang} />
 
         <PopupCities popupCities={popupCities} lang={lang} />
-
-        <div className="mt-8">
-            <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
-                <div>{lang['Communities']}</div>
-                <a href="/communities" className="flex-row-item-center text-sm">
-                    <span>{lang['See all Communities']}</span>
-                    <i className="uil-arrow-right text-2xl ml-1" />
-                </a>
-            </h2>
-
-            <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-2">
-                {eventGroups.map((group, index) => {
-                    return <a key={index} href={`/group/${group.handle}`}
-                        className="h-[200px] rounded shadow p-3 duration-200 hover:translate-y-[-6px]">
-                        <Avatar profile={group} size={64} className="object-cover" />
-                        <div className="webkit-box-clamp-2 text-lg font-semibold leading-5 h-10 mb-4 mt-2">
-                            {displayProfileName(group)}
-                        </div>
-
-                        <div className="text-sm"><strong className="mr-1">
-                            {(group as any).memberships_count}</strong>{lang['Members']}</div>
-                        <div className="text-sm"><strong className="mr-1">
-                            {(group as any).events_count}</strong>{lang['Events']}</div>
-                    </a>
-                })
-                }
-            </div>
-        </div>
 
         <div className="mt-8">
             <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">

@@ -19,25 +19,22 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
     const [filter, setFilter] = useState<FilterType>('all')
 
     const filterPopupCities = (cities: SolaPopupCity[]) => {
-                const now = new Date()
-                const list = cities.filter(city => {
-                    const startDate = new Date(city.start_date!)
-                    const endDate = new Date(city.end_date!)
-
-                    if (filter === 'ongoing') return startDate <= now && endDate >= now
-                    if (filter === 'upcoming') return startDate > now
-                    if (filter === 'past') return endDate < now
-                    return true
-                })
-
-                const sortByStartDateDesc = (a: SolaPopupCity, b: SolaPopupCity) =>
-                    new Date(b.start_date!).getTime() - new Date(a.start_date!).getTime()
-
-                // const featured = list.filter(city => city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
-                // const normal = list.filter(city => !city.group_tags?.includes(':featured')).sort(sortByStartDateDesc)
-
-                return list.sort(sortByStartDateDesc)
-            }
+        const now = new Date()
+        const list = cities.filter(city => {
+            if (!city.start_date || !city.end_date) return filter === 'all'
+            const startDate = new Date(city.start_date)
+            const endDate = new Date(city.end_date)
+            if (filter === 'ongoing') return startDate <= now && endDate >= now
+            if (filter === 'upcoming') return startDate > now
+            if (filter === 'past') return endDate < now
+            return true
+        })
+        return list.sort((a, b) => {
+            if (!a.start_date) return 1
+            if (!b.start_date) return -1
+            return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+        })
+    }
 
     const filteredCities = filterPopupCities(popupCities)
 
@@ -99,12 +96,11 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                                    width={227} height={148}
                                    src={cfImage(popupCity.image_url || '', { width: 454, height: 296, fit: 'cover' })} alt=""/>
                         </div>
-                        <div className="webkit-box-clamp-1 sm:text-sm text-xs">
-                            <DisplayDateTime format={'MMM DD'}
-                                             dataTimeStr={popupCity.start_date!}/>
+                        {popupCity.start_date && popupCity.end_date && <div className="webkit-box-clamp-1 sm:text-sm text-xs">
+                            <DisplayDateTime format={'MMM DD'} dataTimeStr={popupCity.start_date}/>
                             <span className="mx-1">-</span>
-                            <DisplayDateTime format={'MMM DD, YYYY'} dataTimeStr={popupCity.end_date!}/>
-                        </div>
+                            <DisplayDateTime format={'MMM DD, YYYY'} dataTimeStr={popupCity.end_date}/>
+                        </div>}
                         <div className="webkit-box-clamp-2 text-lg font-semibold leading-5 h-10 mb-4">
                             {popupCity.title}
                         </div>
