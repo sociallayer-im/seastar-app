@@ -94,7 +94,7 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                         <div className="rounded aspect-[3/2] mb-3 overflow-hidden">
                             <img className="object-cover w-full h-full rounded"
                                    width={227} height={148}
-                                   src={cfImage(popupCity.image_url || '', { width: 454, height: 296, fit: 'cover' })} alt=""/>
+                                   src={cfImage(popupCity.image_url || popupCity.group.image_url || '', { width: 454, height: 296, fit: 'cover' })} alt=""/>
                         </div>
                         {popupCity.start_date && popupCity.end_date && <div className="webkit-box-clamp-1 sm:text-sm text-xs">
                             <DisplayDateTime format={'MMM DD'} dataTimeStr={popupCity.start_date}/>
