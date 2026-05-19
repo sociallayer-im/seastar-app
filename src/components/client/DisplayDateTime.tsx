@@ -1,6 +1,7 @@
 import dayjs from '@/libs/dayjs'
 
-export default function DisplayDateTime(props: { dataTimeStr: string, tz?: string, format?: string }) {
+export default function DisplayDateTime(props: { dataTimeStr: string | null | undefined, tz?: string, format?: string }) {
+    if (!props.dataTimeStr) return null
     let str = props.dataTimeStr
     if (str.includes('T')) {
         if (!str.endsWith('Z')) {
