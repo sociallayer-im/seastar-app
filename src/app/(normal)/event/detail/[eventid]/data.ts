@@ -65,7 +65,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         filteredParticipants = eventDetail.participants?.filter(participant => {
             if (!participant.ticket_id) return true
             const ticket = eventDetail.tickets?.find(t => t.id === participant.ticket_id)
-            if (ticket!.payment_methods.length === 0) {
+            if (!ticket || ticket.payment_methods.length === 0) {
                 return true
             } else return participant.payment_status === 'succeeded'
         }) || []
@@ -75,7 +75,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
         return (!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked')) // no tickets needed
             || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && item.payment_status?.includes('succe')) // paid ticket
-            || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && ticket.payment_methods.length === 0) // free ticket
+            || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && (ticket.payment_methods?.length ?? 0) === 0) // free ticket
     })
 
     const currProfileCheckedIn = eventDetail.participants?.find((item: Participant) => {
