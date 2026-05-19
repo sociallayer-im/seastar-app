@@ -1,0 +1,26 @@
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_212b3fb8ecd46f::t_1f2006e064c5b8 41-44
+  s_212b3fb8ecd46f::t_cc9baea35acf6f 89
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_af693872a443c2 335
+  s_212b3fb8ecd46f::t_b87828f9cdef07 323
+  s_212b3fb8ecd46f::t_fd6ace51cf6ede 379
+  s_212b3fb8ecd46f::t_d681d4b24ef86d 336
+  s_212b3fb8ecd46f::t_1753eabf06c3de 360
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "51bbcb19c94270ff9507b715b13971ebc0790f17",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
