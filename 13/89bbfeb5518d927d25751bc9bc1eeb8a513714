@@ -1,0 +1,20 @@
+src/app/(normal)/event/[grouphandle]/GroupEventHome.tsx
+  s_212b3fb8ecd46f::t_fb8c6ec7b6f233 5
+  s_212b3fb8ecd46f::t_79aecd35ebeb6b 170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.10",
+  "base_commit_sha": "1389bbfeb5518d927d25751bc9bc1eeb8a513714",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
