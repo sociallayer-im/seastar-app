@@ -101,7 +101,7 @@ export default function EventParticipantList({
         const rows = eventDetail.participants?.map((item, index) => {
             return [item.profile.handle,
                 item.profile.nickname || '',
-                (item.profile as any).email || '',
+                item.profile.email || '',
                 item.status,
                 item.created_at + 'Z'
             ]

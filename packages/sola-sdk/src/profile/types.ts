@@ -4,6 +4,7 @@ export interface Profile {
     image_url: string | null,
     nickname: string | null,
     address?: string | null,
+    email?: string | null,
 }
 
 export interface ProfileDetail extends Profile {
