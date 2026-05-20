@@ -772,6 +772,25 @@ export default function EventForm({
                     <div className="mt-8">
                       <div className="flex-row-item-center justify-between">
                         <div>
+                          <div className="font-semibold text-sm">
+                            {lang["Require approval"]}
+                          </div>
+                          <div className="text-gray-500 text-xs">
+                            {lang["Users must apply and receive approval to attend in the event"]}
+                          </div>
+                        </div>
+                        <Switch
+                          checked={!!draft.require_approval}
+                          onClick={() => {
+                            setDraft({ ...draft, require_approval: !draft.require_approval })
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-8">
+                      <div className="flex-row-item-center justify-between">
+                        <div>
                           <div className="font-semibold text-sm text-amber-500">
                             {lang["Close Event"]}
                           </div>

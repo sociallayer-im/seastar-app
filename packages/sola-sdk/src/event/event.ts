@@ -563,6 +563,34 @@ export const checkInEventForParticipant = async ({
     return data.participant as Participant
 }
 
+export const approveParticipant = async ({params, clientMode}: SolaSdkFunctionParams<{
+    participantId: number,
+    authToken: string
+}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/approve_participant`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({auth_token: params.authToken, participant_id: params.participantId})
+    })
+    if (!response.ok) throw new Error('Failed to approve participant')
+    const data = await response.json()
+    return data.participant as Participant
+}
+
+export const rejectParticipant = async ({params, clientMode}: SolaSdkFunctionParams<{
+    participantId: number,
+    authToken: string
+}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/event/reject_participant`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({auth_token: params.authToken, participant_id: params.participantId})
+    })
+    if (!response.ok) throw new Error('Failed to reject participant')
+    const data = await response.json()
+    return data.participant as Participant
+}
+
 export const sendEventPoap = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
     eventId: number,
     authToken: string

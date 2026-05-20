@@ -59,6 +59,7 @@ export interface EventDetail extends Event {
     event_roles: EventRoleDetail[] | null
     recurring_id: number | null,
     ticket_items: TicketItem[]
+    require_approval: boolean | null,
 }
 
 export interface Ticket {
@@ -147,7 +148,7 @@ export interface TicketDraft  extends Pick<Ticket, 'title' | 'content' | 'check_
     id?: number
 }
 
-export interface EventDraftType extends Pick<EventDetail, | 'recurring_id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'requirement_tags' | 'kind'> {
+export interface EventDraftType extends Pick<EventDetail, | 'recurring_id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'requirement_tags' | 'kind' | 'require_approval'> {
     id?: number
     timezone: string | null
     tickets: TicketDraft[]

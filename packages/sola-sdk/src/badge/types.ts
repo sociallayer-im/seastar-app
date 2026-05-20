@@ -66,4 +66,17 @@ export interface InviteDetail extends Invite {
     receiver_address: string | null,
     receiver: Profile | null,
     sender: Profile,
+    ticket_id: number | null,
+    ticket: GroupTicket | null,
+}
+
+export interface GroupTicket {
+    id: number,
+    title: string,
+    ticket_type: string,
+    status: string,
+    start_date: string | null,
+    end_date: string | null,
+    days_allowed: string[] | null,
+    tracks_allowed: number[] | null,
 }

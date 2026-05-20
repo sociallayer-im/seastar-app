@@ -70,6 +70,7 @@ export const emptyEvent: EventDraftType = {
   max_participant: null,
   display: "normal",
   pinned: false,
+  require_approval: null,
   status: "open",
   badge_class_id: null,
   tickets: [],

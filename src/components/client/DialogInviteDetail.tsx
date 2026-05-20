@@ -1,6 +1,6 @@
 'use client'
 
-import { acceptInvite, InviteDetail, rejectInvite, acceptCodeInvite } from '@sola/sdk'
+import { acceptInvite, InviteDetail, rejectInvite, acceptCodeInvite, GroupTicket } from '@sola/sdk'
 import { Dictionary } from '@/lang'
 import Avatar from '@/components/Avatar'
 import { displayProfileName, getAuth } from '@/utils'
@@ -17,6 +17,23 @@ export interface DialogInviteDetailProps {
     lang: Dictionary
     close?: () => void
     code?: string | null
+}
+
+function TicketInfo({ ticket }: { ticket: GroupTicket }) {
+    const formatDate = (d: string) => new Date(d).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+
+    let validity: string | null = null
+    if (ticket.start_date && ticket.end_date) {
+        validity = `${formatDate(ticket.start_date)} – ${formatDate(ticket.end_date)}`
+    } else if (ticket.days_allowed && ticket.days_allowed.length > 0) {
+        validity = ticket.days_allowed.map(formatDate).join(', ')
+    }
+
+    return <div className="mt-3 pt-3 border-t border-gray-200">
+        <div className="font-semibold mb-1">Group Pass</div>
+        <div className="text-sm mb-1">{ticket.title}</div>
+        {validity && <div className="text-xs text-gray-500">Valid: {validity}</div>}
+    </div>
 }
 
 export default function DialogInviteDetail({ inviteDetail, isManager, lang, close, code }: DialogInviteDetailProps) {
@@ -151,6 +168,10 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
                 <div className="capitalize">
                     <DisplayDateTime dataTimeStr={inviteDetail.expires_at} />
                 </div>
+
+                {inviteDetail.ticket && (
+                    <TicketInfo ticket={inviteDetail.ticket} />
+                )}
             </div>
 
             <div className="text-red-500 text-sm my-2">{error}</div>

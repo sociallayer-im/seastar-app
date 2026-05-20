@@ -135,6 +135,9 @@ export const en = {
     Highlighted: "Highlighted",
     "Select a highlight event, the event you created will display on the top of the day":
         "Select a highlight event, the event you created will display on the top of the day",
+    "Require approval": "Require approval",
+    "Users must apply and receive approval to attend in the event":
+        "Users must apply and receive approval to attend in the event",
     "Close Event": "Close Event",
     "People are no longer able to register for the event":
         "People are no longer able to register for the event",
@@ -383,6 +386,7 @@ export const en = {
     "Are you sure you want to cancel this event?":
         "Are you sure you want to cancel this event?",
     "Check In": "Check In",
+    "Accept to join": "Accept to join",
     "Cancel Participation": "Cancel Participation",
     "Are you sure you want to cancel your participation?":
         "Are you sure you want to cancel your participation?",

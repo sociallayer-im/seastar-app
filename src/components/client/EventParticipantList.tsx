@@ -2,7 +2,7 @@
 
 import {getAuth, shortWalletAddress} from '@/utils'
 import {Dictionary} from '@/lang'
-import {cancelAttendEvent, EventDetail, ProfileDetail, Participant, checkInEventForParticipant} from '@sola/sdk'
+import {cancelAttendEvent, EventDetail, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -50,6 +50,54 @@ export default function EventParticipantList({
                 } catch (e: unknown) {
                     toast({
                         description: e instanceof Error ? e.message : 'Failed to cancel participation',
+                        variant: 'destructive'
+                    })
+                } finally {
+                    closeModal(loading)
+                }
+            }
+        })
+    }
+
+    const handleApproveParticipant = async (participant: Participant) => {
+        const loading = showLoading()
+        try {
+            const authToken = getAuth()
+            await approveParticipant({
+                params: {participantId: participant.id, authToken: authToken!},
+                clientMode: CLIENT_MODE
+            })
+            toast({description: 'Participant approved', variant: 'success'})
+            setTimeout(() => window.location.reload(), 1500)
+        } catch (e: unknown) {
+            toast({
+                description: e instanceof Error ? e.message : 'Failed to approve',
+                variant: 'destructive'
+            })
+        } finally {
+            closeModal(loading)
+        }
+    }
+
+    const handleRejectParticipant = async (participant: Participant) => {
+        showConfirmDialog({
+            lang,
+            title: lang['Reject'],
+            type: 'danger',
+            content: lang['Are you sure you want to cancel your participation?'],
+            onConfig: async () => {
+                const loading = showLoading()
+                try {
+                    const authToken = getAuth()
+                    await rejectParticipant({
+                        params: {participantId: participant.id, authToken: authToken!},
+                        clientMode: CLIENT_MODE
+                    })
+                    toast({description: 'Participant rejected', variant: 'success'})
+                    setTimeout(() => window.location.reload(), 1500)
+                } catch (e: unknown) {
+                    toast({
+                        description: e instanceof Error ? e.message : 'Failed to reject',
                         variant: 'destructive'
                     })
                 } finally {
@@ -148,13 +196,28 @@ export default function EventParticipantList({
 
                         <div className="flex-row-item-center">
                             <div className="flex-col sm:flex-row items-end flex">
-                                {participant.profile.id === currProfile?.id &&
+                                {participant.status === 'pending' && isEventOperator && <>
+                                    <div onClick={() => handleApproveParticipant(participant)}
+                                         className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-green-300 flex flex-row-item-center text-xs text-green-600 bg-green-50 font-semibold">
+                                        {lang['Accept to join']}
+                                    </div>
+                                    <div onClick={() => handleRejectParticipant(participant)}
+                                         className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-gray-600">
+                                        {lang['Reject']}
+                                    </div>
+                                </>}
+                                {participant.status === 'pending' && !isEventOperator &&
+                                    <div className="h-7 rounded-lg px-2 ml-2 border border-yellow-300 flex flex-row-item-center text-xs text-yellow-600 bg-yellow-50">
+                                        {lang['Pending']}
+                                    </div>
+                                }
+                                {participant.profile.id === currProfile?.id && participant.status !== 'pending' &&
                                     <div onClick={handleCancelParticipation}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-red-400">
                                         {lang['Cancel Participation']}
                                     </div>
                                 }
-                                {isEventOperator && participant.status !== 'checked' &&
+                                {isEventOperator && participant.status !== 'checked' && participant.status !== 'pending' &&
                                     <div onClick={() => handleCheckInForParticipant(participant)}
                                          className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
                                         {lang['Check In']}

@@ -135,6 +135,9 @@ export const zh: Dictionary = {
   Highlighted: "突出显示",
   "Select a highlight event, the event you created will display on the top of the day":
     "选择一个突出显示的活动，您创建的活动将显示在当天的顶部",
+  "Require approval": "需要审核",
+  "Users must apply and receive approval to attend in the event":
+    "用户需要申请并获得批准才能参加活动",
   "Close Event": "关闭活动",
   "People are no longer able to register for the event":
     "用户将无法继续报名该活动",
@@ -377,6 +380,7 @@ export const zh: Dictionary = {
   "Event Canceled": "活动已取消",
   "Are you sure you want to cancel this event?": "您确定要取消此活动吗？",
   "Check In": "签到",
+  "Accept to join": "批准加入",
   "Cancel Participation": "取消参与",
   "Are you sure you want to cancel your participation?": "您确定要取消参与吗？",
   "Participation cancelled": "参与已取消",
