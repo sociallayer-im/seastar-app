@@ -1,0 +1,67 @@
+src/app/(normal)/event/[grouphandle]/permission/PermissonForm.tsx
+  s_212b3fb8ecd46f::t_b65317d58230f3 30-32
+src/lang/zh.ts
+  s_212b3fb8ecd46f::t_2f46c28c943e3c 155-156
+  s_212b3fb8ecd46f::t_e96f0ab6b86e07 326
+  s_212b3fb8ecd46f::t_ff28e47eb52d76 327
+  s_212b3fb8ecd46f::t_70ed0986a71bc3 146-148
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_212b3fb8ecd46f::t_f4b0f8280e26d6 163
+  s_212b3fb8ecd46f::t_e1401452768895 164
+  s_212b3fb8ecd46f::t_ca56a3a0fdcffa 58-59
+  s_212b3fb8ecd46f::t_1ffc8ea1972755 81-83
+src/app/(normal)/event/detail/[eventid]/EventParticipantTab.tsx
+  s_212b3fb8ecd46f::t_44a4d0213d9674 22
+  s_212b3fb8ecd46f::t_ebd014f33aa1df 14
+  s_212b3fb8ecd46f::t_03415b2e4dc96a 59
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_212b3fb8ecd46f::t_3edfa743ac0a77 817-832
+  s_212b3fb8ecd46f::t_a5712cc810f617 396,402-406
+packages/sola-sdk/src/event/event.ts
+  s_212b3fb8ecd46f::t_1eb80bc97ad940 346-357
+  s_212b3fb8ecd46f::t_a4fb408129072e 367-377
+src/components/client/AttendEventBtn.tsx
+  s_212b3fb8ecd46f::t_3058a5e677e2f4 38
+src/lang/en.ts
+  s_212b3fb8ecd46f::t_91e8663cc7d443 146-148
+  s_212b3fb8ecd46f::t_6356ed97c3b6dd 155-156
+  s_212b3fb8ecd46f::t_a4507a8ae1b967 328
+  s_212b3fb8ecd46f::t_bf263eaea6f907 329
+src/components/client/EventParticipantList.tsx
+  s_212b3fb8ecd46f::t_4cb52daa7acf21 298-303
+  s_212b3fb8ecd46f::t_f82c34c1e8b543 304
+  s_212b3fb8ecd46f::t_152619d0e83935 18
+  s_212b3fb8ecd46f::t_42a19cb7817345 310,322-324
+  s_212b3fb8ecd46f::t_ba3e25ae31f935 336-416
+  s_212b3fb8ecd46f::t_85e38bb4aebc4d 90
+  s_212b3fb8ecd46f::t_182d6af2a99a54 180-224
+  s_212b3fb8ecd46f::t_09deb48ff06521 278
+  s_212b3fb8ecd46f::t_f70abaad980724 3
+  s_212b3fb8ecd46f::t_2240c03b0e339d 6
+  s_212b3fb8ecd46f::t_9569855dd0bc3b 25-26
+  s_212b3fb8ecd46f::t_bf1662e2f4e83c 155-157
+src/app/(normal)/event/edit/[eventid]/EditEventForm.tsx
+  s_212b3fb8ecd46f::t_aeb59d9eac01c3 40-44
+  s_212b3fb8ecd46f::t_21087185c643eb 9
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_8e6199229a9fff 88
+  s_212b3fb8ecd46f::t_5b4b248986ab41 89-90
+  s_212b3fb8ecd46f::t_87f594c31d3c05 274-283
+  s_212b3fb8ecd46f::t_7495faeabee8ee 618
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "6ff19ef72087990e9476707b622d293f168ffb87",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
