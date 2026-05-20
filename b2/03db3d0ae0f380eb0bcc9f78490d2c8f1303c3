@@ -1,0 +1,42 @@
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_212b3fb8ecd46f::t_2ca4b98d55215f 775-790
+src/app/(normal)/event/[grouphandle]/create/data.ts
+  s_212b3fb8ecd46f::t_5896ab51ce336f 73
+src/lang/zh.ts
+  s_212b3fb8ecd46f::t_5fc2b7b99e624b 138-140
+  s_212b3fb8ecd46f::t_c86e048a543819 383
+src/components/client/DialogInviteDetail.tsx
+  s_212b3fb8ecd46f::t_b0f8b3141d21b0 3
+  s_212b3fb8ecd46f::t_28cee24b02ffff 22-38
+  s_212b3fb8ecd46f::t_a52e9be15632ba 171-174
+packages/sola-sdk/src/event/event.ts
+  s_212b3fb8ecd46f::t_93146623302d8f 566-593
+src/lang/en.ts
+  s_212b3fb8ecd46f::t_30efd320d5b955 138-140
+  s_212b3fb8ecd46f::t_5711fdaad0b6a9 389
+packages/sola-sdk/src/badge/types.ts
+  s_212b3fb8ecd46f::t_5b414407899d3a 69-81
+packages/sola-sdk/src/event/types.ts
+  s_212b3fb8ecd46f::t_5b4b4d85b5d9f6 151
+  s_212b3fb8ecd46f::t_7af11de9cf7a74 62
+src/components/client/EventParticipantList.tsx
+  s_212b3fb8ecd46f::t_1866f09794e357 62-109
+  s_212b3fb8ecd46f::t_ddcf7e5b4f212e 199-214,220
+  s_212b3fb8ecd46f::t_f37e034464eec5 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "b203db3d0ae0f380eb0bcc9f78490d2c8f1303c3",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
