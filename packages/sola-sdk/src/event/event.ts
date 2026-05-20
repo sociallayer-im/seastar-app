@@ -343,6 +343,18 @@ export const saveEventForm = async ({params, clientMode}: SolaSdkFunctionParams<
     return data.form as EventForm
 }
 
+export const clearEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: number,
+    authToken: string
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/form/clear_event_form`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({event_id: params.eventId, auth_token: params.authToken})
+    })
+    if (!res.ok) throw new Error('Failed to clear event form')
+}
+
 export const getEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
     eventId: number
 }>) => {
@@ -350,6 +362,17 @@ export const getEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
     if (!res.ok) throw new Error('Failed to get event form')
     const data = await res.json()
     return data.form as EventForm | null
+}
+
+export const getFormSubmission = async ({params, clientMode}: SolaSdkFunctionParams<{
+    formId: string,
+    userId: number,
+    authToken: string
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/form/get_submission?form_id=${params.formId}&user_id=${params.userId}&auth_token=${params.authToken}`)
+    if (!res.ok) throw new Error('Failed to get form submission')
+    const data = await res.json()
+    return data.submission as FormSubmission | null
 }
 
 export const listFormSubmissions = async ({params, clientMode}: SolaSdkFunctionParams<{

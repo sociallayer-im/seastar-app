@@ -6,7 +6,7 @@ import {CreateEventPageDataType} from '@/app/(normal)/event/[grouphandle]/create
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth, processEventRoles} from '@/utils'
-import {cancelEvent, cancelRecurringEvent, EventDraftType, saveEventForm, updateEvent, updateRecurringEvent} from '@sola/sdk'
+import {cancelEvent, cancelRecurringEvent, clearEventForm, EventDraftType, saveEventForm, updateEvent, updateRecurringEvent} from '@sola/sdk'
 import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatForm'
 import {FormFieldDraft} from '@/app/(normal)/event/[grouphandle]/create/EventForm'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
@@ -35,6 +35,11 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                         fields: formFields.map((f, i) => ({...f, field_type: 'text', position: i})),
                         authToken: authToken!
                     },
+                    clientMode: CLIENT_MODE
+                })
+            } else if (formFields === null && (props.data.eventDraft as any).form_id) {
+                await clearEventForm({
+                    params: {eventId: event.id, authToken: authToken!},
                     clientMode: CLIENT_MODE
                 })
             }

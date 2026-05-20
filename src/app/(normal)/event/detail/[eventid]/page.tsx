@@ -85,7 +85,9 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
         recurring,
         ticketsPurchased,
         currProfileStarred,
-        enableGoogleMap
+        enableGoogleMap,
+        canPublishEvent,
+        canViewAllSubmissions
     } = await cachedEventDetailPage(eventid, pickSearchParam(_tab))
     const { lang } = await selectLang()
 
@@ -267,6 +269,16 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         {!!ticketsPurchased.length &&
                             <div className="mt-3">
                                 <MyTicketList tickets={ticketsPurchased} lang={lang} />
+                            </div>
+                        }
+
+                        {canPublishEvent &&
+                            <div className="flex-row-item-center mt-2">
+                                <a href={`/event/${groupDetail.handle}/create`}
+                                    className={`${buttonVariants({ variant: 'secondary' })} text-xs flex-1`}>
+                                    <i className="uil-plus mr-1" />
+                                    <span>{lang['Create Event']}</span>
+                                </a>
                             </div>
                         }
                     </div>
@@ -603,6 +615,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         eventDetail={eventDetail}
                         currProfile={currProfile}
                         isEventOperator={isEventOperator}
+                        canViewAllSubmissions={canViewAllSubmissions}
                     />
                 }
 

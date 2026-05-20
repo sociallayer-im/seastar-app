@@ -393,12 +393,17 @@ export default function EventForm({
                 state={{ event: draft, setEvent: setDraft }}
               />
               <RepeatForm
-                  disabled={!!draft.id}
+                  disabled={!!draft.id || enableApplicationForm}
                   lang={lang}
                   event={draft}
                   repeatForm={repeatForm}
                   onChange={(repeatForm) => setRepeatForm(repeatForm)}
                 />
+              {enableApplicationForm && !!repeatForm.interval && (
+                <div className="text-xs text-orange-500 mt-1">
+                  {lang['Application form is not available for recurring events'] || 'Application form is not available for recurring events. Please remove the repeat setting first.'}
+                </div>
+              )}
               {!!timeError && (
                 <div className="text-red-400 mt-2 text-xs err-msg">
                   {timeError}
@@ -809,7 +814,22 @@ export default function EventForm({
                         </div>
                         <Switch
                           checked={enableApplicationForm}
-                          onClick={() => setEnableApplicationForm(!enableApplicationForm)}
+                          onClick={() => {
+                            if (enableApplicationForm) {
+                              showConfirmDialog({
+                                lang,
+                                title: lang['Remove Application Form'],
+                                type: 'danger',
+                                content: lang['Are you sure you want to remove the application form? All questions will be cleared.'] || 'Are you sure you want to remove the application form? All questions will be cleared.',
+                                onConfig: () => {
+                                  setEnableApplicationForm(false)
+                                  setFormFields([])
+                                }
+                              })
+                            } else {
+                              setEnableApplicationForm(true)
+                            }
+                          }}
                         />
                       </div>
                       {enableApplicationForm && (

@@ -27,6 +27,9 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                 clientMode: CLIENT_MODE
             })
             toast({title: lang['Save successful'], variant: 'success'})
+            setTimeout(() => {
+                window.location.href = `/event/${groupDetail.handle}/setting`
+            }, 1500)
         } catch (e: unknown) {
             console.error(e)
             toast({

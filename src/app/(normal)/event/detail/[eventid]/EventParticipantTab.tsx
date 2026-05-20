@@ -11,6 +11,7 @@ export interface EventParticipantTabProps {
     lang: Dictionary,
     eventDetail: EventDetail,
     isEventOperator?: boolean,
+    canViewAllSubmissions?: boolean,
     currProfile: ProfileDetail | null
 }
 
@@ -18,6 +19,7 @@ export default function EventParticipantTab({
                                                 lang,
                                                 eventDetail,
                                                 isEventOperator,
+                                                canViewAllSubmissions,
                                                 currProfile
                                             }: EventParticipantTabProps) {
     const [tab, setTab] = useState<'participants' | 'orders'>('participants')
@@ -54,6 +56,7 @@ export default function EventParticipantTab({
                 lang={lang}
                 eventDetail={eventDetail}
                 isEventOperator={isEventOperator}
+                canViewAllSubmissions={canViewAllSubmissions}
                 currProfile={currProfile}/>
             : <EventTicketOrderList
                 lang={lang}
