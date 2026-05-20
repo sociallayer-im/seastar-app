@@ -32,7 +32,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
     const customHost = event.event_roles?.find(r => r.role === 'custom_host')
     const groupHost = event.event_roles?.find(r => r.role === 'group_host')
     const cohosts = event.event_roles?.filter(r => r.role === 'co_host')
-    const host = customHost?.nickname || groupHost?.nickname || event.owner.nickname || event.owner.handle
+    const host = customHost?.nickname || groupHost?.nickname || event.owner?.nickname || event.owner?.handle
 
     const customStyle = {
         ...style,
