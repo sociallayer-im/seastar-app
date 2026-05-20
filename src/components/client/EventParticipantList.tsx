@@ -2,7 +2,7 @@
 
 import {getAuth, shortWalletAddress} from '@/utils'
 import {Dictionary} from '@/lang'
-import {cancelAttendEvent, EventDetail, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant} from '@sola/sdk'
+import {cancelAttendEvent, EventDetail, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant, listFormSubmissions, FormSubmission} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -22,7 +22,7 @@ export default function EventParticipantList({
                                                  currProfile,
                                                  isEventOperator
                                              }: EventParticipantListProps) {
-    const {showLoading, closeModal} = useModal()
+    const {showLoading, closeModal, openModal} = useModal()
     const {showConfirmDialog} = useConfirmDialog()
     const {toast} = useToast()
 
@@ -144,6 +144,36 @@ export default function EventParticipantList({
         })
     }
 
+    const handleViewApplication = async (participant: Participant) => {
+        if (!eventDetail.form_id) return
+        const authToken = getAuth()
+        const loading = showLoading()
+        try {
+            const submissions = await listFormSubmissions({
+                params: {formId: eventDetail.form_id, authToken: authToken!},
+                clientMode: CLIENT_MODE
+            })
+            const submission = submissions.find(s => s.user_id === String(participant.profile_id))
+            closeModal(loading)
+            openModal({
+                content: (close) => (
+                    <ApplicationAnswersDialog
+                        lang={lang}
+                        close={close!}
+                        submission={submission || null}
+                        form={eventDetail.form}
+                        participant={participant}
+                        onApprove={async () => { close?.(); await handleApproveParticipant(participant) }}
+                        onReject={async () => { close?.(); await handleRejectParticipant(participant) }}
+                    />
+                )
+            })
+        } catch (e) {
+            closeModal(loading)
+            console.error(e)
+        }
+    }
+
     const downloadCSV = () => {
         const title = ['Username', 'Nickname', 'Email', 'Status', 'Register time']
         const rows = eventDetail.participants?.map((item, index) => {
@@ -197,6 +227,12 @@ export default function EventParticipantList({
                         <div className="flex-row-item-center">
                             <div className="flex-col sm:flex-row items-end flex">
                                 {participant.status === 'pending' && isEventOperator && <>
+                                    {eventDetail.form_id && (
+                                        <div onClick={() => handleViewApplication(participant)}
+                                             className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-blue-200 flex flex-row-item-center text-xs text-blue-500 bg-blue-50">
+                                            {lang['View Application']}
+                                        </div>
+                                    )}
                                     <div onClick={() => handleApproveParticipant(participant)}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-green-300 flex flex-row-item-center text-xs text-green-600 bg-green-50 font-semibold">
                                         {lang['Accept to join']}
@@ -238,3 +274,62 @@ export default function EventParticipantList({
     </div>
 }
 
+function ApplicationAnswersDialog({lang, close, submission, form, participant, onApprove, onReject}: {
+    lang: Dictionary
+    close: () => void
+    submission: FormSubmission | null
+    form: EventDetail['form']
+    participant: Participant
+    onApprove: () => Promise<void>
+    onReject: () => Promise<void>
+}) {
+    return (
+        <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow p-5 max-h-[80vh] flex flex-col">
+            <div className="flex-row-item-center justify-between mb-4">
+                <div className="flex-row-item-center gap-2">
+                    <img src={participant.profile.image_url || '/images/default_avatar.png'}
+                         className="w-8 h-8 rounded-full object-cover" alt=""/>
+                    <div>
+                        <div className="font-semibold text-sm">{participant.profile.nickname || participant.profile.handle}</div>
+                        <div className="text-xs text-gray-400">@{participant.profile.handle}</div>
+                    </div>
+                </div>
+                <i className="uil-times-circle text-xl text-gray-400 cursor-pointer" onClick={close}/>
+            </div>
+
+            <div className="font-semibold text-sm mb-3">{lang['Application Answers']}</div>
+
+            <div className="overflow-y-auto flex-1 space-y-4 pr-1">
+                {!submission && (
+                    <div className="text-sm text-gray-400">{lang['No answers submitted'] || 'No answers submitted'}</div>
+                )}
+                {submission && form?.fields.map(field => {
+                    const answer = submission.answers.find(a => a.form_field_id === field.id)
+                    return (
+                        <div key={field.id}>
+                            <div className="text-xs text-gray-400 mb-1">{field.label}{field.required && ' *'}</div>
+                            <div className="text-sm bg-gray-50 rounded-lg px-3 py-2 min-h-[36px]">
+                                {answer?.value || <span className="text-gray-300">—</span>}
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mt-4">
+                <button
+                    className="h-9 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+                    onClick={onReject}
+                >
+                    {lang['Reject']}
+                </button>
+                <button
+                    className="h-9 rounded-lg border border-green-300 bg-green-50 text-sm text-green-600 font-semibold hover:bg-green-100"
+                    onClick={onApprove}
+                >
+                    {lang['Accept to join']}
+                </button>
+            </div>
+        </div>
+    )
+}

@@ -60,6 +60,8 @@ export interface EventDetail extends Event {
     recurring_id: number | null,
     ticket_items: TicketItem[]
     require_approval: boolean | null,
+    form_id: string | null,
+    form: EventForm | null,
 }
 
 export interface Ticket {
@@ -198,6 +200,39 @@ export interface TicketItem {
     }
 }
 
+
+export interface EventFormField {
+    id: string,
+    label: string,
+    field_type: 'text',
+    required: boolean,
+    position: number,
+}
+
+export interface EventForm {
+    id: string,
+    title: string,
+    description: string | null,
+    fields: EventFormField[],
+}
+
+export interface FormAnswer {
+    id: string,
+    form_field_id: string,
+    value: string | null,
+}
+
+export interface FormSubmission {
+    id: string,
+    form_id: string,
+    user_id: string,
+    status: string,
+    starred: boolean,
+    admin_note: string | null,
+    submitted_at: string,
+    answers: FormAnswer[],
+    profile: Profile | null,
+}
 
 export type DiscountType = 'ratio' | 'amount'
 

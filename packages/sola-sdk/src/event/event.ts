@@ -1,4 +1,4 @@
-import {Event, EventDetail, EventDraftType, EventWithJoinStatus, Participant, Recurring} from './types'
+import {Event, EventDetail, EventDraftType, EventForm, EventWithJoinStatus, FormSubmission, Participant, Recurring} from './types'
 import {getSdkConfig} from '../client'
 import {fixDate} from '../uitls'
 import {SolaSdkFunctionParams} from '../types'
@@ -296,7 +296,8 @@ export const sendEventFeedback = async ({params, clientMode}: SolaSdkFunctionPar
 
 export const attendEventWithoutTicket = async ({params, clientMode}: SolaSdkFunctionParams<{
     eventId: number,
-    authToken: string
+    authToken: string,
+    formAnswers?: Array<{field_id: string, value: string}>
 }>) => {
     const res = await fetch(`${getSdkConfig(clientMode).api}/event/join`, {
         method: 'POST',
@@ -305,7 +306,8 @@ export const attendEventWithoutTicket = async ({params, clientMode}: SolaSdkFunc
         },
         body: JSON.stringify({
             id: params.eventId,
-            auth_token: params.authToken
+            auth_token: params.authToken,
+            ...(params.formAnswers ? {form_answers: params.formAnswers} : {})
         })
     })
 
@@ -317,6 +319,47 @@ export const attendEventWithoutTicket = async ({params, clientMode}: SolaSdkFunc
             throw new Error('Failed to attend event')
         }
     }
+}
+
+export const saveEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: number,
+    fields: Array<{label: string, field_type: string, required: boolean, position: number}>,
+    authToken: string
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/form/save_event_form`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            event_id: params.eventId,
+            fields: params.fields,
+            auth_token: params.authToken
+        })
+    })
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.message || 'Failed to save event form')
+    }
+    const data = await res.json()
+    return data.form as EventForm
+}
+
+export const getEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: number
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/form/get_event_form?event_id=${params.eventId}`)
+    if (!res.ok) throw new Error('Failed to get event form')
+    const data = await res.json()
+    return data.form as EventForm | null
+}
+
+export const listFormSubmissions = async ({params, clientMode}: SolaSdkFunctionParams<{
+    formId: string,
+    authToken: string
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/form/list_submissions?form_id=${params.formId}&auth_token=${params.authToken}`)
+    if (!res.ok) throw new Error('Failed to list form submissions')
+    const data = await res.json()
+    return data.submissions as FormSubmission[]
 }
 
 const buildSaveEventProps = (eventDraft: EventDraftType) => {

@@ -6,8 +6,9 @@ import {CreateEventPageDataType} from '@/app/(normal)/event/[grouphandle]/create
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth, processEventRoles} from '@/utils'
-import {cancelEvent, cancelRecurringEvent, EventDraftType, updateEvent, updateRecurringEvent} from '@sola/sdk'
+import {cancelEvent, cancelRecurringEvent, EventDraftType, saveEventForm, updateEvent, updateRecurringEvent} from '@sola/sdk'
 import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatForm'
+import {FormFieldDraft} from '@/app/(normal)/event/[grouphandle]/create/EventForm'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {useState} from 'react'
 import {Button} from '@/components/shadcn/Button'
@@ -18,7 +19,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
     const {showConfirmDialog} = useConfirmDialog()
     const {toast} = useToast()
 
-    const saveSingleEvent = async (eventDraft: EventDraftType) => {
+    const saveSingleEvent = async (eventDraft: EventDraftType, formFields: FormFieldDraft[] | null) => {
         const authToken = getAuth()
         const loading = showLoading()
 
@@ -27,6 +28,16 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
             const event = await updateEvent({
                 params: {eventDraft: processedEventRoleDraft, authToken: authToken!}, clientMode: CLIENT_MODE
             })
+            if (formFields && formFields.length > 0) {
+                await saveEventForm({
+                    params: {
+                        eventId: event.id,
+                        fields: formFields.map((f, i) => ({...f, field_type: 'text', position: i})),
+                        authToken: authToken!
+                    },
+                    clientMode: CLIENT_MODE
+                })
+            }
             if (redirect) {
                 redirect && (window.location.href = `/event/detail/${event.id}`)
             } else {
@@ -79,9 +90,9 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
         }
     }
 
-    const handleSave = async (eventDraft: EventDraftType, repeatForm: RepeatFormType) => {
+    const handleSave = async (eventDraft: EventDraftType, repeatForm: RepeatFormType, formFields: FormFieldDraft[] | null) => {
         if (!repeatForm.interval) {
-            await saveSingleEvent(eventDraft)
+            await saveSingleEvent(eventDraft, formFields)
         } else {
             openModal({
                 content: (close) => <DialogRecurringSelectorType
@@ -89,7 +100,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                     lang={props.lang}
                     onConfirm={(selector) => {
                         if (selector === 'single') {
-                            saveSingleEvent(eventDraft)
+                            saveSingleEvent(eventDraft, formFields)
                             !!close && close()
                         } else {
                             saveRepeatEvent(eventDraft, repeatForm, selector)

@@ -8,18 +8,20 @@ import {
     createRecurringEvent,
     EventDraftType,
     getEventByRecurringId,
+    saveEventForm,
 } from '@sola/sdk'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth, processEventRoles} from '@/utils'
 import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatForm'
 import {CLIENT_MODE} from '@/app/config'
+import {FormFieldDraft} from '@/app/(normal)/event/[grouphandle]/create/EventForm'
 
 export default function CreateEventForm(props: { lang: Dictionary, data: CreateEventPageDataType }) {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const handleSingleEvent = async (eventDraft: EventDraftType) => {
+    const handleSingleEvent = async (eventDraft: EventDraftType, formFields: FormFieldDraft[] | null) => {
         const authToken = getAuth()
         const loading = showLoading()
         try {
@@ -28,6 +30,16 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
                 params: {eventDraft: processedEventRoleDraft, authToken: authToken!},
                 clientMode: CLIENT_MODE
             })
+            if (formFields && formFields.length > 0) {
+                await saveEventForm({
+                    params: {
+                        eventId: event.id,
+                        fields: formFields.map((f, i) => ({...f, field_type: 'text', position: i})),
+                        authToken: authToken!
+                    },
+                    clientMode: CLIENT_MODE
+                })
+            }
             window.location.href = `/event/share/${event.id}`
         } catch (e: unknown) {
             console.error(e)
@@ -73,9 +85,9 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
         }
     }
 
-    const onConfirm = async (eventDraft: EventDraftType, repeatForm: RepeatFormType) => {
+    const onConfirm = async (eventDraft: EventDraftType, repeatForm: RepeatFormType, formFields: FormFieldDraft[] | null) => {
         if (!repeatForm.interval) {
-            await handleSingleEvent(eventDraft)
+            await handleSingleEvent(eventDraft, formFields)
         } else {
             await handleRepeatingEvent(eventDraft, repeatForm)
         }

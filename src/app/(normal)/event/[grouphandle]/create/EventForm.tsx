@@ -27,7 +27,7 @@ import RepeatForm, {
 } from "@/app/(normal)/event/[grouphandle]/create/RepeatForm"
 import TracksFilter from "@/components/client/TracksFilter"
 import TagsFilter from "@/components/client/TagsFilter"
-import { getOccupiedTimeEvent, Event, EventDraftType, EventKind } from "@sola/sdk"
+import { getOccupiedTimeEvent, Event, EventDraftType, EventKind, EventFormField } from "@sola/sdk"
 import { CLIENT_MODE } from "@/app/config"
 import { scrollToErrMsg } from "@/components/client/Subscription/uilts"
 import dayjs from "@/libs/dayjs"
@@ -47,10 +47,12 @@ const EventDateTimeInput = dynamic(
   { ssr: false },
 )
 
+export type FormFieldDraft = Pick<EventFormField, 'label' | 'required' | 'position'> & { id?: string }
+
 export interface EventFormProps {
   lang: Dictionary
   data: CreateEventPageDataType
-  onConfirm?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void
+  onConfirm?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType, formFields: FormFieldDraft[] | null) => void
   onCancel?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void
 }
 
@@ -70,6 +72,13 @@ export default function EventForm({
   const [enableNote, setEnableNote] = useState(!!draft.notes)
   const [enableMoreSetting, setEnableMoreSetting] = useState(false)
   const [enableTicket, setEnableTicket] = useState(!!draft.tickets?.length)
+
+  // application form
+  const existingForm = (data.eventDraft as any).form as { fields: EventFormField[] } | null
+  const [enableApplicationForm, setEnableApplicationForm] = useState(!!existingForm)
+  const [formFields, setFormFields] = useState<FormFieldDraft[]>(
+    existingForm?.fields?.map((f, i) => ({ id: f.id, label: f.label, required: f.required, position: i })) || []
+  )
 
   // repeat form
   const [repeatForm, setRepeatForm] = useState<RepeatFormType>({
@@ -203,7 +212,7 @@ export default function EventForm({
       _draft.tickets = []
     }
 
-    onConfirm?.(draft, repeatForm)
+    onConfirm?.(draft, repeatForm, enableApplicationForm ? formFields : null)
   }
 
   const handleCancelEvent = async () => {
@@ -786,6 +795,67 @@ export default function EventForm({
                           }}
                         />
                       </div>
+                    </div>
+
+                    <div className="mt-8">
+                      <div className="flex-row-item-center justify-between">
+                        <div>
+                          <div className="font-semibold text-sm">
+                            {lang["Application Form"]}
+                          </div>
+                          <div className="text-gray-500 text-xs">
+                            {lang["Collect info from applicants when they RSVP"]}
+                          </div>
+                        </div>
+                        <Switch
+                          checked={enableApplicationForm}
+                          onClick={() => setEnableApplicationForm(!enableApplicationForm)}
+                        />
+                      </div>
+                      {enableApplicationForm && (
+                        <div className="mt-3 space-y-2">
+                          {formFields.map((field, index) => (
+                            <div key={index} className="flex-row-item-center gap-2 border border-gray-200 rounded-lg p-3">
+                              <div className="flex-1">
+                                <input
+                                  className="w-full text-sm border-none outline-none bg-transparent"
+                                  placeholder={lang["Question label"]}
+                                  value={field.label}
+                                  onChange={(e) => {
+                                    const updated = [...formFields]
+                                    updated[index] = { ...updated[index], label: e.target.value }
+                                    setFormFields(updated)
+                                  }}
+                                />
+                              </div>
+                              <label className="flex-row-item-center gap-1 text-xs text-gray-500 cursor-pointer shrink-0">
+                                <input
+                                  type="checkbox"
+                                  checked={field.required}
+                                  onChange={(e) => {
+                                    const updated = [...formFields]
+                                    updated[index] = { ...updated[index], required: e.target.checked }
+                                    setFormFields(updated)
+                                  }}
+                                />
+                                {lang["Required"]}
+                              </label>
+                              <button
+                                className="text-gray-400 hover:text-red-400 shrink-0"
+                                onClick={() => setFormFields(formFields.filter((_, i) => i !== index))}
+                              >
+                                <i className="uil-times text-lg" />
+                              </button>
+                            </div>
+                          ))}
+                          <button
+                            className="text-sm text-green-500 hover:text-green-600 flex-row-item-center gap-1 mt-1"
+                            onClick={() => setFormFields([...formFields, { label: '', required: false, position: formFields.length }])}
+                          >
+                            <i className="uil-plus-circle" /> {lang["Add question"]}
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     <div className="mt-8">

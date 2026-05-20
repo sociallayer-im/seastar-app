@@ -214,6 +214,8 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         {!isTicketEvent && !currProfileAttended && canAccess &&
                             <div className="flex-row-item-center mt-2">
                                 <AttendEventBtn eventId={eventDetail.id} lang={lang}
+                                    form={eventDetail.form}
+                                    requireApproval={!!eventDetail.require_approval}
                                     className="text-xs flex-1" />
                             </div>
                         }
