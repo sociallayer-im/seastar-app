@@ -1,0 +1,63 @@
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_f69cb47a25255c 218
+  s_212b3fb8ecd46f::t_6484158850e6d2 217
+src/lang/en.ts
+  s_212b3fb8ecd46f::t_5b107728aef351 141-143,145-147,151-152
+  s_212b3fb8ecd46f::t_ffd47372100f51 144,149-150,153
+  s_212b3fb8ecd46f::t_2d94fb969f6d64 148
+src/components/client/AttendEventBtn.tsx
+  s_212b3fb8ecd46f::t_92266a520a6037 8,11,17-18,21,24-25,31-33,38,58,64-78,87-90,92-96,99-165
+  s_212b3fb8ecd46f::t_eac0cf994a10dc 13,19
+  s_212b3fb8ecd46f::t_878c66361ee751 79-86
+src/components/client/EventParticipantList.tsx
+  s_212b3fb8ecd46f::t_7d448c03075d14 25
+  s_212b3fb8ecd46f::t_2922d9410d43d1 230-235
+  s_212b3fb8ecd46f::t_9b2792d40f3348 277-335
+  s_212b3fb8ecd46f::t_f7ee15da9b7b1f 147-176
+  s_212b3fb8ecd46f::t_afe07c8f0b32a7 5
+packages/sola-sdk/src/constants.ts
+  s_212b3fb8ecd46f::t_9b242ef2b5db57 7
+src/app/(normal)/event/[grouphandle]/create/CreateEventForm.tsx
+  s_212b3fb8ecd46f::t_ffdc666a1086cc 88,90
+  s_212b3fb8ecd46f::t_aa3afffd7a54c8 24,33-42
+  s_212b3fb8ecd46f::t_d2255a5b61d902 11,18
+packages/sola-sdk/src/event/types.ts
+  s_212b3fb8ecd46f::t_1779ca83912401 63-64
+  s_212b3fb8ecd46f::t_aa25102f0d54b6 204-236
+src/app/(normal)/event/edit/[eventid]/EditEventForm.tsx
+  s_212b3fb8ecd46f::t_64c7c8f3f38acb 22,31-40
+  s_212b3fb8ecd46f::t_85ec0bf906afec 93,95
+  s_212b3fb8ecd46f::t_b6e501b1afd503 11
+  s_212b3fb8ecd46f::t_ca5417f01e0b3e 103
+  s_212b3fb8ecd46f::t_5fa1d2b4ed2788 9
+packages/sola-sdk/src/event/event.ts
+  s_212b3fb8ecd46f::t_4d00012f709397 338-341
+  s_212b3fb8ecd46f::t_da883304505d44 1
+  s_212b3fb8ecd46f::t_da3c78bed96ea5 299-300,309-310,324-337,342-362
+src/lang/zh.ts
+  s_212b3fb8ecd46f::t_eaa63dceb6b7ef 148
+  s_212b3fb8ecd46f::t_6b4e137a63b7cd 141-143,145-147,151-152
+  s_212b3fb8ecd46f::t_614ad5760dae2f 144,149-150,153
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_212b3fb8ecd46f::t_619b414a47f6f0 215
+  s_212b3fb8ecd46f::t_bf556e172dac05 803-860
+  s_212b3fb8ecd46f::t_f4d24e02b08b9c 76-82
+  s_212b3fb8ecd46f::t_223d5e0f6b258d 30
+  s_212b3fb8ecd46f::t_eea24989e4fb00 50-51,55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "514788a6f6a5a01cd6307b5c9a184904b024517b",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
