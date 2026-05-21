@@ -64,6 +64,14 @@ export interface Venue {
     track_ids: number[] | null
 }
 
+export interface VenueAvailability {
+    id?: number
+    day_of_week: Weekday | null  // weekly slot; null for date-specific overrides
+    day: string | null           // 'YYYY-MM-DD'; null for weekly slots
+    intervals: [string, string][] // e.g. [["09:30","21:00"]]; empty = closed
+    role: VenueRole
+}
+
 export interface VenueDetail extends Venue {
     location_data: string | null,
     location: string,
@@ -83,6 +91,7 @@ export interface VenueDetail extends Venue {
     require_approval?: boolean,
     venue_timeslots: VenueTimeslot[]
     venue_overrides: VenueOverride[]
+    availabilities: VenueAvailability[]
     amenities: null | string[]
 }
 

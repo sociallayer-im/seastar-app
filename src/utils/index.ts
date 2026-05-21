@@ -168,61 +168,7 @@ export function checkVenueTimeAvailability(
     isManager: boolean,
     isMember: boolean
 ) {
-    const startTime = dayjs.tz(new Date(eventStartTime).getTime(), timezone)
-    const endTime = dayjs.tz(new Date(eventEndTime!).getTime(), timezone)
-
-    // 判断 overrides 优先级最高
-    const hasOverride = venue.venue_overrides?.find((item) => {
-        const start_at = item.start_at || '00:00'
-        const end_at = item.end_at || '23:59'
-        return startTime.isBetween(dayjs.tz(`${item.day} ${start_at}`, timezone), dayjs.tz(`${item.day} ${end_at}`, timezone), null, '[]')
-            || endTime.isBetween(dayjs.tz(`${item.day} ${start_at}`, timezone), dayjs.tz(`${item.day} ${end_at}`, timezone), null, '[]')
-    })
-
-    if (hasOverride) {
-        return !hasOverride.disabled &&
-            (hasOverride.role !== 'manager' || isManager) &&
-            (hasOverride.role !== 'member' || isMember)
-    }
-
-    // 判断 venue 的 start date 和 end date
-    let venueAvailable = true
-    const availableStart = venue.start_date ? dayjs.tz(venue.start_date, timezone) : null
-    const availableEnd = venue.end_date ? dayjs.tz(venue.end_date, timezone).hour(23).minute(59) : null
-    if (availableStart && !availableEnd) {
-        venueAvailable = startTime.isSameOrAfter(availableStart)
-    } else if (!availableStart && availableEnd) {
-        venueAvailable = endTime.isBefore(availableEnd)
-    } else if (availableStart && availableEnd) {
-        venueAvailable = startTime.isSameOrAfter(availableStart) && endTime.isBefore(availableEnd)
-    }
-
-    // 判断timeslot
-    let timeslotAvailable = true
-    const day = dayjs.tz(new Date(eventStartTime).getTime(), timezone).day()
-    const dayFullName = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-    const timeslots = venue.venue_timeslots?.filter(item => item.day_of_week === dayFullName[day])
-    if (!!timeslots?.length) {
-        if (timeslots[0].disabled) {
-            timeslotAvailable = false
-        } else {
-            const eventStartTimeHour = startTime.format('HH:mm')
-            const eventEndTimeHour = endTime.format('HH:mm')
-            timeslotAvailable = timeslots.some(timeslot => {
-                let canBook = true
-                if (timeslot.role === 'manager') {
-                    canBook = isManager
-                }
-                if (timeslot.role === 'member') {
-                    canBook = isMember
-                }
-
-                return canBook && eventStartTimeHour >= timeslot.start_at && eventEndTimeHour <= timeslot.end_at
-            })
-        }
-    }
-
-    return timeslotAvailable && venueAvailable
+    return !isEventTimeSuitable(timezone, eventStartTime, eventEndTime, isManager, isMember, venue as unknown as VenueDetail)
 }
 
 export function isEventTimeSuitable(
@@ -236,43 +182,22 @@ export function isEventTimeSuitable(
     const startTime = dayjs.tz(new Date(eventStartTime).getTime(), timezone)
     const endTime = dayjs.tz(new Date(eventEndTime!).getTime(), timezone)
 
-    // 判断开始时间是否在结束时间之前
     if (startTime.isSameOrAfter(endTime)) {
         return 'The start time should be before the end time'
     }
 
-    // 如果venue不存在则跳过后面的检查
     if (!venue) return ''
 
-    // 如果venue 存在timeslots, 只能创建日内的event
-    if (!!venue.venue_timeslots?.length) {
-        if (startTime.day() !== endTime.day()) {
-            return 'Only same-day events can be created'
-        }
+    const availabilities = venue.availabilities || []
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+    // venues with weekly availability config only support same-day events
+    const hasWeeklySlots = availabilities.some(a => a.day_of_week && !a.day)
+    if (hasWeeklySlots && startTime.day() !== endTime.day()) {
+        return 'Only same-day events can be created'
     }
 
-    // 判断 overrides 优先级最高
-    const hasOverride = venue.venue_overrides?.find((item) => {
-        const start_at = item.start_at || '00:00'
-        const end_at = item.end_at || '23:59'
-        return startTime.isBetween(dayjs.tz(`${item.day} ${start_at}`, timezone), dayjs.tz(`${item.day} ${end_at}`, timezone), null, '[]')
-            || endTime.isBetween(dayjs.tz(`${item.day} ${start_at}`, timezone), dayjs.tz(`${item.day} ${end_at}`, timezone), null, '[]')
-    })
-
-    if (hasOverride) {
-        if (hasOverride.disabled) {
-            return 'The date you selected is not available for the current venue due to the override settings'
-        }
-        if (hasOverride.role === 'manager' && !isManager) {
-            return 'The date you selected is not available for the current venue, requires manager permission'
-        }
-        if (hasOverride.role === 'member' && !isMember) {
-            return 'The date you selected is not available for the current venue, requires member permission'
-        }
-        return ''
-    }
-
-    // 判断 venue 的 start date 和 end date
+    // venue start_date / end_date bounds
     const availableStart = venue.start_date ? dayjs.tz(venue.start_date, timezone) : null
     const availableEnd = venue.end_date ? dayjs.tz(venue.end_date, timezone).hour(23).minute(59) : null
     if (availableStart && !availableEnd && startTime.isBefore(availableStart)) {
@@ -283,31 +208,46 @@ export function isEventTimeSuitable(
         return 'The date you selected should be between the venue start date and end date'
     }
 
-    // 判断timeslot
-    const day = startTime.day()
-    const dayFullName = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-    const timeslots = venue.venue_timeslots?.filter(item => item.day_of_week === dayFullName[day])
-    if (!!timeslots?.length) {
-        if (timeslots[0].disabled) {
+    // date-specific override takes priority over weekly slot
+    const startDate = startTime.format('YYYY-MM-DD')
+    const override = availabilities.find(a => a.day === startDate && !a.day_of_week)
+    if (override) {
+        if (override.intervals.length === 0) {
+            return 'The date you selected is not available for the current venue due to the override settings'
+        }
+        if (override.role === 'manager' && !isManager) {
+            return 'The date you selected is not available for the current venue, requires manager permission'
+        }
+        if (override.role === 'member' && !isMember) {
+            return 'The date you selected is not available for the current venue, requires member permission'
+        }
+        const eventStart = startTime.format('HH:mm')
+        const eventEnd = endTime.format('HH:mm')
+        const inSlot = override.intervals.some(([s, e]) => eventStart >= s && eventEnd <= e)
+        if (!inSlot) {
+            return 'The date you selected is not available for the current venue due to the override settings'
+        }
+        return ''
+    }
+
+    // weekly timeslot
+    const dayName = dayNames[startTime.day()]
+    const timeslot = availabilities.find(a => a.day_of_week === dayName && !a.day)
+    if (timeslot) {
+        if (timeslot.intervals.length === 0) {
             return 'The date you selected is not available for the current venue due to the timeslot settings'
-        } else {
-            const eventStartTimeHour = startTime.format('HH:mm')
-            const eventEndTimeHour = endTime.format('HH:mm')
-            const timeslotAvailable = timeslots.find(timeslot => {
-                return eventStartTimeHour >= timeslot.start_at && eventEndTimeHour <= timeslot.end_at
-            })
-
-            if (!timeslotAvailable) {
-                return 'The date you selected is not available for the current venue due to the timeslot settings'
-            }
-
-            if (timeslotAvailable.role === 'manager' && !isManager) {
-                return 'The date you selected is not available for the current venue, requires manager permission'
-            }
-
-            if (timeslotAvailable.role === 'member' && !isMember) {
-                return 'The date you selected is not available for the current venue, requires member permission'
-            }
+        }
+        if (timeslot.role === 'manager' && !isManager) {
+            return 'The date you selected is not available for the current venue, requires manager permission'
+        }
+        if (timeslot.role === 'member' && !isMember) {
+            return 'The date you selected is not available for the current venue, requires member permission'
+        }
+        const eventStart = startTime.format('HH:mm')
+        const eventEnd = endTime.format('HH:mm')
+        const inSlot = timeslot.intervals.some(([s, e]) => eventStart >= s && eventEnd <= e)
+        if (!inSlot) {
+            return 'The date you selected is not available for the current venue due to the timeslot settings'
         }
     }
 
