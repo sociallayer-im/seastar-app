@@ -1,5 +1,5 @@
 import {SolaSdkFunctionParams} from '../types'
-import {VenueDetail, VenueOverride, VenueTimeslot} from './types'
+import {VenueAvailability, VenueDetail} from './types'
 import {getSdkConfig} from '../client'
 
 export const removeVenue = async function ({params: {venueId, authToken}, clientMode}: SolaSdkFunctionParams<{
@@ -32,44 +32,27 @@ export const updateVenue = async function ({params: {venue, authToken}, clientMo
     authToken: string
 }>) {
     const venueDetail = await getVenueDetailById({params: {venueId: venue.id!}, clientMode})
-    const oldTimeslots = venueDetail!.venue_timeslots
-    const removedTimeslots = oldTimeslots.map(oldTimeslot => {
-        return {
-            ...oldTimeslot,
-            _destroy: '1'
-        }
-    })
-    const oldOverrides = venueDetail!.venue_overrides
-    const removedOverrides = oldOverrides.map(oldOverride => {
-        return {
-            ...oldOverride,
-            _destroy: '1'
-        }
-    })
 
-    let newTimeslots: VenueTimeslot[]  = venue.venue_timeslots.map(timeslot => ({...timeslot,  id: undefined}))
-    if (!!removedTimeslots) {
-        newTimeslots = newTimeslots?.concat(removedTimeslots)
-    }
+    // Mark all existing availabilities for deletion
+    const removedAvailabilities = (venueDetail!.availabilities || []).map(a => ({id: a.id, _destroy: '1'}))
 
-    let newOverrides: VenueOverride[]  = venue.venue_overrides.map(override => ({...override,  id: undefined}))
-    if (!!removedOverrides) {
-        newOverrides = newOverrides?.concat(removedOverrides)
-    }
+    // New availabilities (without IDs — backend creates fresh records)
+    const newAvailabilities = (venue.availabilities || []).map(({id: _, ...a}) => a)
 
     const props = {
         auth_token: authToken,
         id: venue.id!,
         venue: {
             ...venue,
-            venue_timeslots_attributes: newTimeslots,
+            availabilities_attributes: [...removedAvailabilities, ...newAvailabilities],
+            availabilities: undefined,
+            // Also clear legacy tables so they don't diverge
+            venue_timeslots_attributes: (venueDetail!.venue_timeslots || []).map(t => ({id: t.id, _destroy: '1'})),
             venue_timeslots: undefined,
-            venue_overrides_attributes: newOverrides,
-            venue_overrides: undefined
+            venue_overrides_attributes: (venueDetail!.venue_overrides || []).map(o => ({id: o.id, _destroy: '1'})),
+            venue_overrides: undefined,
         }
     }
-
-    // console.log('props', props)
 
     const res = await fetch(`${getSdkConfig(clientMode).api}/venue/update`, {
         method: 'POST',
@@ -88,22 +71,21 @@ export const createVenue = async function ({params: {venue, authToken}, clientMo
     venue: VenueDetail,
     authToken: string
 }>) {
-    const newTimeslots: VenueTimeslot[]  = venue.venue_timeslots.map(timeslot => ({...timeslot,  id: undefined}))
-    const newOverrides: VenueOverride[]  = venue.venue_overrides.map(override => ({...override,  id: undefined}))
+    const newAvailabilities: Omit<VenueAvailability, 'id'>[] = (venue.availabilities || []).map(({id: _, ...a}) => a)
 
     const props = {
         auth_token: authToken,
         group_id: venue.group_id!,
         venue: {
             ...venue,
-            venue_timeslots_attributes: newTimeslots,
+            availabilities_attributes: newAvailabilities,
+            availabilities: undefined,
+            venue_timeslots_attributes: [],
             venue_timeslots: undefined,
-            venue_overrides_attributes: newOverrides,
-            venue_overrides: undefined
+            venue_overrides_attributes: [],
+            venue_overrides: undefined,
         }
     }
-
-    // console.log('props', props)
 
     const res = await fetch(`${getSdkConfig(clientMode).api}/venue/create`, {
         method: 'POST',

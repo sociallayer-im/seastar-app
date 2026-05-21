@@ -1,6 +1,6 @@
 'use client'
 
-import { Track, VenueDetail, VenueOverride, VenueRole, VenueTimeslot, Weekday } from '@sola/sdk'
+import { Track, VenueAvailability, VenueDetail, VenueOverride, VenueRole, VenueTimeslot, Weekday } from '@sola/sdk'
 import { Dictionary } from '@/lang'
 import { Input } from '@/components/shadcn/Input'
 import { Button, buttonVariants } from '@/components/shadcn/Button'
@@ -22,6 +22,62 @@ import DisplayDateTime from '@/components/client/DisplayDateTime'
 import useEditOverride from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/useEditOverride'
 import useUploadImage from '@/hooks/useUploadImage'
 import TracksFilter from '@/components/client/TracksFilter'
+
+// ── Availability ↔ form-state conversion helpers ──────────────────────────
+
+function weeklyAvailabilitiesToTimeslots(availabilities: VenueAvailability[]): VenueTimeslot[] {
+    return availabilities
+        .filter(a => !!a.day_of_week && !a.day)
+        .flatMap((a): VenueTimeslot[] => {
+            if (a.intervals.length === 0) {
+                return [{ day_of_week: a.day_of_week as Weekday, disabled: true, start_at: '08:00', end_at: '20:00', role: a.role }]
+            }
+            return a.intervals.map(([start_at, end_at]) => ({
+                day_of_week: a.day_of_week as Weekday, disabled: false, start_at, end_at, role: a.role
+            }))
+        })
+}
+
+function dateAvailabilitiesToOverrides(availabilities: VenueAvailability[]): VenueOverride[] {
+    return availabilities
+        .filter(a => !!a.day && !a.day_of_week)
+        .map(a => ({
+            id: a.id,
+            venue_id: 0,
+            day: a.day!,
+            disabled: a.intervals.length === 0,
+            start_at: a.intervals[0]?.[0] ?? null,
+            end_at: a.intervals[0]?.[1] ?? null,
+            role: a.role
+        }))
+}
+
+function toAvailabilities(
+    timeslotsByDay: Record<Weekday, VenueTimeslot[]>,
+    overrides: VenueOverride[],
+    enableTimeslots: boolean
+): VenueAvailability[] {
+    const weekly: VenueAvailability[] = enableTimeslots
+        ? (Object.entries(timeslotsByDay) as [Weekday, VenueTimeslot[]][]).map(([day, slots]) => ({
+            day_of_week: day,
+            day: null,
+            intervals: slots[0].disabled ? [] : slots.map(s => [s.start_at, s.end_at] as [string, string]),
+            role: slots[0].role
+        }))
+        : []
+
+    const dateSpecific: VenueAvailability[] = overrides.map(o => ({
+        id: o.id,
+        day_of_week: null,
+        day: o.day,
+        intervals: o.disabled ? [] : (o.start_at && o.end_at ? [[o.start_at, o.end_at]] as [string, string][] : []),
+        role: o.role
+    }))
+
+    return [...weekly, ...dateSpecific]
+}
+
+// ──────────────────────────────────────────────────────────────────────────
 
 const ROLE_OPTIONS: { value: VenueRole, label: string }[] = [
     { value: 'all', label: 'All' },
@@ -47,9 +103,21 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
     const { uploadImage } = useUploadImage()
 
     const [draft, setDraft] = useState(venueDetail)
-    const [enableTimeslots, setEnableTimeslots] = useState(!!venueDetail.venue_timeslots?.length)
-    const [timeslots, setTimeslots] = useState(categorizeTimeslotByWeekDay(venueDetail.venue_timeslots || []))
-    const [overrides, setOverrides] = useState(venueDetail.venue_overrides || [])
+    const [enableTimeslots, setEnableTimeslots] = useState(
+        !!(venueDetail.availabilities?.some(a => a.day_of_week && !a.day) || venueDetail.venue_timeslots?.length)
+    )
+    const [timeslots, setTimeslots] = useState(() =>
+        categorizeTimeslotByWeekDay(
+            venueDetail.availabilities?.length
+                ? weeklyAvailabilitiesToTimeslots(venueDetail.availabilities)
+                : (venueDetail.venue_timeslots || [])
+        )
+    )
+    const [overrides, setOverrides] = useState<VenueOverride[]>(() =>
+        venueDetail.availabilities?.length
+            ? dateAvailabilitiesToOverrides(venueDetail.availabilities)
+            : (venueDetail.venue_overrides || [])
+    )
 
     const [titleError, setTitleError] = useState('')
     const [locationError, setLocationError] = useState('')
@@ -126,16 +194,11 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
             setLocationError('')
         }
 
-        const plantTimeslots = enableTimeslots
-            ? Object.values(timeslots).reduce((acc, timeslots) => {
-                return acc.concat(timeslots)
-            }, [] as VenueTimeslot[])
-            : []
-
         !!onConfirm && onConfirm({
             ...draft,
-            venue_timeslots: plantTimeslots,
-            venue_overrides: overrides,
+            availabilities: toAvailabilities(timeslots, overrides, enableTimeslots),
+            venue_timeslots: [],
+            venue_overrides: [],
             image_urls: draft.image_urls?.filter(img => !!img.trim()) || [],
             amenities: draft.amenities?.filter(amenity => !!amenity.trim()) || []
         })

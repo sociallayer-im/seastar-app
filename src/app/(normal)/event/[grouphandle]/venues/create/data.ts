@@ -1,4 +1,4 @@
-import {getGroupDetailByHandle, VenueDetail, VenueOverride, VenueTimeslot} from '@sola/sdk'
+import {getGroupDetailByHandle, VenueAvailability, VenueDetail} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
 import {getCurrProfile} from '@/app/actions'
@@ -47,11 +47,12 @@ export default async function CreateVenueData({params: {grouphandle}}: CreateVen
         link: null,
         capacity: null,
         require_approval: false,
-        venue_timeslots:[] as VenueTimeslot[],
-        venue_overrides: [] as VenueOverride[],
+        availabilities: [] as VenueAvailability[],
+        venue_timeslots: [],
+        venue_overrides: [],
         image_urls: [] as string[],
         amenities: [] as string[],
-    } as VenueDetail
+    } as unknown as VenueDetail
 
     return {
         currProfile,
