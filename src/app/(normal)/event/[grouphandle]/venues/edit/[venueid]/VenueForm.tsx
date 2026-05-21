@@ -104,19 +104,13 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
 
     const [draft, setDraft] = useState(venueDetail)
     const [enableTimeslots, setEnableTimeslots] = useState(
-        !!(venueDetail.availabilities?.some(a => a.day_of_week && !a.day) || venueDetail.venue_timeslots?.length)
+        !!(venueDetail.availabilities?.some(a => a.day_of_week && !a.day))
     )
     const [timeslots, setTimeslots] = useState(() =>
-        categorizeTimeslotByWeekDay(
-            venueDetail.availabilities?.length
-                ? weeklyAvailabilitiesToTimeslots(venueDetail.availabilities)
-                : (venueDetail.venue_timeslots || [])
-        )
+        categorizeTimeslotByWeekDay(weeklyAvailabilitiesToTimeslots(venueDetail.availabilities || []))
     )
     const [overrides, setOverrides] = useState<VenueOverride[]>(() =>
-        venueDetail.availabilities?.length
-            ? dateAvailabilitiesToOverrides(venueDetail.availabilities)
-            : (venueDetail.venue_overrides || [])
+        dateAvailabilitiesToOverrides(venueDetail.availabilities || [])
     )
 
     const [titleError, setTitleError] = useState('')

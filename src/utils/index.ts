@@ -249,6 +249,9 @@ export function isEventTimeSuitable(
         if (!inSlot) {
             return 'The date you selected is not available for the current venue due to the timeslot settings'
         }
+    } else if (hasWeeklySlots) {
+        // venue has weekly slots configured — an unlisted day means closed
+        return 'The date you selected is not available for the current venue'
     }
 
     return ''

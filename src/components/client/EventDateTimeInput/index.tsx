@@ -26,7 +26,7 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
 
     const venueHasTimeslots = useMemo(() => {
         const venue = venues.find(v => v.id === event.venue_id)
-        return !!(venue?.availabilities?.some(a => a.day_of_week && !a.day) || venue?.venue_timeslots?.length)
+        return !!(venue?.availabilities?.some(a => a.day_of_week && !a.day))
     }, [event.venue_id, venues])
 
     const setStartDate = (dateStr: string) => {

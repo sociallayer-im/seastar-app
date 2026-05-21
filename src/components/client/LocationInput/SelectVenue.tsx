@@ -116,7 +116,7 @@ export default function SelectVenue({
             </div>
         </DropdownMenu>
         <div>
-            {!!(currVenue?.availabilities?.some(a => a.day_of_week && !a.day) || currVenue?.venue_timeslots?.length) && <Badge
+            {!!(currVenue?.availabilities?.some(a => a.day_of_week && !a.day)) && <Badge
                 onClick={() => {
                     showDetail(currVenue)
                 }}
@@ -124,7 +124,7 @@ export default function SelectVenue({
                 {lang['Timeslots']}
                 <i className="uil-search ml-1"/>
             </Badge>}
-            {!!(currVenue?.availabilities?.some(a => a.day && !a.day_of_week) || currVenue?.venue_overrides?.length) && <Badge
+            {!!(currVenue?.availabilities?.some(a => a.day && !a.day_of_week)) && <Badge
                 onClick={() => {
                     showDetail(currVenue)
                 }}
@@ -178,9 +178,9 @@ function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
         <div className={`${inapplicable ? 'opacity-50' : ''}`}>
             <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.title}}/>
             <div className="text-sm text-[#999]">
-                {!!(venue.availabilities?.some(a => a.day_of_week && !a.day) || venue.venue_timeslots?.length) &&
+                {!!(venue.availabilities?.some(a => a.day_of_week && !a.day)) &&
                     <Badge variant="secondary" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
-                {!!(venue.availabilities?.some(a => a.day && !a.day_of_week) || venue.venue_overrides?.length) &&
+                {!!(venue.availabilities?.some(a => a.day && !a.day_of_week)) &&
                     <Badge variant="secondary" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
                 {!!venue.link && <Badge variant="secondary" className="mr-1 mt-2">{lang['Link']}</Badge>}
                 {!!venue.capacity &&
