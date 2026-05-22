@@ -1,0 +1,54 @@
+src/app/(normal)/event/edit/[eventid]/EditEventForm.tsx
+  s_212b3fb8ecd46f::t_24e683c5774783 35
+src/components/client/AttendEventBtn.tsx
+  s_212b3fb8ecd46f::t_7fdd2008fd0ea2 143-146,148-158,160-161
+  s_212b3fb8ecd46f::t_f688f2434e97db 147,159
+  s_212b3fb8ecd46f::t_7054cfc7a321b1 109-113
+packages/sola-sdk/src/group/types.ts
+  s_212b3fb8ecd46f::t_49df8128032304 43
+src/app/configForSpecifyGroup.ts
+  s_212b3fb8ecd46f::t_30ac51684cb49c 28-29
+src/components/client/StartupChecks.tsx
+  s_212b3fb8ecd46f::t_efef634e6e6742 37-38
+  s_212b3fb8ecd46f::t_fa9936f8603889 34-36,39-48,50
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_212b3fb8ecd46f::t_082b804eb99f75 892,894
+  s_212b3fb8ecd46f::t_2f28986778c221 84
+  s_212b3fb8ecd46f::t_d26c4951ba7080 859-862
+  s_212b3fb8ecd46f::t_a6c092f1bbb78c 871
+  s_212b3fb8ecd46f::t_03c97db0122375 87-90
+  s_212b3fb8ecd46f::t_7daf6d0f1cce58 50-54
+  s_212b3fb8ecd46f::t_167445f51b736f 853
+  s_212b3fb8ecd46f::t_64a9d64979558e 907
+  s_212b3fb8ecd46f::t_5b869f084f1973 899
+  s_212b3fb8ecd46f::t_a6efea6425db51 846-852,854-858,863-870,872-880,882-891,893,895-898,900-906,908-912,917
+src/app/(normal)/event/[grouphandle]/create/CreateEventForm.tsx
+  s_212b3fb8ecd46f::t_4dde753b803910 37
+src/components/client/GoToBuyTicket.tsx
+  s_212b3fb8ecd46f::t_2682fca125d0c8 20
+  s_212b3fb8ecd46f::t_c0bf00a05cb11c 6
+src/app/(normal)/group/[handle]/page.tsx
+  s_212b3fb8ecd46f::t_a81c393b3abfb3 219
+  s_212b3fb8ecd46f::t_d2986520ebd84a 214
+  s_212b3fb8ecd46f::t_8cc4f4aae74a60 122-137,139-140
+packages/sola-sdk/src/event/types.ts
+  s_212b3fb8ecd46f::t_afe4c66c229ad3 207,210
+packages/sola-sdk/src/event/event.ts
+  s_212b3fb8ecd46f::t_c4f40cef0b7ce1 326
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "1f02bb363c77b5e4b98b539a5ed8f8c06f6b0cfb",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
