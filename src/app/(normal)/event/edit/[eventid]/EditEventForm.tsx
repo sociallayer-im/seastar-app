@@ -32,7 +32,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                 await saveEventForm({
                     params: {
                         eventId: event.id,
-                        fields: formFields.map((f, i) => ({...f, field_type: 'text', position: i})),
+                        fields: formFields.map((f, i) => ({...f, position: i})),
                         authToken: authToken!
                     },
                     clientMode: CLIENT_MODE

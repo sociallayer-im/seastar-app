@@ -106,6 +106,11 @@ function ApplicationFormDialog({form, lang, close, onSubmit}: {
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [submitting, setSubmitting] = useState(false)
 
+    const handleFieldChange = (id: string, value: string) => {
+        setValues(prev => ({...prev, [id]: value}))
+        if (errors[id]) setErrors(prev => ({...prev, [id]: ''}))
+    }
+
     const handleSubmit = async () => {
         const newErrors: Record<string, string> = {}
         form.fields.forEach(field => {
@@ -135,15 +140,25 @@ function ApplicationFormDialog({form, lang, close, onSubmit}: {
                             {field.label}
                             {field.required && <span className="text-red-500 ml-1">*</span>}
                         </div>
-                        <input
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400"
-                            placeholder={field.label}
-                            value={values[field.id] || ''}
-                            onChange={e => {
-                                setValues({...values, [field.id]: e.target.value})
-                                if (errors[field.id]) setErrors({...errors, [field.id]: ''})
-                            }}
-                        />
+                        {field.field_type === 'select' ? (
+                            <select
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400 bg-white"
+                                value={values[field.id] || ''}
+                                onChange={e => handleFieldChange(field.id, e.target.value)}
+                            >
+                                <option value="">-- Select --</option>
+                                {(field.options || []).map((opt, i) => (
+                                    <option key={i} value={opt}>{opt}</option>
+                                ))}
+                            </select>
+                        ) : (
+                            <input
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400"
+                                placeholder={field.label}
+                                value={values[field.id] || ''}
+                                onChange={e => handleFieldChange(field.id, e.target.value)}
+                            />
+                        )}
                         {errors[field.id] && (
                             <div className="text-xs text-red-500 mt-1">{errors[field.id]}</div>
                         )}

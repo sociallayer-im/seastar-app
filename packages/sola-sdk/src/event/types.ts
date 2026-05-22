@@ -204,9 +204,10 @@ export interface TicketItem {
 export interface EventFormField {
     id: string,
     label: string,
-    field_type: 'text',
+    field_type: 'text' | 'select',
     required: boolean,
     position: number,
+    options: string[],
 }
 
 export interface EventForm {

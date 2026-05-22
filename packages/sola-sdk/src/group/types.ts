@@ -40,7 +40,7 @@ export interface GroupDetail extends Group {
     venue_union?: number[],
     parent_id: number | null,
     parent: Group | null,
-    children: (Group & {about: string | null, memberships_count: number})[],
+    children?: (Group & {about: string | null, memberships_count: number})[],
     ticket_link: string | null,
 }
 

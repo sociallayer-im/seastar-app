@@ -31,27 +31,25 @@ export default function StartupChecks({lang, profile}: { lang: Dictionary, profi
                         window.postMessage({type: 'has-unread-activities', data: unread}, window.location.origin)
                     }
 
-                    for (const activity of activities) {
-                        if (activity.action === 'group_invite/send' && activity.item_id) {
-                            if (!newInviteDisplayed(activity.item_id)) {
-                                addDisplayedInvite(activity.item_id)
-                                const inviteDetail = await getInviteDetailByInviteId(activity.item_id)
-                                const isPending = inviteDetail?.status === 'sending'
-                                const isNotExpired = inviteDetail?.expires_at && new Date(inviteDetail.expires_at) > new Date()
-                                if (inviteDetail && isPending && isNotExpired) {
-                                    openModal({
-                                        content: (close) => <DialogInviteDetail
-                                            inviteDetail={inviteDetail}
-                                            close={close!}
-                                            lang={lang}/>
-                                    })
-                                }
-                            }
+                    const toFetch = activities.filter(a =>
+                        a.action === 'group_invite/send' && a.item_id && !newInviteDisplayed(a.item_id)
+                    )
+                    toFetch.forEach(a => addDisplayedInvite(a.item_id!))
+                    const inviteDetails = await Promise.all(toFetch.map(a => getInviteDetailByInviteId(a.item_id!)))
+                    inviteDetails.forEach(inviteDetail => {
+                        const isPending = inviteDetail?.status === 'sending'
+                        const isNotExpired = inviteDetail?.expires_at && new Date(inviteDetail.expires_at) > new Date()
+                        if (inviteDetail && isPending && isNotExpired) {
+                            openModal({
+                                content: (close) => <DialogInviteDetail
+                                    inviteDetail={inviteDetail}
+                                    close={close!}
+                                    lang={lang}/>
+                            })
                         }
-                    }
+                    })
                 }
 
-                // Check pending email invites once per session (i.e. after login)
                 if (!sessionStorage.getItem(PENDING_INVITES_CHECKED_KEY)) {
                     sessionStorage.setItem(PENDING_INVITES_CHECKED_KEY, '1')
                     const authToken = getAuth()

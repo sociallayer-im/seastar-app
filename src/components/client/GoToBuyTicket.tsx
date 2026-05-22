@@ -3,6 +3,7 @@
 import { Button } from '@/components/shadcn/Button'
 import { Dictionary } from '@/lang'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
+import {edgeCityTicketContent} from '@/app/configForSpecifyGroup'
 
 export default function GoToBuyTicket({ lang, title, content, buttonLabel }: {
     lang: Dictionary
@@ -16,7 +17,7 @@ export default function GoToBuyTicket({ lang, title, content, buttonLabel }: {
         showConfirmDialog({
             lang,
             title: title || 'Join Event',
-            content: content || 'Please purchase the ticket to join the event. <br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="https://edgecity.simplefi.tech/checkout?group=direct-invites-patagonia" target="_blank">Go to Purchase Ticket</a>',
+            content: content || edgeCityTicketContent,
             type: 'info'
         })
     }

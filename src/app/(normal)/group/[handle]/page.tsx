@@ -119,25 +119,25 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
 
         <div className="page-width pl-0 pr-0 pb-12 pt-0">
             <div className="flex gap-6 items-start">
-            {!!group.children?.length &&
-                <div className="hidden md:block w-[220px] shrink-0 pt-4">
-                    <div className="font-semibold text-sm mb-3 text-gray-500">Sub Groups</div>
-                    <div className="flex flex-col gap-2">
-                        {group.children.map(child => (
-                            <a key={child.id}
-                               href={`/group/${child.handle}`}
-                               className="flex-row-item-center gap-2 px-3 py-2 rounded-lg bg-secondary hover:bg-gray-100 transition-colors">
-                                <Avatar size={32} profile={child}/>
-                                <div className="min-w-0">
-                                    <div className="font-medium text-sm truncate">{child.nickname || child.handle}</div>
-                                    <div className="text-xs text-gray-400">{child.memberships_count} members</div>
-                                </div>
-                            </a>
-                        ))}
+                {!!group.children?.length &&
+                    <div className="hidden md:block w-[220px] shrink-0 pt-4">
+                        <div className="font-semibold text-sm mb-3 text-gray-500">Sub Groups</div>
+                        <div className="flex flex-col gap-2">
+                            {group.children.map(child => (
+                                <a key={child.id}
+                                   href={`/group/${child.handle}`}
+                                   className="flex-row-item-center gap-2 px-3 py-2 rounded-lg bg-secondary hover:bg-gray-100 transition-colors">
+                                    <Avatar size={32} profile={child}/>
+                                    <div className="min-w-0">
+                                        <div className="font-medium text-sm truncate">{child.nickname || child.handle}</div>
+                                        <div className="text-xs text-gray-400">{child.memberships_count} members</div>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            }
-            <div className="flex flex-col items-start flex-1 min-w-0">
+                }
+                <div className="flex flex-col items-start flex-1 min-w-0">
                 <div className="tab-titles w-full flex-row-item-center overflow-auto">
                     <a className={`${buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})} flex-1 mr-3`}
                        href={`/group/${group.handle}?tab=events`}>
@@ -211,8 +211,9 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                         />
                     </div>
                 }
-            </div>
+                </div>
             </div>
         </div>
     </div>
 }
+

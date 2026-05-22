@@ -47,7 +47,11 @@ const EventDateTimeInput = dynamic(
   { ssr: false },
 )
 
-export type FormFieldDraft = Pick<EventFormField, 'label' | 'required' | 'position'> & { id?: string }
+export type FormFieldDraft = Pick<EventFormField, 'label' | 'required' | 'position'> & {
+  id?: string
+  field_type: 'text' | 'select'
+  options: string[]
+}
 
 export interface EventFormProps {
   lang: Dictionary
@@ -77,8 +81,12 @@ export default function EventForm({
   const existingForm = (data.eventDraft as any).form as { fields: EventFormField[] } | null
   const [enableApplicationForm, setEnableApplicationForm] = useState(!!existingForm)
   const [formFields, setFormFields] = useState<FormFieldDraft[]>(
-    existingForm?.fields?.map((f, i) => ({ id: f.id, label: f.label, required: f.required, position: i })) || []
+    existingForm?.fields?.map((f, i) => ({ id: f.id, label: f.label, required: f.required, position: i, field_type: f.field_type, options: f.options || [] })) || []
   )
+
+  const updateField = (index: number, patch: Partial<FormFieldDraft>) => {
+    setFormFields(prev => { const u = [...prev]; u[index] = {...u[index], ...patch}; return u })
+  }
 
   // repeat form
   const [repeatForm, setRepeatForm] = useState<RepeatFormType>({
@@ -835,42 +843,78 @@ export default function EventForm({
                       {enableApplicationForm && (
                         <div className="mt-3 space-y-2">
                           {formFields.map((field, index) => (
-                            <div key={index} className="flex-row-item-center gap-2 border border-gray-200 rounded-lg p-3">
-                              <div className="flex-1">
-                                <input
-                                  className="w-full text-sm border-none outline-none bg-transparent"
-                                  placeholder={lang["Question label"]}
-                                  value={field.label}
-                                  onChange={(e) => {
-                                    const updated = [...formFields]
-                                    updated[index] = { ...updated[index], label: e.target.value }
-                                    setFormFields(updated)
-                                  }}
-                                />
+                            <div key={index} className="border border-gray-200 rounded-lg p-3 space-y-2">
+                              <div className="flex-row-item-center gap-2">
+                                <div className="flex-1">
+                                  <input
+                                    className="w-full text-sm border-none outline-none bg-transparent"
+                                    placeholder={lang["Question label"]}
+                                    value={field.label}
+                                    onChange={(e) => updateField(index, {label: e.target.value})}
+                                  />
+                                </div>
+                                <select
+                                  className="text-xs border border-gray-200 rounded px-1 py-0.5 bg-white shrink-0"
+                                  value={field.field_type}
+                                  onChange={(e) => updateField(index, {
+                                    field_type: e.target.value as 'text' | 'select',
+                                    options: e.target.value === 'select' ? (field.options.length ? field.options : ['']) : []
+                                  })}
+                                >
+                                  <option value="text">Text</option>
+                                  <option value="select">Select</option>
+                                </select>
+                                <label className="flex-row-item-center gap-1 text-xs text-gray-500 cursor-pointer shrink-0">
+                                  <input
+                                    type="checkbox"
+                                    checked={field.required}
+                                    onChange={(e) => updateField(index, {required: e.target.checked})}
+                                  />
+                                  {lang["Required"]}
+                                </label>
+                                <button
+                                  className="text-gray-400 hover:text-red-400 shrink-0"
+                                  onClick={() => setFormFields(formFields.filter((_, i) => i !== index))}
+                                >
+                                  <i className="uil-times text-lg" />
+                                </button>
                               </div>
-                              <label className="flex-row-item-center gap-1 text-xs text-gray-500 cursor-pointer shrink-0">
-                                <input
-                                  type="checkbox"
-                                  checked={field.required}
-                                  onChange={(e) => {
-                                    const updated = [...formFields]
-                                    updated[index] = { ...updated[index], required: e.target.checked }
-                                    setFormFields(updated)
-                                  }}
-                                />
-                                {lang["Required"]}
-                              </label>
-                              <button
-                                className="text-gray-400 hover:text-red-400 shrink-0"
-                                onClick={() => setFormFields(formFields.filter((_, i) => i !== index))}
-                              >
-                                <i className="uil-times text-lg" />
-                              </button>
+                              {field.field_type === 'select' && (
+                                <div className="pl-1 space-y-1">
+                                  <div className="text-xs text-gray-400 mb-1">Options</div>
+                                  {field.options.map((opt, oi) => (
+                                    <div key={oi} className="flex-row-item-center gap-1">
+                                      <input
+                                        className="flex-1 text-xs border border-gray-200 rounded px-2 py-0.5 outline-none"
+                                        placeholder={`Option ${oi + 1}`}
+                                        value={opt}
+                                        onChange={(e) => {
+                                          const opts = [...field.options]
+                                          opts[oi] = e.target.value
+                                          updateField(index, {options: opts})
+                                        }}
+                                      />
+                                      <button
+                                        className="text-gray-400 hover:text-red-400"
+                                        onClick={() => updateField(index, {options: field.options.filter((_, i) => i !== oi)})}
+                                      >
+                                        <i className="uil-times" />
+                                      </button>
+                                    </div>
+                                  ))}
+                                  <button
+                                    className="text-xs text-green-500 hover:text-green-600 flex-row-item-center gap-1"
+                                    onClick={() => updateField(index, {options: [...field.options, '']})}
+                                  >
+                                    <i className="uil-plus-circle" /> Add option
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           ))}
                           <button
                             className="text-sm text-green-500 hover:text-green-600 flex-row-item-center gap-1 mt-1"
-                            onClick={() => setFormFields([...formFields, { label: '', required: false, position: formFields.length }])}
+                            onClick={() => setFormFields([...formFields, { label: '', required: false, position: formFields.length, field_type: 'text', options: [] }])}
                           >
                             <i className="uil-plus-circle" /> {lang["Add question"]}
                           </button>

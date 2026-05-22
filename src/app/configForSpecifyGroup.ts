@@ -25,6 +25,8 @@ export const ExternalCatering = [
   "Cuttlery needed",
 ]
 
+export const edgeCityTicketContent = 'Please purchase the ticket to join the event. <br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="https://edgecity.simplefi.tech/checkout?group=direct-invites-patagonia" target="_blank">Go to Purchase Ticket</a>'
+
 export const isEdgeCityGroup = (groupId: number) => {
   return [3427, 3409, 3463, 3454, 924, 3579, 924, 3627].includes(groupId)
 }
