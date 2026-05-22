@@ -419,3 +419,11 @@ export const acceptCodeInvite = async (
     return data.result as string
 }
 
+export const getMyPendingInvites = async ({params, clientMode}: SolaSdkFunctionParams<{authToken: string}>) => {
+    const url = `${getSdkConfig(clientMode).api}/group/my_pending_invites?auth_token=${encodeURIComponent(params.authToken)}`
+    const response = await fetch(url, {cache: 'no-store'})
+    if (!response.ok) return []
+    const data = await response.json()
+    return (data.group_invites || []) as InviteDetail[]
+}
+

@@ -12,10 +12,11 @@ import DialogEditSocialMedia from "@/components/client/DialogEditSocialMedia"
 import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {Switch} from "@/components/shadcn/Switch"
-import {GroupDetail, updateGroup, Membership, freezeGroup} from '@sola/sdk'
+import {Group, GroupDetail, updateGroup, Membership, freezeGroup, getGroupDetailByHandle} from '@sola/sdk'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
+import Avatar from '@/components/Avatar'
 
 export interface EditProfileProps {
     group: GroupDetail
@@ -28,6 +29,9 @@ export interface EditProfileProps {
 
 export default function EditProfile({group, lang, isManager, isOwner, members, currProfileHandle}: EditProfileProps) {
     const [newGroup, setNewGroup] = useState<GroupDetail>(group)
+    const [parentGroup, setParentGroup] = useState<Group | null>(group.parent || null)
+    const [parentHandleInput, setParentHandleInput] = useState(group.parent?.handle || '')
+    const [parentSearching, setParentSearching] = useState(false)
     const {uploadAvatar} = useUploadAvatar()
     const {openModal, showLoading, closeModal} = useModal()
     const {showConfirmDialog} = useConfirmDialog()
@@ -37,6 +41,41 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
     const managerCount = members.filter(m => m.role === 'manager').length
 
     const enableGoogleMap = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true'
+
+    const handleSearchParent = async () => {
+        if (!parentHandleInput.trim()) {
+            setParentGroup(null)
+            setNewGroup({...newGroup, parent_id: null})
+            return
+        }
+        setParentSearching(true)
+        try {
+            const found = await getGroupDetailByHandle({
+                params: {groupHandle: parentHandleInput.trim()},
+                clientMode: CLIENT_MODE
+            })
+            if (!found) {
+                toast({title: 'Group not found', variant: 'destructive'})
+                return
+            }
+            if (found.id === group.id) {
+                toast({title: 'Cannot set self as parent', variant: 'destructive'})
+                return
+            }
+            setParentGroup(found)
+            setNewGroup({...newGroup, parent_id: found.id})
+        } catch {
+            toast({title: 'Group not found', variant: 'destructive'})
+        } finally {
+            setParentSearching(false)
+        }
+    }
+
+    const handleClearParent = () => {
+        setParentGroup(null)
+        setParentHandleInput('')
+        setNewGroup({...newGroup, parent_id: null})
+    }
 
     const showEditSocialMedia = (type: keyof Solar.SocialMedia, value?: string) => {
         openModal({
@@ -153,6 +192,46 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                               }}
                               className="min-h-[120px]"
                     />
+
+                    <div className="mt-6">
+                        <div className="font-semibold pb-2">Ticket Purchase Link</div>
+                        <Input value={newGroup.ticket_link || ''}
+                               placeholder="https://..."
+                               onChange={e => setNewGroup({...newGroup, ticket_link: e.target.value || null})}
+                               className="w-full mb-1"/>
+                        <div className="text-xs text-gray-400 mb-4">
+                            When set, members-only events will show a &quot;Purchase ticket or join community&quot; prompt with this link for users who cannot access the event.
+                        </div>
+                    </div>
+
+                    <div className="mt-6">
+                        <div className="font-semibold pb-2">Parent Group</div>
+                        {parentGroup
+                            ? <div className="flex-row-item-center justify-between rounded-lg px-3 h-[3rem] bg-secondary mb-3">
+                                <div className="flex-row-item-center">
+                                    <Avatar profile={parentGroup} size={28} className="mr-2"/>
+                                    <a href={`/group/${parentGroup.handle}`}
+                                       className="font-medium hover:underline">
+                                        {parentGroup.nickname || parentGroup.handle}
+                                    </a>
+                                    <span className="text-xs text-gray-400 ml-2">@{parentGroup.handle}</span>
+                                </div>
+                                <Button size="xs" variant="normal" onClick={handleClearParent}>Remove</Button>
+                            </div>
+                            : <div className="flex gap-2 mb-3">
+                                <Input
+                                    value={parentHandleInput}
+                                    placeholder="Enter group handle"
+                                    onChange={e => setParentHandleInput(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && handleSearchParent()}
+                                    className="flex-1"
+                                />
+                                <Button variant="secondary" onClick={handleSearchParent} disabled={parentSearching}>
+                                    {parentSearching ? '...' : 'Search'}
+                                </Button>
+                            </div>
+                        }
+                    </div>
 
                     <div className="mt-6">
                         <div className="font-semibold pb-2">Group member Setting</div>

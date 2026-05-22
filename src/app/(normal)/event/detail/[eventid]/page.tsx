@@ -197,7 +197,17 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         {!canAccess && <div
                             className="my-2">{lang['This event is only for {}'].replace('{}', groupDetail.can_join_event === 'member' ? lang['members'] : lang['managers'])}</div>}
 
-                        {!canAccess && groupDetail.id === 3635 && eventDetail.status !== 'cancelled' && eventDetail.status !== 'closed' &&
+                        {!canAccess && groupDetail.ticket_link && eventDetail.status !== 'cancelled' && eventDetail.status !== 'closed' &&
+                            <div className="flex-row-item-center mb-2">
+                                <GoToBuyTicket
+                                    lang={lang}
+                                    title="购票或加入社区 / Purchase Ticket or Join"
+                                    content={`请购票或申请加入社区 Please purchase a ticket or apply to join the community.<br /><br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="${groupDetail.ticket_link}" target="_blank">前往购票 / Go to Purchase</a>`}
+                                    buttonLabel={lang['Join Event(RSVP)']}
+                                />
+                            </div>
+                        }
+                        {!canAccess && !groupDetail.ticket_link && groupDetail.id === 3635 && eventDetail.status !== 'cancelled' && eventDetail.status !== 'closed' &&
                             <div className="flex-row-item-center mb-2">
                                 <GoToBuyTicket lang={lang} />
                             </div>

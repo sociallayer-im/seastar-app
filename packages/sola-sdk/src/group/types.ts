@@ -37,7 +37,11 @@ export interface GroupDetail extends Group {
     memberships: Membership[],
     tracks: Track[]
     venues: VenueDetail[],
-    venue_union?: number[]
+    venue_union?: number[],
+    parent_id: number | null,
+    parent: Group | null,
+    children: (Group & {about: string | null, memberships_count: number})[],
+    ticket_link: string | null,
 }
 
 export interface Membership {
