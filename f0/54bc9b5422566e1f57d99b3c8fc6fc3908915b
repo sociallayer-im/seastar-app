@@ -1,0 +1,37 @@
+src/app/(normal)/group/[handle]/page.tsx
+  s_212b3fb8ecd46f::t_842a2c7f3660ca 121-140
+  s_212b3fb8ecd46f::t_5209005fa6181b 215
+packages/sola-sdk/src/group/types.ts
+  s_212b3fb8ecd46f::t_aa78a5d3f22f95 44
+  s_212b3fb8ecd46f::t_7e8c52dd324d6e 40-43
+src/app/(normal)/group/[handle]/edit/EditGroup.tsx
+  s_212b3fb8ecd46f::t_0ec6c669684c2c 208-235
+  s_212b3fb8ecd46f::t_f20284581f3934 15,19
+  s_212b3fb8ecd46f::t_0830fadd8cb3b4 32-34,45-78
+  s_212b3fb8ecd46f::t_1c9ab1f076b863 197-207
+src/components/client/GoToBuyTicket.tsx
+  s_212b3fb8ecd46f::t_f05953f6506b6f 7-12,18-19,23-24,27
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_1e7f3286f20383 200-210
+packages/sola-sdk/src/group/group.ts
+  s_212b3fb8ecd46f::t_281ac5964daea1 422,428-429
+  s_212b3fb8ecd46f::t_d0267e04cef018 423-427
+src/components/client/StartupChecks.tsx
+  s_212b3fb8ecd46f::t_1a3f10cca72108 4,13-15,28-32,34-51,54-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "f054bc9b5422566e1f57d99b3c8fc6fc3908915b",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
