@@ -152,6 +152,24 @@ export const addManager = async ({params, clientMode}:SolaSdkFunctionParams<{pro
     }
 }
 
+export const setAdminNotification = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number, adminNotification: boolean, authToken: string}>) => {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/group/set_admin_notification`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            group_id: params.groupId,
+            admin_notification: params.adminNotification,
+            auth_token: params.authToken
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error('Set admin notification failed')
+    }
+}
+
 export const freezeGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number, authToken: string}>) => {
     const response = await fetch(`${getSdkConfig(clientMode).api}/group/freeze_group`, {
         method: 'POST',

@@ -31,6 +31,7 @@ export default async function GroupEventSettingData(props: GroupEventSettingData
 
     return {
         groupDetail: groupDetail,
+        currProfile,
         venues: groupDetail.venues,
         tracks: groupDetail.tracks,
         popupCities: groupDetail.start_date ? [{

@@ -49,6 +49,7 @@ export interface Membership {
     role: string,
     profile: Profile
     status: string
+    admin_notification: boolean
 }
 
 export interface MembershipDetail extends Membership {

@@ -2,12 +2,17 @@ import GroupEventSettingData, { GroupEventSettingDataProps } from "@/app/(normal
 import { selectLang } from "@/app/actions"
 import ExportEventParticipantBtn from "@/components/client/ExportEventParticipantBtn"
 import ExportGroupEventBtn from "@/components/client/ExportGroupEventBtn"
+import AdminNotificationToggle from "@/components/client/AdminNotificationToggle"
 import { buttonVariants } from "@/components/shadcn/Button"
-import { useState } from "react"
 
 export default async function GroupEventSettingPage(props: GroupEventSettingDataProps) {
-    const { groupDetail, venues, tracks, popupCities } = await GroupEventSettingData(props)
+    const { groupDetail, currProfile, venues, tracks, popupCities } = await GroupEventSettingData(props)
     const { lang } = await selectLang()
+
+    const currMembership = currProfile
+        ? groupDetail.memberships.find(m => m.profile.id === currProfile.id)
+        : undefined
+    const isManagerOrOwner = currMembership?.role === 'manager' || currMembership?.role === 'owner'
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
@@ -87,6 +92,16 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                         </div>
                     </div>
                 </a>
+
+                {isManagerOrOwner && currMembership && <div
+                    className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
+                    <div className="flex-row-item-center w-full justify-between">
+                        <div>{lang['Event Approval Notification']}</div>
+                        <AdminNotificationToggle
+                            groupId={groupDetail.id}
+                            currentValue={currMembership.admin_notification}/>
+                    </div>
+                </div>}
 
                 <div className="flex sm:flex-row flex-col items-center justify-end gap-3">
                     <ExportGroupEventBtn lang={lang} groupId={groupDetail.id} />

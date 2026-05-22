@@ -212,6 +212,7 @@ export const en = {
     Timezone: "Timezone",
     Banner: "Banner",
     "Event Permission": "Event Permission",
+    "Event Approval Notification": "Event Approval Notification",
     "venues are the default locations that creators can choose for their events.":
         "venues are the default locations that creators can choose for their events.",
     "Create a Venue": "Add a Venue",
