@@ -1,0 +1,27 @@
+src/app/(normal)/discover/ToCreatePopupCity.tsx
+  s_212b3fb8ecd46f::t_1cfa7d303156ab 24
+  s_212b3fb8ecd46f::t_1ec6aceb7b14db 9,16,21
+src/lang/zh.ts
+  s_212b3fb8ecd46f::t_7c3129e6c1f879 580
+src/app/(normal)/group/create/RegisterForm.tsx
+  s_212b3fb8ecd46f::t_438d9a5a51dff5 60-61
+  s_212b3fb8ecd46f::t_16ab5f52b17c69 4,7,10,13-16,22,24,28,30-36,45,56-58,62,75-140,144-247
+src/lang/en.ts
+  s_212b3fb8ecd46f::t_045a17f2efb3ed 596
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "ee95929eaaf9f1a09b9ef97c8aa96540159cbd07",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
