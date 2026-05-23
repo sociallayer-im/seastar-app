@@ -593,6 +593,7 @@ export const en = {
     "Import External Event": "Import Event",
     "Want to create your own Pop-up City?":
         "Want to create your own Pop-up City?",
+    "Want to create your own Group?": "Want to create your own Group?",
     "Start now and let more people freely organize and participate in your exciting events!":
         "Start now and let more people freely organize and participate in your exciting events!",
     "Create Now": "Create Now",
