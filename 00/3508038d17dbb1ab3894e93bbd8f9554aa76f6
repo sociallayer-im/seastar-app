@@ -1,0 +1,47 @@
+src/app/(normal)/group/[handle]/data.ts
+  s_212b3fb8ecd46f::t_feabffd77d79a2 72-73,84
+  s_212b3fb8ecd46f::t_a472013b2e3808 38
+src/app/(normal)/event/[grouphandle]/data.ts
+  s_212b3fb8ecd46f::t_6f962aea59e637 45-46
+  s_212b3fb8ecd46f::t_a2d8df06b30fce 154
+src/app/(normal)/event/[grouphandle]/GroupEventHome.tsx
+  s_212b3fb8ecd46f::t_20743f1440eba7 37
+  s_212b3fb8ecd46f::t_09365c064f782c 188
+packages/sola-sdk/src/group/types.ts
+  s_212b3fb8ecd46f::t_96b0164e0d4f8e 45
+src/app/(normal)/event/[grouphandle]/permission/PermissonForm.tsx
+  s_212b3fb8ecd46f::t_0fb9ca76f5cff1 97,100,119,121-122
+  s_212b3fb8ecd46f::t_d8bbc06069a3cb 83,86,88-96,98-99,101-118,120,123-124
+  s_212b3fb8ecd46f::t_f43e5577d76076 84-85,87,125-128
+src/app/(normal)/group/[handle]/page.tsx
+  s_212b3fb8ecd46f::t_955dd450e5f4c5 49-50
+  s_212b3fb8ecd46f::t_9328b369924ac4 171
+src/utils/index.ts
+  s_212b3fb8ecd46f::t_025b956a46c28c 397
+  s_212b3fb8ecd46f::t_7b0f31599b0c26 395-396,398-400,402
+  s_212b3fb8ecd46f::t_f23b5c96992f39 422
+  s_212b3fb8ecd46f::t_20f445e20e0ee4 401,403
+src/lang/en.ts
+  s_212b3fb8ecd46f::t_c212596900d1f7 216-217
+src/lang/zh.ts
+  s_212b3fb8ecd46f::t_1cbd7cd8ff0525 215-216
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_212b3fb8ecd46f::t_343b6d38ca1687 164
+  s_212b3fb8ecd46f::t_c6640480b518a3 59-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "003508038d17dbb1ab3894e93bbd8f9554aa76f6",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
