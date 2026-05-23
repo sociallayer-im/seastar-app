@@ -46,7 +46,8 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
         currUserIsMember,
         currUserIsOwner,
         members,
-        canPublishEvent
+        canPublishEvent,
+        canSubmitEvent
     } = await cachedGroupPageData(handle, pickSearchParam(_tab))
     const lang = (await selectLang()).lang
 
@@ -167,7 +168,7 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                 {
                     tab === 'events' && <div className="grid grid-cols-1 gap-3 w-full">
                         <TabEvents handle={group.handle}
-                                   canPublishEvent={canPublishEvent}
+                                   canPublishEvent={canSubmitEvent}
                                    currProfile={currProfile}/>
                     </div>
                 }

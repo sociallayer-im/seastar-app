@@ -392,6 +392,15 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
         || (groupDetail.can_publish_event === 'manager' && isManager)
         || (groupDetail.can_publish_event === 'member' && isMember)
 
+    const reviewLevel = groupDetail.event_review_required
+    const canSubmitForReview = !!profile && !!reviewLevel && (
+        reviewLevel === 'everyone'
+        || (reviewLevel === 'member' && isMember)
+        || (reviewLevel === 'manager' && isManager)
+    )
+    // can submit (create) an event — either publishes directly or goes into pending review
+    const canSubmitEvent = canPublishEvent || canSubmitForReview
+
     const canJoinEvent = (!groupDetail.can_join_event || groupDetail.can_join_event === 'all' || groupDetail.can_join_event === 'everyone')
         || (groupDetail.can_join_event === 'manager' && isManager)
         || (groupDetail.can_join_event === 'member' && isMember)
@@ -410,6 +419,7 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
         isIssuer,
         isOwner,
         canPublishEvent,
+        canSubmitEvent,
         canJoinEvent,
         canViewEvent
     }

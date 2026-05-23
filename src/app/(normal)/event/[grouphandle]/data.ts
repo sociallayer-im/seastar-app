@@ -42,7 +42,8 @@ export default async function GroupEventHomeData({
         isOwner,
         isMember,
         isIssuer,
-        canPublishEvent
+        canPublishEvent,
+        canSubmitEvent
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
     const filterOpts: EventListFilterProps = {
@@ -150,6 +151,7 @@ export default async function GroupEventHomeData({
         isMember,
         isIssuer,
         canPublishEvent,
+        canSubmitEvent,
         enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true',
         unionVenues,
     }

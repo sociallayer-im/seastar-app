@@ -34,6 +34,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
         filterOpts,
         mapMarkers,
         canPublishEvent,
+        canSubmitEvent,
         highlightedEvents,
         enableGoogleMap,
         unionVenues,
@@ -184,7 +185,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
 
 
                 {!!currProfile && <>
-                    {canPublishEvent && groupDetail.status !== 'freezed' &&
+                    {canSubmitEvent && groupDetail.status !== 'freezed' &&
                         <a href={`/event/${groupDetail.handle}/create`}
                             className={`${buttonVariants({ variant: "special" })} w-full mt-3`}
                         >{lang['Create an Event']}</a>

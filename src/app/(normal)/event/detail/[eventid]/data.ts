@@ -56,7 +56,8 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         isIssuer: isGroupIssuer,
         isOwner: isGroupOwner,
         canJoinEvent,
-        canPublishEvent
+        canPublishEvent,
+        canSubmitEvent
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
 
@@ -160,7 +161,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         participants: filteredParticipants,
         showParticipants,
         canAccess,
-        canPublishEvent: !!currProfile && canPublishEvent,
+        canPublishEvent: !!currProfile && canSubmitEvent,
         canViewAllSubmissions: !!currProfile && (isGroupManager || isGroupOwner || isEventCreator),
         ticketsPurchased,
         externalCatering,

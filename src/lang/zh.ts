@@ -212,6 +212,8 @@ export const zh: Dictionary = {
   Banner: "横幅",
   "Event Permission": "活动权限",
   "Event Approval Notification": "活动审批通知",
+  "Who can submit events for review": "谁可以申请发布活动（需审批）",
+  "Disabled": "关闭",
   "venues are the default locations that creators can choose for their events.":
     "场地是创建者可以为其活动选择的默认位置",
   "Create a Venue": "创建一个场地",

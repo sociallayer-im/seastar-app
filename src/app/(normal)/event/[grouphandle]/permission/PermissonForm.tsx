@@ -80,6 +80,52 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                 </div>
             </Button>
 
+            <div className="font-semibold mb-1 mt-4">{lang['Who can submit events for review']}</div>
+            <Button variant={'secondary'}
+                    className='w-full mb-3'
+                    onClick={() => setDraft({...draft, event_review_required: null})}>
+                <div className="flex-row-item-center justify-between w-full">
+                    <div className='font-normal'>{lang['Disabled']}</div>
+                    {!draft.event_review_required
+                        ? <i className="uil-check-circle text-green-400 text-2xl"/>
+                        : <i className="uil-circle text-gray-500 text-2xl"/>
+                    }
+                </div>
+            </Button>
+            <Button variant={'secondary'}
+                    className='w-full mb-3'
+                    onClick={() => setDraft({...draft, event_review_required: 'everyone'})}>
+                <div className="flex-row-item-center justify-between w-full">
+                    <div className='font-normal'>{lang['Everyone']}</div>
+                    {(draft.event_review_required === 'everyone')
+                        ? <i className="uil-check-circle text-green-400 text-2xl"/>
+                        : <i className="uil-circle text-gray-500 text-2xl"/>
+                    }
+                </div>
+            </Button>
+            <Button variant={'secondary'}
+                    className='w-full mb-3'
+                    onClick={() => setDraft({...draft, event_review_required: 'member'})}>
+                <div className="flex-row-item-center justify-between w-full">
+                    <div className='font-normal'>{lang['Member, Manager, Owner']}</div>
+                    {draft.event_review_required === 'member'
+                        ? <i className="uil-check-circle text-green-400 text-2xl"/>
+                        : <i className="uil-circle text-gray-500 text-2xl"/>
+                    }
+                </div>
+            </Button>
+            <Button variant={'secondary'}
+                    className='w-full mb-3'
+                    onClick={() => setDraft({...draft, event_review_required: 'manager'})}>
+                <div className="flex-row-item-center justify-between w-full">
+                    <div className='font-normal'>{lang['Manager, Owner']}</div>
+                    {draft.event_review_required === 'manager'
+                        ? <i className="uil-check-circle text-green-400 text-2xl"/>
+                        : <i className="uil-circle text-gray-500 text-2xl"/>
+                    }
+                </div>
+            </Button>
+
             <div className="font-semibold mb-1 mt-4">{lang['Who can join events']}</div>
             <Button variant={'secondary'} className='w-full mb-3'
                     onClick={() => setDraft({...draft, can_join_event: 'all'})}>

@@ -213,6 +213,8 @@ export const en = {
     Banner: "Banner",
     "Event Permission": "Event Permission",
     "Event Approval Notification": "Event Approval Notification",
+    "Who can submit events for review": "Who can submit events for review",
+    "Disabled": "Disabled",
     "venues are the default locations that creators can choose for their events.":
         "venues are the default locations that creators can choose for their events.",
     "Create a Venue": "Add a Venue",

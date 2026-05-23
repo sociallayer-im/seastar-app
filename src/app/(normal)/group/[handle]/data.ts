@@ -35,6 +35,7 @@ export interface GroupData {
     members: Membership[],
     tab: string,
     canPublishEvent: boolean
+    canSubmitEvent: boolean
 }
 
 export default async function GroupPageData(handle: string, tab='events'): Promise<GroupData> {
@@ -68,7 +69,8 @@ export default async function GroupPageData(handle: string, tab='events'): Promi
         isOwner,
         isMember,
         isIssuer,
-        canPublishEvent
+        canPublishEvent,
+        canSubmitEvent
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupsDetail, currProfile)
 
     return {
@@ -79,6 +81,7 @@ export default async function GroupPageData(handle: string, tab='events'): Promi
         currUserIsIssuer: isIssuer,
         currUserIsOwner: isOwner,
         canPublishEvent,
+        canSubmitEvent,
         tab: tab || 'events',
         members: [owner, ...managers, ...issuers, ...members]
     } as GroupData

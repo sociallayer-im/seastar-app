@@ -42,6 +42,7 @@ export interface GroupDetail extends Group {
     parent: Group | null,
     children?: (Group & {about: string | null, memberships_count: number})[],
     ticket_link: string | null,
+    event_review_required: string | null,
 }
 
 export interface Membership {
