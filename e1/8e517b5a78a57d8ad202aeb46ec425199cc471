@@ -1,0 +1,39 @@
+src/hooks/useUploadAvatar/index.tsx
+  s_212b3fb8ecd46f::t_fec6046327736b 4-5
+  s_212b3fb8ecd46f::t_9d4e4ed37ac4b3 33
+src/app/(iframe)/schedule/day/[grouphandle]/data.ts
+  s_212b3fb8ecd46f::t_6d0a68d2fe31ce 6
+src/app/(iframe)/schedule/day/[grouphandle]/page.tsx
+  s_212b3fb8ecd46f::t_6d0a68d2fe31ce 12
+src/app/(iframe)/schedule/day/[grouphandle]/DailyViewEventItem.tsx
+  s_212b3fb8ecd46f::t_1d8d01026c18d7 18
+src/app/(iframe)/schedule/day/[grouphandle]/DailyViewAllDayEventItem.tsx
+  s_212b3fb8ecd46f::t_6d0a68d2fe31ce 5
+src/app/(iframe)/schedule/data.ts
+  s_212b3fb8ecd46f::t_05f5d7190af251 1-246
+src/app/(dashboard)/dashboard-event-detail/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_4a72589b74ae1f 303
+  s_212b3fb8ecd46f::t_bcd9df5d4cbf2c 9
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_212b3fb8ecd46f::t_f794ba7c7d1810 9
+  s_212b3fb8ecd46f::t_aaa62ded5d9206 455
+src/utils/index.ts
+  s_212b3fb8ecd46f::t_9a94a47f0308f7 46
+  s_212b3fb8ecd46f::t_ea6fe60b3817f0 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "e18e517b5a78a57d8ad202aeb46ec425199cc471",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
