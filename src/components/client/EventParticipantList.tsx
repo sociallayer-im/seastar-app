@@ -3,7 +3,7 @@
 import React from 'react'
 import {getAuth, shortWalletAddress} from '@/utils'
 import {Dictionary} from '@/lang'
-import {cancelAttendEvent, EventDetail, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant, getFormSubmission, attendEventWithoutTicket, FormSubmission} from '@sola/sdk'
+import {cancelAttendEvent, EventDetail, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant, getFormSubmission, listFormSubmissions, attendEventWithoutTicket, FormSubmission} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -246,12 +246,68 @@ export default function EventParticipantList({
         link.remove()
     }
 
+    const downloadSubmissionsCSV = async () => {
+        if (!eventDetail.form_id || !eventDetail.form) return
+        const loading = showLoading()
+        try {
+            const authToken = getAuth()
+            const submissions = await listFormSubmissions({
+                params: {formId: eventDetail.form_id, authToken: authToken!},
+                clientMode: CLIENT_MODE
+            })
+            const fields = [...eventDetail.form.fields].sort((a, b) => a.position - b.position)
+            const emailByProfileId = new Map<number, string>()
+            eventDetail.participants?.forEach(p => {
+                if (p.profile.id != null) emailByProfileId.set(p.profile.id, p.profile.email || '')
+            })
+
+            const header = ['Handle', 'Nickname', 'Email', 'Status', 'Submitted at', ...fields.map(f => f.label)]
+            const rows = submissions.map(sub => {
+                const answerByField = new Map(sub.answers.map(a => [a.form_field_id, a.value || '']))
+                return [
+                    sub.profile?.handle || '',
+                    sub.profile?.nickname || '',
+                    emailByProfileId.get(Number(sub.user_id)) || '',
+                    sub.status,
+                    sub.submitted_at || '',
+                    ...fields.map(f => answerByField.get(f.id) || '')
+                ]
+            })
+
+            const escapeCell = (v: string) => `"${String(v).replace(/"/g, '""')}"`
+            const csv = [header, ...rows].map(r => r.map(escapeCell).join(',')).join('\n')
+            const blob = new Blob(['﻿' + csv], {type: 'text/csv;charset=utf-8;'})
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = 'form-submissions.csv'
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+            URL.revokeObjectURL(url)
+        } catch (e: unknown) {
+            toast({
+                description: e instanceof Error ? e.message : 'Failed to download submissions',
+                variant: 'destructive'
+            })
+        } finally {
+            closeModal(loading)
+        }
+    }
+
     return <div>
         {!!eventDetail.participants && eventDetail.participants.length > 0 && isEventOperator &&
             <div onClick={downloadCSV}
                  className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
                 <i className="uil-download-alt text-lg mr-1"/>
                 <span>{lang['Download the list of all participants']}</span>
+            </div>}
+
+        {!!eventDetail.form_id && canViewAllSubmissions &&
+            <div onClick={downloadSubmissionsCSV}
+                 className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
+                <i className="uil-download-alt text-lg mr-1"/>
+                <span>{lang['Download all form submissions']}</span>
             </div>}
 
         <div>
@@ -274,13 +330,13 @@ export default function EventParticipantList({
 
                         <div className="flex-row-item-center">
                             <div className="flex-col sm:flex-row items-end flex">
+                                {isEventOperator && canViewAllSubmissions && eventDetail.form_id && participant.profile.id !== currProfile?.id && (
+                                    <div onClick={() => handleViewApplication(participant)}
+                                         className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-blue-200 flex flex-row-item-center text-xs text-blue-500 bg-blue-50">
+                                        {lang['View Application']}
+                                    </div>
+                                )}
                                 {participant.status === 'pending' && isEventOperator && <>
-                                    {eventDetail.form_id && canViewAllSubmissions && (
-                                        <div onClick={() => handleViewApplication(participant)}
-                                             className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-blue-200 flex flex-row-item-center text-xs text-blue-500 bg-blue-50">
-                                            {lang['View Application']}
-                                        </div>
-                                    )}
                                     <div onClick={() => handleApproveParticipant(participant)}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-green-300 flex flex-row-item-center text-xs text-green-600 bg-green-50 font-semibold">
                                         {lang['Accept to join']}
@@ -456,20 +512,31 @@ function ApplicationAnswersDialog({lang, close, submission, form, participant, o
                 })}
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mt-4">
-                <button
-                    className="h-9 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
-                    onClick={onReject}
-                >
-                    {lang['Reject']}
-                </button>
-                <button
-                    className="h-9 rounded-lg border border-green-300 bg-green-50 text-sm text-green-600 font-semibold hover:bg-green-100"
-                    onClick={onApprove}
-                >
-                    {lang['Accept to join']}
-                </button>
-            </div>
+            {participant.status === 'pending' ? (
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                    <button
+                        className="h-9 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+                        onClick={onReject}
+                    >
+                        {lang['Reject']}
+                    </button>
+                    <button
+                        className="h-9 rounded-lg border border-green-300 bg-green-50 text-sm text-green-600 font-semibold hover:bg-green-100"
+                        onClick={onApprove}
+                    >
+                        {lang['Accept to join']}
+                    </button>
+                </div>
+            ) : (
+                <div className="mt-4">
+                    <button
+                        className="w-full h-9 rounded-lg border border-gray-300 text-sm text-gray-600 hover:bg-gray-50"
+                        onClick={close}
+                    >
+                        {lang['Close'] || 'Close'}
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

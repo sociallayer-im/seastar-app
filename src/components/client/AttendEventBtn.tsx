@@ -35,7 +35,7 @@ export default function AttendEventBtn({eventId, lang, className, onAttended, fo
                 clientMode: CLIENT_MODE
             })
             toast({
-                title: (form && requireApproval) ? lang['Application submitted, pending approval'] : lang['Attending event'] || 'Attending event',
+                title: (form || requireApproval) ? lang['Application submitted, pending approval'] : lang['Attending event'] || 'Attending event',
                 variant: 'success'
             })
             if (onAttended) {

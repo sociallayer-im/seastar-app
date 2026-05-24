@@ -138,6 +138,8 @@ export const zh: Dictionary = {
   "Require approval": "需要审核",
   "Users must apply and receive approval to attend in the event":
     "用户需要申请并获得批准才能参加活动",
+  "Always required when an application form is enabled":
+    "启用报名表单时必须开启",
   "Application Form": "报名表",
   "Collect info from applicants when they RSVP": "收集报名者的信息",
   "Question label": "问题标题",
@@ -412,6 +414,7 @@ export const zh: Dictionary = {
   "Check in successful": "签到成功",
   Checked: "已签到",
   "Download the list of all participants": "下载所有参与者的列表",
+  "Download all form submissions": "下载所有报名表单提交",
   Participants: "参与者",
   "Scan the Participant's QR Code": "扫描参与者的二维码",
   "Online event, please check in for participants below.":

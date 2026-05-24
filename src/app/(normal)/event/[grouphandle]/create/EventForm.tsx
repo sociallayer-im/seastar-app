@@ -110,8 +110,6 @@ export default function EventForm({
   }
 
   useEffect(() => {
-    console.log("draft", draft)
-    console.log("repeatForm", repeatForm)
     // onConfirm?.(draft, repeatForm)
   }, [draft, repeatForm])
 
@@ -144,7 +142,6 @@ export default function EventForm({
       setTimeError(lang[errorMsg as keyof Dictionary])
       if (data.unionVenues.length > 0 && data.unionVenues.some((v) => v.id === draft.venue_id)) {
         // 如果venue_id是union venue，则不检查occupied
-        console.log("Union venue, skip occupied check")
         return
       }
 
@@ -248,7 +245,6 @@ export default function EventForm({
     if (!eventData) {
       return
     }
-    console.log("luma event data", eventData)
     setDraft({ ...draft, ...eventData })
     if (contentEditorRef.current) {
       contentEditorRef.current.initText?.(eventData.content || "")
@@ -798,12 +794,16 @@ export default function EventForm({
                             {lang["Require approval"]}
                           </div>
                           <div className="text-gray-500 text-xs">
-                            {lang["Users must apply and receive approval to attend in the event"]}
+                            {enableApplicationForm
+                              ? lang["Always required when an application form is enabled"]
+                              : lang["Users must apply and receive approval to attend in the event"]}
                           </div>
                         </div>
                         <Switch
-                          checked={!!draft.require_approval}
+                          checked={!!draft.require_approval || enableApplicationForm}
+                          disabled={enableApplicationForm}
                           onClick={() => {
+                            if (enableApplicationForm) return
                             setDraft({ ...draft, require_approval: !draft.require_approval })
                           }}
                         />
@@ -836,6 +836,7 @@ export default function EventForm({
                               })
                             } else {
                               setEnableApplicationForm(true)
+                              setDraft({ ...draft, require_approval: true })
                             }
                           }}
                         />

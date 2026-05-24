@@ -138,6 +138,8 @@ export const en = {
     "Require approval": "Require approval",
     "Users must apply and receive approval to attend in the event":
         "Users must apply and receive approval to attend in the event",
+    "Always required when an application form is enabled":
+        "Always required when an application form is enabled",
     "Application Form": "Application Form",
     "Collect info from applicants when they RSVP": "Collect info from applicants when they RSVP",
     "Question label": "Question label",
@@ -420,6 +422,7 @@ export const en = {
     Checked: "Checked",
     "Download the list of all participants":
         "Download the list of all participants",
+    "Download all form submissions": "Download all form submissions",
     Participants: "Participants",
     "Scan the Participant's QR Code": "Scan the Participant's QR Code",
     "Online event, please check in for participants below.":
