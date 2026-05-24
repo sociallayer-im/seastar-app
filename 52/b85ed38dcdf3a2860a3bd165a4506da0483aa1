@@ -1,0 +1,34 @@
+src/components/client/AttendEventBtn.tsx
+  s_212b3fb8ecd46f::t_795ec38fd19cfe 38
+src/components/client/EventParticipantList.tsx
+  s_212b3fb8ecd46f::t_c594e7c2c787d8 333-338
+  s_212b3fb8ecd46f::t_5ffdbf84661ecf 306-312
+  s_212b3fb8ecd46f::t_21254eb2d686e3 6
+  s_212b3fb8ecd46f::t_2a13ffd0f111f8 249-297
+  s_212b3fb8ecd46f::t_e6d75225a9e6ed 515-539
+src/lang/zh.ts
+  s_212b3fb8ecd46f::t_5c3c8296415aa5 141-142
+  s_212b3fb8ecd46f::t_f4a76a488ad322 417
+src/lang/en.ts
+  s_212b3fb8ecd46f::t_54882fe304d1b4 425
+  s_212b3fb8ecd46f::t_0e56e97ad523fc 141-142
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_212b3fb8ecd46f::t_1c08870bc191ee 839
+  s_212b3fb8ecd46f::t_8756a083759f3a 797-799,803-804,806
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "52b85ed38dcdf3a2860a3bd165a4506da0483aa1",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
