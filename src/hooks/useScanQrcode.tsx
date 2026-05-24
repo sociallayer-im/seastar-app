@@ -62,7 +62,6 @@ function DialogScanQrcode(props: ScanQrcodeProps) {
             }
 
             function onScanSuccess(decodedText: string, decodedResult: Html5QrcodeResult) {
-                console.log(`scan result: ${decodedText}`)
                 props.onResult?.(decodedText)
                 handleClose()
             }

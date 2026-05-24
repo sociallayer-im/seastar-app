@@ -15,8 +15,6 @@ export interface PromoCodePageProps {
 export default async function PromoCodePageData({params}: PromoCodePageProps) {
     const {eventid} = params
 
-    console.log('eventDetail.group_id', eventid)
-
     const eventDetail = await getEventDetailById({
         params: {eventId: parseInt(eventid)},
         clientMode: CLIENT_MODE

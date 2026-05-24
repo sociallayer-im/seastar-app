@@ -8,8 +8,6 @@ export default async function CreatePopupCityPage({searchParams}:{searchParams: 
     const {availableGroups, presetGroup} = await CreatePopupCityPageData(presetGroupHandle)
     const {lang} = await selectLang()
 
-    console.log('presetGroup', presetGroup)
-
     return <CreatePopupCityForm
         presetGroup={presetGroup}
         availableGroups={availableGroups}

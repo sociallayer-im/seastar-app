@@ -9,7 +9,7 @@ import {
     IframeSchedulePageData,
     IframeSchedulePageParams,
     IframeSchedulePageSearchParams
-} from "@/app/(iframe)/schedule/data_deprecated"
+} from "@/app/(iframe)/schedule/data"
 import JoinedFilterBtn from "@/app/(iframe)/schedule/JoinedFilterBtn"
 import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[grouphandle]/DailyViewAllDayEventItem"

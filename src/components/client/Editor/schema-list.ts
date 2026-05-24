@@ -163,7 +163,6 @@ export function liftListItem(itemType: NodeType): Command {
     // let range = $from.blockRange($to, node => node.childCount > 0 && node.firstChild!.type == itemType)
     let range = $from.blockRange($to, node => node.childCount > 0)
     if (!range) {
-      console.log('range 1', range)
       return false
     }
     if (!dispatch) return true

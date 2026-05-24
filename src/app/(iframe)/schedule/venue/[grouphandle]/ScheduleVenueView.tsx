@@ -98,7 +98,6 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
             const searchParams = {
                 start_date: date
             }
-            console.log('searchParams', searchParams)
             const { data, events } = await calculateGridPosition({
                 searchParams,
                 groupDetail,

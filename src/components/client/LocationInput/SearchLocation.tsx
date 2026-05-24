@@ -50,7 +50,6 @@ export default function SearchLocation({
             sessionToken: sessionToken
         })
 
-        console.log('search result: ', predictions, sessionToken)
         let res = customAddress ? [customAddress]  : []
         if (predictions?.length) {
             const _predictions = predictions.filter(p => !!p.place_id)

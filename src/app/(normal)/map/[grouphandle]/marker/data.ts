@@ -35,8 +35,6 @@ export default async function GroupMarkerMapPageData({params, searchParams}: Gro
 
     const category = MARKER_TYPES.find(type => type.label === pickSearchParam(searchParams.category)) || null
 
-    console.log('category', category)
-
     const markers = category
         ? await getMarkersByGroupHandleAndCategory({
             params: {

@@ -72,7 +72,6 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
     const handleFilterChange = async (searchParams: IframeSchedulePageSearchParams) => {
         showLoading()
         try {
-            console.log('searchParams', searchParams)
             const currDate = searchParams.start_date ? searchParams.start_date : interval[0].format('YYYY-MM-DD')
             const {data, groupedEventByStartDate} = await ListViewData({
                 searchParams,

@@ -108,8 +108,6 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
     }
 
     useEffect(() => {
-        console.log('popup city draft', draft)
-        console.log('group detail', groupDetail)
     }, [draft, groupDetail])
 
     return <div>

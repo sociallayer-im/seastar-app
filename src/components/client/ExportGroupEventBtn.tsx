@@ -35,7 +35,6 @@ function ExportModal(props: { lang: Dictionary, groupId: number, close: () => vo
     const [error, setError] = useState<string | null>(null)
 
     const handleExport = () => {
-        console.log('export event data')
         if (startDate > endDate) {
             setError('Start date must be before end date')
             return

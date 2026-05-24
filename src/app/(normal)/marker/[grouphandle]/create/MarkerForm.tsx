@@ -39,7 +39,6 @@ export default function MarkerForm({
     const [titleError, setTitleError] = useState('')
 
     useEffect(() => {
-        console.log('draft', draft)
     }, [draft])
 
     const scrollToError = () => {

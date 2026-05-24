@@ -135,7 +135,6 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
             clientMode: CLIENT_MODE
         })
         if (identifier !== searchIdentifier.current) {
-            console.log('Search result expired, keyword:', keyword)
             return
         }
         setSearchResult(res)

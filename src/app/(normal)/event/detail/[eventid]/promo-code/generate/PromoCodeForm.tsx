@@ -26,7 +26,6 @@ export default function PromoCodeForm({lang, eventId}: { lang: Dictionary, event
     })
 
     useEffect(() => {
-        console.log('draft', draft)
     }, [draft])
 
     const handleCreate = async () => {

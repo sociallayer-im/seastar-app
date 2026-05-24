@@ -118,9 +118,6 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
     const [showTracksFilter, setShowTracksFilter] = useState(!!draft.track_ids?.length)
 
     useEffect(() => {
-        console.log('draft', draft)
-        console.log('timeslots', timeslots)
-        console.log('overrides', overrides)
     }, [draft, timeslots])
 
     const toggleWeekdayTimeslotsDisable = (weekDay: Weekday) => {

@@ -6,7 +6,7 @@ import {
     cfImage,
     displayProfileName,
     eventCoverTimeStr,
-    genGoogleMapLinkByEvent,
+    genGoogleMapLink,
     getAvatar,
     getEventDetailPageTimeStr, pickSearchParam, prefixUrl
 } from "@/utils"
@@ -452,7 +452,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div className="flex-row-item-center mb-2">
                                 <a className="text-xs text-blue-400 cursor-pointer mr-3"
                                     target={'_blank'}
-                                    href={genGoogleMapLinkByEvent(eventDetail)}>{lang['View map']}</a>
+                                    href={genGoogleMapLink(eventDetail.geo_lat!, eventDetail.geo_lng!, eventDetail.location_data)}>{lang['View map']}</a>
 
                                 {!!locationInfo.formatted_address &&
                                     <ClickToCopy text={locationInfo.formatted_address}

@@ -33,8 +33,6 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
     const [members, setMembers] = useState<TrackMemberItem[]>(trackDetail.track_roles?.map(r => ({ profile: r.profile, role: r.role as 'manager' | 'member' })) || [])
 
     useEffect(() => {
-        console.log('draft', draft)
-        console.log('members', members)
     }, [draft, members])
 
     const handleSelectManager = () => {

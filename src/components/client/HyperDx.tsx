@@ -18,7 +18,6 @@ export default function HyperDx() {
                 consoleCapture: true, // Capture console logs (default false)
                 advancedNetworkCapture: true, // Capture full HTTP request/response headers and bodies (default false)
             })
-            console.log('HyperDX init')
         }
     }, [])
 

@@ -39,7 +39,6 @@ export default function InviteForm({lang, group}: InviteFormProps) {
     ]
 
     useEffect(() => {
-        console.log('receivers', receivers)
     }, [receivers])
 
     useEffect(() => {

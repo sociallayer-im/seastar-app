@@ -259,7 +259,6 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 clientMode: CLIENT_MODE
             })
 
-            console.log(coupon, price)
             setValidPromoCode(promoCode)
             setDiscountedPrice(price)
         } catch (e: unknown) {

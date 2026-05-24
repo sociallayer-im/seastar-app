@@ -49,8 +49,6 @@ export default async function PromoCodeDetailData(props: PromoCodeDetailPageProp
     })
 
 
-    console.log('records', records)
-
     return {
         code,
         couponDetail,

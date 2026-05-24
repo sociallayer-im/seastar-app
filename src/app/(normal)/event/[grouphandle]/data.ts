@@ -96,8 +96,6 @@ export default async function GroupEventHomeData({
         } as EventWithJoinStatus
     })
 
-    console.log('eventsWithTrack', highlightedEventsWithTrack.length)
-
     if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0) {
         const pastEvents = await getEvents({
             params: {filters: {...filterOpts, page: 1, collection: 'past'}, authToken, limit: PAGE_SIZE * (filterOpts.page ?? 1)},

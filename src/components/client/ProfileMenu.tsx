@@ -47,7 +47,6 @@ export default function ProfileMenu({lang, currentPath, ...props}: { profile: Pr
         if (typeof window !== 'undefined') {
             window.addEventListener('message', (msg) => {
                 if (msg.data.type === 'has-unread-activities') {
-                    console.log('msg.data.data.length', msg.data.data.length)
                     setHasUnreadActivities(Math.min(msg.data.data.length, 99))
                 }
             })

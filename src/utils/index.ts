@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import { getProfileByToken } from '@/service/solar'
+import { getProfileDetailByAuth } from '@sola/sdk'
 import { sha3_256 } from 'js-sha3'
 import dayjs from "@/libs/dayjs"
 import BigNumber from "bignumber.js"
@@ -43,7 +43,7 @@ export const clientRedirectToReturn = () => {
 }
 
 export const clientCheckUserLoggedInAndRedirect = async (auth_token: string) => {
-    const profile = await getProfileByToken(auth_token)
+    const profile = await getProfileDetailByAuth({params: {authToken: auth_token}, clientMode: CLIENT_MODE})
 
     if (profile && !profile.handle) {
         window.location.href = '/register'
@@ -296,13 +296,6 @@ export function getEventDetailPageTimeStr(event: Event) {
     }
 }
 
-export function genGoogleMapLinkByEvent(event: EventDetail) {
-    let url = `https://www.google.com/maps/search/?api=1&query=${event.geo_lat}%2C${event.geo_lng}`
-    if (event.location_data) {
-        url = url + `&query_place_id=${event.location_data}`
-    }
-    return url
-}
 
 export function shortWalletAddress(address: string) {
     return `${address.slice(0, 6)}...${address.slice(-4)}`

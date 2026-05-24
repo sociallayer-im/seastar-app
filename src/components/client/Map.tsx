@@ -41,7 +41,6 @@ export function GoogleMapInner({
     useEffect(() => {
         if (!!geocodingLib) {
             !!onReady && onReady()
-            console.log('Map library loaded')
         }
     }, [geocodingLib])
 

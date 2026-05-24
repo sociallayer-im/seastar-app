@@ -28,7 +28,6 @@ export default function CheckinBtn({eventDetail, lang}: CheckinBtnProps) {
                 return
             }
 
-            // todo: handle checkin
         })
     }
 

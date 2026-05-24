@@ -74,7 +74,6 @@ export default function CreateBadgeForm({
 
 
     useEffect(() => {
-        console.log('badgeClassDraft', badgeClassDraft)
     }, [badgeClassDraft])
 
 

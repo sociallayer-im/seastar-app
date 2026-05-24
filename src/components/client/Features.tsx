@@ -92,7 +92,6 @@ function getDominantColor(imgUrl: string): Promise<string> {
             }
             // 取最高频颜色
             const dominantColor = Object.entries(colorCounts).sort((a: any, b: any) => b[1] - a[1])[0][0]
-            console.log(dominantColor)
             resolve(`rgb(${dominantColor}, 0.8)`)
         }
     })

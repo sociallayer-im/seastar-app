@@ -47,7 +47,6 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
     const handleFilterChange = async (searchParams: IframeSchedulePageSearchParams) => {
         showLoading()
         try {
-            console.log('searchParams', searchParams)
             const {data, events} = await calculateGridPosition({
                 searchParams,
                 groupDetail,
