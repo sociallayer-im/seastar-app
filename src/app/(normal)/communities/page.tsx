@@ -1,4 +1,5 @@
-import {getEventGroups} from '@sola/sdk'
+export const dynamic = 'force-dynamic'
+
 import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
 import {selectLang} from '@/app/actions'
