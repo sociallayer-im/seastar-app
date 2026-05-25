@@ -62,7 +62,7 @@ export default function useScheduleEventPopup() {
             url.searchParams.set('popup', eventId.toString())
             window.history.pushState({}, '', url.toString())
             openModal({
-                content: () => <DynamicScheduleEventPopup
+                content: (close) => <DynamicScheduleEventPopup
                     onHighlighted={onHighlighted}
                     profile={profile || undefined}
                     groupDetail={groupDetail!}
@@ -70,6 +70,7 @@ export default function useScheduleEventPopup() {
                     lang={lang}
                     event={eventDetail!}
                     timezone={groupDetail?.timezone|| eventDetail?.timezone || 'UTC'}
+                    close={close}
                 />,
                 onClose: () => {
                     const url = new URL(window.location.href)

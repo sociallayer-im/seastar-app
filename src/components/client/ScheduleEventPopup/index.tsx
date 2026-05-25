@@ -16,6 +16,7 @@ import StarEventBtn from '@/components/client/StarEventBtn'
 import AttendEventBtn from '@/components/client/AttendEventBtn'
 import { useState } from 'react'
 import HighLightEventBtn from '@/components/client/HighLightEventBtn'
+import useConfirmDialog from '@/hooks/useConfirmDialog'
 
 export interface ScheduleEventPopupProps {
     event: EventDetail
@@ -25,9 +26,11 @@ export interface ScheduleEventPopupProps {
     groupDetail: GroupDetail
     profile?: Profile,
     onHighlighted?: (highlighted: boolean) => void
+    close?: () => void
 }
 
-export default function ScheduleEventPopup({ event, timezone, lang, starred, profile, groupDetail, onHighlighted }: ScheduleEventPopupProps) {
+export default function ScheduleEventPopup({ event, timezone, lang, starred, profile, groupDetail, onHighlighted, close }: ScheduleEventPopupProps) {
+    const { showConfirmDialog } = useConfirmDialog()
     const eventProcess = checkProcess(event.start_time, event.end_time)
 
     const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
@@ -155,6 +158,21 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                     </a>
                 }
 
+                {!canAccess && !!profile && !!groupDetail.ticket_link && event.status !== 'cancelled' && event.status !== 'closed' &&
+                    <Button variant={'special'}
+                        className="sm:mr-3 mt-3 sm:w-auto w-full"
+                        onClick={() => {
+                            close?.()
+                            showConfirmDialog({
+                                lang,
+                                title: '购票或加入社区 / Purchase Ticket or Join',
+                                content: `请购票或申请加入社区 Please purchase a ticket or apply to join the community.<br /><br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="${groupDetail.ticket_link}" target="_blank">前往购票 / Go to Purchase</a>`,
+                                type: 'info'
+                            })
+                        }}>
+                        {lang['Join Event(RSVP)']}
+                    </Button>
+                }
 
                 {!checkedIn && attendedEvent && !isEventOperator &&
                     <a className={`${buttonVariants({ variant: 'primary' })} sm:mr-3 mt-3 sm:w-auto w-full`}
