@@ -51,8 +51,8 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
     const { canAccess, isEventOperator, attended, checkedIn } = checkEventPermissionsForProfile(event!, groupDetail!, profile)
     const [attendedEvent, setAttendedEvent] = useState(attended)
 
-    return <div className="max-h-[90svh] overflow-auto sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
-        <div className="flex flex-row flex-nowrap">
+    return <div className="flex flex-col max-h-[90svh] sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
+        <div className="flex flex-row flex-nowrap flex-shrink-0">
             <div className="flex-1">
                 <div className="text-xs font-semibold sm:my-3 my-2">{formatEventDuration(event.start_time, event.end_time, event.timezone)}</div>
                 <div className="flex-row-item-center sm:my-2 my-1">
@@ -112,11 +112,11 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
             </div>
         </div>
 
-        <div className="my-3">
+        <div className="my-3 overflow-y-auto flex-1 min-h-0">
             <RichTextDisplayer markdownStr={event.content || ''} />
         </div>
 
-        <div className="mt-3 flex sm:flex-row flex-col sm:justify-between w-full">
+        <div className="mt-3 flex sm:flex-row flex-col sm:justify-between w-full flex-shrink-0">
             <div className="sm:order-1 order-2 flex mt-3 justify-center sm:justify-start">
                 {isEventOperator &&
                     <a href={`/event/edit/${event.id}`} className={`${buttonVariants({ variant: 'ghost' })} text-primary-foreground !font-normal  !gap-1.5`}>
