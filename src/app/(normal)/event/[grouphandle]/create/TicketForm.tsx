@@ -26,7 +26,7 @@ import {
     EventRole,
     getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerHandle, getBadgeClassDetailByBadgeClassId
 } from '@sola/sdk'
-import {cfImage, isAvailablePaymentType} from '@/utils'
+import {cfImage} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
 export interface TicketFormProps {
@@ -502,7 +502,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(props.paymentMethods)
     const {toast} = useToast()
 
-    const AvailablePaymentMethods = Payments.filter(p => isAvailablePaymentType(p))
+    const AvailablePaymentMethods = Payments
 
     useEffect(() => {
         if (!paymentMethods.length) {

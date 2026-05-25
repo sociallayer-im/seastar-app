@@ -39,35 +39,6 @@ export const search = async ({params, clientMode}: SolaSdkFunctionParams<{ keywo
     }
 }
 
-export const genDaimoLink = async ({params, clientMode}: SolaSdkFunctionParams<{
-    ticketItemId: number,
-    authToken: string,
-    redirectUri?: string
-}>) => {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/ticket/daimo_create_payment_link`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            auth_token: params.authToken,
-            ticket_item_id: params.ticketItemId,
-            redirect_uri: params.redirectUri
-        })
-    })
-
-    if (!res.ok) {
-        throw new Error('Failed to generate payment link')
-    }
-
-    const data = await res.json()
-
-    return data as {
-        id: string,
-        url: string,
-    }
-}
-
 export async function requestEmailCode({clientMode, params}:SolaSdkFunctionParams<{email: string}>): Promise<void> {
     const res = await fetch(`${getSdkConfig(clientMode).api}/service/send_email`, {
         method: 'POST',

@@ -106,23 +106,6 @@ export const paymentTokenList: PaymentSettingChain[] = [
         ]
     },
     {
-        chain: 'Daimo(OP)',
-        id: 'daimo',
-        chainId: 0,
-        icon: '/images/payment_icon/daimo.jpg',
-        payHub: '',
-        tokenList: [
-            // op chain
-            {
-                name: 'USDT',
-                id: 'usdt',
-                contract: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
-                icon: '/images/payment_icon/tether_32.webp',
-                decimals: 6
-            }
-        ]
-    },
-    {
         chain: 'Stripe',
         id: 'stripe',
         chainId: 0,
@@ -410,46 +393,6 @@ export interface PaymentsType {
 
 export const Payments: PaymentsType[] = [
     {
-        label: 'Daimo(OP)',
-        chain: 'op',
-        id: 'daimo_op',
-        protocol: 'daimo',
-        chainId: 42161,
-        protocolIcon: '/images/payment_icon/daimo.jpg',
-        chainIcon: '/images/payment_icon/op.png',
-        payHub: '',
-        tokenList: [
-            // op chain
-            {
-                name: 'USDT',
-                id: 'usdt',
-                contract: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
-                icon: '/images/payment_icon/tether_32.webp',
-                decimals: 6
-            }
-        ]
-    },
-    {
-        label: 'Daimo(Base)',
-        chain: 'base',
-        id: 'daimo_base',
-        protocol: 'daimo',
-        chainId: 8453,
-        protocolIcon: '/images/payment_icon/daimo.jpg',
-        chainIcon: '/images/payment_icon/base_chain.png',
-        payHub: '',
-        tokenList: [
-            // base chain
-            {
-                name: 'USDC',
-                id: 'usdc',
-                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-                icon: '/images/payment_icon/usdc_32.webp',
-                decimals: 6
-            }
-        ]
-    },
-    {
         label: 'EVM(Polygon)',
         chain: 'polygon',
         id: 'evm-polygon',
@@ -589,32 +532,6 @@ export const Payments: PaymentsType[] = [
         chainIcon: '/images/payment_icon/op.png',
         payHub: '0xA73405D59e136f574a2FD690079B240f6fbff0a8',
         tokenList: [
-            {
-                name: 'USDT',
-                id: 'usdt',
-                contract: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
-                icon: '/images/payment_icon/tether_32.webp',
-                decimals: 6
-            }
-        ]
-    },
-    {
-        label: 'Daimo(OP)',
-        chain: 'daimo',
-        id: 'daimo',
-        protocol: null,
-        chainId: 8453,
-        protocolIcon: '/images/payment_icon/daimo.jpg',
-        chainIcon: '/images/payment_icon/op.png',
-        payHub: '',
-        tokenList: [
-            {
-                name: 'USDC',
-                id: 'usdc',
-                contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-                icon: '/images/payment_icon/usdc_32.webp',
-                decimals: 6
-            },
             {
                 name: 'USDT',
                 id: 'usdt',

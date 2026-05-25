@@ -2,7 +2,6 @@ import {
     ProfileDetail,
     Ticket,
     EventDetail,
-    createDaimoOrder,
     checkBadgeOwnership,
     createTicketPayment, validateCoupon
 } from '@sola/sdk'
@@ -13,7 +12,6 @@ import {
     displayMethodPrice,
     formatEventTime,
     getAuth,
-    isAvailablePaymentType,
     shortWalletAddress
 } from '@/utils'
 import {useEffect, useMemo, useState} from 'react'
@@ -98,7 +96,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
         const availableTypes = ticket.payment_methods.reduce((acc, method) => {
             const type = Payments.find(p => p.protocol === method.protocol && p.chain === method.chain)
-            if (type && isAvailablePaymentType(type)) {
+            if (type) {
                 acc.add(type)
             }
             return acc
@@ -137,74 +135,6 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             method.token_name === selectedToken.name
         )
     }, [selectedPaymentType, selectedToken, ticket.payment_methods])
-
-    const [dimoLink, setDaimoLink] = useState<string | undefined>(undefined)
-    const handleDaimoPayment = async (redirect: boolean) => {
-        if (!currProfile) return
-
-        const loading = showLoading()
-        setBuying(true)
-        try {
-            const authToken = getAuth()
-            const res = await createDaimoOrder({
-                params: {
-                    eventId: eventDetail.id,
-                    authToken: authToken!,
-                    paymentMethod: selectedMethod!,
-                    redirectUri: window.location.href,
-                    coupon: validPromoCode,
-                },
-                clientMode: CLIENT_MODE
-            })
-
-            // zero price ticket, no need to redirect
-            if (res.ticketItem.status === 'succeeded') {
-                toast({
-                    description: lang['Purchase Successful'],
-                    variant: 'success'
-                })
-
-                setTimeout(() => {
-                    window.location.reload()
-                })
-            }
-
-            if (redirect) {
-                window.location.href = res.url
-            } else {
-                setDaimoLink(res.url)
-                return res
-            }
-        } catch (e: unknown) {
-            console.error(e)
-            setPaymentError(e instanceof Error ? e.message : 'Failed to create payment')
-            setBuying(false)
-        } finally {
-            closeModal(loading)
-        }
-    }
-
-    const handleCopyPaymentLink = async () => {
-        if (dimoLink) {
-            navigator.clipboard.writeText(dimoLink)
-                .then(() => {
-                    toast({
-                        description: lang['Copied'],
-                        variant: 'success'
-                    })
-                })
-        }
-
-        const data = await handleDaimoPayment(false)
-        setDaimoLink(data!.url)
-        navigator.clipboard.writeText(data!.url)
-            .then(() => {
-                toast({
-                    description: lang['Copied'],
-                    variant: 'success'
-                })
-            })
-    }
 
     const handlePurchaseForFree = async () => {
         if (!currProfile) return
@@ -452,21 +382,6 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         {!currProfile && <Button
             onClick={clientToSignIn}
             variant={'special'} className="text-sm w-full">{lang['Sign In']}</Button>
-        }
-
-        {selectedPaymentType?.protocol === 'daimo' && !!currProfile && !soldOut && !stopSelling &&
-            <div className="flex flex-row mt-6">
-                {(!!validPromoCode && !!discountedPrice) || (!validPromoCode && !!selectedMethod?.price) &&
-                    <Button variant={'secondary'}
-                            disabled={!badgeCollected || checkingBadgeCollected || buying}
-                            onClick={handleCopyPaymentLink}
-                            className="text-sm flex-1 mr-3">{lang['Copy Payment Link']}</Button>
-                }
-                <Button variant={'special'}
-                        disabled={!badgeCollected || checkingBadgeCollected}
-                        onClick={() => handleDaimoPayment(true)}
-                        className="text-sm flex-1">{lang['Pay']}</Button>
-            </div>
         }
 
         {!ticket.payment_methods.length && !!currProfile && !soldOut && !stopSelling &&

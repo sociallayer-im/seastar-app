@@ -20,7 +20,7 @@ import {
 } from '@sola/sdk'
 import domtoimage from 'dom-to-image'
 import { Dictionary } from '@/lang'
-import {AVAILABLE_PAYMENT_TYPES, CLIENT_MODE, SOLA_APP_SUBDOMAINS} from '@/app/config'
+import {CLIENT_MODE, SOLA_APP_SUBDOMAINS} from '@/app/config'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -764,17 +764,6 @@ export const getPaymentMethodIcon = (payment: PaymentMethod) => {
     return paymentType?.protocolIcon || '/images/unknown.png'
 }
 
-
-export const isAvailablePaymentType = (paymentType: PaymentsType) => {
-    return AVAILABLE_PAYMENT_TYPES.includes(paymentType.id)
-}
-
-export const isAvailablePaymentMethod = (payment: PaymentMethod) => {
-    const type = Payments.find(p => p.protocol === payment.protocol && p.chain === payment.chain)
-    if (!type) return false
-
-    return isAvailablePaymentType(type)
-}
 
 export const displayMethodPrice = (payment: PaymentMethod) => {
     const type = Payments.find(p => p.protocol === payment.protocol && p.chain === payment.chain)

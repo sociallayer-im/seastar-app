@@ -1,7 +1,6 @@
 import {SolaSdkFunctionParams} from '../types'
 import {getSdkConfig} from '../client'
 import {Coupon, DiscountType, Participant, PaymentMethod, TicketItem} from './types'
-import {genDaimoLink} from '../service'
 import {Profile} from '../profile'
 import {fixDate} from '../uitls'
 
@@ -40,43 +39,6 @@ export const createTicketPayment = async ({params, clientMode}: SolaSdkFunctionP
     return {
         participant: data.participant as Participant,
         ticketItem: data.ticket_item as TicketItem
-    }
-}
-
-export interface CreateDaimoOrderProps {
-    eventId: number,
-    authToken: string,
-    paymentMethod: PaymentMethod,
-    coupon?: string
-    redirectUri?: string
-}
-
-export const createDaimoOrder = async ({params, clientMode}: SolaSdkFunctionParams<CreateDaimoOrderProps>) => {
-    const {ticketItem, participant} = await createTicketPayment({
-        params: {
-            authToken: params.authToken,
-            eventId: params.eventId,
-            ticketId: params.paymentMethod.item_id!,
-            coupon: params.coupon,
-            paymentMethodId: params.paymentMethod.id
-        },
-        clientMode,
-    })
-
-    const {id, url} = await genDaimoLink({
-        params: {
-            ticketItemId: ticketItem.id,
-            authToken: params.authToken,
-            redirectUri: params.redirectUri
-        },
-        clientMode
-    })
-
-    return {
-        id,
-        url,
-        participant,
-        ticketItem
     }
 }
 
