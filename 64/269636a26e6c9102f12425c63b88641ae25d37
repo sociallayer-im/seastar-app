@@ -1,0 +1,22 @@
+src/components/client/ScheduleEventPopup/index.tsx
+  s_212b3fb8ecd46f::t_a5c14dbb67fd50 161-175
+  s_212b3fb8ecd46f::t_00bb841f2ab335 19,29,32-33
+src/hooks/useScheduleEventPopup.tsx
+  s_212b3fb8ecd46f::t_20a4301f407c81 65,73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "64269636a26e6c9102f12425c63b88641ae25d37",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
