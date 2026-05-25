@@ -1,0 +1,24 @@
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_212b3fb8ecd46f::t_0235c9b904aacd 29
+  s_212b3fb8ecd46f::t_c7f78662d5f498 505
+src/utils/index.ts
+  s_212b3fb8ecd46f::t_38e13909a11f4e 23
+src/components/client/DialogTicket.tsx
+  s_212b3fb8ecd46f::t_41148936289720 99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "f15704beb2916ce92d91be7cdca90de37b3afaef",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
