@@ -95,10 +95,11 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         if (!ticket.payment_methods) return []
 
         const availableTypes = ticket.payment_methods.reduce((acc, method) => {
-            const type = Payments.find(p => p.protocol === method.protocol && p.chain === method.chain)
-            if (type) {
-                acc.add(type)
-            }
+            const effectiveChains = method.chains?.length ? method.chains : [method.chain]
+            effectiveChains.forEach(chain => {
+                const type = Payments.find(p => p.chain === chain && p.protocol === (method.protocol || p.protocol))
+                if (type) acc.add(type)
+            })
             return acc
         }, new Set<PaymentsType>())
 
@@ -110,9 +111,11 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const tokens = useMemo(() => {
         if (!ticket.payment_methods || !selectedPaymentType || !selectedPaymentType.tokenList) return []
 
-        const methodsUsingTheType = ticket.payment_methods.filter(method =>
-            method.protocol === selectedPaymentType.protocol && method.chain === selectedPaymentType.chain
-        )
+        const methodsUsingTheType = ticket.payment_methods.filter(method => {
+            const effectiveChains = method.chains?.length ? method.chains : [method.chain]
+            return effectiveChains.includes(selectedPaymentType.chain) &&
+                method.protocol === selectedPaymentType.protocol
+        })
 
         return selectedPaymentType.tokenList.filter(token =>
             methodsUsingTheType.some(method => method.token_name === token.name)
@@ -129,11 +132,12 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const selectedMethod = useMemo(() => {
         if (!selectedPaymentType || !selectedToken) return undefined
 
-        return ticket.payment_methods.find(method =>
-            method.protocol === selectedPaymentType.protocol &&
-            method.chain === selectedPaymentType.chain &&
-            method.token_name === selectedToken.name
-        )
+        return ticket.payment_methods.find(method => {
+            const effectiveChains = method.chains?.length ? method.chains : [method.chain]
+            return effectiveChains.includes(selectedPaymentType.chain) &&
+                method.protocol === selectedPaymentType.protocol &&
+                method.token_name === selectedToken.name
+        })
     }, [selectedPaymentType, selectedToken, ticket.payment_methods])
 
     const handlePurchaseForFree = async () => {

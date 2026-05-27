@@ -530,6 +530,39 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         }
     }
 
+    const EVM_CHAINS = [...new Map(
+        Payments.filter(c => c.chain !== 'stripe').map(c => [c.chain, c])
+    ).values()]
+
+    const toggleAdditionalChain = (pmIndex: number, chainOpt: PaymentsType, p: PaymentMethod) => {
+        const baseChains = p.chains?.length ? [...p.chains] : [p.chain]
+        const addresses: Record<string, string> = {...(p.chain_token_addresses || {})}
+        const idx = baseChains.indexOf(chainOpt.chain)
+        if (idx >= 0) {
+            baseChains.splice(idx, 1)
+            delete addresses[chainOpt.chain]
+        } else {
+            baseChains.push(chainOpt.chain)
+            const defaultToken = chainOpt.tokenList.find(t => t.name === p.token_name) || chainOpt.tokenList[0]
+            if (!addresses[chainOpt.chain]) {
+                addresses[chainOpt.chain] = defaultToken?.contract || ''
+            }
+        }
+        const newChains = baseChains.length > 1 ? baseChains : []
+        setPaymentMethods(paymentMethods.map((pm, i) => i === pmIndex ? {
+            ...pm,
+            chains: newChains,
+            chain_token_addresses: newChains.length ? addresses : {}
+        } : pm))
+    }
+
+    const setChainTokenAddress = (pmIndex: number, chain: string, value: string) => {
+        setPaymentMethods(paymentMethods.map((pm, i) => i === pmIndex ? {
+            ...pm,
+            chain_token_addresses: {...(pm.chain_token_addresses || {}), [chain]: value}
+        } : pm))
+    }
+
     const getAvailablePaymentProtocalList = (currOpt: PaymentMethod) => {
         const protocals: PaymentsType[] = []
         let index = 0
@@ -740,6 +773,27 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                     <div
                                         className="err-msg text-red-400 mt-2 text-xs">{props.errors?.[index]?.receiver_address}</div>
                                 }
+                                {p.chain !== 'stripe' && <div className="mt-3">
+                                    <div className="text-xs text-gray-500 mb-2">Accept on additional chains</div>
+                                    {EVM_CHAINS.filter(c => c.chain !== p.chain).map(chainOpt => {
+                                        const activeChains = p.chains?.length ? p.chains : []
+                                        const isChecked = activeChains.includes(chainOpt.chain)
+                                        return <div key={chainOpt.chain} className="mb-2">
+                                            <label className="flex items-center gap-2 cursor-pointer text-sm">
+                                                <input type="checkbox" checked={isChecked}
+                                                    onChange={() => toggleAdditionalChain(index, chainOpt, p)}/>
+                                                <img src={chainOpt.chainIcon} className="w-4 h-4 rounded-full" alt=""/>
+                                                <span>{chainOpt.label}</span>
+                                            </label>
+                                            {isChecked && <Input
+                                                placeholder="Token contract address"
+                                                value={(p.chain_token_addresses || {})[chainOpt.chain] || ''}
+                                                onChange={e => setChainTokenAddress(index, chainOpt.chain, e.target.value)}
+                                                inputSize={'md'}
+                                                className="mt-1 ml-6 flex-1"/>}
+                                        </div>
+                                    })}
+                                </div>}
                             </div>
                             {index === paymentMethods.length - 1 &&
                                 <i onClick={addNewPaymentMethod}

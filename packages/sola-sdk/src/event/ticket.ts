@@ -9,7 +9,8 @@ export interface TicketPayment {
     eventId: number,
     ticketId: number,
     paymentMethodId?: number,
-    coupon?: string
+    coupon?: string,
+    chain?: string
 }
 
 export const createTicketPayment = async ({params, clientMode}: SolaSdkFunctionParams<TicketPayment>) => {
@@ -18,7 +19,8 @@ export const createTicketPayment = async ({params, clientMode}: SolaSdkFunctionP
         id: params.eventId,
         ticket_id: params.ticketId,
         payment_method_id: params.paymentMethodId,
-        coupon: params.coupon
+        coupon: params.coupon,
+        chain: params.chain
     }
 
     const res = await fetch(`${getSdkConfig(clientMode).api}/ticket/rsvp`, {

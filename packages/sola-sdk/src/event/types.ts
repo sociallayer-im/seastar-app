@@ -105,6 +105,8 @@ export interface PaymentMethod {
     receiver_address: null | string
     price: number
     protocol: string
+    chains?: string[]
+    chain_token_addresses?: Record<string, string>
     _destroy?: string
 }
 
