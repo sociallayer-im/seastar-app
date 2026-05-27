@@ -323,7 +323,7 @@ export const attendEventWithoutTicket = async ({params, clientMode}: SolaSdkFunc
 
 export const saveEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
     eventId: number,
-    fields: Array<{label: string, field_type: string, required: boolean, position: number, options?: string[]}>,
+    fields: Array<{id?: string, label: string, field_type: string, required: boolean, position: number, options?: string[]}>,
     authToken: string
 }>) => {
     const res = await fetch(`${getSdkConfig(clientMode).api}/form/save_event_form`, {
