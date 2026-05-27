@@ -10,9 +10,9 @@ export default function CardGroup({group, currProfileHandle}: {group: GroupWithO
             {group.nickname || group.handle}
         </div>
         {
-            !!currProfileHandle &&
+            !!currProfileHandle && !!group.role &&
             <div className="bg-gray-100 h-7 p-4 rounded-2xl flex flex-row items-center mt-4">
-                {group.owner.handle === currProfileHandle ? 'Owner' : 'Member'}
+                {group.role.charAt(0).toUpperCase() + group.role.slice(1)}
             </div>
         }
     </a>

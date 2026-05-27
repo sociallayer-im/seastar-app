@@ -56,12 +56,7 @@ export const getProfileGroup = async ({params: {profileHandle}, clientMode}:Sola
     const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(profileHandle)}&role=owner,member,manager`)
     const data = await resp.json()
 
-    return (data.groups || []).map((group: GroupDetail) => {
-        return {
-            ...group,
-            owner: group.memberships && group.memberships[0] ? group.memberships[0].profile : undefined
-        }
-    }) as GroupWithOwner[]
+    return (data.groups || []) as GroupWithOwner[]
 }
 
 /**

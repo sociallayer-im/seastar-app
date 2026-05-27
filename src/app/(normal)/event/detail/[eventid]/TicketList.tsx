@@ -7,15 +7,17 @@ import {displayTicketPrice, getPaymentMethodIcon} from '@/utils'
 import useModal from '@/components/client/Modal/useModal'
 import DialogTicket from '@/components/client/DialogTicket'
 
-export default function TicketList({eventDetail, lang, currProfile}: {
+export default function TicketList({eventDetail, lang, currProfile, attended}: {
     eventDetail: EventDetail,
     lang: Dictionary,
-    currProfile?: null | ProfileDetail
+    currProfile?: null | ProfileDetail,
+    attended?: boolean
 }) {
 
     const {openModal} = useModal()
 
     const showTicket = (ticket: Ticket) => {
+        if (attended) return
         openModal({
             content: (close) => <DialogTicket
                 eventDetail={eventDetail}
@@ -32,11 +34,12 @@ export default function TicketList({eventDetail, lang, currProfile}: {
 
     return <div>
         <div className="border-gray-200 p-4">
+            {attended && <div className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-lg px-4 py-2 mb-3">You have already registered for this event.</div>}
             {!tickets || tickets.length === 0 && <NoData/>}
             {tickets?.map(ticket => {
                 return <div key={ticket.id}
                             onClick={() => showTicket(ticket)}
-                            className="bg-gray-100 p-4 rounded-lg mb-3 cursor-pointer border-2 hover:border-[#baffad] hover:bg-[#effff9]">
+                            className={`bg-gray-100 p-4 rounded-lg mb-3 border-2 ${attended ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-[#baffad] hover:bg-[#effff9]'}`}>
                     <div className="font-semibold">{ticket.title}</div>
                     <div className="text-xs my-2 break-words text-gray-500">
                         {ticket.content}

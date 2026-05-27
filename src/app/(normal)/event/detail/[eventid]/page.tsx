@@ -633,7 +633,8 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     <TicketList
                         eventDetail={eventDetail}
                         lang={lang}
-                        currProfile={currProfile} />
+                        currProfile={currProfile}
+                        attended={currProfileAttended} />
                 }
 
 

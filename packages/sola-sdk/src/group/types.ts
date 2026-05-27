@@ -58,7 +58,8 @@ export interface MembershipDetail extends Membership {
 }
 
 export interface GroupWithOwner extends Group {
-    owner: Profile
+    owner?: Profile
+    role?: string
 }
 
 
