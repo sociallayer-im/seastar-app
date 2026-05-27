@@ -1,0 +1,20 @@
+packages/sola-sdk/src/voucher/voucher.ts
+  s_212b3fb8ecd46f::t_0609cd3aa08d47 15
+  s_212b3fb8ecd46f::t_5f9b4ee1af0353 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "1cf59c2b86200786abb4de5e9d677787ff7a8757",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
