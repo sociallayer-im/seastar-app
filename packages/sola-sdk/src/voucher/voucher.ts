@@ -12,7 +12,7 @@ export const getVoucherByHandle = async ({params, clientMode}:SolaSdkFunctionPar
     const apiUrl = getSdkConfig(clientMode).api
     const resp = await fetch(`${apiUrl}/voucher/list?sender_handle=${encodeURIComponent(params.handle)}`)
     const data = await resp.json()
-    return (data.vouchers as Voucher[]).map((v:Voucher) => fixDate(v)) as Voucher[]
+    return ((data.vouchers || []) as Voucher[]).map((v:Voucher) => fixDate(v)) as Voucher[]
 }
 
 /**
@@ -31,7 +31,7 @@ export const getGroupVoucherByHandle = async ({params, clientMode}: SolaSdkFunct
     const apiUrl = getSdkConfig(clientMode).api
     const resp = await fetch(`${apiUrl}/voucher/list?group_handle=${encodeURIComponent(params.groupHandle)}`)
     const data = await resp.json()
-    return (data.vouchers as Voucher[]).map((v:Voucher) => fixDate(v)) as Voucher[]
+    return ((data.vouchers || []) as Voucher[]).map((v:Voucher) => fixDate(v)) as Voucher[]
 }
 
 
