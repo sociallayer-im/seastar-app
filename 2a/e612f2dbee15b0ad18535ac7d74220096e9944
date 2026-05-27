@@ -1,0 +1,26 @@
+packages/sola-sdk/src/event/ticket.ts
+  s_212b3fb8ecd46f::t_d8ff7e6a6de657 12-13,22-23
+src/components/client/DialogTicket.tsx
+  s_212b3fb8ecd46f::t_e4abd8d5231e6d 98-102,114-118,135-140
+packages/sola-sdk/src/event/types.ts
+  s_212b3fb8ecd46f::t_11d386d0fbdcbf 108-109
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_212b3fb8ecd46f::t_3bb502c0855026 776-796
+  s_212b3fb8ecd46f::t_97109497e30727 533-565
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "2ae612f2dbee15b0ad18535ac7d74220096e9944",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
