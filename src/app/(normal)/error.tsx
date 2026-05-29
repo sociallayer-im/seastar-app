@@ -4,17 +4,12 @@ import {useEffect} from 'react'
 import NoData from '@/components/NoData'
 import Link from 'next/link'
 import {buttonVariants, Button} from '@/components/shadcn/Button'
-import { TrackJS, TrackJSInstall } from "@/app/trackjs_loader"
-
-TrackJSInstall()
-
 export default function Error({error,reset }: {
     error: Error & { digest?: string }
     reset: () => void
 }) {
     useEffect(() => {
         console.error(error)
-        TrackJS.track(error)
     }, [error])
 
     return (

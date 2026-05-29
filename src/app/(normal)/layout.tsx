@@ -8,10 +8,7 @@ import {getCurrProfile, selectLang} from '@/app/actions'
 import Header from "@/components/Header"
 import StartupChecks from "@/components/client/StartupChecks"
 import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
-import { TrackJSInstall } from "@/app/trackjs_loader"
 import { headers } from "next/headers"
-
-TrackJSInstall()
 
 export const metadata: Metadata = {
     title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
