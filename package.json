@@ -52,7 +52,7 @@
     "markdown-it": "^14.1.0",
     "markdown-to-text": "^0.1.1",
     "negotiator": "^0.6.3",
-    "next": "14.2.30",
+    "next": "14.2.35",
     "node-cache": "^5.1.2",
     "orderedmap": "^2.1.1",
     "prosemirror-commands": "^1.6.0",
