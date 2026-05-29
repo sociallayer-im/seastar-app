@@ -440,3 +440,25 @@ export const getMyPendingInvites = async ({params, clientMode}: SolaSdkFunctionP
     return (data.group_invites || []) as InviteDetail[]
 }
 
+
+export const sendEmailToGroupMembers = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: number
+    subject: string
+    content: string
+    authToken: string
+}>) => {
+    const url = `${getSdkConfig(clientMode).api}/group/send_email_to_members`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            group_id: params.groupId,
+            subject: params.subject,
+            content: params.content,
+            auth_token: params.authToken
+        })
+    })
+    const data = await response.json()
+    if (data.result === 'error') throw new Error(data.message || 'Failed to send emails')
+    return data.sent_count as number
+}

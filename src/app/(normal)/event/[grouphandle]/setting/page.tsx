@@ -103,6 +103,17 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </div>}
 
+                {isManagerOrOwner && <a href={`/event/${groupDetail.handle}/setting/email-members`}
+                    className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
+                    <div className="flex-row-item-center w-full justify-between">
+                        <div>Email Members</div>
+                        <div className="font-normal flex-row-item-center">
+                            <div>{groupDetail.memberships?.length ?? 0} members</div>
+                            <i className="uil-arrow-right text-2xl" />
+                        </div>
+                    </div>
+                </a>}
+
                 <div className="flex sm:flex-row flex-col items-center justify-end gap-3">
                     <ExportGroupEventBtn lang={lang} groupId={groupDetail.id} />
                     <ExportEventParticipantBtn lang={lang} groupId={groupDetail.id} />
