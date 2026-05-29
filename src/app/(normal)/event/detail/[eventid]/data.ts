@@ -79,7 +79,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
 
     const currProfileAttended = !!eventDetail.participants?.find((item: Participant) => {
         const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
-        return (!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'attending' || item.status === 'checked' || item.status === 'pending')) // no tickets needed
+        return (!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'attending' || item.status === 'checked' || item.status === 'pending') && item.payment_status !== 'pending') // no tickets needed
             || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'attending' || item.status === 'checked') && item.payment_status?.includes('succe')) // paid ticket
             || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'attending' || item.status === 'checked') && (ticket.payment_methods?.length ?? 0) === 0) // free ticket
     })

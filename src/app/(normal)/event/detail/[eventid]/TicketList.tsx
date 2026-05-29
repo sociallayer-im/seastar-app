@@ -3,7 +3,7 @@
 import {EventDetail, ProfileDetail, Ticket} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import NoData from '@/components/NoData'
-import {displayTicketPrice, getPaymentMethodIcon} from '@/utils'
+import {displayTicketPrice, getPaymentMethodChainIcons} from '@/utils'
 import useModal from '@/components/client/Modal/useModal'
 import DialogTicket from '@/components/client/DialogTicket'
 
@@ -26,7 +26,7 @@ export default function TicketList({eventDetail, lang, currProfile, attended}: {
                 currProfile={currProfile}
                 close={close!}
             />,
-            clickOutsideToClose: false
+            clickOutsideToClose: true
         })
     }
 
@@ -55,12 +55,14 @@ export default function TicketList({eventDetail, lang, currProfile, attended}: {
                             </div>
                             <div className="flex flex-row items-center">
                                 {
-                                    ticket.payment_methods.map((method, index) => {
-                                        return <img key={index}
-                                                    className="shadow min-w-5 h-5 rounded-full mr-[-6px] bg-white"
-                                                    src={getPaymentMethodIcon(method)}
-                                                    alt="" width={20} height={20}/>
-                                    })
+                                    ticket.payment_methods.flatMap((method, mi) =>
+                                        getPaymentMethodChainIcons(method).map((icon, ci) =>
+                                            <img key={`${mi}-${ci}`}
+                                                 className="shadow min-w-5 h-5 rounded-full mr-[-6px] bg-white"
+                                                 src={icon}
+                                                 alt="" width={20} height={20}/>
+                                        )
+                                    )
                                 }
                             </div>
                         </div>

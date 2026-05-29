@@ -262,13 +262,16 @@ export function displayTicketPrice(ticket: Ticket) {
         return 'Free'
     }
 
-    const prices = ticket.payment_methods.map(item => {
-        const type = Payments.find(type => type.chain === item.chain && type.protocol === item.protocol)
-        const targetToken = type?.tokenList.find(token => token.name === item.token_name || token.id === item.token_name)
+    const prices = ticket.payment_methods
+        .filter(item => !item._destroy)
+        .map(item => {
+            const targetToken = findMethodToken(item)
+            if (!targetToken) return null
+            return BigNumber(item.price).dividedBy(BigNumber(10).pow(targetToken.decimals)).toNumber()
+        })
+        .filter((p): p is number => p !== null && !isNaN(p))
 
-        return BigNumber(item.price).dividedBy(BigNumber(10).pow(targetToken?.decimals || 0)).toNumber()
-    })
-
+    if (prices.length === 0) return ''
     const maxPrice = Math.max(...prices)
     const minPrice = Math.min(...prices)
 
@@ -759,19 +762,29 @@ export const checkDomainInput = (domain: string) => {
     return !domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)
 }
 
-export const getPaymentMethodIcon = (payment: PaymentMethod) => {
-    const paymentType = Payments.find(p => p.protocol === payment.protocol && p.chain === payment.chain)
-    return paymentType?.protocolIcon || '/images/unknown.png'
+export const getChainIcon = (chain: string) => {
+    return Payments.find(p => p.chain === chain)?.chainIcon || '/images/unknown.png'
 }
 
+// Returns the effective chain list for a payment method.
+// chains[] is canonical; chain (single string) is the legacy fallback.
+const effectiveChains = (payment: PaymentMethod): string[] =>
+    payment.chains?.length ? payment.chains : (payment.chain ? [payment.chain] : [])
+
+// Finds the token config for a payment method across its supported chains.
+// Uses token.id as secondary match for legacy token_name values.
+export const findMethodToken = (payment: PaymentMethod) =>
+    effectiveChains(payment)
+        .map(chain => Payments.find(p => p.chain === chain))
+        .flatMap(type => type?.tokenList || [])
+        .find(token => token.name === payment.token_name || token.id === payment.token_name)
+
+export const getPaymentMethodChainIcons = (payment: PaymentMethod): string[] =>
+    effectiveChains(payment).map(getChainIcon)
 
 export const displayMethodPrice = (payment: PaymentMethod) => {
-    const type = Payments.find(p => p.protocol === payment.protocol && p.chain === payment.chain)
-    if (!type) return 'Unknown'
-
-    const targetToken = type.tokenList.find(token => token.name === payment.token_name)
+    const targetToken = findMethodToken(payment)
     if (!targetToken) return 'Unknown'
-
     return BigNumber(payment.price).dividedBy(BigNumber(10).pow(targetToken.decimals)).toNumber()
 }
 

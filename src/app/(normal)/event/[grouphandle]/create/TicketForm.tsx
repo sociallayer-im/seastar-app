@@ -99,11 +99,14 @@ export default function TicketForm({
                         allTicketValid = false
                         errMsg.price = 'Price must be greater than 0'
                     }
+                    if (!p.chains?.length) {
+                        allTicketValid = false
+                        errMsg.price = errMsg.price || 'At least one chain must be selected'
+                    }
                     if (!p.receiver_address) {
                         allTicketValid = false
                         errMsg.receiver_address = 'Receiving wallet is required'
                     }
-
                     if (!!p.receiver_address && !p.receiver_address.startsWith('0x') && p.receiver_address.length !== 42) {
                         allTicketValid = false
                         errMsg.receiver_address = 'Invalid receiving wallet address'
@@ -500,19 +503,21 @@ export interface PaymentMethodForm {
 
 function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(props.paymentMethods)
-    const {toast} = useToast()
 
-    const AvailablePaymentMethods = Payments
+    const EVM_CHAINS = [...new Map(
+        Payments.filter(c => c.chain !== 'stripe').map(c => [c.chain, c])
+    ).values()]
+
+    const ALL_TOKENS = [...new Map(
+        EVM_CHAINS.flatMap(c => c.tokenList).map(t => [t.name, t])
+    ).values()]
 
     useEffect(() => {
         if (!paymentMethods.length) {
             setPaymentMethods([{
                 ...emptyPaymentMethod,
-                chain: AvailablePaymentMethods[0].chain,
-                token_name: AvailablePaymentMethods[0].tokenList[0].name,
-                token_address: AvailablePaymentMethods[0].tokenList[0].contract,
-                protocol: AvailablePaymentMethods[0].protocol!,
-                price: 10 ** AvailablePaymentMethods[0].tokenList[0].decimals
+                token_name: ALL_TOKENS[0].name,
+                price: 10 ** ALL_TOKENS[0].decimals
             }])
         }
     }, [paymentMethods])
@@ -526,33 +531,42 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             paymentMethods[index]._destroy = '1'
             setPaymentMethods([...paymentMethods])
         } else {
-            setPaymentMethods(paymentMethods.filter((p, i) => i !== index))
+            setPaymentMethods(paymentMethods.filter((_, i) => i !== index))
         }
     }
 
-    const EVM_CHAINS = [...new Map(
-        Payments.filter(c => c.chain !== 'stripe').map(c => [c.chain, c])
-    ).values()]
-
-    const toggleAdditionalChain = (pmIndex: number, chainOpt: PaymentsType, p: PaymentMethod) => {
-        const baseChains = p.chains?.length ? [...p.chains] : [p.chain]
+    const toggleChain = (pmIndex: number, chainOpt: PaymentsType, p: PaymentMethod) => {
+        const currentChains = [...(p.chains || [])]
         const addresses: Record<string, string> = {...(p.chain_token_addresses || {})}
-        const idx = baseChains.indexOf(chainOpt.chain)
+        const idx = currentChains.indexOf(chainOpt.chain)
         if (idx >= 0) {
-            baseChains.splice(idx, 1)
+            currentChains.splice(idx, 1)
             delete addresses[chainOpt.chain]
         } else {
-            baseChains.push(chainOpt.chain)
-            const defaultToken = chainOpt.tokenList.find(t => t.name === p.token_name) || chainOpt.tokenList[0]
+            currentChains.push(chainOpt.chain)
             if (!addresses[chainOpt.chain]) {
+                const defaultToken = chainOpt.tokenList.find(t => t.name === p.token_name) || chainOpt.tokenList[0]
                 addresses[chainOpt.chain] = defaultToken?.contract || ''
             }
         }
-        const newChains = baseChains.length > 1 ? baseChains : []
         setPaymentMethods(paymentMethods.map((pm, i) => i === pmIndex ? {
             ...pm,
-            chains: newChains,
-            chain_token_addresses: newChains.length ? addresses : {}
+            chains: currentChains,
+            chain_token_addresses: addresses,
+        } : pm))
+    }
+
+    const changeToken = (pmIndex: number, token: PaymentSettingToken, p: PaymentMethod) => {
+        const newAddresses = {...(p.chain_token_addresses || {})}
+        ;(p.chains || []).forEach(chain => {
+            const chainConfig = EVM_CHAINS.find(c => c.chain === chain)
+            const tokenConfig = chainConfig?.tokenList.find(t => t.name === token.name)
+            if (tokenConfig) newAddresses[chain] = tokenConfig.contract
+        })
+        setPaymentMethods(paymentMethods.map((pm, i) => i === pmIndex ? {
+            ...pm,
+            token_name: token.name,
+            chain_token_addresses: newAddresses
         } : pm))
     }
 
@@ -563,85 +577,11 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         } : pm))
     }
 
-    const getAvailablePaymentProtocalList = (currOpt: PaymentMethod) => {
-        const protocals: PaymentsType[] = []
-        let index = 0
-        while (index < AvailablePaymentMethods.length) {
-            const c = AvailablePaymentMethods[index]
-            if (c.chain === currOpt.chain && c.protocol === currOpt.protocol) {
-                protocals.push(c)
-            } else {
-                const hasUsedChain = props.paymentMethods
-                    .filter(payment_method => c.chain === payment_method.chain
-                        && payment_method.protocol === c.protocol
-                        && payment_method._destroy !== '1')
-                if (!hasUsedChain.length) {
-                    // 没有使用过的支付方式
-                    protocals.push(c)
-                } else {
-                    // 已经有了的支付方式，判断是否有其他可用token
-                    const currPaymentToken = hasUsedChain!.map((method) => method.token_address)
-                    c.tokenList.forEach((tokenInfo) => {
-                        if (!currPaymentToken.includes(tokenInfo.contract)) {
-                            protocals.push(c)
-                        }
-                    })
-                }
-            }
-            index++
-        }
-
-        return protocals
-    }
-
-    const getAvailableTokenList = (currOpt: PaymentMethod) => {
-        return Payments
-            .find(c => currOpt.chain === c.chain && currOpt.protocol === c.protocol)!.tokenList
-            .filter(t => t.contract === currOpt.token_address
-                || !paymentMethods.find(p => p.chain === currOpt.chain
-                    && p.protocol === currOpt.protocol
-                    && p.token_address === t.contract))
-    }
-
     const addNewPaymentMethod = () => {
-        let chain: PaymentsType | undefined
-        let token: PaymentSettingToken | undefined
-
-        let index = 0
-        while ((!chain || !token) && index < AvailablePaymentMethods.length) {
-            const c = AvailablePaymentMethods[index]
-            const hasUsedChain = props.paymentMethods.filter(payment_method => c.chain === payment_method.chain && payment_method.protocol === c.protocol && payment_method._destroy !== '1')
-            if ((!hasUsedChain || !hasUsedChain.length) && !token && !chain) {
-                // 没有使用过的支付方式, 使用该支付方式并使用第一个token
-                chain = c
-                token = c.tokenList[0]
-            } else {
-                // 已经有了的支付方式，判断是否有其他可用token
-                const currPaymentToken = hasUsedChain!.map((method) => method.token_address)
-                c.tokenList.forEach((tokenInfo) => {
-                    if (!currPaymentToken.includes(tokenInfo.contract) && !token && !chain) {
-                        chain = c
-                        token = tokenInfo
-                    }
-                })
-            }
-
-            index++
-        }
-
-        if (!chain || !token) {
-            // 没有更多的支付方式
-            toast({title: 'No more payment methods', variant: 'destructive'})
-            return
-        }
-
         setPaymentMethods([...paymentMethods, {
             ...emptyPaymentMethod,
-            chain: chain.chain,
-            token_name: token.name,
-            token_address: token.contract,
-            protocol: chain.protocol!,
-            price: 10 ** token.decimals
+            token_name: ALL_TOKENS[0].name,
+            price: 10 ** ALL_TOKENS[0].decimals
         }])
     }
 
@@ -650,107 +590,49 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             paymentMethods
                 .filter(p => !p._destroy)
                 .map((p, index) => {
-                    const currType = Payments.find(c => c.chain === p.chain && c.protocol === p.protocol)
-                    // unsupported payment method
-                    if (!currType) return null
-
-                    const currToken = currType!.tokenList.find(t => t.name === p.token_name || p.token_name == t.id)
+                    const currToken = ALL_TOKENS.find(t => t.name === p.token_name) || ALL_TOKENS[0]
 
                     return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
                         <div className="mb-2 text-sm font-semibold">{lang['Payment']} {index + 1}</div>
-                        <div
-                            className="flex-row-item-center">
-                            <div className="mr-1">
+                        <div className="flex-row-item-center">
+                            <div className="mr-1 flex-1">
                                 <div className="flex-row-item-center flex-1 text-sm mb-3 whitespace-nowrap">
                                     <div>{lang['Price']}</div>
                                     <div className="ml-2">
                                         <DropdownMenu
-                                            options={getAvailablePaymentProtocalList(p)}
-                                            value={[currType!]}
-                                            onSelect={(option) => {
-                                                if (option[0].chain === p.chain) return
-                                                const targetToken = option[0].tokenList.find((t: PaymentSettingToken) => {
-                                                    return !props.paymentMethods!.find(method => method.chain === option[0].chain
-                                                        && method.protocol === option[0].protocol
-                                                        && method.token_address === t.contract
-                                                        && method._destroy !== '1'
-                                                    )
-                                                })
-                                                setPaymentMethods(paymentMethods.map((p, i) => i === index ? {
-                                                    ...p,
-                                                    chain: option[0].chain,
-                                                    token_name: targetToken!.name,
-                                                    token_address: targetToken!.contract,
-                                                    protocol: option[0].protocol!,
-                                                    price: 10**targetToken!.decimals
-                                                } : p))
-                                            }}
-                                            renderOption={(option) => {
-                                                return <div className="flex-row-item-center">
-                                                    <img src={option.protocolIcon} className="w-5 h-5 rounded-full mr-2"
-                                                         alt=""/>
-                                                    <div>{option.label}</div>
-                                                </div>
-                                            }}
-                                            valueKey={'chain'}>
-                                            <Input
-                                                type="text"
-                                                readOnly
-                                                value={currType!.label}
-                                                inputSize={'md'}
-                                                className="cursor-pointer"
-                                                endAdornment={<i className="uil-angle-down text-lg"/>}
-                                                startAdornment={<img
-                                                    className="w-5 h-5 rounded-full"
-                                                    src={currType!.protocolIcon}/>}
-                                            />
-                                        </DropdownMenu>
-                                    </div>
-                                    <div className="ml-2">
-                                        <DropdownMenu
-                                            options={getAvailableTokenList(p)}
-                                            onSelect={(option: PaymentSettingToken[]) => {
-                                                setPaymentMethods(paymentMethods.map((p, i) => i === index ? {
-                                                    ...p,
-                                                    token_name: option[0].name,
-                                                    token_address: option[0].contract
-                                                } : p))
-                                            }
-                                            }
-                                            renderOption={(option) => {
-                                                return <div className="flex-row-item-center">
-                                                    <img src={option.icon} className="w-5 h-5 rounded-full mr-2"
-                                                         alt=""/>
+                                            options={ALL_TOKENS}
+                                            value={[currToken]}
+                                            onSelect={(option: PaymentSettingToken[]) => changeToken(index, option[0], p)}
+                                            renderOption={(option) => (
+                                                <div className="flex-row-item-center">
+                                                    <img src={option.icon} className="w-5 h-5 rounded-full mr-2" alt=""/>
                                                     <div>{option.name}</div>
                                                 </div>
-                                            }}
+                                            )}
                                             valueKey={'name'}>
                                             <Input
                                                 type="text"
                                                 readOnly
-                                                value={p.token_name!}
+                                                value={p.token_name || ''}
                                                 inputSize={'md'}
                                                 className="cursor-pointer"
                                                 endAdornment={<i className="uil-angle-down text-lg"/>}
-                                                startAdornment={<img src={currToken!.icon}
-                                                                     className="w-5 h-5 rounded-full"
-                                                                     alt=""/>}
+                                                startAdornment={<img src={currToken.icon} className="w-5 h-5 rounded-full" alt=""/>}
                                             />
                                         </DropdownMenu>
                                     </div>
                                     <Input type="number"
-                                           value={!!p.price || Number(p.price) === 0 ? p.price / 10 ** currToken!.decimals : ''}
+                                           value={!!p.price || Number(p.price) === 0 ? p.price / 10 ** currToken.decimals : ''}
                                            onWheel={e => e.currentTarget.blur()}
                                            inputSize={'md'}
                                            onChange={e => setPaymentMethods(paymentMethods.map((p, i) => i === index ? {
                                                ...p,
-                                               price: parseInt(e.target.value) * 10 ** currToken!.decimals
+                                               price: Math.round(parseFloat(e.target.value) * 10 ** currToken.decimals) || 0
                                            } : p))}
                                            className="ml-2"/>
                                 </div>
                                 {!!props.errors?.[index]?.price &&
-                                    <div
-                                        className="err-msg text-red-400 mb-2 text-xs">{props.errors?.[index]?.price}</div>
+                                    <div className="err-msg text-red-400 mb-2 text-xs">{props.errors?.[index]?.price}</div>
                                 }
 
                                 <div className="flex-row-item-center flex-1 text-sm">
@@ -763,25 +645,20 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                         } : p))}
                                         type="text"
                                         inputSize={'md'}
-                                        startAdornment={<img src={Payments
-                                            .find(c => c.chain === p.chain && p.protocol === c.protocol)?.chainIcon}
-                                                             className="w-5 h-5 rounded-full"
-                                                             alt=""/>}
                                         className="ml-2 flex-1"/>
                                 </div>
                                 {!!props.errors?.[index]?.receiver_address &&
-                                    <div
-                                        className="err-msg text-red-400 mt-2 text-xs">{props.errors?.[index]?.receiver_address}</div>
+                                    <div className="err-msg text-red-400 mt-2 text-xs">{props.errors?.[index]?.receiver_address}</div>
                                 }
-                                {p.chain !== 'stripe' && <div className="mt-3">
-                                    <div className="text-xs text-gray-500 mb-2">Accept on additional chains</div>
-                                    {EVM_CHAINS.filter(c => c.chain !== p.chain).map(chainOpt => {
-                                        const activeChains = p.chains?.length ? p.chains : []
-                                        const isChecked = activeChains.includes(chainOpt.chain)
+
+                                <div className="mt-3">
+                                    <div className="text-xs text-gray-500 mb-2">Chains</div>
+                                    {EVM_CHAINS.map(chainOpt => {
+                                        const isChecked = (p.chains || []).includes(chainOpt.chain)
                                         return <div key={chainOpt.chain} className="mb-2">
                                             <label className="flex items-center gap-2 cursor-pointer text-sm">
                                                 <input type="checkbox" checked={isChecked}
-                                                    onChange={() => toggleAdditionalChain(index, chainOpt, p)}/>
+                                                    onChange={() => toggleChain(index, chainOpt, p)}/>
                                                 <img src={chainOpt.chainIcon} className="w-4 h-4 rounded-full" alt=""/>
                                                 <span>{chainOpt.label}</span>
                                             </label>
@@ -793,15 +670,13 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                                 className="mt-1 ml-6 flex-1"/>}
                                         </div>
                                     })}
-                                </div>}
+                                </div>
                             </div>
                             {index === paymentMethods.length - 1 &&
                                 <i onClick={addNewPaymentMethod}
                                    className="uil-plus-circle text-2xl text-green-500 cursor-pointer"/>
                             }
-                            <i onClick={() => {
-                                handleRemovePaymentMethod(index)
-                            }}
+                            <i onClick={() => handleRemovePaymentMethod(index)}
                                className="uil-minus-circle text-2xl text-gray-500 cursor-pointer"/>
                         </div>
                     </div>

@@ -389,12 +389,12 @@ const buildSaveEventProps = (eventDraft: EventDraftType) => {
     return {
         ...eventDraft,
         event_roles_attributes: eventDraft.event_roles || [],
-        tickets_attributes: eventDraft.tickets.map(t => {
+        tickets_attributes: (eventDraft.tickets || []).map(t => {
             return {
                 ...t,
                 payment_methods_attributes: t.payment_methods || []
             }
-        }) || [],
+        }),
     }
 }
 

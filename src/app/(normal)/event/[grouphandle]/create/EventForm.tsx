@@ -217,7 +217,7 @@ export default function EventForm({
       _draft.tickets = []
     }
 
-    onConfirm?.(draft, repeatForm, enableApplicationForm ? formFields : null)
+    onConfirm?.(_draft, repeatForm, enableApplicationForm ? formFields : null)
   }
 
   const handleCancelEvent = async () => {

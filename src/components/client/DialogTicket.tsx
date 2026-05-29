@@ -1,9 +1,12 @@
 import {
     ProfileDetail,
     Ticket,
+    TicketItem,
     EventDetail,
     checkBadgeOwnership,
-    createTicketPayment, validateCoupon
+    createTicketPayment,
+    submitPaymentTxHash,
+    validateCoupon
 } from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {
@@ -16,6 +19,7 @@ import {
 } from '@/utils'
 import {useEffect, useMemo, useState} from 'react'
 import {Payments, PaymentSettingToken, PaymentsType} from '@/utils/payment_setting'
+import {executePayHubPayment, PAYMENT_STEP_LABEL, PaymentStep, resolveTokenAddress} from '@/utils/evm_payment'
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {Button} from '@/components/shadcn/Button'
@@ -40,6 +44,9 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const [badgeCollected, setBadgeCollected] = useState<boolean>(false)
     const [checkingBadgeCollected, setCheckingCheckBadgeCollected] = useState<boolean>(false)
     const [buying, setBuying] = useState<boolean>(false)
+
+    const [pendingTicketItem, setPendingTicketItem] = useState<TicketItem | null>(null)
+    const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle')
 
     const [enablePromoCode, setEnablePromoCode] = useState<boolean>(false)
     const [promoCode, setPromoCode] = useState<string>('')
@@ -94,36 +101,42 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const paymentTypes = useMemo(() => {
         if (!ticket.payment_methods) return []
 
-        const availableTypes = ticket.payment_methods.reduce((acc, method) => {
-            const effectiveChains = method.chains?.length ? method.chains : [method.chain]
+        // Use chains[] (canonical); fall back to [chain] for legacy single-chain methods.
+        // Protocol is method-level, not per-chain — don't filter Payments by protocol here.
+        const seen = new Set<string>()
+        const result: PaymentsType[] = []
+        ticket.payment_methods.forEach(method => {
+            const effectiveChains = method.chains?.length ? method.chains : (method.chain ? [method.chain] : [])
             effectiveChains.forEach(chain => {
-                const type = Payments.find(p => p.chain === chain && p.protocol === (method.protocol || p.protocol))
-                if (type) acc.add(type)
+                if (seen.has(chain)) return
+                const type = Payments.find(p => p.chain === chain)
+                if (type) { seen.add(chain); result.push(type) }
             })
-            return acc
-        }, new Set<PaymentsType>())
-
-        return Array.from(availableTypes)
+        })
+        return result
     }, [ticket.payment_methods])
 
     const [selectedPaymentType, setSelectedPaymentType] = useState<PaymentsType | undefined>(paymentTypes[0])
 
+    useEffect(() => {
+        setSelectedPaymentType(prev => prev ?? paymentTypes[0])
+    }, [paymentTypes])
+
     const tokens = useMemo(() => {
         if (!ticket.payment_methods || !selectedPaymentType || !selectedPaymentType.tokenList) return []
 
-        const methodsUsingTheType = ticket.payment_methods.filter(method => {
-            const effectiveChains = method.chains?.length ? method.chains : [method.chain]
-            return effectiveChains.includes(selectedPaymentType.chain) &&
-                method.protocol === selectedPaymentType.protocol
+        // Find methods that cover the selected chain (protocol is method-level, not per-chain)
+        const methodsForChain = ticket.payment_methods.filter(method => {
+            const effectiveChains = method.chains?.length ? method.chains : (method.chain ? [method.chain] : [])
+            return effectiveChains.includes(selectedPaymentType.chain)
         })
 
         return selectedPaymentType.tokenList.filter(token =>
-            methodsUsingTheType.some(method => method.token_name === token.name)
+            methodsForChain.some(method => method.token_name === token.name)
         )
-    }, [selectedPaymentType])
+    }, [selectedPaymentType, ticket.payment_methods])
 
     const [selectedToken, setSelectedToken] = useState<PaymentSettingToken | undefined>(tokens[0])
-
 
     useEffect(() => {
         setSelectedToken(tokens[0])
@@ -133,9 +146,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         if (!selectedPaymentType || !selectedToken) return undefined
 
         return ticket.payment_methods.find(method => {
-            const effectiveChains = method.chains?.length ? method.chains : [method.chain]
+            const effectiveChains = method.chains?.length ? method.chains : (method.chain ? [method.chain] : [])
             return effectiveChains.includes(selectedPaymentType.chain) &&
-                method.protocol === selectedPaymentType.protocol &&
                 method.token_name === selectedToken.name
         })
     }, [selectedPaymentType, selectedToken, ticket.payment_methods])
@@ -199,6 +211,72 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             console.error(e)
             setPromoCodeError('Invalid Promo Code')
         } finally {
+            closeModal(loading)
+        }
+    }
+
+    const handleEVMPayment = async (ticketItem: TicketItem) => {
+        if (!selectedMethod || !selectedPaymentType) return
+        setPaymentError('')
+        try {
+            const chain = selectedPaymentType.chain
+            const tokenAddress = resolveTokenAddress(selectedMethod, chain)
+            const payHubAddress = selectedPaymentType.payHub
+            if (!tokenAddress) throw new Error('Token address not found for this chain')
+            if (!payHubAddress) throw new Error('PayHub address not found for this chain')
+
+            const {txHash, account} = await executePayHubPayment({
+                chain,
+                tokenAddress,
+                payHubAddress,
+                receiverAddress: selectedMethod.receiver_address!,
+                amount: BigInt(ticketItem.amount ?? 0),
+                eventId: ticketItem.event_id,
+                orderNumber: parseInt(ticketItem.order_number!),
+                onStep: setPaymentStep,
+            })
+
+            setPaymentStep('verifying')
+            const authToken = getAuth()
+            await submitPaymentTxHash({
+                params: {ticketItemId: ticketItem.id, txhash: txHash, senderAddress: account, authToken: authToken!},
+                clientMode: CLIENT_MODE
+            })
+            setPaymentStep('done')
+            toast({description: lang['Purchase Successful'], variant: 'success'})
+            setTimeout(() => window.location.reload(), 2000)
+        } catch (e: unknown) {
+            console.error(e)
+            setPaymentError(e instanceof Error ? e.message : 'Payment failed')
+            setPaymentStep('error')
+        }
+    }
+
+    const handlePay = async () => {
+        if (!currProfile || !selectedMethod) return
+        setPaymentError('')
+        const loading = showLoading()
+        setBuying(true)
+        try {
+            const authToken = getAuth()
+            const {ticketItem} = await createTicketPayment({
+                params: {
+                    eventId: eventDetail.id,
+                    authToken: authToken!,
+                    ticketId: ticket.id,
+                    paymentMethodId: selectedMethod.id,
+                    coupon: validPromoCode,
+                    chain: selectedPaymentType?.chain
+                },
+                clientMode: CLIENT_MODE
+            })
+            setPendingTicketItem(ticketItem)
+            closeModal(loading)
+            await handleEVMPayment(ticketItem)
+        } catch (e: unknown) {
+            console.error(e)
+            setPaymentError(e instanceof Error ? e.message : 'Failed to initiate payment')
+            setBuying(false)
             closeModal(loading)
         }
     }
@@ -378,8 +456,6 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                         </div>
                     </>
                 }
-                <div className="text-sm">Payments will be sent
-                    to: {selectedMethod ? shortWalletAddress(selectedMethod.receiver_address!) : '--'}</div>
             </div>
         }
 
@@ -394,6 +470,31 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                     onClick={() => handlePurchaseForFree()}
                     className="text-sm w-full">{lang['Purchase for Free']}</Button>
         }
+
+        {!!ticket.payment_methods.length && !!currProfile && !soldOut && !stopSelling && !pendingTicketItem &&
+            <Button variant={'special'}
+                    disabled={!badgeCollected || checkingBadgeCollected || buying || !selectedMethod}
+                    onClick={handlePay}
+                    className="text-sm w-full">Pay</Button>
+        }
+
+        {!!pendingTicketItem && paymentStep !== 'done' && (
+            <div className="my-3 border-t pt-3">
+                {paymentStep !== 'idle' && paymentStep !== 'error' && (
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                        <span className="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full"/>
+                        {PAYMENT_STEP_LABEL[paymentStep]}
+                    </div>
+                )}
+                {(paymentStep === 'idle' || paymentStep === 'error') && (
+                    <Button variant={'special'}
+                            onClick={() => handleEVMPayment(pendingTicketItem)}
+                            className="text-sm w-full">
+                        {paymentStep === 'error' ? 'Retry Payment' : 'Pay with Wallet'}
+                    </Button>
+                )}
+            </div>
+        )}
 
         {soldOut &&
             <Button variant={'secondary'}

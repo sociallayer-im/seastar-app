@@ -436,6 +436,13 @@ export const Payments: PaymentsType[] = [
                 contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
                 icon: '/images/payment_icon/tether_32.webp',
                 decimals: 6
+            },
+            {
+                name: 'USDC',
+                id: 'usdc',
+                contract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                icon: '/images/payment_icon/usdc_32.webp',
+                decimals: 6
             }
         ]
     },
@@ -480,6 +487,13 @@ export const Payments: PaymentsType[] = [
                 id: 'usdt',
                 contract: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
                 icon: '/images/payment_icon/tether_32.webp',
+                decimals: 6
+            },
+            {
+                name: 'USDC',
+                id: 'usdc',
+                contract: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                icon: '/images/payment_icon/usdc_32.webp',
                 decimals: 6
             }
         ]
@@ -527,7 +541,7 @@ export const Payments: PaymentsType[] = [
         chain: 'optimism',
         id: 'optimism',
         protocol: null,
-        chainId: 8453,
+        chainId: 10,
         protocolIcon: '/images/payment_icon/op.png',
         chainIcon: '/images/payment_icon/op.png',
         payHub: '0xA73405D59e136f574a2FD690079B240f6fbff0a8',
@@ -537,6 +551,13 @@ export const Payments: PaymentsType[] = [
                 id: 'usdt',
                 contract: '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
                 icon: '/images/payment_icon/tether_32.webp',
+                decimals: 6
+            },
+            {
+                name: 'USDC',
+                id: 'usdc',
+                contract: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                icon: '/images/payment_icon/usdc_32.webp',
                 decimals: 6
             }
         ]

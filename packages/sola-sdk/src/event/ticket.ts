@@ -44,6 +44,27 @@ export const createTicketPayment = async ({params, clientMode}: SolaSdkFunctionP
     }
 }
 
+export const submitPaymentTxHash = async ({params, clientMode}: SolaSdkFunctionParams<{
+    ticketItemId: number,
+    txhash: string,
+    senderAddress?: string,
+    authToken: string
+}>) => {
+    const res = await fetch(`${getSdkConfig(clientMode).api}/ticket/verify_payment`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            ticket_item_id: params.ticketItemId,
+            txhash: params.txhash,
+            sender_address: params.senderAddress,
+            auth_token: params.authToken
+        })
+    })
+    const data = await res.json()
+    if (data.result === 'error') throw new Error(data.message || 'Verification failed')
+    return {participant: data.participant as import('./types').Participant, ticketItem: data.ticket_item as import('./types').TicketItem}
+}
+
 export const getPurchasedTicketItemsByProfileHandleAndEventId = async ({params, clientMode}: SolaSdkFunctionParams<{
     profileHandle: string,
     eventId: number
