@@ -8,6 +8,7 @@ export interface PopupCity {
     title: string          // = group.nickname
     handle: string         // = group.handle
     image_url: string | null
+    banner_image_url: string | null
     location: string | null
     start_date: string | null
     end_date: string | null

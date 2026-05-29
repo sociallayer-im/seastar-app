@@ -44,7 +44,7 @@ export default async function PopupCityListPage() {
                     <div className="rounded h-[148px] mb-3 overflow-hidden bg-gray-100">
                         <img className="object-cover w-full h-full rounded"
                             width={227} height={148}
-                            src={cfImage(popupCity.image_url || getAvatar(popupCity.id), { width: 454, height: 296, fit: 'cover' })} alt="" />
+                            src={cfImage(popupCity.image_url || popupCity.banner_image_url || getAvatar(popupCity.id), { width: 454, height: 296, fit: 'cover' })} alt="" />
                     </div>
                     <div className="webkit-box-clamp-1 text-xs">
                         <DisplayDateTime format={'MMM DD'}
