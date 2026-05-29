@@ -1,0 +1,78 @@
+src/utils/index.ts
+  s_212b3fb8ecd46f::t_0d37d5035606b3 769-772,774-780,782-783,785-786
+  s_212b3fb8ecd46f::t_1602e87ded81c6 765-766
+  s_212b3fb8ecd46f::t_95b72a566c2d00 265-267,269-272
+  s_212b3fb8ecd46f::t_b82bfc75985107 274
+  s_212b3fb8ecd46f::t_dbf662ce0fa2d3 268
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_212b3fb8ecd46f::t_fa0d9cfabeeb55 82
+next.config.mjs
+  s_212b3fb8ecd46f::t_861b7c096d7dc3 9-10,19
+  s_212b3fb8ecd46f::t_8ce1970fa452aa 1-8,11-18,20-21,40-46
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_212b3fb8ecd46f::t_6ee9f6ec5b85db 220
+src/app/(normal)/event/detail/[eventid]/TicketList.tsx
+  s_212b3fb8ecd46f::t_efcade81cb2f3c 6
+  s_212b3fb8ecd46f::t_95bc2beacbf0b5 29
+  s_212b3fb8ecd46f::t_2b015765defa20 58-65
+src/utils/evm_payment.ts
+  s_212b3fb8ecd46f::t_d3b6d63b65e5af 1-66,71-74,77-127,129-137
+  s_212b3fb8ecd46f::t_85e3f51e706266 67
+  s_212b3fb8ecd46f::t_ddb033efdd853a 128
+  s_212b3fb8ecd46f::t_0e3628ed637587 68-70,75-76
+src/utils/payment_setting.ts
+  s_0eeeb7d2acc63d::t_70c56854a21a8f 439-445
+  s_0eeeb7d2acc63d::t_2aa6b4355d05b3 544,555-560
+  s_0eeeb7d2acc63d::t_bd7bc542f8b68d 491-497
+package.json
+  s_212b3fb8ecd46f::t_94322c074948fc 78-79
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_212b3fb8ecd46f::t_e8e9ed0dbde962 102-105
+  s_212b3fb8ecd46f::t_9b72670e819d60 507-513,519-520,534,538-539,541,543,546,548,554-555,559-565,568-569,573-577,583-584,593,597-598,603-608,611,616,620,625,635,651,653-657,661,673,679
+  s_212b3fb8ecd46f::t_18907c7a88d8e3 630
+packages/sola-sdk/src/event/event.ts
+  s_212b3fb8ecd46f::t_e79a5c7f1073aa 392,397
+src/components/client/DialogTicket.tsx
+  s_0eeeb7d2acc63d::t_fb5b78ba7e4a88 121-124
+  s_212b3fb8ecd46f::t_490fabbd57dcf6 233
+  s_212b3fb8ecd46f::t_73bc6beafde3ab 4,7-9
+  s_212b3fb8ecd46f::t_b0aa34fe818a49 104-108,111-113,115-116,128-129,131,135,137
+  s_212b3fb8ecd46f::t_8107d32a846515 474-480,482,490,496-498
+  s_212b3fb8ecd46f::t_14406386bb523b 255-273,276-283
+  s_212b3fb8ecd46f::t_e56f8beecd68a4 49
+  s_212b3fb8ecd46f::t_ca75dad0a99b6c 109,130,149
+  s_212b3fb8ecd46f::t_5482e2bb808a1e 228,242
+  s_212b3fb8ecd46f::t_6d1f9343ac245b 48,50
+  s_212b3fb8ecd46f::t_b71f5395f8db6c 22
+  s_212b3fb8ecd46f::t_a13211a91def8b 481,483-489,491-495
+  s_212b3fb8ecd46f::t_311e793638793f 218-227,229-232,234-241,243-254,274-275
+src/app/(normal)/event/detail/[eventid]/MyTicketList.tsx
+  s_212b3fb8ecd46f::t_316d04417a606f 3
+  s_212b3fb8ecd46f::t_bea9881bbaa4b8 28-35
+packages/sola-sdk/src/event/ticket.ts
+  s_212b3fb8ecd46f::t_6ad967f43057a3 47-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "3998ad19cb83250509799772dcc29507ee1b81a4",
+  "prompts": {},
+  "sessions": {
+    "s_0eeeb7d2acc63d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28c9427c-cb27-4a5a-b34b-c89b5faf7e3a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    },
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
