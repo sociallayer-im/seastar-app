@@ -1,0 +1,20 @@
+src/app/(normal)/popup-city/page.tsx
+  s_212b3fb8ecd46f::t_2380714b3434a7 5
+  s_212b3fb8ecd46f::t_f52f12d283453b 44,47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "5454916c4bdd05eb9dcca3236e52714f0c51ddf8",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
