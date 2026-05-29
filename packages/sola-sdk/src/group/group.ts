@@ -446,6 +446,7 @@ export const sendEmailToGroupMembers = async ({params, clientMode}: SolaSdkFunct
     subject: string
     content: string
     authToken: string
+    testRecipient?: string
 }>) => {
     const url = `${getSdkConfig(clientMode).api}/group/send_email_to_members`
     const response = await fetch(url, {
@@ -455,10 +456,11 @@ export const sendEmailToGroupMembers = async ({params, clientMode}: SolaSdkFunct
             group_id: params.groupId,
             subject: params.subject,
             content: params.content,
-            auth_token: params.authToken
+            auth_token: params.authToken,
+            ...(params.testRecipient ? {test_recipient: params.testRecipient} : {})
         })
     })
     const data = await response.json()
     if (data.result === 'error') throw new Error(data.message || 'Failed to send emails')
-    return data.sent_count as number
+    return {sentCount: data.sent_count as number, isTest: !!data.test}
 }
