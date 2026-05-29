@@ -1,0 +1,23 @@
+src/app/(normal)/event/[grouphandle]/setting/email-members/EmailMembersForm.tsx
+  s_212b3fb8ecd46f::t_5ab158bacf6172 1-105
+src/app/(normal)/event/[grouphandle]/setting/email-members/page.tsx
+  s_212b3fb8ecd46f::t_814a73d2dc39fd 1-40
+src/app/(normal)/event/[grouphandle]/setting/page.tsx
+  s_212b3fb8ecd46f::t_e523b8e9fb78be 106-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "0d029c1adfa14534efb7a30045a0cc6038b4edbe",
+  "prompts": {},
+  "sessions": {
+    "s_212b3fb8ecd46f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6bae81f-00a5-4e13-b16c-f46ae68799f0",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
