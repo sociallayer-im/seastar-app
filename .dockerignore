@@ -2,6 +2,7 @@ node_modules
 .nuxt
 .output
 .env
+.env.production
 .git
 .vercel
 .storybook
