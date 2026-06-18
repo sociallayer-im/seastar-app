@@ -1,6 +1,9 @@
 service: seastar-app
 image: ghcr.io/sociallayer-im/seastar-app
 
+runner: nomad
+egress: traefik
+
 servers:
   web:
     hosts: [sg.sola.day]
@@ -9,15 +12,13 @@ servers:
 registry:
   server: ghcr.io
   username: jiangplus
-  password: GHCR_TOKEN          # resolved from the process env / .env at deploy time
+  password: GHCR_TOKEN
 
 proxy:
-  host: app.sola.day
-  app_port: 3000                # next start
-  ssl: true                     # kamal-proxy handles Let's Encrypt
+  hosts: [app.sola.day]
+  app_port: 3000
+  ssl: true
   health_check_path: /api/health
-  deploy_timeout: 90
-  drain_timeout: 30
 
 ssh:
   user: root
