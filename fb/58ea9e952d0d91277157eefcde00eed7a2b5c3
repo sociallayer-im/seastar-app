@@ -1,0 +1,19 @@
+ginger.yml
+  s_e9ed806a3d225c::t_68efb14fa62139 4-6,15,18-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "fb58ea9e952d0d91277157eefcde00eed7a2b5c3",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
