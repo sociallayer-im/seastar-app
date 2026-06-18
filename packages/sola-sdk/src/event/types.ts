@@ -1,6 +1,7 @@
 import {Profile} from '../profile'
 import {Group, Track, VenueDetail} from '../group'
 import {BadgeClass} from '../badge'
+import {Place} from '../place'
 
 export type EventKind = null | "talk" | "panel" | "workshop" | "activity" | "seminar" | "conference" | "meetup" | "networking" | "training" | "exhibition" | "other" | "hackathon" | "demoday" | "social" | "openmic" | "wellness"
 
@@ -27,7 +28,9 @@ export interface Event {
     display: string | null,
     track?: Track | null,
     venue: VenueDetail | null,
-    kind: EventKind
+    kind: EventKind,
+    place_id: number | null,
+    place: Place | null,
 }
 
 export interface EventWithJoinStatus extends Event {
@@ -62,6 +65,8 @@ export interface EventDetail extends Event {
     require_approval: boolean | null,
     form_id: string | null,
     form: EventForm | null,
+    place_id: number | null,
+    place: Place | null,
 }
 
 export interface Ticket {

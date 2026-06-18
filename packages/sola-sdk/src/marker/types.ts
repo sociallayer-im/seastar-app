@@ -1,6 +1,7 @@
 import {Group} from '../group'
 import {Profile} from '../profile'
 import {BadgeClass} from '../badge'
+import {Place} from '../place'
 
 export interface Marker {
     id: number
@@ -24,7 +25,9 @@ export interface Marker {
     badge_class_id: number | null
     voucher_id: number | null
     map_checkins_count: number,
-    marker_state: string | null
+    marker_state: string | null,
+    place_id: number | null,
+    place: Place | null,
 }
 
 export interface MarkerDetail extends Marker {

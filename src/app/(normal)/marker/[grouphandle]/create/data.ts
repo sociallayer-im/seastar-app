@@ -26,7 +26,8 @@ export const emptyMarker: MarkerDraft = {
     start_time: null,
     end_time: null,
     badge_class_id: null,
-
+    place_id: null,
+    place: null,
 }
 
 export default async function CreateMarkerData({params}: CreateMarkerDataProps) {

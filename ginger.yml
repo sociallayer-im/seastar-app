@@ -1,0 +1,45 @@
+service: seastar-app
+image: ghcr.io/sociallayer-im/seastar-app
+
+servers:
+  web:
+    hosts: [sg.sola.day]
+    primary: true
+
+registry:
+  server: ghcr.io
+  username: jiangplus
+  password: GHCR_TOKEN          # resolved from the process env / .env at deploy time
+
+proxy:
+  host: app.sola.day
+  app_port: 3000                # next start
+  ssl: true                     # kamal-proxy handles Let's Encrypt
+  health_check_path: /api/health
+  deploy_timeout: 90
+  drain_timeout: 30
+
+ssh:
+  user: root
+
+builder:
+  arch: amd64
+  remote: ssh://ubuntu@wamo.city
+
+env:
+  NODE_ENV: production
+
+# NEXT_PUBLIC_* are baked in at build time (from .env.production in the image
+# context); these are also injected at runtime for any server-side reads.
+secrets:
+  load: [.env.production]
+  inject:
+    - NEXT_PUBLIC_API_URL
+    - NEXT_PUBLIC_APP_TITLE
+    - NEXT_PUBLIC_AUTH_FIELD
+    - NEXT_PUBLIC_CLIENT_MODE
+    - NEXT_PUBLIC_ENABLE_GOOGLE_MAP
+    - NEXT_PUBLIC_GOOGLE_MAP_API_KEY
+    - NEXT_PUBLIC_SIGN_IN_URL
+
+retain_containers: 5

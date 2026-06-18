@@ -1,8 +1,10 @@
 node_modules
+.next
 .nuxt
 .output
 .env
-.env.production
+.env.local
+.env*.local
 .git
 .vercel
 .storybook

@@ -1,4 +1,5 @@
 import {Profile, SocialMedia} from '../profile'
+import {Place} from '../place'
 
 
 
@@ -100,6 +101,8 @@ export interface VenueDetail extends Venue {
     venue_overrides: VenueOverride[]
     availabilities: VenueAvailability[]
     amenities: null | string[]
+    place_id: number | null,
+    place: Place | null,
 }
 
 export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
