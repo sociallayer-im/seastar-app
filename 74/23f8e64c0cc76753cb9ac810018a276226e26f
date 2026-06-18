@@ -1,0 +1,47 @@
+packages/sola-sdk/src/place/types.ts
+  s_e9ed806a3d225c::t_7986c72929612f 1-7,9-11
+  s_e9ed806a3d225c::t_cd9ad75de3b4d9 8
+packages/sola-sdk/src/marker/types.ts
+  s_e9ed806a3d225c::t_3dd1cfcbb1e423 28-30
+  s_e9ed806a3d225c::t_b641afd3fef1e5 4
+ginger.yml
+  s_e9ed806a3d225c::t_a9c5be9ac66028 1-45
+packages/sola-sdk/src/place/index.ts
+  s_e9ed806a3d225c::t_01363a40811a90 1-2
+src/app/api/health/route.ts
+  s_e9ed806a3d225c::t_7705673506239e 1-7
+packages/sola-sdk/src/place/place.ts
+  s_e9ed806a3d225c::t_af6956cbd111f7 30
+  s_e9ed806a3d225c::t_b69536575593cc 1-29,31-43
+packages/sola-sdk/src/event/types.ts
+  s_e9ed806a3d225c::t_6893f7d0f01ac7 31-33
+  s_e9ed806a3d225c::t_80ec778cd89570 68-69
+  s_e9ed806a3d225c::t_52d5ec20a66a2e 4
+src/app/(normal)/marker/[grouphandle]/create/data.ts
+  s_e9ed806a3d225c::t_7ddc2feab0ae35 29-30
+.dockerignore
+  s_e9ed806a3d225c::t_7e07a72a21be7a 2,6-7,11
+packages/sola-sdk/src/index.ts
+  s_e9ed806a3d225c::t_c61e456bc0b0f4 14
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_27ddbbe636f8c7 2
+  s_e9ed806a3d225c::t_2ef763cb68023b 104-105
+Dockerfile
+  s_e9ed806a3d225c::t_bab6a54fbc0c24 1-3,7-9,11,14-15,20-22,24-25,27-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "7423f8e64c0cc76753cb9ac810018a276226e26f",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
