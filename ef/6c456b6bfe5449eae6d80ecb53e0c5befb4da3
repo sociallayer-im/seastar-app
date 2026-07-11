@@ -1,0 +1,33 @@
+packages/sola-sdk/src/event/event.ts
+  s_e9ed806a3d225c::t_1270cdb1ed817d 410
+  s_e9ed806a3d225c::t_7b1c316b735901 474
+  s_e9ed806a3d225c::t_b396471efc0c43 728
+  s_e9ed806a3d225c::t_9f24283a02a7a9 5
+  s_e9ed806a3d225c::t_1c51caa11bb833 506
+packages/sola-sdk/src/place/place.ts
+  s_e9ed806a3d225c::t_0a39d70cecf5c5 44-75
+packages/sola-sdk/src/marker/marker.ts
+  s_e9ed806a3d225c::t_64355d5f33c54e 62-65
+  s_e9ed806a3d225c::t_c7feaafd63b65a 24-27
+  s_e9ed806a3d225c::t_31b56be039ad6b 4
+packages/sola-sdk/src/group/venue.ts
+  s_e9ed806a3d225c::t_d4a6004565affe 48
+  s_e9ed806a3d225c::t_7c3ade8bf44069 4
+  s_e9ed806a3d225c::t_476769e94c41bd 83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "ef6c456b6bfe5449eae6d80ecb53e0c5befb4da3",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
