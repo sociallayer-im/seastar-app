@@ -1,6 +1,7 @@
 import {getSdkConfig} from '../client'
 import {Marker, MarkerDetail, MarkerDraft} from './types'
 import {SolaSdkFunctionParams} from '../types'
+import {resolvePlaceId} from '../place'
 
 export const getMarkersByGroupHandle = async ({params, clientMode}:SolaSdkFunctionParams<{groupHandle: string}>) => {
     const apiUrl = getSdkConfig(clientMode).api
@@ -20,7 +21,10 @@ export const createMarker = async ({params, clientMode}:SolaSdkFunctionParams<{m
     const props = {
         group_id: params.marker.group_id,
         auth_token: params.authToken,
-        marker: params.marker
+        marker: {
+            ...params.marker,
+            place_id: await resolvePlaceId({params: {...params.marker, authToken: params.authToken}, clientMode}),
+        }
     }
 
     const response = await fetch(`${getSdkConfig(clientMode).api}/marker/create`, {
@@ -55,7 +59,10 @@ export const updateMarker = async ({params, clientMode}: SolaSdkFunctionParams<{
     const props = {
         auth_token: params.authToken,
         id: params.markerDraft.id,
-        marker: params.markerDraft
+        marker: {
+            ...params.markerDraft,
+            place_id: await resolvePlaceId({params: {...params.markerDraft, authToken: params.authToken}, clientMode}),
+        }
     }
 
     const response = await fetch(`${getSdkConfig(clientMode).api}/marker/update`, {

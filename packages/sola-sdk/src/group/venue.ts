@@ -1,6 +1,7 @@
 import {SolaSdkFunctionParams} from '../types'
 import {VenueAvailability, VenueDetail} from './types'
 import {getSdkConfig} from '../client'
+import {resolvePlaceId} from '../place'
 
 export const removeVenue = async function ({params: {venueId, authToken}, clientMode}: SolaSdkFunctionParams<{
     venueId: number,
@@ -44,6 +45,7 @@ export const updateVenue = async function ({params: {venue, authToken}, clientMo
         id: venue.id!,
         venue: {
             ...venue,
+            place_id: await resolvePlaceId({params: {...venue, authToken}, clientMode}),
             availabilities_attributes: [...removedAvailabilities, ...newAvailabilities],
             availabilities: undefined,
             // Also clear legacy tables so they don't diverge
@@ -78,6 +80,7 @@ export const createVenue = async function ({params: {venue, authToken}, clientMo
         group_id: venue.group_id!,
         venue: {
             ...venue,
+            place_id: await resolvePlaceId({params: {...venue, authToken}, clientMode}),
             availabilities_attributes: newAvailabilities,
             availabilities: undefined,
             venue_timeslots_attributes: [],

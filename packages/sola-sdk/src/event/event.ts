@@ -2,6 +2,7 @@ import {Event, EventDetail, EventDraftType, EventForm, EventWithJoinStatus, Form
 import {getSdkConfig} from '../client'
 import {fixDate} from '../uitls'
 import {SolaSdkFunctionParams} from '../types'
+import {resolvePlaceId} from '../place'
 
 export const sortEventsByTime = (a: Event, b: Event): number => {
     const now = new Date().getTime()
@@ -406,6 +407,7 @@ export const createEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
         auth_token: params.authToken,
         ...buildSaveEventProps(params.eventDraft),
         group_id: params.eventDraft.group_id,
+        place_id: await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode}),
     }
 
     const response = await fetch(`${getSdkConfig(clientMode).api}/event/create`, {
@@ -469,6 +471,7 @@ export const createRecurringEvent = async ({params, clientMode}: SolaSdkFunction
         group_id: params.eventDraft.group_id,
         timezone: params.eventDraft.timezone,
         interval: params.interval,
+        place_id: await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode}),
     }
 
     const response = await fetch(`${getSdkConfig(clientMode).api}/recurring/create`, {
@@ -500,6 +503,7 @@ export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
         auth_token: params.authToken,
         ...buildSaveEventProps(params.eventDraft),
         id: params.eventDraft.id,
+        place_id: await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode}),
     }
 
     if (params.eventDraft.badge_class_id) {
@@ -721,6 +725,7 @@ export const updateRecurringEvent = async ({
     const props = {
         ...eventDraft,
         event_roles_attributes: eventDraft.event_roles || [],
+        place_id: await resolvePlaceId({params: {...eventDraft, authToken}, clientMode}),
         auth_token: authToken,
         recurring_id: recurringId,
         after_event_id: afterEventId,
