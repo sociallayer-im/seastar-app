@@ -1,60 +1,58 @@
 import {Profile, SocialMedia} from '../profile'
-import {Place} from '../place'
-
-
-
 
 export interface Group {
-    id: number,
-    handle: string,
-    image_url: string | null,
-    nickname: string | null,
+    id: string
+    name: string
+    nickname: string | null
+    image_url: string | null
+    logo_url: string | null
+    created_at?: string
 }
 
+/**
+ * The :detail view — the full group-page payload.
+ */
 export interface GroupDetail extends Group {
-    about: string | null,
-    social_links: SocialMedia,
-    location: string | null,
-    permissions: string[],
-    status: string | null,
-    event_tags: string[] | null,
-    event_enabled: boolean,
-    can_publish_event: string,
-    can_join_event: string,
-    can_view_event: string,
-    map_enabled: boolean,
-    banner_link_url: string | null,
-    banner_image_url: string | null,
-    banner_text: string | null,
-    logo_url: string | null,
-    memberships_count: number,
-    events_count: number,
-    group_tags: string[] | null,
-    timezone: string | null,
-    main_event_id: number | null,
-    start_date: string | null,
-    end_date: string | null,
-    website: string | null,
-    memberships: Membership[],
+    bio: string | null
+    location: string | null
+    timezone: string | null
+    start_date: string | null
+    end_date: string | null
+    active: boolean
+    banner_image_url: string | null
+    banner_link_url: string | null
+    banner_text: string | null
+    social_links: SocialMedia | null
+    group_tags: string[] | null
+    event_tag_list: string[] | null
+    requirement_tag_list: string[] | null
+    venue_tag_list: string[] | null
+    can_publish_event: string
+    can_join_event: string
+    can_view_event: string
+    memberships_count: number
+    events_count: number
+    parent_id: string | null
+    parent: Group | null
+    children: Group[]
     tracks: Track[]
-    venues: VenueDetail[],
-    venue_union?: number[],
-    parent_id: number | null,
-    parent: Group | null,
-    children?: (Group & {about: string | null, memberships_count: number})[],
-    ticket_link: string | null,
-    event_review_required: string | null,
+    venues: Venue[]
+    memberships: Membership[]
 }
 
 export interface Membership {
-    id: number,
-    role: string,
-    profile: Profile
-    status: string
-    admin_notification: boolean
+    id: string
+    role: string
+    active: boolean
+    created_at: string
+    user: Profile
 }
 
-export interface MembershipDetail extends Membership {
+/**
+ * The :with_group view — memberships listed from a user's perspective.
+ */
+export interface MembershipDetail extends Omit<Membership, 'user'> {
+    user?: Profile
     group: Group
 }
 
@@ -63,94 +61,57 @@ export interface GroupWithOwner extends Group {
     role?: string
 }
 
-
-export interface Venue {
-    id: number,
-    title: string,
-    visibility: null | 'all' | 'manager' | 'member' | 'everyone',
-    image_urls: null | string[]
-    track_ids: number[] | null
-}
+export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
 
 export interface VenueAvailability {
-    id?: number
-    day_of_week: Weekday | null  // weekly slot; null for date-specific overrides
-    day: string | null           // 'YYYY-MM-DD'; null for weekly slots
+    id?: string
+    day_of_week: Weekday | null   // weekly slot; null for date-specific overrides
+    day: string | null            // 'YYYY-MM-DD'; null for weekly slots
     intervals: [string, string][] // e.g. [["09:30","21:00"]]; empty = closed
-    role: VenueRole
+    role_required?: string | null
 }
 
+export interface Venue {
+    id: string
+    name: string
+    capacity: number | null
+    website: string | null
+    about: string | null
+    amenities: string[] | null
+    tags: string[] | null
+    featured_image_url: string | null
+}
+
+/**
+ * The :with_availability view (venue detail), plus the writable fields.
+ */
 export interface VenueDetail extends Venue {
-    location_data: string | null,
-    location: string,
-    about: string,
-    group_id: number,
-    owner_id: number,
-    created_at: string,
-    formatted_address: null | string,
-    geo_lat: null | number,
-    geo_lng: null | number,
-    start_date: string | null,
-    end_date: string | null,
-    timeslots: null | string,
-    link: string | null,
-    capacity: number | null,
-    overrides: null | string[],
-    require_approval?: boolean,
-    venue_timeslots: VenueTimeslot[]
-    venue_overrides: VenueOverride[]
     availabilities: VenueAvailability[]
-    amenities: null | string[]
-    place_id: number | null,
-    place: Place | null,
-}
-
-export type Weekday = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
-export type VenueRole = 'member' | 'manager' | 'all'
-
-export interface VenueTimeslot {
-    id?: number
-    venue_id?: number,
-    day_of_week: Weekday,
-    disabled: boolean,
-    start_at: string,
-    end_at: string,
-    role: VenueRole
-    _destroy?: string
-}
-
-export interface VenueOverride {
-    id?: number
-    venue_id: number,
-    day: string, // '2022-01-01'
-    disabled: boolean,
-    start_at: string | null,
-    end_at: string | null,
-    role: 'member' | 'manager' | 'all'
-    _destroy?: string
+    group_id?: string
+    place_id?: string | null
+    require_approval?: boolean
+    image_urls?: string[]
+    track_ids?: string[]
 }
 
 export interface TrackRole {
-    id?: number,
-    group_id: number | null,
-    track_id: number | null,
-    profile_id: number,
-    receiver_address: string | null,
-    role: string,
-    profile: Profile
+    id: string
+    role: string
+    created_at?: string
+    user: Profile
 }
 
 export interface Track {
-    id: number
+    id: string
+    name: string
     title: string
-    kind: 'public' | 'private'
-    icon_url: string | null
-    about: string | null
-    group_id: number
+    description: string | null
+    image_url: string | null
+    is_private: boolean | null
     start_date: string | null
-    end_date: string| null
-    manager_ids: number[] | null
-    _destroy?: string
+    end_date: string | null
+    created_at?: string
+    group?: Group
 }
 
 export interface TrackDetail extends Track {

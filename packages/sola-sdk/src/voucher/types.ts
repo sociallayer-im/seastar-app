@@ -1,21 +1,23 @@
-import {BadgeDetail, BadgeClass, Profile} from '@sola/sdk'
+import {Badge, BadgeClass} from '../badge'
+import {Profile} from '../profile'
 
-
+/** soon VoucherBlueprint (code only in :with_code, badges only in :with_badges). */
 export interface Voucher {
-    id: number
-    sender_id: number
-    badge_class_id: number,
+    id: string,
     counter: number,
-    expires_at: string | null
+    expires_at: string | null,
     created_at: string,
+    badge_class_id: string,
+    sender_id: string,
+    receiver_id: string | null,
+    receiver_address: string | null,
+    strategy: 'code' | 'account' | 'address' | 'email' | 'event' | 'remember',
+    message: string | null,
     badge_class: BadgeClass,
-    code?: string
-    message: string | null
-    strategy: 'account' | 'code' | 'event' | 'address' | 'email' | 'remember'
-    receiver_id: number | null
+    sender: Profile,
+    code?: string,
+    badges?: Badge[],
 }
 
-export interface VoucherDetail extends Voucher {
-    sender: Profile
-    badges: BadgeDetail[]
-}
+/** Kept as an alias — soon's VoucherBlueprint has a single shape. */
+export type VoucherDetail = Voucher

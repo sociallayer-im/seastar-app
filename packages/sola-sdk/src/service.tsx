@@ -1,58 +1,55 @@
 import {SolaSdkFunctionParams} from './types'
 import {getSdkConfig} from './client'
+import {request} from './request'
 import {Profile} from './profile'
 import {Group} from './group'
 import {BadgeClass} from './badge'
 import {Event} from './event'
-import {fixDate} from './uitls'
 
+/**
+ * Upload an image to Cloudflare Images via the backend.
+ * Multipart, so this uses raw fetch instead of the JSON request helper.
+ */
 export const uploadFile = async ({params, clientMode}: SolaSdkFunctionParams<{ file: Blob, authToken: string }>) => {
     const formData = new FormData()
-    formData.append('auth_token', params.authToken)
-    formData.append('uploader', 'user')
-    formData.append('resource', Math.random().toString(36).slice(-8))
-    formData.append('data', params.file)
+    formData.append('file', params.file)
 
-    const response = await fetch(`${getSdkConfig(clientMode).api}/service/upload_image`, {
+    const response = await fetch(`${getSdkConfig(clientMode).api}/api/v1/upload/image`, {
         method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${params.authToken}`
+        },
         body: formData
     })
 
     if (!response.ok) {
-        throw new Error('Upload failed')
+        const data = await response.json().catch(() => ({}))
+        throw new Error(data.error || 'Upload failed')
     }
 
     const data = await response.json()
-    return data.result.url as string
+    return data.url as string
 }
 
+/**
+ * Global search (public)
+ */
 export const search = async ({params, clientMode}: SolaSdkFunctionParams<{ keyword: string }>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/search?keyword=${encodeURIComponent(params.keyword)}`)
-    if (!resp.ok) return { events: [], groups: [], profiles: [], badgeClasses: [] }
-    const data = await resp.json()
-    return {
-        events: (data.events || []).map((e: Event) => fixDate(e)),
-        groups: (data.groups || []) as Group[],
-        profiles: (data.profiles || []) as Profile[],
-        badgeClasses: (data.badge_classes || []) as BadgeClass[]
-    }
-}
+    try {
+        const data = await request<{
+            events: Event[],
+            groups: Group[],
+            users: Profile[],
+            badge_classes: BadgeClass[]
+        }>('/search', {clientMode, params: {keyword: params.keyword}})
 
-export async function requestEmailCode({clientMode, params}:SolaSdkFunctionParams<{email: string}>): Promise<void> {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/service/send_email`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: params.email,
-        })
-    })
-
-    const data = await res.json()
-
-    if (data.result === 'error') {
-        throw new Error(data.message || 'Request fail')
+        return {
+            events: data.events || [],
+            groups: data.groups || [],
+            profiles: data.users || [],
+            badgeClasses: data.badge_classes || []
+        }
+    } catch {
+        return {events: [], groups: [], profiles: [], badgeClasses: []}
     }
 }

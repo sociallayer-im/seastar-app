@@ -1,19 +1,19 @@
 import {Profile} from '../profile/types'
 
 export type CommentItemType = 'Event' | 'Group'
-export type CommentType = 'comment' | 'feedback' | 'star'
+export type CommentType = 'comment' | 'feedback' | 'star' | 'checkin' | 'chat'
 
+/** soon CommentBlueprint — note the author is `user`, not `profile`. */
 export interface Comment {
-    id: number,
-    title: string,
+    id: string,
+    title: string | null,
     item_type: CommentItemType,
-    item_id: number,
+    item_id: string,
     comment_type: CommentType,
-    reply_parent_id: number | null,
+    reply_parent_id: string | null,
     content: string | null,
     content_type: string,
-    profile_id: number,
-    removed: boolean,
+    icon_url: string | null,
     created_at: string,
-    profile: Profile,
+    user: Profile,
 }

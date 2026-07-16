@@ -1,2 +1,2 @@
-export * from './proifle'
+export * from './profile'
 export * from './types'

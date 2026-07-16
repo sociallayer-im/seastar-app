@@ -1,171 +1,197 @@
-import {getSdkConfig} from "../client"
-import {BadgeDetail, Badge, BadgeClassDetail, Invite, InviteDetail, BadgeClass} from "./types"
+import {request, requestOrNull, Paginated} from '../request'
+import {Badge, BadgeClass, Invite} from './types'
 import {SolaSdkFunctionParams} from '../types'
 
-export const getBadgeDetailByOwnerHandle = async ({params, clientMode} : SolaSdkFunctionParams<{handle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/badge/list?owner_handle=${encodeURIComponent(params.handle)}&status=accepted`)
-    const data = await resp.json()
-
-    if (!data.badges || !data.badges.length) {
-        return null
-    }
-
-    return data.badges[0] as BadgeDetail
+/**
+ * Get badges owned by a user (soon returns minted badges only)
+ * @param name - owner's username
+ */
+export const getBadgesByOwnerName = async ({params, clientMode}: SolaSdkFunctionParams<{name: string}>) => {
+    const res = await request<Paginated<Badge>>('/badges', {
+        clientMode,
+        params: {owner_handle: params.name}
+    })
+    return res.data
 }
 
-export const getBadgeClassDetailByOwnerHandle = async ({params, clientMode} : SolaSdkFunctionParams<{ handle: string }>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/badge_class/list?creator_handle=${encodeURIComponent(params.handle)}&status=accepted`)
-    const data = await resp.json()
-
-    if (!data.badge_classes || !data.badge_classes.length) {
-        return null
-    }
-
-    return data.badge_classes[0] as BadgeClassDetail
+/**
+ * Get badge detail by id
+ */
+export const getBadgeDetailByBadgeId = async ({params, clientMode}: SolaSdkFunctionParams<{badgeId: string}>) => {
+    return await requestOrNull<Badge>(`/badges/${params.badgeId}`, {clientMode})
 }
 
-export const getBadgeAndBadgeClassByOwnerHandle = async ({params, clientMode} : SolaSdkFunctionParams<{ handle: string }>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const [badgesResp, badgeClassesResp] = await Promise.all([
-        fetch(`${apiUrl}/badge/list?owner_handle=${encodeURIComponent(params.handle)}&status=accepted,minted`),
-        fetch(`${apiUrl}/badge_class/list?creator_handle=${encodeURIComponent(params.handle)}`)
+/**
+ * Get badge classes created by a user
+ * @param name - creator's username
+ */
+export const getBadgeClassesByCreatorName = async ({params, clientMode}: SolaSdkFunctionParams<{name: string}>) => {
+    const res = await request<Paginated<BadgeClass>>('/badge_classes', {
+        clientMode,
+        params: {creator_handle: params.name}
+    })
+    return res.data
+}
+
+/**
+ * Get badge classes of a group by group name
+ */
+export const getBadgeClassesByGroupName = async ({params, clientMode}: SolaSdkFunctionParams<{groupName: string}>) => {
+    const res = await request<Paginated<BadgeClass>>('/badge_classes', {
+        clientMode,
+        params: {group_handle: params.groupName}
+    })
+    return res.data
+}
+
+/**
+ * Get badge classes of a group by group id
+ */
+export const getBadgeClassByGroupId = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: string}>) => {
+    const res = await request<Paginated<BadgeClass>>('/badge_classes', {
+        clientMode,
+        params: {group_id: params.groupId}
+    })
+    return res.data
+}
+
+/**
+ * Get badge class detail by id
+ */
+export const getBadgeClassDetailByBadgeClassId = async ({params, clientMode}: SolaSdkFunctionParams<{badgeClassId: string}>) => {
+    return await requestOrNull<BadgeClass>(`/badge_classes/${params.badgeClassId}`, {clientMode})
+}
+
+/**
+ * Badge classes a user can send — bare array endpoint.
+ * @param name - username
+ */
+export const getBadgeClassesByUser = async ({params, clientMode}: SolaSdkFunctionParams<{name: string}>) => {
+    return await request<BadgeClass[]>('/badge_classes/by_user', {
+        clientMode,
+        params: {handle: params.name}
+    })
+}
+
+/**
+ * Badges owned by + badge classes created by a user, for the profile page.
+ */
+export const getBadgeAndBadgeClassByOwnerName = async ({params, clientMode}: SolaSdkFunctionParams<{name: string}>) => {
+    const [badges, badgeClasses] = await Promise.all([
+        getBadgesByOwnerName({params, clientMode}),
+        getBadgeClassesByCreatorName({params, clientMode})
     ])
-    const badgesData = await badgesResp.json()
-    const badgeClassesData = await badgeClassesResp.json()
-
-    return {
-        badges: (badgesData.badges || []) as Badge[],
-        badgeClasses: (badgeClassesData.badge_classes || []) as BadgeClassDetail[]
-    }
+    return {badges, badgeClasses}
 }
 
-export const getBadgeClassDetailByBadgeClassId = async ({params, clientMode}: SolaSdkFunctionParams<{badgeClassId: number}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/badge_class/get?id=${params.badgeClassId}`)
-    const data = await resp.json()
-
-    if (!data.badge_class) {
-        return null
-    }
-
-    return data.badge_class as BadgeClassDetail
+/**
+ * Badge classes of a group. NOTE: soon does not expose a group's pending
+ * invites publicly (sails' badge_class/invites did) — groupInvites is always
+ * empty; the invite flow reads GET /group_invites/pending instead.
+ */
+export const getBadgeClassAndInviteByGroupName = async ({params, clientMode}: SolaSdkFunctionParams<{groupName: string}>) => {
+    const badgeClasses = await getBadgeClassesByGroupName({params, clientMode})
+    return {badgeClasses, groupInvites: [] as Invite[]}
 }
 
-export const getBadgeDetailByBadgeId = async ({params, clientMode}: SolaSdkFunctionParams<{badgeId: number}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/badge/get?id=${params.badgeId}`)
-    const data = await resp.json()
-
-    if (!data.badge) {
-        return null
-    }
-
-    return data.badge as BadgeDetail
-}
-
-export const getBadgeClassAndInviteByGroupHandle = async ({params, clientMode}: SolaSdkFunctionParams<{groupHandle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/badge_class/invites?group_handle=${encodeURIComponent(params.groupHandle)}`)
-    const data = await resp.json()
-
-    return {
-        badgeClasses: (data.badge_classes || []) as BadgeClassDetail[],
-        groupInvites: (data.invites || []) as Invite[]
-    }
-}
-
-export const getBadgeClassByGroupId = async ({params, clientMode}:SolaSdkFunctionParams<{groupId: number}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/badge_class/list?group_id=${params.groupId}`)
-    const data = await resp.json()
-
-    return (data.badge_classes || []) as BadgeClassDetail[]
-}
-
-export const getInviteDetailByInviteId = async (inviteId: number) => {
-    const apiUrl = getSdkConfig().api
-    const resp = await fetch(`${apiUrl}/group_invite/get?id=${inviteId}`, {cache: 'no-store'})
-    const data = await resp.json()
-
-    if (!data.group_invite) {
-        return null
-    }
-
-    return data.group_invite as InviteDetail
-}
-
-export const createBadgeClass = async ({params, clientMode}:SolaSdkFunctionParams<{badgeClass: BadgeClass, authToken: string }>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/badge_class/create`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            ...params.badgeClass,
-            id:undefined,
-            name: params.badgeClass.title,
-            auth_token: params.authToken
-        })
+/**
+ * A group invite addressed to the current user, looked up in their pending
+ * invites (soon has no standalone invite show endpoint).
+ */
+export const getInviteDetailByInviteId = async ({params, clientMode}: SolaSdkFunctionParams<{inviteId: string, authToken: string}>) => {
+    const invites = await request<Invite[]>('/group_invites/pending', {
+        clientMode,
+        authToken: params.authToken,
+        noCache: true
     })
-
-    if (!response.ok) {
-        throw new Error(`failed code: ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    if (!data.badge_class) {
-        throw new Error(`create badge class failed`)
-    }
-
-    return data.badge_class as BadgeClass
+    return invites.find(i => i.id === params.inviteId) || null
 }
 
-export const checkBadgeOwnership = async ({params, clientMode}: SolaSdkFunctionParams<{badgeId: number, handle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/badge/list?owner_handle=${encodeURIComponent(params.handle)}&badge_class_id=${params.badgeId}`)
-    const data = await resp.json()
-
-    return (data.badges || []).length > 0
-}
-
-export async function swapBadge({clientMode, params}: SolaSdkFunctionParams<{ authToken: string, badgeId: number, swapToken: string }>) {
-  const res = await fetch(`${getSdkConfig(clientMode).api}/badge/swap`, {
+/**
+ * Create a badge class (name falls back to title, as before).
+ */
+export const createBadgeClass = async ({params, clientMode}: SolaSdkFunctionParams<{badgeClass: Partial<BadgeClass>, authToken: string}>) => {
+    return await request<BadgeClass>('/badge_classes', {
+        clientMode,
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            badge_id: params.badgeId,
-            auth_token: params.authToken,
-            swap_token: params.swapToken
-        })
+        authToken: params.authToken,
+        body: {
+            badge_class: {
+                ...params.badgeClass,
+                id: undefined,
+                name: params.badgeClass.name || params.badgeClass.title
+            }
+        }
     })
-
-    if(!res.ok) {
-        const data = await res.json()
-        throw new Error(data.message || 'Failed to swap badge')
-    }
 }
 
-export async function getSwapCode({params, clientMode}: SolaSdkFunctionParams<{ authToken: string, badgeId: number }>) {
-   const response = await fetch(`${getSdkConfig(clientMode).api}/badge/swap_code`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            badge_id: params.badgeId,
-            auth_token: params.authToken,
-        })
+/**
+ * Whether a user owns a badge of the given badge class.
+ */
+export const checkBadgeOwnership = async ({params, clientMode}: SolaSdkFunctionParams<{badgeClassId: string, name: string}>) => {
+    const res = await request<Paginated<Badge>>('/badges', {
+        clientMode,
+        params: {owner_handle: params.name, badge_class_id: params.badgeClassId}
     })
+    return res.data.length > 0
+}
 
-    if (!response.ok) {
-        throw new Error(`failed code: ${response.status}`)
-    }
+/**
+ * Claim a badge offered via a swap code.
+ */
+export async function swapBadge({params, clientMode}: SolaSdkFunctionParams<{authToken: string, badgeId: string, swapToken: string}>) {
+    await request(`/badges/${params.badgeId}/swap`, {
+        clientMode,
+        method: 'POST',
+        authToken: params.authToken,
+        body: {swap_token: params.swapToken}
+    })
+}
 
-    const data = await response.json()
-    return data.token as string
+/**
+ * Mint a swap code for a badge you own.
+ */
+export async function getSwapCode({params, clientMode}: SolaSdkFunctionParams<{authToken: string, badgeId: string}>) {
+    const data = await request<{result: string, token: string, badge_id: string}>(`/badges/${params.badgeId}/swap_code`, {
+        clientMode,
+        method: 'POST',
+        authToken: params.authToken
+    })
+    return data.token
+}
+
+/**
+ * Transfer a badge you own to another user.
+ * @param target - recipient's username (eth address / email also accepted)
+ */
+export async function transferBadge({params, clientMode}: SolaSdkFunctionParams<{authToken: string, badgeId: string, target: string}>) {
+    await request(`/badges/${params.badgeId}/transfer`, {
+        clientMode,
+        method: 'POST',
+        authToken: params.authToken,
+        body: {target: params.target}
+    })
+}
+
+/**
+ * Burn a badge you own.
+ */
+export async function burnBadge({params, clientMode}: SolaSdkFunctionParams<{authToken: string, badgeId: string}>) {
+    await request(`/badges/${params.badgeId}/burn`, {
+        clientMode,
+        method: 'POST',
+        authToken: params.authToken
+    })
+}
+
+/**
+ * Change a badge's display mode (normal | hidden | pinned).
+ */
+export async function updateBadgeDisplay({params, clientMode}: SolaSdkFunctionParams<{authToken: string, badgeId: string, display: string}>) {
+    return await request<Badge>(`/badges/${params.badgeId}`, {
+        clientMode,
+        method: 'PATCH',
+        authToken: params.authToken,
+        body: {display: params.display}
+    })
 }

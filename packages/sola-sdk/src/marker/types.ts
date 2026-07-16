@@ -1,42 +1,40 @@
 import {Group} from '../group'
 import {Profile} from '../profile'
-import {BadgeClass} from '../badge'
 import {Place} from '../place'
+import {DraftLocationFields} from '../place'
 
+/** MarkerBlueprint. Geo lives on `place` (place.latitude/longitude). */
 export interface Marker {
-    id: number
-    owner_id: number
-    group_id: number
-    marker_type: string | null
-    category: string
+    id: string
+    category: string | null
     pin_image_url: string | null
     cover_image_url: string | null
     title: string
     about: string | null
     link: string | null
     status: string | null
-    location: string | null
-    formatted_address: string | null
-    geo_lat: number | null
-    geo_lng: number | null
-    location_data: string | null
-    start_time: string | null
-    end_time: string | null
-    badge_class_id: number | null
-    voucher_id: number | null
-    map_checkins_count: number,
-    marker_state: string | null,
-    place_id: number | null,
-    place: Place | null,
+    data: Record<string, any> | null
+    created_at: string
+    place: Place | null
+    group: Group | null
+    owner: Profile | null
 }
 
-export interface MarkerDetail extends Marker {
-    group: Group
-    owner: Profile
-    badge_class: BadgeClass | null
-}
+export type MarkerDetail = Marker
 
-export interface MarkerDraft extends Omit<Marker, 'id' | 'category' | 'owner_id' | 'marker_type' | 'pin_image_url' | 'status' | 'voucher_id' | 'map_checkins_count' | 'marker_state'> {
-        id?: number,
-        category: string | null
-    }
+/**
+ * Editor draft. Flat location fields are resolved to a place_id before the
+ * write (markers require a place).
+ */
+export interface MarkerDraft extends DraftLocationFields {
+    id?: string
+    group_id: string
+    category: string | null
+    pin_image_url?: string | null
+    cover_image_url?: string | null
+    title: string
+    about?: string | null
+    link?: string | null
+    status?: string | null
+    data?: Record<string, any> | null
+}

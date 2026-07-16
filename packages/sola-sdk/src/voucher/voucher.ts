@@ -1,162 +1,135 @@
-import {getSdkConfig} from "../client"
-import {type Voucher, VoucherDetail,} from "./types"
+import {request, requestOrNull, Paginated} from '../request'
+import {type Voucher} from './types'
 import {Badge} from '../badge'
-import {checkAndGetProfileByHandlesOrAddresses, fixDate} from '../uitls'
 import {SolaSdkFunctionParams} from '../types'
 
 /**
- * Get voucher by handle
- * @param handle - handle
+ * Get vouchers sent by a user
+ * @param name - sender's username
  */
-export const getVoucherByHandle = async ({params, clientMode}:SolaSdkFunctionParams<{handle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/voucher/list?sender_handle=${encodeURIComponent(params.handle)}`)
-    const data = await resp.json()
-    return ((data.vouchers || []) as Voucher[]).map((v:Voucher) => fixDate(v)) as Voucher[]
+export const getVoucherBySenderName = async ({params, clientMode}: SolaSdkFunctionParams<{name: string}>) => {
+    const res = await request<Paginated<Voucher>>('/vouchers', {
+        clientMode,
+        params: {sender_handle: params.name}
+    })
+    return res.data
 }
 
 /**
- * Get voucher by id
- * @param id - id
+ * Get voucher detail by id (includes minted badges)
  */
-export const getVoucherDetailById = async ({params, clientMode}: SolaSdkFunctionParams<{id: number}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/voucher/get?id=${params.id}`)
-    const data = await resp.json()
-    return data.voucher ? fixDate(data.voucher) as VoucherDetail : null
+export const getVoucherDetailById = async ({params, clientMode}: SolaSdkFunctionParams<{id: string}>) => {
+    return await requestOrNull<Voucher>(`/vouchers/${params.id}`, {clientMode})
 }
 
-
-export const getGroupVoucherByHandle = async ({params, clientMode}: SolaSdkFunctionParams<{groupHandle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/voucher/list?group_handle=${encodeURIComponent(params.groupHandle)}`)
-    const data = await resp.json()
-    return ((data.vouchers || []) as Voucher[]).map((v:Voucher) => fixDate(v)) as Voucher[]
+/**
+ * Get vouchers of a group
+ * @param groupName - group's name slug
+ */
+export const getGroupVoucherByGroupName = async ({params, clientMode}: SolaSdkFunctionParams<{groupName: string}>) => {
+    const res = await request<Paginated<Voucher>>('/vouchers', {
+        clientMode,
+        params: {group_handle: params.groupName}
+    })
+    return res.data
 }
-
 
 export type SendCodeVoucherParams = {
-    badgeClassId: number,
+    badgeClassId: string,
     authToken: string,
     message?: string,
     amount?: number
 }
 
-export const sendCodeVoucher = async ({params, clientMode}:SolaSdkFunctionParams<SendCodeVoucherParams>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/voucher/create`, {
+/**
+ * Mint a code-strategy voucher (redeemable `amount` times). Returns :with_code.
+ */
+export const sendCodeVoucher = async ({params, clientMode}: SolaSdkFunctionParams<SendCodeVoucherParams>) => {
+    return await request<Voucher>('/vouchers', {
+        clientMode,
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+        authToken: params.authToken,
+        body: {
             badge_class_id: params.badgeClassId,
-            auth_token: params.authToken,
             message: params.message,
             counter: params.amount
-        })
+        }
     })
-
-    if (!response.ok) {
-        throw new Error(`failed code: ${response.status}`)
-    }
-
-    const data = await response.json()
-    return data.voucher as Voucher
 }
 
 export type SendAccountVoucherParams = {
-    badgeClassId: number,
+    badgeClassId: string,
     authToken: string,
     message?: string,
     receivers: string[]
 }
 
-export const sendAccountVoucher = async ({params: {receivers,message,authToken,badgeClassId}, clientMode}: SolaSdkFunctionParams<SendAccountVoucherParams>) => {
-    const handlesOrAddresses = receivers.filter(item => !item.includes('@'))
-    await checkAndGetProfileByHandlesOrAddresses(handlesOrAddresses)
-
-    const response = await fetch(`${getSdkConfig(clientMode).api}/voucher/send_badge`, {
+/**
+ * Send badges to named receivers (username / eth address / email — soon
+ * resolves and validates the whole batch atomically server-side).
+ */
+export const sendAccountVoucher = async ({params, clientMode}: SolaSdkFunctionParams<SendAccountVoucherParams>) => {
+    return await request<Voucher[]>('/vouchers/send_badge', {
+        clientMode,
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            badge_class_id: badgeClassId,
-            auth_token: authToken,
-            receivers,
-            message
-        })
+        authToken: params.authToken,
+        body: {
+            badge_class_id: params.badgeClassId,
+            receivers: params.receivers,
+            message: params.message
+        }
     })
-
-    if (!response.ok) {
-        throw new Error(`failed code: ${response.status}`)
-    }
-
-    const data = await response.json()
-    return data.vouchers as Voucher[]
 }
 
 export type useVoucherParams = {
-    voucherId: number
+    voucherId: string
     authToken: string
     code?: string
 }
 
+/**
+ * Redeem a voucher — mints the badge to the caller.
+ */
 export const useVoucher = async ({params, clientMode}: SolaSdkFunctionParams<useVoucherParams>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/voucher/use`, {
+    return await request<Badge>(`/vouchers/${params.voucherId}/use`, {
+        clientMode,
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: params.voucherId,
-            auth_token: params.authToken,
-            code: Number(params.code)
-        })
+        authToken: params.authToken,
+        body: {code: params.code}
     })
-
-    if (!response.ok) {
-        throw new Error(`failed code: ${response.status}`)
-    }
-
-    const data = await response.json()
-    return data.badge as Badge
 }
 
-export const getVoucherCode = async ({params, clientMode}: SolaSdkFunctionParams<{voucherId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/voucher/get_code?id=${params.voucherId}&auth_token=${params.authToken}`, {
-        method: 'GET',
+/**
+ * Reveal a voucher's redemption code (sender only).
+ */
+export const getVoucherCode = async ({params, clientMode}: SolaSdkFunctionParams<{voucherId: string, authToken: string}>) => {
+    const data = await request<{voucher_id: string, code: string}>(`/vouchers/${params.voucherId}/code`, {
+        clientMode,
+        authToken: params.authToken,
+        noCache: true
     })
-
-    if (!response.ok) {
-        throw new Error(`failed code: ${response.status}`)
-    }
-
-    const data = await response.json()
-    return data.code as string
+    return data.code
 }
 
-export const rejectVoucher = async ({params, clientMode}:SolaSdkFunctionParams<{badgeClassId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/voucher/reject_badge`, {
+/**
+ * Reject a badge offered to you (account strategy — zeroes the voucher).
+ * NOTE: takes the VOUCHER id; the old SDK mistakenly sent a badge_class id.
+ */
+export const rejectVoucher = async ({params, clientMode}: SolaSdkFunctionParams<{voucherId: string, authToken: string}>) => {
+    await request(`/vouchers/${params.voucherId}/reject_badge`, {
+        clientMode,
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: params.badgeClassId,
-            auth_token: params.authToken,
-        })
+        authToken: params.authToken
     })
-
-    if (!response.ok) {
-        throw new Error(`failed code: ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    if (data.result === 'error') {
-        throw new Error(data.message)
-    }
 }
 
-
+/**
+ * Revoke a voucher you sent (zeroes its remaining counter).
+ */
+export const revokeVoucher = async ({params, clientMode}: SolaSdkFunctionParams<{voucherId: string, authToken: string}>) => {
+    return await request<Voucher>(`/vouchers/${params.voucherId}/revoke`, {
+        clientMode,
+        method: 'POST',
+        authToken: params.authToken
+    })
+}

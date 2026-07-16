@@ -1,30 +1,29 @@
-import {getSdkConfig} from '../client'
+import {request, Paginated} from '../request'
 import {SolaSdkFunctionParams} from '../types'
 import {ActivityDetail} from './types'
 
-export const getProfileActivities = async ({params, clientMode}: SolaSdkFunctionParams<{ profile_id: number }>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/activity/list?profile_id=${params.profile_id}&limit=20`)
-    const data = await resp.json()
-    return data.activities as ActivityDetail[]
+/**
+ * Activities addressed to the current user (soon scopes by the token — the
+ * old profile_id param is gone).
+ */
+export const getProfileActivities = async ({params, clientMode}: SolaSdkFunctionParams<{authToken: string}>) => {
+    const res = await request<Paginated<ActivityDetail>>('/activities', {
+        clientMode,
+        authToken: params.authToken,
+        params: {limit: 20},
+        noCache: true
+    })
+    return res.data
 }
 
 export const setActivityRead = async ({params, clientMode}: SolaSdkFunctionParams<{
-    activityId: number,
+    activityId: string,
     authToken: string
 }>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/activity/set_read_status`, {
+    await request('/activities/mark_read', {
+        clientMode,
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            ids: [params.activityId],
-            auth_token: params.authToken
-        })
+        authToken: params.authToken,
+        body: {ids: [params.activityId]}
     })
-
-    if (!response.ok) {
-        throw new Error(`failed code: ${response.status}`)
-    }
 }

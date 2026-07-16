@@ -1,36 +1,40 @@
 import {Profile} from '../profile'
 import {Group, Track, VenueDetail} from '../group'
-import {BadgeClass} from '../badge'
 import {Place} from '../place'
 
 export type EventKind = null | "talk" | "panel" | "workshop" | "activity" | "seminar" | "conference" | "meetup" | "networking" | "training" | "exhibition" | "other" | "hackathon" | "demoday" | "social" | "openmic" | "wellness"
 
+/**
+ * EventBlueprint (default view). Geo lives on `place`
+ * (place.latitude/longitude); the event cover image is `image_url`.
+ */
 export interface Event {
-    id: number,
+    id: string,
     title: string,
-    event_type: string,
+    content: string | null,
     start_time: string,
     end_time: string,
-    timezone: string,
-    meeting_url: string | null,
-    location: string | null,
-    cover_url: string | null,
-    tags: string[] | null,
-    event_roles: EventRole[] | null,
-    owner: Profile,
-    group_id?: number,
+    timezone: string | null,
     status: string | null,
-    track_id: number | null,
-    pinned: boolean
-    geo_lat: number | null,
-    geo_lng: number | null,
-    formatted_address: string | null
-    display: string | null,
-    track?: Track | null,
-    venue: VenueDetail | null,
+    visibility: string | null,
+    meeting_url: string | null,
+    external_url: string | null,
+    category: string | null,
     kind: EventKind,
-    place_id: number | null,
+    tags: string[] | null,
+    pinned: boolean,
+    max_participant: number | null,
+    participant_count: number,
+    require_approval: boolean | null,
+    image_url: string | null,
+    recurring_id: string | null,
+    form_id: string | null,
+    created_at: string,
+    group: Group | null,
     place: Place | null,
+    venue: VenueDetail | null,
+    owner: Profile,
+    track: Track | null,
 }
 
 export interface EventWithJoinStatus extends Event {
@@ -39,188 +43,175 @@ export interface EventWithJoinStatus extends Event {
     is_owner: boolean
 }
 
+/** EventBlueprint :extended — GET /events/:id. */
 export interface EventDetail extends Event {
-    content: string | null,
-    max_participant: number | null,
-    min_participant: number | null,
-    participants_count: number,
-    badge_class_id: number | null,
-    badge_class: BadgeClass | null,
-    external_url: string | null,
-    notes: string | null,
-    venue: VenueDetail | null,
-    group: Group,
-    tickets: Ticket[] | null
-    location_data: string | null,
-    venue_id: number | null,
-    display: string | null,
+    event_roles: EventRole[] | null
     participants: Participant[] | null
-    requirement_tags: string[] | null
-    track: Track | null
-    extra: number[] | null,
-    operators: number[] | null
-    event_roles: EventRoleDetail[] | null
-    recurring_id: number | null,
-    ticket_items: TicketItem[]
-    require_approval: boolean | null,
-    form_id: string | null,
-    form: EventForm | null,
-    place_id: number | null,
-    place: Place | null,
+    tickets: Ticket[] | null
 }
 
+/** TicketBlueprint (+ payment_methods in :extended). */
 export interface Ticket {
-    tracks_allowed: null | number[],
-    id: number,
-    check_badge_class_id: number | null
-    check_badge_class: BadgeClass | null
-    content: string,
-    created_at: string,
-    end_time: string | null
-    event_id: number,
-    need_approval: boolean
-    payment_chain: string | null
-    payment_target_address: string | null
-    payment_token_address: string | null
-    payment_token_price: string | null
-    payment_token_name: string | null
+    id: string,
+    title: string | null,
+    content: string | null,
+    event_id: string,
+    check_badge_class_id: string | null,
     quantity: number | null,
-    status: string
-    title: string,
-    payment_metadata: {
-        payment_chain: string | null
-        payment_target_address: string | null
-        payment_token_address: string | null
-        payment_token_price: string | null
-        payment_token_name: string | null
-    }[],
-    payment_methods: PaymentMethod[]
-    payment_methods_attributes: PaymentMethod[]
-    ticket_type: string
-    _destroy?: string
+    end_time: string | null,
+    need_approval: boolean | null,
+    status: string,
+    ticket_type: string,
+    group_id: string | null,
+    start_date: string | null,
+    end_date: string | null,
+    days_allowed: string[] | null,
+    tracks_allowed: string[] | null,
+    created_at: string,
+    payment_methods?: PaymentMethod[]
 }
 
+/** PaymentMethodBlueprint. */
 export interface PaymentMethod {
-    id?: number
-    item_type: string // 'Ticket'
-    item_id?: number // ticket id
-    chain: string
-    token_name:  null |string
-    token_address:  null | string
-    receiver_address: null | string
+    id?: string
+    chain: string | null
+    kind?: string | null // 'crypto' | 'fiat' | 'credit'
+    token_name: string | null
+    token_address?: string | null
+    receiver_address: string | null
     price: number
-    protocol: string
+    protocol: string | null
     chains?: string[]
-    chain_token_addresses?: Record<string, string>
     _destroy?: string
 }
 
+/** ParticipantBlueprint. */
 export interface Participant {
-    id: number,
-    event_id: number,
-    profile_id: number,
-    role: string,
+    id: string,
     status: string | null,
-    created_at: string | null,
-    ticket_id: number | null,
     payment_status: string | null,
-    event: Event,
-    profile: Profile,
-    ticket: Ticket | null
-    ticket_item?: {
-        status: string
-        sender_address: string
-    }
+    register_time: string | null,
+    created_at: string | null,
+    user: Profile,
 }
 
-export type EventRoleType = 'speaker' | 'co_host' | 'group_host' | 'custom_host'
+export type EventRoleType = 'speaker' | 'co_host' | 'group_host' | 'custom_host' | 'member' | 'manager'
 
+/** EventRoleBlueprint. */
 export interface EventRole {
-    id?: number
-    event_id?: number | null
-    item_id: number | null
-    item_type: 'Profile' | 'Group',
-    nickname: string | null
+    id?: string
+    event_id?: string | null
+    item_id: string | null
+    item_type: 'User' | 'Group',
     role: EventRoleType
     email?: string | null
+    display_name: string | null
     image_url: string | null
-}
-
-export interface EventRoleDetail extends EventRole {
-    profile?: Profile
-    group?: Group
-    event: Event
     _destroy?: string
 }
 
-export interface TicketDraft  extends Pick<Ticket, 'title' | 'content' | 'check_badge_class_id' | 'quantity' | 'end_time' | 'payment_methods' | 'tracks_allowed' | 'ticket_type' | '_destroy'> {
-    id?: number
+export interface TicketDraft extends Pick<Ticket, 'title' | 'content' | 'check_badge_class_id' | 'quantity' | 'end_time' | 'tracks_allowed' | 'ticket_type'> {
+    id?: string
+    payment_methods: PaymentMethod[]
+    need_approval?: boolean | null
+    _destroy?: string
 }
 
-export interface EventDraftType extends Pick<EventDetail, | 'recurring_id' | 'cover_url' | 'title' | 'track_id' | 'content' | 'notes' | 'venue_id' | 'geo_lat' | 'geo_lng' | 'formatted_address' | 'location_data' | 'location' | 'start_time' | 'end_time' | 'meeting_url'  | 'tags' | 'max_participant' | 'display' | 'pinned' | 'status' | 'badge_class_id' | 'requirement_tags' | 'kind' | 'require_approval'> {
-    id?: number
+/**
+ * What the event editor holds. Flat location fields are resolved to a
+ * place_id (see resolvePlaceId) before the write hits the API.
+ */
+export interface EventDraftType {
+    id?: string
+    title: string
+    content: string | null
+    notes?: string | null
+    start_time: string
+    end_time: string
     timezone: string | null
+    status?: string | null
+    visibility?: string | null
+    group_id: string
+    venue_id: string | null
+    track_id: string | null
+    meeting_url: string | null
+    external_url?: string | null
+    max_participant: number | null
+    require_approval?: boolean | null
+    category?: string | null
+    kind?: EventKind
+    tags: string[] | null
+    requirement_tags?: string[] | null
+    pinned?: boolean
+    image_url?: string | null
+    recurring_id?: string | null
     tickets: TicketDraft[]
     event_roles: EventRole[] | null
-    group_id: number
+    // Flat location fields → resolvePlaceId
+    location?: string | null
+    formatted_address?: string | null
+    geo_lat?: number | string | null
+    geo_lng?: number | string | null
+    location_data?: string | null
 }
 
+/** RecurringBlueprint (:with_events adds events). */
 export interface Recurring {
-    id: number,
+    id: string,
     start_time: string | null,
     end_time: string | null,
     interval: string,
-    timezone: string,
+    timezone: string | null,
     event_count: number,
+    created_at?: string,
+    events?: Event[],
 }
 
+/** TicketItemBlueprint (user only present in :with_profile). */
 export interface TicketItem {
-    id: number,
-    status: string,
-    profile_id: number,
-    ticket_id: number,
-    event_id: number,
+    id: string,
+    status: string | null,
+    ticket_id: string,
+    user_id: string | null,
+    event_id: string | null,
     chain: string | null,
     txhash: string | null,
     amount: number | null,
-    ticket_price: number | null,
-    discount_value: string | null,
-    discount_data: string |null,
-    order_number: string | null,
-    participant_id: number,
+    discount_value: number | null,
+    discount_data: string | null,
+    participant_id: string | null,
     ticket_type: string,
-    group_id: number | null,
-    tracks_allowed: null | string[],
-    payment_method_id: number | null,
-    token_address: string | null,
-    receiver_address: string | null,
-    coupon_id: number | null,
+    group_id: string | null,
+    auth_type: string | null,
+    tracks_allowed: string[] | null,
+    payment_method_id: string | null,
+    coupon_id: string | null,
     sender_address: string | null,
     selector_type: string | null,
     selector_address: string | null,
     original_price: number | null,
     protocol: string | null,
     created_at: string | null,
-    profile: Profile,
-    ticket: {
-        title: string
-    }
+    user?: Profile,
 }
 
-
+/** FormFieldBlueprint. */
 export interface EventFormField {
     id: string,
     label: string,
     field_type: 'text' | 'select',
     required: boolean,
+    for_admin?: boolean,
     position: number,
     options: string[],
 }
 
+/** FormBlueprint :extended. */
 export interface EventForm {
     id: string,
     title: string,
     description: string | null,
+    published?: boolean,
     fields: EventFormField[],
 }
 
@@ -230,6 +221,7 @@ export interface FormAnswer {
     value: string | null,
 }
 
+/** FormSubmissionBlueprint. */
 export interface FormSubmission {
     id: string,
     form_id: string,
@@ -239,26 +231,25 @@ export interface FormSubmission {
     admin_note: string | null,
     submitted_at: string,
     answers: FormAnswer[],
-    profile: Profile | null,
+    user: Profile | null,
 }
 
 export type DiscountType = 'ratio' | 'amount'
 
+/** CouponBlueprint (+code in :with_code). */
 export interface Coupon {
-    id?: number
-    event_id?: number
+    id?: string
+    event_id?: string
     selector_type: string,
-    code: string
-    label: string,
+    code?: string
+    label: string | null,
     receiver_address: string | null,
     discount_type: DiscountType,
     discount: number,
-    applicable_ticket_ids: number[] | null,
-    ticket_item_ids: number[] | null,
-    expires_at: string,
-    max_allowed_usages: number
+    applicable_ticket_ids: string[] | null,
+    ticket_item_ids: string[] | null,
+    expires_at: string | null,
+    max_allowed_usages: number | null
     order_usage_count: number
     _destroy?: string
 }
-
-

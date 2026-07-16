@@ -2,81 +2,74 @@ import {Profile} from '../profile'
 import {Group} from '../group'
 
 export interface BadgeClass {
-    id: number,
+    id: string,
+    name: string,
     title: string,
-    creator_id: number,
+    creator: Profile,
     image_url: string | null,
     display: string | null,
     badge_type: string | null,
-    group_id: number | null,
-}
-
-export interface BadgeClassDetail extends BadgeClass {
+    group_id: string | null,
     metadata: string | null,
     content: string | null,
-    transferable: null | boolean,
-    permissions: string[] | null
-    created_at: string,
+    transferable: boolean | null,
+    revocable: boolean | null,
+    weighted: boolean | null,
+    encrypted: boolean | null,
+    permissions: string[] | null,
     can_send_badge: string,
-    creator: Profile,
-    counter:number
-    badges: Badge[]
-    group: Group | null
+    counter: number,
+    created_at: string,
 }
+
+/** Kept as an alias — soon's BadgeClassBlueprint has a single shape. */
+export type BadgeClassDetail = BadgeClass
 
 export interface Badge {
-    id: number
-    image_url: string | null,
+    id: string,
+    index: number | null,
     title: string,
-    owner_id: number
-    creator_id: number
-    display: string | null,
-    badge_class: BadgeClass,
-    owner: Profile,
-    created_at: string
+    image_url: string | null,
     content: string | null,
-    voucher_id: number | null
-}
-
-export interface BadgeDetail extends Badge {
-    metadata: string | null,
-    value: string | null,
-    badge_class: BadgeClassDetail,
-    creator: Profile,
-}
-
-export interface Invite {
-    id: number,
-    sender_id: number
-    receiver_id: number | null,
-    group_id: number,
-    created_at: string,
-    expires_at: string,
-    badge_class_id: number | null,
-    badge_id: number | null,
-    role: string,
     status: string,
-    accepted: boolean
-    message: string | null
-    group: Group
+    display: string | null,
+    value: number | null,
+    start_time: string | null,
+    end_time: string | null,
+    created_at: string,
+    badge_class: BadgeClass,
+    creator: Profile,
+    owner: Profile,
 }
 
-export interface InviteDetail extends Invite {
-    receiver_address_type: string | null,
+/** Kept as an alias — soon's BadgeBlueprint has a single shape. */
+export type BadgeDetail = Badge
+
+/** soon GroupInviteBlueprint. */
+export interface Invite {
+    id: string,
+    status: string,
+    role: string,
+    message: string | null,
+    expires_at: string | null,
+    receiver_address_type: 'id' | 'email' | 'code' | null,
     receiver_address: string | null,
+    created_at: string,
+    sender: Profile | null,
     receiver: Profile | null,
-    sender: Profile,
-    ticket_id: number | null,
-    ticket: GroupTicket | null,
+    group: Group,
 }
+
+/** Kept as an alias — soon's GroupInviteBlueprint has a single shape. */
+export type InviteDetail = Invite
 
 export interface GroupTicket {
-    id: number,
+    id: string,
     title: string,
     ticket_type: string,
     status: string,
     start_date: string | null,
     end_date: string | null,
     days_allowed: string[] | null,
-    tracks_allowed: number[] | null,
+    tracks_allowed: string[] | null,
 }

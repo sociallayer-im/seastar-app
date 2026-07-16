@@ -1,466 +1,262 @@
-import {ClientMode, getSdkConfig} from "../client"
-import {Group, GroupDetail, GroupWithOwner, MembershipDetail} from "./types"
+import {ClientMode} from '../client'
+import {request, requestOrNull, requestAllPages} from '../request'
+import {Group, GroupDetail, GroupWithOwner, Membership, MembershipDetail} from './types'
 import {InviteDetail} from '../badge/types'
-import {checkAndGetProfileByHandlesOrAddresses} from '../uitls'
 import {SolaSdkFunctionParams} from '../types'
 
 /**
- * Get group detail by handle
- * @param groupHandle
- * @param clientMode
+ * Get group detail by name or id (public, :detail view)
  */
-const normalizeGroupDetail = (group: any): GroupDetail => ({
-    ...group,
-    memberships: group.memberships || [],
-    tracks: group.tracks || [],
-    venues: group.venues || [],
-})
-
-export const getGroupDetailByHandle = async ({params: {groupHandle}, clientMode}:SolaSdkFunctionParams<{groupHandle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/group/get?group_id=${encodeURIComponent(groupHandle)}&include_detail=true`, {cache: 'no-store'})
-    const data = await resp.json()
-
-    if (!data.group) {
-        return null
-    }
-
-    return normalizeGroupDetail(data.group) as GroupDetail
+export const getGroupDetailByName = async ({params: {groupName}, clientMode}: SolaSdkFunctionParams<{groupName: string}>) => {
+    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupName)}`, {clientMode, noCache: true})
 }
 
-export const getGroupDetailById = async ({params: {groupId}, clientMode}: SolaSdkFunctionParams<{groupId: number}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/group/get?group_id=${groupId}&include_detail=true`)
-    const data = await resp.json()
-
-    if (!data.group) {
-        return null
-    }
-
-    return normalizeGroupDetail(data.group) as GroupDetail
+export const getGroupDetailById = async ({params: {groupId}, clientMode}: SolaSdkFunctionParams<{groupId: string}>) => {
+    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupId)}`, {clientMode, noCache: true})
 }
 
 /**
- * Get groups of profile management and joined by handle
- * @param profileHandle
+ * Get a profile's memberships (public) — each entry carries its group
+ * @param profileName
  */
-export const getProfileMemberships = async ({params: {profileHandle}, clientMode}: SolaSdkFunctionParams<{profileHandle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(profileHandle)}`)
-    const data = await resp.json()
-    return (data.groups || []) as MembershipDetail[]
+export const getProfileMemberships = async ({params: {profileName}, clientMode}: SolaSdkFunctionParams<{profileName: string}>) => {
+    return await request<MembershipDetail[]>(`/users/${encodeURIComponent(profileName)}/groups`, {clientMode})
 }
 
-export const getProfileGroup = async ({params: {profileHandle}, clientMode}:SolaSdkFunctionParams<{profileHandle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(profileHandle)}&role=owner,member,manager`)
-    const data = await resp.json()
+export const getProfileGroup = async ({params: {profileName}, clientMode}: SolaSdkFunctionParams<{profileName: string}>) => {
+    const memberships = await request<MembershipDetail[]>(`/users/${encodeURIComponent(profileName)}/groups`, {clientMode})
+    return memberships.map(m => ({...m.group, role: m.role})) as GroupWithOwner[]
+}
 
-    return (data.groups || []) as GroupWithOwner[]
+/**
+ * Groups a profile can act on as a manager (owner/admin roles)
+ */
+export const getAvailableGroupsForBadgeClassCreator = async ({params, clientMode}: SolaSdkFunctionParams<{profileName: string}>) => {
+    const memberships = await request<MembershipDetail[]>(
+        `/users/${encodeURIComponent(params.profileName)}/groups`,
+        {clientMode, params: {role: 'owner,admin'}}
+    )
+    return memberships.map(m => m.group) as Group[]
+}
+
+export const getAvailableGroupsForEventHost = async ({params, clientMode}: SolaSdkFunctionParams<{profileName: string}>) => {
+    const memberships = await request<MembershipDetail[]>(
+        `/users/${encodeURIComponent(params.profileName)}/groups`,
+        {clientMode, params: {role: 'owner,admin'}}
+    )
+    return memberships.map(m => m.group) as Group[]
 }
 
 /**
  * Update group
- * @param group
- * @param auth_token
  */
-
-export const updateGroup = async ({params: {group, authToken}, clientMode}:SolaSdkFunctionParams<{group: GroupDetail, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/update`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: group.id,
-            auth_token: authToken,
-            group
-        })
+export const updateGroup = async ({params: {group, authToken}, clientMode}: SolaSdkFunctionParams<{group: Partial<GroupDetail> & {id: string}, authToken: string}>) => {
+    return await request<Group>(`/groups/${group.id}`, {
+        method: 'PATCH',
+        clientMode,
+        authToken,
+        body: {
+            group: {
+                name: group.name,
+                nickname: group.nickname,
+                timezone: group.timezone,
+                location: group.location,
+                start_date: group.start_date,
+                end_date: group.end_date,
+                bio: group.bio,
+                image_url: group.image_url,
+                logo_url: group.logo_url,
+                parent_id: group.parent_id
+            }
+        }
     })
+}
 
-    if (!response.ok) {
-        throw new Error('Update failed')
-    }
-
-    const data = await response.json()
-    return data.group as Group
+export const createGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupName: string, authToken: string}>) => {
+    return await request<Group>('/groups', {
+        method: 'POST',
+        clientMode,
+        authToken: params.authToken,
+        body: {group: {name: params.groupName}}
+    })
 }
 
 /**
- * Remove Member
- * @param profileId - profile id
- * @param groupId - group id
- * @param auth_token
+ * Freeze (deactivate) a group — owner only
  */
-
-export const removeMember = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: number, groupId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/remove_member`, {
+export const freezeGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: string, authToken: string}>) => {
+    await request(`/groups/${params.groupId}/freeze`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            profile_id: params.profileId,
-            group_id: params.groupId,
-            auth_token: params.authToken
-        })
+        clientMode,
+        authToken: params.authToken
     })
-
-    if (!response.ok) {
-        throw new Error('Remove member failed')
-    }
-}
-
-export const removeManager = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: number, groupId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/remove_manager`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            profile_id: params.profileId,
-            group_id: params.groupId,
-            auth_token: params.authToken
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error('Remove member failed')
-    }
-}
-
-export const addManager = async ({params, clientMode}:SolaSdkFunctionParams<{profileId: number, groupId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/add_manager`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            profile_id: params.profileId,
-            group_id: params.groupId,
-            auth_token: params.authToken
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error('Add manager failed')
-    }
-}
-
-export const setAdminNotification = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number, adminNotification: boolean, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/set_admin_notification`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            group_id: params.groupId,
-            admin_notification: params.adminNotification,
-            auth_token: params.authToken
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error('Set admin notification failed')
-    }
-}
-
-export const freezeGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/freeze_group`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: params.groupId,
-            auth_token: params.authToken
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error('Freeze group failed')
-    }
-}
-
-export const transferGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number, newOwnerHandle: string, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/transfer_owner`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: params.groupId,
-            new_owner_handle: params.newOwnerHandle,
-            auth_token: params.authToken
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error(`Transfer group failed code: ${response.status}`)
-    }
-}
-
-export const leaveGroup = async ({params, clientMode}:SolaSdkFunctionParams<{profileId: number, groupId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/leave`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            profile_id: params.profileId,
-            group_id: params.groupId,
-            auth_token: params.authToken
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error(`Leave group failed code: ${response.status}`)
-    }
 }
 
 /**
- * Get membership by group id
- * @param groupId
+ * Get the full member roster of a group (public)
  */
-
-export const getMembershipByGroupId = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: number}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/group/members?group_id=${params.groupId}`)
-    const data = await resp.json()
-
-    return (data.memberships || []) as MembershipDetail[]
+export const getMembershipByGroupId = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: string}>) => {
+    return await requestAllPages<Membership>(`/groups/${encodeURIComponent(params.groupId)}/memberships`, {clientMode})
 }
 
 /**
- * Send invite
- * @param groupId - group id
- * @param receivers - receivers, supported address, email and handle
- * @param role - supported roles: member, manager, owner, issuer
- * @param message - invite message
- * @param auth_token - auth token
+ * Membership ops are keyed by membership id — resolve a user's membership first.
  */
+const findMembership = async (groupId: string, userId: string, clientMode?: ClientMode) => {
+    const memberships = await getMembershipByGroupId({params: {groupId}, clientMode: clientMode!})
+    const membership = memberships.find(m => m.user.id === userId)
+    if (!membership) {
+        throw new Error('Membership not found')
+    }
+    return membership
+}
 
+export const removeMember = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: string, groupId: string, authToken: string}>) => {
+    const membership = await findMembership(params.groupId, params.profileId, clientMode)
+    await request(`/groups/${params.groupId}/memberships/${membership.id}`, {
+        method: 'DELETE',
+        clientMode,
+        authToken: params.authToken
+    })
+}
+
+/** Demote a manager back to plain member. */
+export const removeManager = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: string, groupId: string, authToken: string}>) => {
+    const membership = await findMembership(params.groupId, params.profileId, clientMode)
+    await request(`/groups/${params.groupId}/memberships/${membership.id}`, {
+        method: 'PATCH',
+        clientMode,
+        authToken: params.authToken,
+        body: {membership: {role: 'member'}}
+    })
+}
+
+/** Grant the admin (manager) role — adds the user to the group if needed. */
+export const addManager = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: string, groupId: string, authToken: string}>) => {
+    await request(`/groups/${params.groupId}/memberships`, {
+        method: 'POST',
+        clientMode,
+        authToken: params.authToken,
+        body: {user_id: params.profileId, role: 'admin'}
+    })
+}
+
+/** Transfer ownership: grant the owner role to another user (owner-only op). */
+export const transferGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: string, newOwnerId: string, authToken: string}>) => {
+    await request(`/groups/${params.groupId}/memberships`, {
+        method: 'POST',
+        clientMode,
+        authToken: params.authToken,
+        body: {user_id: params.newOwnerId, role: 'owner'}
+    })
+}
+
+export const leaveGroup = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: string, groupId: string, authToken: string}>) => {
+    const membership = await findMembership(params.groupId, params.profileId, clientMode)
+    await request(`/groups/${params.groupId}/memberships/${membership.id}`, {
+        method: 'DELETE',
+        clientMode,
+        authToken: params.authToken
+    })
+}
+
+/**
+ * Send invites — the backend reports a per-receiver result
+ * @param receivers - names or emails
+ * @param role - member | admin | owner
+ */
 export const sendInvite = async (
-    {params, clientMode}: SolaSdkFunctionParams<{groupId: number,
+    {params, clientMode}: SolaSdkFunctionParams<{
+        groupId: string,
         receivers: string[],
         role: string,
         message: string,
-        authToken: string,}>
+        authToken: string,
+    }>
 ) => {
-    const handlesOrAddresses = params.receivers.filter(item => !item.includes('@'))
-    const {handleResult, addressResult} = await checkAndGetProfileByHandlesOrAddresses(handlesOrAddresses)
+    const data = await request<{results: {address: string, result: string, message?: string}[]}>(
+        `/groups/${params.groupId}/group_invites`,
+        {
+            method: 'POST',
+            clientMode,
+            authToken: params.authToken,
+            body: {receivers: params.receivers, role: params.role, message: params.message}
+        }
+    )
 
-    const memberShips = await getMembershipByGroupId({params: {groupId: params.groupId}, clientMode})
-    const handleHasJoined = memberShips.find(h => handleResult.some(m => m.handle === h.profile.handle))
-    if (handleHasJoined && handleHasJoined.role === params.role) {
-        throw new Error(`Profile [${handleHasJoined.profile.handle}] has joined`)
+    const failed = (data.results || []).filter(r => r.result === 'error')
+    if (failed.length) {
+        throw new Error(failed.map(f => `[${f.address}] ${f.message || 'invite failed'}`).join('; '))
     }
+    return data.results
+}
 
-    const addressHasJoined = memberShips.find(a => addressResult.some(m => m.address === a.profile.address))
-    if (addressHasJoined && addressHasJoined.role === params.role) {
-        throw new Error(`Profile [${addressHasJoined.profile.address}] has joined`)
-    }
-
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/send_invite`, {
+export const acceptInvite = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: string, inviteId: string, authToken: string}>) => {
+    await request(`/groups/${params.groupId}/group_invites/${params.inviteId}/accept`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            group_id: params.groupId,
-            receivers: params.receivers,
-            auth_token: params.authToken,
-            message: params.message,
-            role: params.role
-        })
+        clientMode,
+        authToken: params.authToken
     })
-
-    if (!response.ok) {
-        throw new Error(`Send invite failed code: ${response.status}`)
-    }
 }
 
-export const acceptInvite = async ({params, clientMode}:SolaSdkFunctionParams<{inviteId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/accept_invite`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            group_invite_id: params.inviteId,
-            auth_token: params.authToken
-        })
+export const rejectInvite = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: string, inviteId: string, authToken: string}>) => {
+    await request(`/groups/${params.groupId}/group_invites/${params.inviteId}`, {
+        method: 'DELETE',
+        clientMode,
+        authToken: params.authToken
     })
-
-    if (!response.ok) {
-        throw new Error(`Accept invite failed code: ${response.status}`)
-    }
-}
-
-export const rejectInvite = async ({params, clientMode}:SolaSdkFunctionParams<{inviteId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/cancel_invite`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            group_invite_id: params.inviteId,
-            auth_token: params.authToken
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error(`Reject invite failed code: ${response.status}`)
-    }
-}
-
-export const getAvailableGroupsForBadgeClassCreator = async ({params, clientMode}: SolaSdkFunctionParams<{profileHandle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(params.profileHandle)}&role=owner,manager,issuer`)
-    const data = await resp.json()
-
-    return (data.groups || []) as Group[]
-}
-
-export const getEventGroups = async ({clientMode}: {clientMode?: ClientMode}) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/group/featured?tag=:top`)
-    const data = await resp.json()
-
-    return (data.groups || []) as Group[]
-}
-
-export const getAvailableGroupsForEventHost = async ({params, clientMode}:SolaSdkFunctionParams<{profileHandle: string}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/profile/groups?handle=${encodeURIComponent(params.profileHandle)}&role=owner,manager`)
-    const data = await resp.json()
-
-    return (data.groups || []) as Group[]
-}
-
-export const createGroup = async ({params, clientMode}: SolaSdkFunctionParams<{handle: string, authToken: string}>) => {
-    const paraams = {
-        auth_token: params.authToken,
-        handle: params.handle
-    }
-
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/create`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(paraams)
-    })
-
-    if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.message || 'Create group failed')
-    }
-
-    const data = await response.json()
-    return data.group as Group
 }
 
 /**
- * Send invite with code
- * @param groupId - group id
- * @param role - supported roles: member, manager, owner, issuer
- * @param message - optional invite message
- * @param authToken - auth token
+ * Mint a reusable code invite
  */
 export const sendCodeInvite = async (
     {params, clientMode}: SolaSdkFunctionParams<{
-        groupId: number,
+        groupId: string,
         role: string,
         message?: string,
         authToken: string,
     }>
 ) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/send_invite_with_code`, {
+    return await request<InviteDetail>(`/groups/${params.groupId}/group_invites/send_with_code`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            group_id: params.groupId,
-            role: params.role,
-            message: params.message,
-            auth_token: params.authToken
-        })
+        clientMode,
+        authToken: params.authToken,
+        body: {role: params.role, message: params.message}
     })
-
-    if (!response.ok) {
-        const data = await response.json().catch(() => ({}))
-        throw new Error(data.message || `Send code invite failed code: ${response.status}`)
-    }
-
-    const data = await response.json()
-    return data.group_invite as InviteDetail
 }
 
-/**
- * Accept invite with code
- * @param groupInviteId - group invite id
- * @param code - invite code
- * @param authToken - auth token
- */
 export const acceptCodeInvite = async (
     {params, clientMode}: SolaSdkFunctionParams<{
-        groupInviteId: number,
+        groupId: string,
         code: string,
         authToken: string,
     }>
 ) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/accept_invite_with_code`, {
+    return await request<InviteDetail>(`/groups/${params.groupId}/group_invites/accept_with_code`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            group_invite_id: params.groupInviteId,
-            code: params.code,
-            auth_token: params.authToken
-        })
+        clientMode,
+        authToken: params.authToken,
+        body: {code: params.code}
     })
-
-    if (!response.ok) {
-        const data = await response.json().catch(() => ({}))
-        throw new Error(data.message || `Accept code invite failed code: ${response.status}`)
-    }
-
-    const data = await response.json()
-    return data.result as string
 }
 
 export const getMyPendingInvites = async ({params, clientMode}: SolaSdkFunctionParams<{authToken: string}>) => {
-    const url = `${getSdkConfig(clientMode).api}/group/my_pending_invites?auth_token=${encodeURIComponent(params.authToken)}`
-    const response = await fetch(url, {cache: 'no-store'})
-    if (!response.ok) return []
-    const data = await response.json()
-    return (data.group_invites || []) as InviteDetail[]
+    try {
+        return await request<InviteDetail[]>('/group_invites/pending', {
+            clientMode,
+            authToken: params.authToken,
+            noCache: true
+        })
+    } catch {
+        return []
+    }
 }
 
-
-export const sendEmailToGroupMembers = async ({params, clientMode}: SolaSdkFunctionParams<{
-    groupId: number
-    subject: string
-    content: string
-    authToken: string
-    testRecipient?: string
-}>) => {
-    const url = `${getSdkConfig(clientMode).api}/group/send_email_to_members`
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            group_id: params.groupId,
-            subject: params.subject,
-            content: params.content,
-            auth_token: params.authToken,
-            ...(params.testRecipient ? {test_recipient: params.testRecipient} : {})
-        })
-    })
-    const data = await response.json()
-    if (data.result === 'error') throw new Error(data.message || 'Failed to send emails')
-    return {sentCount: data.sent_count as number, isTest: !!data.test}
+/**
+ * Featured groups for the homepage (public)
+ */
+export const getEventGroups = async ({clientMode}: {clientMode?: ClientMode}) => {
+    const data = await request<{groups: Group[]}>('/discover', {clientMode})
+    return data.groups || []
 }

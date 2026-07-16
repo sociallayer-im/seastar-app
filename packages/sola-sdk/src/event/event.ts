@@ -1,6 +1,17 @@
-import {Event, EventDetail, EventDraftType, EventForm, EventWithJoinStatus, FormSubmission, Participant, Recurring} from './types'
+import {
+    Event,
+    EventDetail,
+    EventDraftType,
+    EventForm,
+    EventRole,
+    EventWithJoinStatus,
+    FormSubmission,
+    Participant,
+    Recurring,
+    TicketDraft
+} from './types'
 import {getSdkConfig} from '../client'
-import {fixDate} from '../uitls'
+import {request, requestOrNull, Paginated} from '../request'
 import {SolaSdkFunctionParams} from '../types'
 import {resolvePlaceId} from '../place'
 
@@ -10,138 +21,176 @@ export const sortEventsByTime = (a: Event, b: Event): number => {
     const aEndTime = new Date(a.end_time).getTime()
     const bStartTime = new Date(b.start_time).getTime()
     const bEndTime = new Date(b.end_time).getTime()
-    
+
     // 判断活动状态
     const aIsOngoing = aStartTime <= now && now <= aEndTime
     const bIsOngoing = bStartTime <= now && now <= bEndTime
     const aIsFuture = aStartTime > now
     const bIsFuture = bStartTime > now
-    
+
     // 正在进行中的活动排在顶部
     if (aIsOngoing && !bIsOngoing) return -1
     if (!aIsOngoing && bIsOngoing) return 1
-    
+
     // 如果都是正在进行中的活动，按开始时间升序排列
     if (aIsOngoing && bIsOngoing) {
         return aStartTime - bStartTime
     }
-    
+
     // 未来活动排在已结束活动前面
     if (aIsFuture && !bIsFuture) return -1
     if (!aIsFuture && bIsFuture) return 1
-    
+
     // 如果都是未来活动，按时间升序排列（早的在前）
     if (aIsFuture && bIsFuture) {
         return aStartTime - bStartTime
     }
-    
+
     // 如果都是已结束活动，按结束时间降序排列（最近结束的在前）
     return bEndTime - aEndTime
 }
 
-export const getStaredEvent = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{
-    authToken: string
-}>) => {
-    if (!authToken) {
-        throw new Error('authToken is required')
-    }
+export type EventCollectionType = "upcoming" | "past" | "ongoing" | undefined
 
-    const url = `${getSdkConfig(clientMode).api}/event/my_event_list?collection=my_stars&auth_token=${authToken}`
-    try {
-        const res = await fetch(url)
-        if (!res.ok) {
-            return []
-        }
-
-        const data = await res.json()
-        return data.events.map((e: any) => {
-            return {
-                ...e,
-                owner: e.profile,
-                geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
-                geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
-            }
-        }).reverse() as Event[]
-    } catch (e: unknown) {
-        console.error(e)
-        return []
-    }
+/** Filter params for GET /events (soon browse listing). */
+export type EventListFilterProps = {
+    group_id?: string,           // TSID or group slug
+    collection?: EventCollectionType,
+    timezone?: string,
+    start_date?: string,
+    end_date?: string,
+    search_title?: string,
+    tags?: string[],
+    venue_id?: string,
+    track_id?: string,
+    kind?: string,
+    category?: string,
+    pinned?: string | number,
+    skip_recurring?: string | number,
+    owner_id?: string,           // TSID or username — events a user hosts
+    attendee_id?: string,        // TSID or username — events a user attends
+    page?: number,
 }
 
+/**
+ * Browse/schedule listing. Public; pass authToken to get
+ * is_attending/is_starred/is_owner flags on each event.
+ */
+export const getEvents = async ({params: {filters, authToken, limit}, clientMode}: SolaSdkFunctionParams<{
+    filters: EventListFilterProps,
+    authToken?: string,
+    limit?: number
+}>) => {
+    const res = await request<Paginated<EventWithJoinStatus>>('/events', {
+        params: {...filters, limit: limit || 100},
+        authToken,
+        clientMode,
+        noCache: true
+    })
+    return res.data
+}
+
+export const getEventDetailById = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken?: string
+}>) => {
+    return await requestOrNull<EventDetail>(`/events/${eventId}`, {authToken, clientMode, noCache: true})
+}
+
+/** Events pending the caller's review (manager dashboard inbox). */
 export const getMyPendingApprovalEvent = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{
     authToken: string
 }>) => {
     if (!authToken) {
         throw new Error('authToken is required')
     }
-
-    
-    const url = `${getSdkConfig(clientMode).api}/event/pending_approval_list?auth_token=${authToken}`
     try {
-        const res = await fetch(url)
-        if (!res.ok) {
-            return []
-        }
-
-        const data = await res.json()
-        return data.events
-        .sort(sortEventsByTime)
-        .slice(0, 30).map((e: any) => {
-            return {
-                ...e,
-                owner: e.profile,
-                geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
-                geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
-            }
-        }) as Event[]
+        const res = await request<Paginated<Event>>('/events/pending_approval', {
+            authToken, clientMode, noCache: true
+        })
+        return res.data.sort(sortEventsByTime).slice(0, 30)
     } catch (e: unknown) {
         console.error(e)
         return []
     }
 }
 
-export const getProfileEventByHandle = async ({params: {handle}, clientMode}: SolaSdkFunctionParams<{
-    handle: string
+/** The events a user has starred (their own list — requires auth). */
+export const getStaredEvent = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{
+    authToken: string
 }>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const fetchType = async (type: 'attended' | 'hosting' | 'co_hosting' | 'starred'): Promise<Event[]> => {
-        const resp = await fetch(`${apiUrl}/event/by_profile?handle=${encodeURIComponent(handle)}&type=${type}`)
-        if (!resp.ok) return []
-        const data = await resp.json()
-        return (data.events || []).map((e: any) => ({...e, owner: e.owner || e.profile})) as Event[]
+    if (!authToken) {
+        throw new Error('authToken is required')
+    }
+    try {
+        const me = await request<{ id: string }>('/users/me', {authToken, clientMode, noCache: true})
+        const stars = await request<Paginated<{ item_id: string }>>('/comments', {
+            params: {comment_type: 'star', item_type: 'Event', user_id: me.id, limit: 30},
+            authToken, clientMode, noCache: true
+        })
+        const events = await Promise.all(
+            stars.data.map(s => requestOrNull<Event>(`/events/${s.item_id}`, {authToken, clientMode, noCache: true}))
+        )
+        return (events.filter(Boolean) as Event[]).sort(sortEventsByTime)
+    } catch (e: unknown) {
+        console.error(e)
+        return []
+    }
+}
+
+/**
+ * Profile-page event tabs. Hosting/attended come from the owner_id/attendee_id
+ * filters on GET /events; co-hosting has no backend filter yet (returns []);
+ * starred is only visible for the authenticated user (see getStaredEvent).
+ */
+export const getProfileEventByName = async ({params: {name, authToken}, clientMode}: SolaSdkFunctionParams<{
+    name: string,
+    authToken?: string
+}>) => {
+    const fetchWith = async (filters: EventListFilterProps): Promise<Event[]> => {
+        try {
+            return await getEvents({params: {filters, authToken}, clientMode})
+        } catch {
+            return []
+        }
     }
 
-    const [attends, hosting, coHosting, starred] = await Promise.all([
-        fetchType('attended'),
-        fetchType('hosting'),
-        fetchType('co_hosting'),
-        fetchType('starred'),
+    const [attends, hosting] = await Promise.all([
+        fetchWith({attendee_id: name}),
+        fetchWith({owner_id: name}),
     ])
 
     return {
-        attends: (attends.map((e: Event) => fixDate(e)) as Event[]).sort(sortEventsByTime),
-        hosting: (hosting.map((e: Event) => fixDate(e)) as Event[]).sort(sortEventsByTime),
-        coHosting: (coHosting.map((e: Event) => fixDate(e)) as Event[]).sort(sortEventsByTime),
-        starred: (starred.map((e: Event) => fixDate(e)) as Event[]).sort(sortEventsByTime),
+        attends: attends.sort(sortEventsByTime),
+        hosting: hosting.sort(sortEventsByTime),
+        coHosting: [] as Event[], // TODO: needs a backend co-host filter (event_roles)
+        starred: [] as Event[],   // only the viewer's own stars are queryable — use getStaredEvent
     }
 }
 
-export const getGroupEventByHandle = async ({params: {handle}, clientMode}: SolaSdkFunctionParams<{
-    handle: string
+export const getGroupEventByName = async ({params: {name, collection}, clientMode}: SolaSdkFunctionParams<{
+    name: string,
+    collection?: EventCollectionType
 }>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/event/list?group_id=${encodeURIComponent(handle)}&collection=past`)
-    if (!resp.ok) return [] as Event[]
-    const data = await resp.json()
-    return (data.events || []).map((e: any) => fixDate({...e, owner: e.owner || e.profile})) as Event[]
+    try {
+        const res = await request<Paginated<Event>>('/events', {
+            params: {group_id: name, collection: collection || 'past', limit: 100},
+            clientMode
+        })
+        return res.data
+    } catch {
+        return [] as Event[]
+    }
 }
 
-export const getEventIcsUrl = ({params: {groupHandle}, clientMode}: SolaSdkFunctionParams<{ groupHandle: string }>) => {
-    const nonce = new Date().getTime()
-    const url = `${getSdkConfig(clientMode).api}/group/icalendar?group_name=${groupHandle}&nonce=${nonce}`
+/** Calendar-subscription links for a group's public .ics feed. */
+export const getEventIcsUrl = ({params: {groupIdOrName}, clientMode}: SolaSdkFunctionParams<{
+    groupIdOrName: string
+}>) => {
+    const url = `${getSdkConfig(clientMode).api}/api/v1/groups/${encodeURIComponent(groupIdOrName)}/calendar.ics`
     const googleCalendarLink = `https://www.google.com/calendar/render?cid=${encodeURIComponent(url.replace('https', 'http'))}`
     const outlookCalendarLink = `https://outlook.live.com/calendar/0/addcalendar?url=${encodeURIComponent(url)}`
-    const systemCalendarLink = url.replace('https', 'webcal')
+    const systemCalendarLink = url.replace(/^https?/, 'webcal')
 
     return {
         url,
@@ -149,253 +198,265 @@ export const getEventIcsUrl = ({params: {groupHandle}, clientMode}: SolaSdkFunct
         outlookCalendarLink,
         systemCalendarLink
     }
-
 }
 
-export type EventCollectionType = "upcoming" | "past" | undefined
-
-export type EventFilters = {
-    groupId: number,
-    timezone?: string,
-    collection?: EventCollectionType
-    isPrivate?: boolean,
-    withStarStatus?: boolean,
-    startDate?: string,
-    endDate?: string,
-    search?: string,
-    tags?: string[],
-    venueId?: number,
-    trackId?: number,
-    skipMultiDay?: boolean,
-    skipRecurring?: boolean,
-}
-
-export type EventListFilterProps = {
-    group_id: string,
-    auth_token?: string,
-    timezone?: string,
-    collection: EventCollectionType,
-    private_event?: string
-    with_stars?: string,
-    start_date?: string,
-    end_date?: string,
-    search_title?: string,
-    tags?: string,
-    venue_id?: string
-    track_id?: string
-    skip_multi_day?: string
-    skip_recurring?: string
-    page?: number,
-    pinned?: number,
-    kind?: string
-}
-
-export const getEvents = async ({params: {filters, authToken, limit}, clientMode}: SolaSdkFunctionParams<{
-    filters: EventListFilterProps,
-    authToken?: string,
-    page?: number,
-    limit?: number
+/** A single event's .ics (importable into any calendar). */
+export const getSingleEventIcsUrl = ({params: {eventId}, clientMode}: SolaSdkFunctionParams<{
+    eventId: string
 }>) => {
-    const searchParams = new URLSearchParams()
-    // searchParams.set('limit', '100')
-    for (const key in filters) {
-        if (filters.hasOwnProperty(key)) {
-            const value = filters[key as keyof EventListFilterProps]
-            if (value) {
-                searchParams.append(key, value?.toString())
-            }
-        }
-    }
-
-    if (authToken) {
-        searchParams.set('with_stars', '1')
-        searchParams.set('with_attending', '1')
-        searchParams.set("auth_token", authToken)
-    }
-
-    if (limit) {
-        searchParams.set('limit', limit.toString())
-    } else {
-        searchParams.set('limit', '100')
-    }
-
-    const url = `${getSdkConfig(clientMode).api}/api/event/list?${searchParams.toString()}`
-    // console.log('url', url)
-    const res = await fetch(url)
-
-    if (!res.ok) {
-        throw new Error(`Failed to fetch ${res.status} url: ${url}`)
-    }
-
-    const data = await res.json()
-
-    return data.events.map((e: any) => {
-        return {
-            ...e,
-            owner: e.owner || e.profile,
-            geo_lat: e.geo_lat ? Number(e.geo_lat) : null,
-            geo_lng: e.geo_lng ? Number(e.geo_lng) : null,
-        }
-    }) as EventWithJoinStatus[]
-}
-
-export const getEventDetailById = async ({params: {eventId}, clientMode}: SolaSdkFunctionParams<{
-    eventId: number
-}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/event/get?id=${eventId}&include_participants=true`)
-    if (!resp.ok) return null
-    const data = await resp.json()
-    const event = data.event ?? data
-    if (!event?.id) return null
-
-    // sails returns the event creator under `profile` key; map to `owner`
-    if (!event.owner && event.profile) {
-        event.owner = event.profile
-    }
-
-    if (event.tickets) {
-        event.tickets = event.tickets.map((t: any) => ({
-            ...t,
-            end_time: t.end_time ? t.end_time + 'Z' : null,
-        }))
-    }
-
-    if (event.ticket_items) {
-        event.ticket_items = event.ticket_items.map((t: any) => ({
-            ...t,
-            create_at: t.create_at ? t.create_at + 'Z' : null,
-        }))
-    }
-
-    return fixDate(event) as EventDetail
+    return `${getSdkConfig(clientMode).api}/api/v1/events/${eventId}/calendar.ics`
 }
 
 export const sendEventFeedback = async ({params, clientMode}: SolaSdkFunctionParams<{
-    eventId: number,
+    eventId: string,
     feedback: string,
     authToken: string
 }>) => {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/comment/create`, {
+    await request('/comments', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+        body: {
+            comment: {
+                comment_type: 'feedback',
+                item_type: 'Event',
+                item_id: params.eventId,
+                content: params.feedback,
+                content_type: 'text'
+            }
         },
-        body: JSON.stringify({
-            auth_token: params.authToken,
-            comment_type: 'feedback',
-            item_type: 'Event',
-            item_id: params.eventId,
-            content: params.feedback
-        })
+        authToken: params.authToken,
+        clientMode
     })
-
-    if (!res.ok) {
-        throw new Error('Failed to send feedback')
-    }
 }
 
 export const attendEventWithoutTicket = async ({params, clientMode}: SolaSdkFunctionParams<{
-    eventId: number,
+    eventId: string,
     authToken: string,
-    formAnswers?: Array<{field_id: string, value: string}>
+    formAnswers?: Array<{ field_id: string, value: string }>
 }>) => {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/event/join`, {
+    return await request<Participant>(`/events/${params.eventId}/participants`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: params.eventId,
-            auth_token: params.authToken,
+        body: {
+            participant: {status: 'attending'},
             ...(params.formAnswers ? {form_answers: params.formAnswers} : {})
-        })
+        },
+        authToken: params.authToken,
+        clientMode
     })
-
-    if (!res.ok) {
-        const data = await res.json()
-        if (data.message) {
-            throw new Error(data.message)
-        } else {
-            throw new Error('Failed to attend event')
-        }
-    }
 }
 
-export const saveEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
-    eventId: number,
-    fields: Array<{id?: string, label: string, field_type: string, required: boolean, position: number, options?: string[]}>,
+/** Leave an event: find own participant record and delete it. */
+export const cancelAttendEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
     authToken: string
 }>) => {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/form/save_event_form`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            event_id: params.eventId,
-            fields: params.fields,
-            auth_token: params.authToken
+    const me = await request<{ id: string }>('/users/me', {authToken, clientMode, noCache: true})
+    let page = 1
+    for (; ;) {
+        const res = await request<Paginated<Participant>>(`/events/${eventId}/participants`, {
+            params: {page, limit: 100}, authToken, clientMode, noCache: true
         })
-    })
-    if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.message || 'Failed to save event form')
+        const mine = res.data.find(p => p.user?.id === me.id)
+        if (mine) {
+            await request(`/events/${eventId}/participants/${mine.id}`, {
+                method: 'DELETE', authToken, clientMode
+            })
+            return
+        }
+        if (!res.meta.next_page) break
+        page = res.meta.next_page
     }
-    const data = await res.json()
-    return data.form as EventForm
+    throw new Error('You are not attending this event')
+}
+
+// --- forms (keyed by event, not form) ---
+
+export const saveEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    title?: string,
+    fields: Array<{
+        id?: string,
+        label: string,
+        field_type: string,
+        required: boolean,
+        for_admin?: boolean,
+        position: number,
+        options?: string[]
+    }>,
+    authToken: string
+}>) => {
+    return await request<EventForm>(`/events/${params.eventId}/form`, {
+        method: 'POST',
+        body: {title: params.title, fields: params.fields},
+        authToken: params.authToken,
+        clientMode
+    })
 }
 
 export const clearEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
-    eventId: number,
+    eventId: string,
     authToken: string
 }>) => {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/form/clear_event_form`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({event_id: params.eventId, auth_token: params.authToken})
+    await request(`/events/${params.eventId}/form`, {
+        method: 'DELETE',
+        authToken: params.authToken,
+        clientMode
     })
-    if (!res.ok) throw new Error('Failed to clear event form')
 }
 
 export const getEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{
-    eventId: number
+    eventId: string,
+    authToken?: string
 }>) => {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/form/get_event_form?event_id=${params.eventId}`)
-    if (!res.ok) throw new Error('Failed to get event form')
-    const data = await res.json()
-    return data.form as EventForm | null
+    const data = await request<EventForm | { form: null }>(`/events/${params.eventId}/form`, {
+        authToken: params.authToken, clientMode, noCache: true
+    })
+    if (!data || (data as any).form === null) return null
+    return data as EventForm
 }
 
 export const getFormSubmission = async ({params, clientMode}: SolaSdkFunctionParams<{
-    formId: string,
-    userId: number,
+    eventId: string,
+    userId: string,
     authToken: string
 }>) => {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/form/get_submission?form_id=${params.formId}&user_id=${params.userId}&auth_token=${params.authToken}`)
-    if (!res.ok) throw new Error('Failed to get form submission')
-    const data = await res.json()
-    return data.submission as FormSubmission | null
+    const data = await request<FormSubmission | { submission: null }>(`/events/${params.eventId}/form/submission`, {
+        params: {user_id: params.userId},
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+    if (!data || (data as any).submission === null) return null
+    return data as FormSubmission
 }
 
 export const listFormSubmissions = async ({params, clientMode}: SolaSdkFunctionParams<{
-    formId: string,
+    eventId: string,
     authToken: string
 }>) => {
-    const res = await fetch(`${getSdkConfig(clientMode).api}/form/list_submissions?form_id=${params.formId}&auth_token=${params.authToken}`)
-    if (!res.ok) throw new Error('Failed to list form submissions')
-    const data = await res.json()
-    return data.submissions as FormSubmission[]
+    return await request<FormSubmission[]>(`/events/${params.eventId}/form/submissions`, {
+        authToken: params.authToken, clientMode, noCache: true
+    })
 }
 
-const buildSaveEventProps = (eventDraft: EventDraftType) => {
-    return {
-        ...eventDraft,
-        event_roles_attributes: eventDraft.event_roles || [],
-        tickets_attributes: (eventDraft.tickets || []).map(t => {
-            return {
-                ...t,
-                payment_methods_attributes: t.payment_methods || []
-            }
-        }),
+// --- event create/update orchestration ---
+
+// Only these keys go into the {event: {...}} payload; roles/tickets/location
+// are handled by their own endpoints.
+const eventBody = (draft: EventDraftType, placeId: string | null) => ({
+    title: draft.title,
+    content: draft.content,
+    start_time: draft.start_time,
+    end_time: draft.end_time,
+    timezone: draft.timezone,
+    status: draft.status,
+    visibility: draft.visibility,
+    place_id: placeId,
+    venue_id: draft.venue_id,
+    track_id: draft.track_id,
+    meeting_url: draft.meeting_url,
+    external_url: draft.external_url,
+    max_participant: draft.max_participant,
+    require_approval: draft.require_approval,
+    category: draft.category,
+    kind: draft.kind,
+    tags: draft.tags || [],
+    requirement_tags: draft.requirement_tags || []
+})
+
+const createEventRoles = async (eventId: string, roles: EventRole[], authToken: string, clientMode?: any) => {
+    for (const role of roles) {
+        if (role._destroy) continue
+        await request(`/events/${eventId}/event_roles`, {
+            method: 'POST',
+            body: {
+                event_role: {
+                    item_id: role.item_id,
+                    item_type: role.item_type,
+                    role: role.role,
+                    email: role.email,
+                    display_name: role.display_name,
+                    image_url: role.image_url
+                }
+            },
+            authToken,
+            clientMode
+        })
+    }
+}
+
+const createEventTickets = async (eventId: string, tickets: TicketDraft[], groupId: string | null, authToken: string, clientMode?: any) => {
+    for (const t of tickets) {
+        if (t._destroy) continue
+        await request(`/events/${eventId}/tickets`, {
+            method: 'POST',
+            body: {
+                ticket: {
+                    title: t.title,
+                    content: t.content,
+                    check_badge_class_id: t.check_badge_class_id,
+                    quantity: t.quantity,
+                    end_time: t.end_time,
+                    need_approval: t.need_approval,
+                    ticket_type: t.ticket_type,
+                    group_id: groupId,
+                    tracks_allowed: t.tracks_allowed || [],
+                    payment_methods_attributes: (t.payment_methods || []).map(pm => ({
+                        chain: pm.chain,
+                        kind: pm.kind,
+                        token_name: pm.token_name,
+                        token_address: pm.token_address,
+                        receiver_address: pm.receiver_address,
+                        price: pm.price,
+                        protocol: pm.protocol,
+                        chains: pm.chains
+                    }))
+                }
+            },
+            authToken,
+            clientMode
+        })
+    }
+}
+
+/** Diff draft roles against the server's and create/update/delete to match. */
+const syncEventRoles = async (eventId: string, draftRoles: EventRole[], authToken: string, clientMode?: any) => {
+    const existing = await request<EventRole[]>(`/events/${eventId}/event_roles`, {
+        authToken, clientMode, noCache: true
+    })
+
+    for (const role of draftRoles) {
+        if (role.id && role._destroy) {
+            await request(`/events/${eventId}/event_roles/${role.id}`, {
+                method: 'DELETE', authToken, clientMode
+            })
+        } else if (role.id) {
+            await request(`/events/${eventId}/event_roles/${role.id}`, {
+                method: 'PATCH',
+                body: {
+                    event_role: {
+                        item_id: role.item_id,
+                        item_type: role.item_type,
+                        role: role.role,
+                        email: role.email,
+                        display_name: role.display_name,
+                        image_url: role.image_url
+                    }
+                },
+                authToken, clientMode
+            })
+        } else if (!role._destroy) {
+            await createEventRoles(eventId, [role], authToken, clientMode)
+        }
+    }
+
+    // Roles removed from the draft entirely (no _destroy marker) are deleted too.
+    const draftIds = new Set(draftRoles.filter(r => r.id && !r._destroy).map(r => r.id))
+    for (const role of existing) {
+        if (role.id && !draftIds.has(role.id) && !draftRoles.some(r => r.id === role.id)) {
+            await request(`/events/${eventId}/event_roles/${role.id}`, {
+                method: 'DELETE', authToken, clientMode
+            })
+        }
     }
 }
 
@@ -403,448 +464,287 @@ export const createEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
     eventDraft: EventDraftType,
     authToken: string
 }>) => {
-    const eventProps = {
-        auth_token: params.authToken,
-        ...buildSaveEventProps(params.eventDraft),
-        group_id: params.eventDraft.group_id,
-        place_id: await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode}),
-    }
+    const placeId = await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode})
 
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/create`, {
+    const event = await request<Event>('/events', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(eventProps)
+        body: {event: {...eventBody(params.eventDraft, placeId), group_id: params.eventDraft.group_id}},
+        authToken: params.authToken,
+        clientMode
     })
 
-    if (!response.ok) {
-        throw new Error('Create failed')
+    if (params.eventDraft.event_roles?.length) {
+        await createEventRoles(event.id, params.eventDraft.event_roles, params.authToken, clientMode)
+    }
+    if (params.eventDraft.tickets?.length) {
+        await createEventTickets(event.id, params.eventDraft.tickets, params.eventDraft.group_id, params.authToken, clientMode)
     }
 
-    const data = await response.json()
-
-    if (data.result === 'error') {
-        throw new Error(data.message)
-    }
-
-    return data.event as Event
-}
-
-export type GetOccupiedTimeEventProps = {
-    startTime: string,
-    endTime: string,
-    timezone: string,
-    venueId: number | null,
-    excludeEventId?: number
-}
-
-export const getOccupiedTimeEvent = async ({
-                                               params: {
-                                                   startTime,
-                                                   endTime,
-                                                   venueId,
-                                                   excludeEventId
-                                               }, clientMode
-                                           }: SolaSdkFunctionParams<GetOccupiedTimeEventProps>) => {
-    if (!venueId) return null
-
-    const qs = new URLSearchParams({venue_id: String(venueId), start_time: startTime, end_time: endTime})
-    if (excludeEventId) qs.append('exclude_event_id', String(excludeEventId))
-    const resp = await fetch(`${getSdkConfig(clientMode).api}/event/check_venue_conflict?${qs}`)
-    const data = await resp.json()
-    return (data.events?.[0] as Event) || null
-}
-
-export interface CreateRecurringEventParams {
-    eventDraft: EventDraftType,
-    authToken: string,
-    eventCount: number,
-    interval: string,
-}
-
-export const createRecurringEvent = async ({params, clientMode}: SolaSdkFunctionParams<CreateRecurringEventParams>) => {
-    const eventProps = {
-        auth_token: params.authToken,
-        event_count: params.eventCount,
-        ...buildSaveEventProps(params.eventDraft),
-        group_id: params.eventDraft.group_id,
-        timezone: params.eventDraft.timezone,
-        interval: params.interval,
-        place_id: await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode}),
-    }
-
-    const response = await fetch(`${getSdkConfig(clientMode).api}/recurring/create`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(eventProps)
-    })
-
-    if (!response.ok) {
-        throw new Error('Create failed')
-    }
-
-    const data = await response.json()
-
-    if (data.result === 'error') {
-        throw new Error(data.message)
-    }
-
-    return data.recurring as Recurring
+    return event
 }
 
 export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
     eventDraft: EventDraftType,
     authToken: string
 }>) => {
-    const eventProps = {
-        auth_token: params.authToken,
-        ...buildSaveEventProps(params.eventDraft),
-        id: params.eventDraft.id,
-        place_id: await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode}),
+    if (!params.eventDraft.id) {
+        throw new Error('eventDraft.id is required')
     }
+    const placeId = await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode})
 
-    if (params.eventDraft.badge_class_id) {
-        const setBadge = await fetch(`${getSdkConfig(clientMode).api}/event/set_badge`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: params.eventDraft.id,
-                badge_class_id: params.eventDraft.badge_class_id,
-                auth_token: params.authToken,
-            })
-        })
-
-        if (!setBadge.ok) {
-            throw new Error('Failed to set badge ' + 'code: ' + setBadge.status)
-        }
-        const badgeData = await setBadge.json()
-
-        if (badgeData.result === 'error') {
-            throw new Error(badgeData.message)
-        }
-    }
-
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/update`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(eventProps)
+    const event = await request<Event>(`/events/${params.eventDraft.id}`, {
+        method: 'PATCH',
+        body: {event: eventBody(params.eventDraft, placeId)},
+        authToken: params.authToken,
+        clientMode
     })
 
-    if (!response.ok) {
-        try {
-            const errorData = await response.json()
-            throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
-        } catch (e) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-        }
+    if (params.eventDraft.event_roles) {
+        await syncEventRoles(event.id, params.eventDraft.event_roles, params.authToken, clientMode)
+    }
+    // Tickets: soon only exposes create (no update/delete endpoint yet) —
+    // create the drafts that don't exist server-side.
+    const newTickets = (params.eventDraft.tickets || []).filter(t => !t.id && !t._destroy)
+    if (newTickets.length) {
+        await createEventTickets(event.id, newTickets, params.eventDraft.group_id ?? null, params.authToken, clientMode)
     }
 
-    const data = await response.json()
-
-    if (data.result === 'error') {
-        throw new Error(data.message)
-    }
-
-    return data.event as Event
+    return event
 }
 
+/** Soft-cancels the event (status → cancelled; attendees get a CANCEL .ics). */
 export const cancelEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
-    eventId: number,
+    eventId: string,
     authToken: string
 }>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/unpublish`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: eventId,
-            auth_token: authToken
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error('Failed to cancel event')
-    }
-
-    const data = await response.json()
-    if (data.result !== 'ok') {
-        throw new Error(data.message)
-    }
+    await request(`/events/${eventId}`, {method: 'DELETE', authToken, clientMode})
 }
 
-export const cancelAttendEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
-    eventId: number,
-    authToken: string
-}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/cancel`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: eventId,
-            auth_token: authToken
-        })
-    })
+// --- venue conflict ---
 
-    if (!response.ok) {
-        throw new Error('Failed to cancel attend event')
-    }
-
-    const data = await response.json()
-    return data.participant as Participant
+export type GetOccupiedTimeEventProps = {
+    startTime: string,
+    endTime: string,
+    timezone: string,
+    venueId: string | null,
+    excludeEventId?: string
 }
 
-type CheckInEventForParticipantParams = {
+export const getOccupiedTimeEvent = async ({
+    params: {startTime, endTime, venueId, excludeEventId},
+    clientMode
+}: SolaSdkFunctionParams<GetOccupiedTimeEventProps>) => {
+    if (!venueId) return null
+    const data = await request<{ event: Event | null }>(`/venues/${venueId}/conflict`, {
+        params: {start_time: startTime, end_time: endTime, exclude_event_id: excludeEventId},
+        clientMode,
+        noCache: true
+    })
+    return data.event
+}
+
+// --- participant management ---
+
+export const checkInEventForParticipant = async ({params, clientMode}: SolaSdkFunctionParams<{
     authToken: string,
-    eventId: number,
-    participantProfileId: number
-}
-
-export const checkInEventForParticipant = async ({
-                                                     params,
-                                                     clientMode
-                                                 }: SolaSdkFunctionParams<CheckInEventForParticipantParams>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/check`, {
+    eventId: string,
+    userId: string
+}>) => {
+    return await request<Participant>(`/events/${params.eventId}/participants/check_in`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            auth_token: params.authToken,
-            id: params.eventId,
-            profile_id: params.participantProfileId
-        })
+        body: {user_id: params.userId},
+        authToken: params.authToken,
+        clientMode
     })
-
-    if (!response.ok) {
-        throw new Error('Failed to check in')
-    }
-
-    const data = await response.json()
-    return data.participant as Participant
 }
 
 export const approveParticipant = async ({params, clientMode}: SolaSdkFunctionParams<{
-    participantId: number,
+    eventId: string,
+    participantId: string,
     authToken: string
 }>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/approve_participant`, {
+    return await request<Participant>(`/events/${params.eventId}/participants/${params.participantId}/approve`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({auth_token: params.authToken, participant_id: params.participantId})
+        authToken: params.authToken,
+        clientMode
     })
-    if (!response.ok) throw new Error('Failed to approve participant')
-    const data = await response.json()
-    return data.participant as Participant
 }
 
 export const rejectParticipant = async ({params, clientMode}: SolaSdkFunctionParams<{
-    participantId: number,
+    eventId: string,
+    participantId: string,
     authToken: string
 }>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/reject_participant`, {
+    return await request<Participant>(`/events/${params.eventId}/participants/${params.participantId}/reject`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({auth_token: params.authToken, participant_id: params.participantId})
+        authToken: params.authToken,
+        clientMode
     })
-    if (!response.ok) throw new Error('Failed to reject participant')
-    const data = await response.json()
-    return data.participant as Participant
 }
 
-export const sendEventPoap = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
-    eventId: number,
-    authToken: string
-}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/send_badge`, {
+// --- recurring events ---
+
+export interface CreateRecurringEventParams {
+    eventDraft: EventDraftType,
+    authToken: string,
+    eventCount: number,
+    interval: 'day' | 'week' | 'month' | string,
+}
+
+export const createRecurringEvent = async ({params, clientMode}: SolaSdkFunctionParams<CreateRecurringEventParams>) => {
+    const placeId = await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode})
+    const d = params.eventDraft
+
+    // /recurring takes flat params (not wrapped in {event}).
+    return await request<Recurring>('/recurring', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+        body: {
+            group_id: d.group_id,
+            interval: params.interval,
+            event_count: params.eventCount,
+            timezone: d.timezone,
+            start_time: d.start_time,
+            end_time: d.end_time,
+            venue_id: d.venue_id,
+            title: d.title,
+            content: d.content,
+            status: d.status,
+            visibility: d.visibility,
+            place_id: placeId,
+            track_id: d.track_id,
+            meeting_url: d.meeting_url,
+            external_url: d.external_url,
+            max_participant: d.max_participant,
+            require_approval: d.require_approval,
+            category: d.category,
+            kind: d.kind,
+            tags: d.tags || [],
+            requirement_tags: d.requirement_tags || []
         },
-        body: JSON.stringify({
-            id: eventId,
-            auth_token: authToken
-        })
+        authToken: params.authToken,
+        clientMode
     })
-
-    if (!response.ok) {
-        throw new Error('Failed to send poap')
-    }
-}
-
-export const getEventByRecurringId = async ({params: {recurringId}, clientMode}: SolaSdkFunctionParams<{
-    recurringId: number
-}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/event/by_recurring?recurring_id=${recurringId}`)
-    if (!resp.ok) return [] as Event[]
-    const data = await resp.json()
-    return (data.events || [])
-        .map((e: Event) => fixDate(e))
-        .sort((a: Event, b: Event) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime()) as Event[]
 }
 
 export const getRecurringById = async ({params: {recurringId}, clientMode}: SolaSdkFunctionParams<{
-    recurringId: number
+    recurringId: string
 }>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/recurring/get?id=${recurringId}`)
-    if (!resp.ok) return null
-    const data = await resp.json()
-    return (data.recurring as Recurring) || null
+    return await requestOrNull<Recurring>(`/recurring/${recurringId}`, {clientMode, noCache: true})
+}
+
+export const getEventByRecurringId = async ({params: {recurringId}, clientMode}: SolaSdkFunctionParams<{
+    recurringId: string
+}>) => {
+    const recurring = await getRecurringById({params: {recurringId}, clientMode})
+    return (recurring?.events || [])
+        .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
 }
 
 export type UpdateRecurringEventProps = {
     eventDraft: EventDraftType,
-    recurringId: number,
+    recurringId: string,
     authToken: string,
-    afterEventId?: number
+    afterEventId?: string
     startTimeDiff: number
     endTimeDiff: number
 }
 
 export const updateRecurringEvent = async ({
-                                               params: {
-                                                   startTimeDiff,
-                                                   endTimeDiff,
-                                                   eventDraft,
-                                                   recurringId,
-                                                   afterEventId,
-                                                   authToken
-                                               }, clientMode
-                                           }: SolaSdkFunctionParams<UpdateRecurringEventProps>) => {
-    const props = {
-        ...eventDraft,
-        event_roles_attributes: eventDraft.event_roles || [],
-        place_id: await resolvePlaceId({params: {...eventDraft, authToken}, clientMode}),
-        auth_token: authToken,
-        recurring_id: recurringId,
-        after_event_id: afterEventId,
-        selector: afterEventId ? 'after' : 'all',
-        start_time: undefined,
-        end_time: undefined,
-        start_time_diff: startTimeDiff,
-        end_time_diff: endTimeDiff
-    }
+    params: {startTimeDiff, endTimeDiff, eventDraft, recurringId, afterEventId, authToken},
+    clientMode
+}: SolaSdkFunctionParams<UpdateRecurringEventProps>) => {
+    const placeId = await resolvePlaceId({params: {...eventDraft, authToken}, clientMode})
 
-    const response = await fetch(`${getSdkConfig(clientMode).api}/recurring/update`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+    await request(`/recurring/${recurringId}`, {
+        method: 'PATCH',
+        body: {
+            selector: afterEventId ? 'after' : 'all',
+            after_event_id: afterEventId,
+            start_time_diff: startTimeDiff,
+            end_time_diff: endTimeDiff,
+            venue_id: eventDraft.venue_id,
+            title: eventDraft.title,
+            content: eventDraft.content,
+            timezone: eventDraft.timezone,
+            status: eventDraft.status,
+            visibility: eventDraft.visibility,
+            place_id: placeId,
+            track_id: eventDraft.track_id,
+            meeting_url: eventDraft.meeting_url,
+            external_url: eventDraft.external_url,
+            max_participant: eventDraft.max_participant,
+            require_approval: eventDraft.require_approval,
+            category: eventDraft.category,
+            kind: eventDraft.kind,
+            tags: eventDraft.tags || [],
+            requirement_tags: eventDraft.requirement_tags || []
         },
-        body: JSON.stringify(props)
+        authToken,
+        clientMode
     })
-
-    if (!response.ok) {
-        throw new Error('Update failed')
-    }
 }
 
 export type CancelRecurringEventProps = Omit<UpdateRecurringEventProps, 'eventDraft' | 'endTimeDiff' | 'startTimeDiff'>
 
 export const cancelRecurringEvent = async ({
-                                               params: {recurringId, afterEventId, authToken},
-                                               clientMode
-                                           }: SolaSdkFunctionParams<CancelRecurringEventProps>) => {
-    const props = {
-        auth_token: authToken,
-        recurring_id: recurringId,
-        event_id: afterEventId,
-        selector: afterEventId ? 'after' : 'all',
-    }
-
-    const response = await fetch(`${getSdkConfig(clientMode).api}/recurring/cancel_event`, {
+    params: {recurringId, afterEventId, authToken},
+    clientMode
+}: SolaSdkFunctionParams<CancelRecurringEventProps>) => {
+    await request(`/recurring/${recurringId}/cancel`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+        body: {
+            selector: afterEventId ? 'after' : 'all',
+            event_id: afterEventId
         },
-        body: JSON.stringify(props)
+        authToken,
+        clientMode
     })
-
-    if (!response.ok) {
-        throw new Error('Cancel failed')
-    }
 }
 
-export const starEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{eventId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/comment/star`, {
+// --- stars / approval ---
+
+export const starEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken: string
+}>) => {
+    await request('/comments/star', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            item_id: eventId,
-            auth_token: authToken,
-            item_type:'Event'
-        })
+        body: {item_type: 'Event', item_id: eventId},
+        authToken,
+        clientMode
     })
-
-    if (!response.ok) {
-        throw new Error('Failed to star event')
-    }
 }
 
-export const unstarEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{eventId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/comment/unstar`, {
+export const unstarEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken: string
+}>) => {
+    await request('/comments/unstar', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            item_id: eventId,
-            auth_token: authToken,
-            item_type:'Event'
-        })
+        body: {item_type: 'Event', item_id: eventId},
+        authToken,
+        clientMode
     })
-
-    if (!response.ok) {
-        throw new Error('Failed to star event')
-    }
 }
 
-export const approveEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{eventId: number, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/event/approve_event`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: eventId,
-            auth_token: authToken
-        })
+/** Group manager publishes a pending event. */
+export const approveEvent = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken: string
+}>) => {
+    await request(`/events/${eventId}/approve`, {method: 'POST', authToken, clientMode})
+}
+
+/** The events the current user is attending (is_attending flag over their groups). */
+export const getProfileAttendedEvents = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{
+    authToken: string
+}>) => {
+    const me = await request<{ id: string, name: string }>('/users/me', {authToken, clientMode, noCache: true})
+    const res = await request<Paginated<EventWithJoinStatus>>('/events', {
+        params: {attendee_id: me.id, limit: 100},
+        authToken,
+        clientMode,
+        noCache: true
     })
-
-    if (!response.ok) {
-        throw new Error('Failed to approve event')
-    }
+    return res.data
 }
-
-export const getProfileAttendedEvents = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{authToken: string}>) => {
-    const searchParams = new URLSearchParams()
-    searchParams.set('with_stars', '1')
-    searchParams.set('with_attending', '1')
-    searchParams.set("auth_token", authToken)
-    const url = `${getSdkConfig(clientMode).api}/api/event/my_attending?${searchParams.toString()}`
-    // console.log('url', url)
-    const response = await fetch(url)
-
-    if (!response.ok) {
-        throw new Error('Failed to fetch profile attended events')
-    }
-
-    const data = await response.json()
-
-    return data.events as EventWithJoinStatus[]
-
-}
-
-

@@ -1,24 +1,16 @@
 import {Profile} from '../profile'
-import {Invite, BadgeClass, InviteDetail} from '../badge'
 
+/** soon ActivityBlueprint. */
 export interface Activity {
-    id: number
-    item_class_id: number | null
-    item_id: number | null
-    item_type: string
-    data: string | null
-    initiator_id: number
-    target_id: string | null
-    target_type: string | null
+    id: string
     action: string
+    item_type: string | null
+    item_id: string | null
     has_read: boolean
+    payload: Record<string, unknown> | null
     created_at: string
-    receiver_id: number | null
 }
 
 export interface ActivityDetail extends Activity {
     initiator: Profile
-    group_invite?: InviteDetail
-    badge_class?: BadgeClass
-    memo?: string
 }

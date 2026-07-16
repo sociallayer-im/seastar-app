@@ -1,28 +1,27 @@
 import {Group} from '../group'
 
-// PopupCity is now backed directly by a Group record.
-// id, image_url, location, website, start_date, end_date come from the group itself.
-// group is self-referential (group.id === popup_city.id).
+/**
+ * PopupCity is a Group with a date range + location (no separate table).
+ * Mapped client-side from GroupBlueprint :detail / GET /discover payloads.
+ */
 export interface PopupCity {
-    id: number
-    title: string          // = group.nickname
-    handle: string         // = group.handle
+    id: string
+    title: string          // = group.nickname || group.name
+    name: string           // = group.name (slug)
     image_url: string | null
     banner_image_url: string | null
     location: string | null
     start_date: string | null
     end_date: string | null
-    website: string | null
     group_tags: string[] | null
-    group_id: number       // = id (self)
-    group: Pick<Group, 'id' | 'handle' | 'nickname' | 'image_url'>
+    group_id: string       // = id (self)
+    group: Pick<Group, 'id' | 'name' | 'nickname' | 'image_url'>
 }
 
 export interface PopupCityDraft {
     image_url: string | null
     location: string | null
-    website: string | null
     start_date: string | null
     end_date: string | null
-    group_id: number
+    group_id: string
 }

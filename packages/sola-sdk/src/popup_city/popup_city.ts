@@ -1,113 +1,92 @@
-import {ClientMode, getSdkConfig} from '../client'
-import {Event, Group, getGroupEventByHandle} from '@sola/sdk'
+import {ClientMode} from '../client'
+import {request, requestOrNull} from '../request'
 import {PopupCity, PopupCityDraft} from './types'
 import {SolaSdkFunctionParams} from '../types'
+import {Event} from '../event'
+import {Group} from '../group'
 
-export const discoverData = async ({clientMode}: {clientMode: ClientMode}) => {
-    const url = `${getSdkConfig(clientMode).api}/event/discover`
-    const response = await fetch(url)
+// GET /discover payload
+interface DiscoverPayload {
+    groups: Group[]
+    popup_cities: any[]
+    events: Event[]
+}
 
-    if (!response.ok) {
-        throw new Error('Failed to fetch:' + response.status + ' url: ' + url)
-    }
+// A group (detail view) with popup-city fields → PopupCity.
+const toPopupCity = (g: any): PopupCity => ({
+    id: g.id,
+    title: g.nickname || g.name,
+    name: g.name,
+    image_url: g.image_url ?? null,
+    banner_image_url: g.banner_image_url ?? null,
+    location: g.location ?? null,
+    start_date: g.start_date ?? null,
+    end_date: g.end_date ?? null,
+    group_tags: g.group_tags ?? null,
+    group_id: g.id,
+    group: {id: g.id, name: g.name, nickname: g.nickname, image_url: g.image_url ?? null}
+})
 
-    const data = await response.json()
+/** The homepage payload: featured groups, popup cities, upcoming events. */
+export const discoverData = async ({clientMode}: { clientMode: ClientMode }) => {
+    const data = await request<DiscoverPayload>('/discover', {clientMode, noCache: true})
 
-    const popupCities = (data.popups || []) as PopupCity[]
-    const featuredPopupCities = (data.featured_popups || []) as PopupCity[]
-
-    const popupCityMap = await getGroupEventByHandle({params: {handle: 'popup2025'}, clientMode})
+    const popupCities = (data.popup_cities || []).map(toPopupCity)
+    const featuredPopupCities = popupCities.filter(p =>
+        p.group_tags?.includes('featured') || p.group_tags?.includes(':featured'))
 
     return {
-        eventGroups: data.groups as Group[],
+        eventGroups: (data.groups || []) as Group[],
         popupCities,
         featuredPopupCities,
-        events: data.events as Event[],
-        popupCityMap
+        events: (data.events || []) as Event[],
     }
 }
 
-export const getPopupCities = async ({clientMode}: {clientMode: ClientMode}) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/popup_city/list`)
-    const data = await resp.json()
-    return (data.popup_cities || []) as PopupCity[]
+export const getPopupCities = async ({clientMode}: { clientMode: ClientMode }) => {
+    const data = await request<DiscoverPayload>('/discover', {clientMode, noCache: true})
+    return (data.popup_cities || []).map(toPopupCity)
 }
 
-export const getPopupCityById = async ({params, clientMode}: SolaSdkFunctionParams<{id: number}>) => {
-    const apiUrl = getSdkConfig(clientMode).api
-    const resp = await fetch(`${apiUrl}/popup_city/get?id=${params.id}`)
-    const data = await resp.json()
-    return (data.popup_city as PopupCity) || null
+export const getPopupCityById = async ({params, clientMode}: SolaSdkFunctionParams<{ id: string }>) => {
+    const group = await requestOrNull<any>(`/groups/${params.id}`, {clientMode, noCache: true})
+    if (!group || (!group.start_date && !group.location)) return null
+    return toPopupCity(group)
 }
 
-// Creates popup-city info on an existing group (updates group fields directly)
-export const createPopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{popupCityDraft: PopupCityDraft, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/create_popup`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            auth_token: params.authToken,
-            ...params.popupCityDraft
-        })
+/**
+ * Marks an existing group as a popup city (sets its date range + location).
+ * Requires manage rights on the group.
+ */
+export const createPopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{
+    popupCityDraft: PopupCityDraft,
+    authToken: string
+}>) => {
+    const {group_id, ...fields} = params.popupCityDraft
+    await request(`/groups/${group_id}`, {
+        method: 'PATCH',
+        body: {group: fields},
+        authToken: params.authToken,
+        clientMode
     })
-
-    if (!response.ok) {
-        throw new Error('fail to create popup-city: ' + response.statusText)
-    }
 }
 
-// Updates popup-city info on a group (id = group id)
-export const updatePopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{popupCity: PopupCity, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/update_popup`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            auth_token: params.authToken,
-            id: params.popupCity.id,
-            image_url: params.popupCity.image_url,
-            location: params.popupCity.location,
-            website: params.popupCity.website,
-            start_date: params.popupCity.start_date,
-            end_date: params.popupCity.end_date,
-        })
+/** Updates a popup city's fields (id = group id). */
+export const updatePopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{
+    popupCity: PopupCity,
+    authToken: string
+}>) => {
+    await request(`/groups/${params.popupCity.id}`, {
+        method: 'PATCH',
+        body: {
+            group: {
+                image_url: params.popupCity.image_url,
+                location: params.popupCity.location,
+                start_date: params.popupCity.start_date,
+                end_date: params.popupCity.end_date,
+            }
+        },
+        authToken: params.authToken,
+        clientMode
     })
-
-    if (!response.ok) {
-        const data = await response.json()
-        throw new Error('fail to update popup-city: ' + (data.message || response.statusText))
-    }
-}
-
-// Updates group_tags on a group (id = group id)
-export const updatePopupCityGroupTags = async ({params, clientMode}: SolaSdkFunctionParams<{popupCity: PopupCity, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/update_popup_admin`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            auth_token: params.authToken,
-            id: params.popupCity.id,
-            group_tags: params.popupCity.group_tags,
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error('fail to update popup-city group tags: ' + response.statusText)
-    }
-}
-
-// Clears popup-city fields on a group (start_date/end_date → null, removes popup tags)
-export const deletePopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{popupCity: PopupCity, authToken: string}>) => {
-    const response = await fetch(`${getSdkConfig(clientMode).api}/group/delete_popup_admin`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            auth_token: params.authToken,
-            id: params.popupCity.id,
-        })
-    })
-
-    if (!response.ok) {
-        throw new Error('fail to delete popup-city: ' + response.statusText)
-    }
 }
