@@ -1,6 +1,6 @@
 'use client'
 
-import {GroupDetail, Profile, TrackDetail, Track, updateTrackV2} from '@sola/sdk'
+import {GroupDetail, Profile, TrackDetail, Track, updateTrack} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import TrackForm from '@/app/(normal)/event/[grouphandle]/tracks/edit/[trackid]/TrackForm'
 import useModal from '@/components/client/Modal/useModal'
@@ -17,45 +17,16 @@ export default function EditTrackForm({trackDetail, lang, groupDetail}: {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const handleSave = async (track: Track, managers: Profile[], members: Profile[]) => {
+    // soon syncs track managers as a whole set (manager_ids replaces the
+    // track's admin roles); member-level roles are not persisted via the API.
+    const handleSave = async (track: Track, managers: Profile[], _members: Profile[]) => {
         const loading = showLoading()
         try {
             const authToken = getAuth()
-            const oldManagersIds = trackDetail.track_roles
-                .filter(r => r.role === 'manager')
-                .map(r => r.profile_id )
-            const oldMembersIds = trackDetail.track_roles
-                .filter(r => r.role === 'member')
-                .map(r => r.profile_id )
-            
-            const newManagersIds = managers.map(m => m.id)
-            const newMembersIds = members.map(m => m.id)
-            let addManagersIds: number[] = [], removedManagersIds: number[] = []
-            let addMembersIds: number[] = [], removeMembersIds: number[] = []       
-            
-            if(oldManagersIds.length) {
-                removedManagersIds =  oldManagersIds.filter(m => !newManagersIds.includes(m))
-            }
-
-            if(newManagersIds.length) {
-                addManagersIds = newManagersIds.filter(m => !oldManagersIds.includes(m))
-            }
-
-            if(oldMembersIds.length) {
-                removeMembersIds =  oldMembersIds.filter(m => !newMembersIds.includes(m))
-            }
-
-            if(newMembersIds.length) {
-                addMembersIds = newMembersIds.filter(m => !oldMembersIds.includes(m))
-            }
-
-            await updateTrackV2({
+            await updateTrack({
                 params: {
-                    track: track,
-                    addManagerIds: addManagersIds,
-                    removeManagerIds: removedManagersIds,
-                    addMemberIds: addMembersIds,
-                    removeMemberIds: removeMembersIds,
+                    track: {...track, id: trackDetail.id},
+                    managerIds: managers.map(m => m.id),
                     authToken: authToken!
                 },
                 clientMode: CLIENT_MODE

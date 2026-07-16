@@ -24,16 +24,16 @@ export default function WeeklyViewEventItem({event, timezone, lang}: {event: Ifr
 
     const customHostRole = event.event_roles?.find(r => r.role === 'custom_host')
     const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
-    const host: Solar.ProfileSample = customHostRole ?
+    const host = customHostRole ?
         {
             image_url: customHostRole.image_url,
-            nickname: customHostRole.nickname,
-            handle: customHostRole.nickname!,
+            nickname: customHostRole.display_name,
+            name: customHostRole.display_name || '',
             id: customHostRole.item_id!
         } : groupHostRole ? {
             image_url: groupHostRole.image_url,
-            nickname: groupHostRole.nickname,
-            handle: groupHostRole.nickname!,
+            nickname: groupHostRole.display_name,
+            name: groupHostRole.display_name || '',
             id: groupHostRole.item_id!
         } : event.owner
 
@@ -65,7 +65,7 @@ export default function WeeklyViewEventItem({event, timezone, lang}: {event: Ifr
                     style={{
                         color: getLabelColor(event.track.title)
                     }}>
-                    {event.track.tag || event.track.title}
+                    {event.track.title}
                 </div>
             }
         </div>
@@ -100,7 +100,7 @@ export default function WeeklyViewEventItem({event, timezone, lang}: {event: Ifr
                 <img src={cfImage(getAvatar(host.id, host.image_url), { width: 24, height: 24, fit: 'cover' })} width={12} height={12} className="rounded-full mr-1"
                     alt=""/>
                 <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
-                   by {host.nickname || host.handle}
+                   by {host.nickname || host.name}
                 </span>
             </div>
         </div>

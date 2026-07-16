@@ -9,7 +9,7 @@ import useModal from '@/components/client/Modal/useModal'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {Dictionary} from '@/lang'
 
-export default function ApprovalBtn({children, eventId, langPkg, ...props}: ButtonProps & { eventId: number, langPkg: Dictionary }) {
+export default function ApprovalBtn({children, eventId, langPkg, ...props}: ButtonProps & { eventId: string, langPkg: Dictionary }) {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
     const {showConfirmDialog} = useConfirmDialog()

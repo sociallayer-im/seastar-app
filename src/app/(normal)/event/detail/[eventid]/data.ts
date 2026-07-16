@@ -6,7 +6,8 @@ import {redirect} from "next/navigation"
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
     getEventDetailById,
-    getGroupDetailByHandle, getPurchasedTicketItemsByProfileHandleAndEventId, getRecurringById, getStaredEvent,
+    getEventForm,
+    getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId, getRecurringById, getStaredEvent,
     Participant,
     Recurring, Ticket
 } from '@sola/sdk'
@@ -31,19 +32,19 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const currProfile = await getCurrProfile()
 
     const eventDetail = await getEventDetailById({
-        params: {eventId: parseInt(eventid)},
+        params: {eventId: eventid},
         clientMode: CLIENT_MODE
     })
     if (!eventDetail) {
         redirect('/404')
     }
 
-    if (!eventDetail.group?.handle) {
+    if (!eventDetail.group?.name) {
         redirect('/404')
     }
 
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: eventDetail.group.handle},
+    const groupDetail = await getGroupDetailByName({
+        params: {groupName: eventDetail.group.name},
         clientMode: CLIENT_MODE
     })
     if (!groupDetail) {
@@ -68,25 +69,22 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     if (!eventDetail?.tickets?.length) {
         filteredParticipants = eventDetail.participants || []
     } else {
-        filteredParticipants = eventDetail.participants?.filter(participant => {
-            if (!participant.ticket_id) return true
-            const ticket = eventDetail.tickets?.find(t => t.id === participant.ticket_id)
-            if (!ticket || ticket.payment_methods.length === 0) {
-                return true
-            } else return participant.payment_status === 'succeeded'
-        }) || []
+        // soon's ParticipantBlueprint doesn't expose ticket_id — a paid RSVP is
+        // reflected in payment_status. Hide unpaid pending purchases.
+        filteredParticipants = eventDetail.participants?.filter(participant =>
+            !participant.payment_status || participant.payment_status === 'succeeded'
+        ) || []
     }
 
-    const currProfileAttended = !!eventDetail.participants?.find((item: Participant) => {
-        const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
-        return (!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'attending' || item.status === 'checked' || item.status === 'pending') && item.payment_status !== 'pending') // no tickets needed
-            || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'attending' || item.status === 'checked') && item.payment_status?.includes('succe')) // paid ticket
-            || (!!ticket && !!item.ticket_id && item.profile.id === currProfile?.id && (item.status === 'attending' || item.status === 'checked') && (ticket.payment_methods?.length ?? 0) === 0) // free ticket
-    })
+    const currProfileParticipant = eventDetail.participants?.find((item: Participant) =>
+        item.user.id === currProfile?.id)
 
-    const currProfileCheckedIn = eventDetail.participants?.find((item: Participant) => {
-        return item.profile.id === currProfile?.id && item.status === 'checked'
-    })
+    const currProfileAttended = !!currProfileParticipant
+        && ['attending', 'pending'].includes(currProfileParticipant.status || '')
+        && currProfileParticipant.payment_status !== 'pending'
+
+    // Check-in is recorded as register_time on the participant (was status 'checked').
+    const currProfileCheckedIn = !!currProfileParticipant && !!currProfileParticipant.register_time
 
     const isEventCreator = !!eventDetail.owner && eventDetail.owner.id === currProfile?.id
 
@@ -105,9 +103,12 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     // check if the current user can access the event
     const canAccess = (isEventOperator || canJoinEvent) && eventDetail.status !== 'cancelled' && eventDetail.status !== 'closed'
 
-    const seatingStyle = eventDetail.requirement_tags?.filter(tag => SeatingStyle.includes(tag))
-    const avNeeds = eventDetail.requirement_tags?.filter(tag => AVNeeds.includes(tag))
-    const externalCatering = eventDetail.requirement_tags?.filter(tag => ExternalCatering.includes(tag))
+    // requirement_tags is not in soon's EventBlueprint — the tags-based
+    // logistics hints only render when the backend starts emitting it.
+    const requirementTags = (eventDetail as unknown as {requirement_tags?: string[]}).requirement_tags || []
+    const seatingStyle = requirementTags.filter(tag => SeatingStyle.includes(tag))
+    const avNeeds = requirementTags.filter(tag => AVNeeds.includes(tag))
+    const externalCatering = requirementTags.filter(tag => ExternalCatering.includes(tag))
 
     let recurring: Recurring | null = null
     if (!!eventDetail.recurring_id) {
@@ -116,8 +117,9 @@ export default async function EventDetailPage(eventid: string, tab='content'){
 
     const ticketsPurchased: Ticket[] = []
     if (!!currProfile && !!eventDetail.tickets?.length) {
-        const ticketItems = await getPurchasedTicketItemsByProfileHandleAndEventId({
-            params: {profileHandle: currProfile.handle, eventId: eventDetail.id},
+        const token = await getServerSideAuth()
+        const ticketItems = await getPurchasedTicketItemsByProfileNameAndEventId({
+            params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: token!},
             clientMode: CLIENT_MODE
         })
 
@@ -137,11 +139,17 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         currProfileStarred = !!starredEvents.find(e => e.id === eventDetail.id)
     }
 
+    // The registration form is fetched separately now (EventDetail carries form_id only).
+    const form = eventDetail.form_id
+        ? await getEventForm({params: {eventId: eventDetail.id}, clientMode: CLIENT_MODE})
+        : null
+
     return {
         currProfile,
         eventDetail,
         groupDetail,
         recurring,
+        form,
         isGroupOwner,
         isGroupManager,
         isGroupMember,
@@ -170,5 +178,4 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true',
     }
 }
-
 

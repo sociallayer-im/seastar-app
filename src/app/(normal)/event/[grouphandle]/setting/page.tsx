@@ -10,15 +10,15 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
     const { lang } = await selectLang()
 
     const currMembership = currProfile
-        ? groupDetail.memberships.find(m => m.profile.id === currProfile.id)
+        ? groupDetail.memberships.find(m => m.user.id === currProfile.id)
         : undefined
-    const isManagerOrOwner = currMembership?.role === 'manager' || currMembership?.role === 'owner'
+    const isManagerOrOwner = currMembership?.role === 'admin' || currMembership?.role === 'owner'
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Group Event Setting']}</div>
             <div className="flex flex-col max-w-[800px] mx-auto">
-                <a href={`/event/${groupDetail.handle}/venues`}
+                <a href={`/event/${groupDetail.name}/venues`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
                         <div>{lang['Venues']}</div>
@@ -29,7 +29,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>
 
-                <a href={`/event/${groupDetail.handle}/tracks`}
+                <a href={`/event/${groupDetail.name}/tracks`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
                         <div>{lang['Event Programs']}</div>
@@ -40,7 +40,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>
 
-                <a href={`/event/${groupDetail.handle}/popup-city`}
+                <a href={`/event/${groupDetail.name}/popup-city`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
                         <div>{lang['Pop-up Cities']}</div>
@@ -51,18 +51,18 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>
 
-                <a href={`/event/${groupDetail.handle}/tags`}
+                <a href={`/event/${groupDetail.name}/tags`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
                         <div>{lang['Tags']}</div>
                         <div className="font-normal flex-row-item-center">
-                            <div>{groupDetail.event_tags?.length || 0}</div>
+                            <div>{groupDetail.event_tag_list?.length || 0}</div>
                             <i className="uil-arrow-right text-2xl" />
                         </div>
                     </div>
                 </a>
 
-                <a href={`/event/${groupDetail.handle}/timezone`}
+                <a href={`/event/${groupDetail.name}/timezone`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
                         <div>{lang['Timezone']}</div>
@@ -73,7 +73,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>
 
-                <a href={`/event/${groupDetail.handle}/banner`}
+                <a href={`/event/${groupDetail.name}/banner`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
                         <div>{lang['Banner']}</div>
@@ -83,7 +83,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>
 
-                <a href={`/event/${groupDetail.handle}/permission`}
+                <a href={`/event/${groupDetail.name}/permission`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
                         <div>{lang['Event Permission']}</div>
@@ -93,17 +93,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>
 
-                {isManagerOrOwner && currMembership && <div
-                    className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
-                    <div className="flex-row-item-center w-full justify-between">
-                        <div>{lang['Event Approval Notification']}</div>
-                        <AdminNotificationToggle
-                            groupId={groupDetail.id}
-                            currentValue={currMembership.admin_notification}/>
-                    </div>
-                </div>}
-
-                {isManagerOrOwner && <a href={`/event/${groupDetail.handle}/setting/email-members`}
+                {isManagerOrOwner && <a href={`/event/${groupDetail.name}/setting/email-members`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
                         <div>Email Members</div>
@@ -117,7 +107,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                 <div className="flex sm:flex-row flex-col items-center justify-end gap-3">
                     <ExportGroupEventBtn lang={lang} groupId={groupDetail.id} />
                     <ExportEventParticipantBtn lang={lang} groupId={groupDetail.id} />
-                    <a href={`https://dashboard.sola.day/event/${groupDetail.handle}`}
+                    <a href={`https://dashboard.sola.day/event/${groupDetail.name}`}
                         className={`${buttonVariants({ variant: 'secondary' })} w-full`}>
                         <div className="flex-row-item-center w-full justify-between">
                             <div>Dashboard</div>

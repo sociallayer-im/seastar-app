@@ -21,16 +21,16 @@ export default function CompactViewEventItem({event, timezone, lang, lastEvent}:
 
     const customHostRole = event.event_roles?.find(r => r.role === 'custom_host')
     const groupHostRole = event.event_roles?.find(r => r.role === 'group_host')
-    const host: Solar.ProfileSample = customHostRole ?
+    const host = customHostRole ?
         {
             image_url: customHostRole.image_url,
-            nickname: customHostRole.nickname,
-            handle: customHostRole.nickname!,
+            nickname: customHostRole.display_name,
+            name: customHostRole.display_name || '',
             id: customHostRole.item_id!
         } : groupHostRole ? {
             image_url: groupHostRole.image_url,
-            nickname: groupHostRole.nickname,
-            handle: groupHostRole.nickname!,
+            nickname: groupHostRole.display_name,
+            name: groupHostRole.display_name || '',
             id: groupHostRole.item_id!
         } : event.owner
       

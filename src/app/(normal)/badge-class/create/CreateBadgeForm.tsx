@@ -24,7 +24,8 @@ export interface CreatorOpt extends Profile {
     type: 'profile' | 'group'
 }
 
-export interface BadgeClassDraft extends BadgeClass {
+export interface BadgeClassDraft extends Partial<BadgeClass> {
+    title: string
     content: string
 }
 
@@ -42,9 +43,7 @@ export default function CreateBadgeForm({
     const {toast} = useToast()
 
     const [badgeClassDraft, setBadgeClassDraft] = useState<BadgeClassDraft>({
-        id: 0,
         title: '',
-        creator_id: currProfile.id,
         image_url: null,
         display: null,
         badge_type: badgeType,
@@ -176,7 +175,7 @@ export default function CreateBadgeForm({
                 <div className="mb-4">
                     <DropdownMenu
                         onSelect={handleSetCreator}
-                        valueKey="handle"
+                        valueKey="name"
                         options={creatorOptions}
                         value={creator}
                         renderOption={(opt, index) => <div className="flex-row-item-center" key={index}>

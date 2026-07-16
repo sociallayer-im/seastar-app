@@ -1,5 +1,5 @@
 import {redirect} from "next/navigation"
-import {getGroupDetailByHandle, PopupCity} from '@sola/sdk'
+import {getGroupDetailByName, PopupCity} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {analyzeGroupMembershipAndCheckProfilePermissions} from '@/utils'
 import {getCurrProfile} from '@/app/actions'
@@ -13,8 +13,8 @@ export interface GroupEventSettingDataProps {
 }
 
 export default async function GroupEventSettingData(props: GroupEventSettingDataProps) {
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: props.params.grouphandle},
+    const groupDetail = await getGroupDetailByName({
+        params: {groupName: props.params.grouphandle},
         clientMode: CLIENT_MODE
     })
 
@@ -36,16 +36,16 @@ export default async function GroupEventSettingData(props: GroupEventSettingData
         tracks: groupDetail.tracks,
         popupCities: groupDetail.start_date ? [{
             id: groupDetail.id,
-            title: groupDetail.nickname || groupDetail.handle,
-            handle: groupDetail.handle,
+            title: groupDetail.nickname || groupDetail.name,
+            name: groupDetail.name,
             image_url: groupDetail.image_url,
+            banner_image_url: groupDetail.banner_image_url,
             location: groupDetail.location,
             start_date: groupDetail.start_date,
             end_date: groupDetail.end_date,
-            website: groupDetail.website,
             group_tags: groupDetail.group_tags,
             group_id: groupDetail.id,
-            group: {id: groupDetail.id, handle: groupDetail.handle, nickname: groupDetail.nickname, image_url: groupDetail.image_url}
+            group: {id: groupDetail.id, name: groupDetail.name, nickname: groupDetail.nickname, image_url: groupDetail.image_url}
         } as PopupCity] : [],
         isManager
     }

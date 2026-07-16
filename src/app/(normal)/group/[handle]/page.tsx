@@ -28,9 +28,9 @@ export async function generateMetadata({params:{handle}, searchParams:{tab}}: Gr
         title: `${displayProfileName(group)} - ${lang['Group']} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
         openGraph: {
             title: `${displayProfileName(group)} - ${lang['Group']} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
-            description: group.about || undefined,
+            description: group.bio || undefined,
             type: 'website',
-            url: `https://app.sola.day/group/${group.handle}`,
+            url: `https://app.sola.day/group/${group.name}`,
             images: getAvatar(group.id, group.image_url),
         }
     }
@@ -57,13 +57,13 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                 <div className="page-width relative">
                     <div className="absolute right-3 top-3">
                         {currUserIsOwner
-                            ? <a className="flex-row-item-center hover:text-blue-500 cursor-pointer" href={`/group/${group.handle}/edit`}>
-                                <div className='text-xs'>{group.handle}</div>
+                            ? <a className="flex-row-item-center hover:text-blue-500 cursor-pointer" href={`/group/${group.name}/edit`}>
+                                <div className='text-xs'>{group.name}</div>
                                 <i className="cursor-pointer uil-cog text-lg ml-1"/>
                             </a>
-                            : <ClickToCopy text={group.handle}>
+                            : <ClickToCopy text={group.name}>
                                 <div className="flex-row-item-center hover:text-blue-500 cursor-pointer">
-                                    <div className='text-xs'>{group.handle}</div>
+                                    <div className='text-xs'>{group.name}</div>
                                     <i className="uil-copy-alt ml-1"/>
                                 </div>
                             </ClickToCopy>
@@ -75,7 +75,7 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                 <div>
                     <Avatar size={60} profile={group} className="mt-[-30px]"/>
                     <div className="flex-row-item-center my-2">
-                        <div className="font-semibold text-5">{group.nickname || group.handle}</div>
+                        <div className="font-semibold text-5">{group.nickname || group.name}</div>
                         <Badge variant="outline" className="ml-1 text-xs italic">Group</Badge>
                     </div>
                     {!!group.location &&
@@ -84,27 +84,27 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                         </div>
                     }
                     <div className="text-xs my-3">
-                        {group.about}
+                        {group.bio}
                     </div>
                     {!!group.social_links &&
                         <div tabIndex={0}
                              className="inline-block max-h-7 hover:max-h-[200px] transition-all duration-1000 overflow-hidden mb-3 cursor-pointer group">
                             <div className="flex flex-row justify-start text-xs group-hover:flex-col">
-                                {(Object.keys(group.social_links) as Array<keyof SocialMedia>)
+                                {(Object.keys(group.social_links!) as Array<keyof SocialMedia>)
                                     .map((key) => {
                                         return <div key={key}
                                                     className="flex-row-item-center grow-0 shrink-0">
                                             <div className="w-8 text-center">
-                                                <i className={`${Media_Meta[key].icon} text-lg mr-1`}/>
+                                                <i className={`${Media_Meta[key]!.icon} text-lg mr-1`}/>
                                             </div>
-                                            {Media_Meta[key].valueType === 'url' ?
-                                                <a href={group.social_links[key]!}
+                                            {Media_Meta[key]!.valueType === 'url' ?
+                                                <a href={group.social_links![key]!}
                                                    className="group-hover:inline hidden hover:underline"
-                                                   target="_blank">{group.social_links[key]}</a>
+                                                   target="_blank">{group.social_links![key]}</a>
                                                 : <a className="group-hover:inline hidden hover:underline">
                                                     <CopyText
-                                                        value={group.social_links[key]}>
-                                                        {group.social_links[key]}
+                                                        value={group.social_links![key]}>
+                                                        {group.social_links![key]}
                                                     </CopyText>
                                                 </a>
                                             }
@@ -126,12 +126,12 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                         <div className="flex flex-col gap-2">
                             {group.children.map(child => (
                                 <a key={child.id}
-                                   href={`/group/${child.handle}`}
+                                   href={`/group/${child.name}`}
                                    className="flex-row-item-center gap-2 px-3 py-2 rounded-lg bg-secondary hover:bg-gray-100 transition-colors">
                                     <Avatar size={32} profile={child}/>
                                     <div className="min-w-0">
-                                        <div className="font-medium text-sm truncate">{child.nickname || child.handle}</div>
-                                        <div className="text-xs text-gray-400">{child.memberships_count} members</div>
+                                        <div className="font-medium text-sm truncate">{child.nickname || child.name}</div>
+                                        
                                     </div>
                                 </a>
                             ))}
@@ -141,25 +141,25 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                 <div className="flex flex-col items-start flex-1 min-w-0">
                 <div className="tab-titles w-full flex-row-item-center overflow-auto">
                     <a className={`${buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                       href={`/group/${group.handle}?tab=events`}>
+                       href={`/group/${group.name}?tab=events`}>
                         <span className="font-normal">{lang['Events']}</span>
                     </a>
                     <a className={`${buttonVariants({variant: tab === 'badges' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                       href={`/group/${group.handle}?tab=badges`}>
+                       href={`/group/${group.name}?tab=badges`}>
                         <span className="font-normal"> {lang['Badges']}</span>
                     </a>
                     {(currUserIsManager || currUserIsIssuer) &&
                         <a className={`${buttonVariants({variant: tab === 'sending' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                           href={`/group/${group.handle}?tab=sending`}>
+                           href={`/group/${group.name}?tab=sending`}>
                             <span className="font-normal">{lang['Sending']}</span>
                         </a>
                     }
                     <a className={`${buttonVariants({variant: tab === 'commend' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                       href={`/group/${group.handle}?tab=commend`}>
+                       href={`/group/${group.name}?tab=commend`}>
                         <span className="font-normal">{lang['Comments']}</span>
                     </a>
                     <a className={`${buttonVariants({variant: tab === 'members' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                       href={`/group/${group.handle}?tab=members`}>
+                       href={`/group/${group.name}?tab=members`}>
                         <span className="font-normal">{lang['Members']}</span>
                     </a>
                 </div>
@@ -167,7 +167,7 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
 
                 {
                     tab === 'events' && <div className="grid grid-cols-1 gap-3 w-full">
-                        <TabEvents handle={group.handle}
+                        <TabEvents handle={group.name}
                                    canPublishEvent={canSubmitEvent}
                                    currProfile={currProfile}/>
                     </div>
@@ -176,7 +176,7 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                 {
                     tab === 'badges' && <div className="grid grid-cols-1 gap-3 w-full">
                         <TabBadges
-                            handle={group.handle}
+                            handle={group.name}
                             isMember={currUserIsMember}
                             isIssuer={currUserIsIssuer}
                             isManager={currUserIsManager}/>
@@ -197,7 +197,7 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
 
                 {
                     tab === 'sending' && <div className="grid grid-cols-1 gap-3 w-full">
-                        <TabVouchers handle={group.handle}/>
+                        <TabVouchers handle={group.name}/>
                     </div>
                 }
 

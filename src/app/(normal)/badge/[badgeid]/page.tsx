@@ -37,13 +37,13 @@ async function PublicBadge({badge, isOwner, groupCreator}: Awaited<ReturnType<ty
 
                 <div className="grid grid-cols-1 gap-3 text-sm">
                     {!!groupCreator ?
-                        <a href={`/group/${groupCreator.handle}`}
+                        <a href={`/group/${groupCreator.name}`}
                            className="whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-3">
                             <div className="font-semibold">{lang['Creator']}</div>
                             <Avatar className="mx-2" profile={groupCreator} size={24}/>
                             <div>{displayProfileName(groupCreator)}</div>
                         </a>
-                        : <a href={`/profile/${badge.creator.handle}`}
+                        : <a href={`/profile/${badge.creator.name}`}
                              className="whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-3">
                             <div className="font-semibold">{lang['Creator']}</div>
                             <Avatar className="mx-2" profile={badge.creator} size={24}/>
@@ -56,12 +56,12 @@ async function PublicBadge({badge, isOwner, groupCreator}: Awaited<ReturnType<ty
             <div className="w-full max-w-[500px] mx-auto p-3 bg-secondary rounded-lg mb-3 text-sm mt-6">
                 <div className="mb-3">
                     <div className={"font-semibold mb-1"}>{lang['Receiver']}</div>
-                    <a href={`/profile/${badge.owner.handle}`}
+                    <a href={`/profile/${badge.owner.name}`}
                        className="flex-row-item-center">
                         <img
                             className="w-6 h-6 rounded-full mr-2"
                             src={cfImage(getAvatar(badge.owner.id, badge.owner.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
-                        {badge.owner.nickname || badge.owner.handle}
+                        {badge.owner.nickname || badge.owner.name}
                     </a>
                 </div>
 
@@ -106,13 +106,13 @@ async function PrivateBadge({groupCreator, badge}: Awaited<ReturnType<typeof Bad
 
                 <div className="grid grid-cols-1 gap-3 text-sm">
                     {!!groupCreator ?
-                        <a href={`/group/${groupCreator.handle}`}
+                        <a href={`/group/${groupCreator.name}`}
                            className="whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-3">
                             <div className="font-semibold">{lang['Creator']}</div>
                             <Avatar className="mx-2" profile={groupCreator} size={24}/>
                             <div>{displayProfileName(groupCreator)}</div>
                         </a>
-                        : <a href={`/profile/${badge.creator.handle}`}
+                        : <a href={`/profile/${badge.creator.name}`}
                              className="whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-3">
                             <div className="font-semibold">{lang['Creator']}</div>
                             <Avatar className="mx-2" profile={badge.creator} size={24}/>

@@ -25,7 +25,7 @@ export default function SelectedEventHost({
     const handleSelectedHost = (host: Solar.ProfileSample | Solar.GroupSample) => {
         const eventRole: Solar.EventRole = {
             item_id : host.id,
-            nickname: host.nickname || host.handle,
+            display_name: host.nickname || host.name,
             image_url: host.image_url,
             role: 'group_host' as Solar.EventRoleType,
             item_type: 'Group',
@@ -52,7 +52,7 @@ export default function SelectedEventHost({
         value={currHost ? [currHost] : undefined}
         renderOption={(creator, index) => <div className="flex-row-item-center">
             <img src={cfImage(getAvatar(creator.id, creator.image_url), { width: 48, height: 48, fit: 'cover' })} className="w-6 h-6 rounded-full mr-2" alt=""/>
-            {creator.nickname || creator.handle}
+            {creator.nickname || creator.name}
             {index === 0
                 ? <Badge variant="ongoing" className="ml-2">{lang['Profile']}</Badge>
                 : <Badge variant="upcoming" className="ml-2">{lang['Group']}</Badge>
@@ -63,7 +63,7 @@ export default function SelectedEventHost({
             <div className="overflow-hidden whitespace-nowrap overflow-ellipsis font-normal flex-row-item-center">
                 <img className="w-6 h-6 rounded-full mr-2"
                     src={cfImage(getAvatar(currHost.id, currHost.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
-                {currHost.nickname || currHost.handle}
+                {currHost.nickname || currHost.name}
             </div>
 
             <div className="flex items-center">

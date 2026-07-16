@@ -17,7 +17,7 @@ export default function TrackList({groupDetail, lang}: { groupDetail: GroupDetai
     const {toast} = useToast()
     const {showConfirmDialog} = useConfirmDialog()
 
-    const handleRemove = async (trackId: number) => {
+    const handleRemove = async (trackId: string) => {
         showConfirmDialog({
             lang: lang,
             title: lang['Remove Program'],
@@ -55,7 +55,7 @@ export default function TrackList({groupDetail, lang}: { groupDetail: GroupDetai
                 {
                     groupDetail.tracks?.map((track, index) => {
                         return <div key={index} className="flex-row-item-center w-full">
-                            <a href={`/event/${groupDetail.handle}/tracks/edit/${track.id}`}
+                            <a href={`/event/${groupDetail.name}/tracks/edit/${track.id}`}
                                className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 justify-between`}>
                                 <div className="font-normal">{track.title}</div>
                                 <i className="uil-edit-alt"/>
@@ -67,7 +67,7 @@ export default function TrackList({groupDetail, lang}: { groupDetail: GroupDetai
                 }
             </div>
 
-            <a href={`/event/${groupDetail.handle}/tracks/create/`} className={`${buttonVariants({variant: 'secondary'})} mt-3`}>
+            <a href={`/event/${groupDetail.name}/tracks/create/`} className={`${buttonVariants({variant: 'secondary'})} mt-3`}>
                 <i className="uil-plus-circle text-lg"/>
                 {lang['Create a Program']}
             </a>

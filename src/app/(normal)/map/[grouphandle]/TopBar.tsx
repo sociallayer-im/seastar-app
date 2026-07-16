@@ -87,20 +87,20 @@ export default function TopBar({groupDetail, lang, markerCategory}: {
             variant: markerCategory ? 'white' : 'normal',
             size: 'sm'
         })} bg-background ml-3 text-sm`}
-           href={`/map/${groupDetail.handle}/event`}
+           href={`/map/${groupDetail.name}/event`}
         >{lang['Events']}</a>
 
         <a className={`${buttonVariants({
             variant: markerCategory === 'all' ? 'normal' : 'white',
             size: 'sm'
         })} bg-background ml-3 text-sm`}
-           href={`/map/${groupDetail.handle}/marker`}
+           href={`/map/${groupDetail.name}/marker`}
         >{lang['All Markers']}</a>
 
         {MARKER_TYPES.map((type, i) => {
             return <a key={i}
                       id={`category-${type.label}`}
-                      href={`/map/${groupDetail.handle}/marker?category=${encodeURIComponent(type.label)}`}
+                      href={`/map/${groupDetail.name}/marker?category=${encodeURIComponent(type.label)}`}
                       className={`${buttonVariants({
                           variant: markerCategory === type.label ? 'normal' : 'white',
                           size: 'sm'
@@ -140,7 +140,7 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
             })
 
             setTimeout(() => {
-                window.location.href = `../../event/[grouphandle]/map/${groupDetail.handle}/marker`
+                window.location.href = `../../event/[grouphandle]/map/${groupDetail.name}/marker`
             }, 2000)
         } catch (e: unknown) {
             console.error(e)

@@ -12,7 +12,7 @@ import DialogEditSocialMedia from "@/components/client/DialogEditSocialMedia"
 import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {Switch} from "@/components/shadcn/Switch"
-import {Group, GroupDetail, updateGroup, Membership, freezeGroup, getGroupDetailByHandle} from '@sola/sdk'
+import {Group, GroupDetail, updateGroup, Membership, freezeGroup, getGroupDetailByName} from '@sola/sdk'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
@@ -30,7 +30,7 @@ export interface EditProfileProps {
 export default function EditProfile({group, lang, isManager, isOwner, members, currProfileHandle}: EditProfileProps) {
     const [newGroup, setNewGroup] = useState<GroupDetail>(group)
     const [parentGroup, setParentGroup] = useState<Group | null>(group.parent || null)
-    const [parentHandleInput, setParentHandleInput] = useState(group.parent?.handle || '')
+    const [parentHandleInput, setParentHandleInput] = useState(group.parent?.name || '')
     const [parentSearching, setParentSearching] = useState(false)
     const {uploadAvatar} = useUploadAvatar()
     const {openModal, showLoading, closeModal} = useModal()
@@ -38,7 +38,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
     const {toast} = useToast()
 
     const memberCount = members.filter(m => m.role !== 'owner').length
-    const managerCount = members.filter(m => m.role === 'manager').length
+    const managerCount = members.filter(m => m.role === 'admin').length
 
     const enableGoogleMap = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true'
 
@@ -50,8 +50,8 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
         }
         setParentSearching(true)
         try {
-            const found = await getGroupDetailByHandle({
-                params: {groupHandle: parentHandleInput.trim()},
+            const found = await getGroupDetailByName({
+                params: {groupName: parentHandleInput.trim()},
                 clientMode: CLIENT_MODE
             })
             if (!found) {
@@ -77,7 +77,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
         setNewGroup({...newGroup, parent_id: null})
     }
 
-    const showEditSocialMedia = (type: keyof Solar.SocialMedia, value?: string) => {
+    const showEditSocialMedia = (type: keyof NonNullable<GroupDetail['social_links']>, value?: string) => {
         openModal({
             content: (close) => <DialogEditSocialMedia
                 lang={lang}
@@ -110,7 +110,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                 clientMode: CLIENT_MODE
             })
             toast({title: 'Group updated'})
-            window.location.href = '/group/' + newGroup.handle
+            window.location.href = '/group/' + newGroup.name
         } catch (e: unknown) {
             console.error('[EditGroup]: ', e)
             toast({title: e instanceof Error ? e.message : 'Failed to update Group', variant: 'destructive'})
@@ -185,24 +185,13 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                            className="w-full mb-4"/>
 
                     <div className="font-semibold pb-2">{lang['Bio']}</div>
-                    <Textarea value={newGroup.about || ''}
+                    <Textarea value={newGroup.bio || ''}
                               placeholder={lang['Bio']}
                               onChange={e => {
-                                  setNewGroup({...newGroup, about: e.target.value})
+                                  setNewGroup({...newGroup, bio: e.target.value})
                               }}
                               className="min-h-[120px]"
                     />
-
-                    <div className="mt-6">
-                        <div className="font-semibold pb-2">Ticket Purchase Link</div>
-                        <Input value={newGroup.ticket_link || ''}
-                               placeholder="https://..."
-                               onChange={e => setNewGroup({...newGroup, ticket_link: e.target.value || null})}
-                               className="w-full mb-1"/>
-                        <div className="text-xs text-gray-400 mb-4">
-                            When set, members-only events will show a &quot;Purchase ticket or join community&quot; prompt with this link for users who cannot access the event.
-                        </div>
-                    </div>
 
                     <div className="mt-6">
                         <div className="font-semibold pb-2">Parent Group</div>
@@ -210,11 +199,11 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                             ? <div className="flex-row-item-center justify-between rounded-lg px-3 h-[3rem] bg-secondary mb-3">
                                 <div className="flex-row-item-center">
                                     <Avatar profile={parentGroup} size={28} className="mr-2"/>
-                                    <a href={`/group/${parentGroup.handle}`}
+                                    <a href={`/group/${parentGroup.name}`}
                                        className="font-medium hover:underline">
-                                        {parentGroup.nickname || parentGroup.handle}
+                                        {parentGroup.nickname || parentGroup.name}
                                     </a>
-                                    <span className="text-xs text-gray-400 ml-2">@{parentGroup.handle}</span>
+                                    <span className="text-xs text-gray-400 ml-2">@{parentGroup.name}</span>
                                 </div>
                                 <Button size="xs" variant="normal" onClick={handleClearParent}>Remove</Button>
                             </div>
@@ -235,7 +224,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
 
                     <div className="mt-6">
                         <div className="font-semibold pb-2">Group member Setting</div>
-                        <a href={`/group/${group.handle}/management/member`}
+                        <a href={`/group/${group.name}/management/member`}
                            className={`${buttonVariants({variant: 'secondary'})} w-full mb-3`}>
                             <div className="flex-row-item-center w-full justify-between">
                                 <div>Members</div>
@@ -245,7 +234,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                                 </div>
                             </div>
                         </a>
-                        <a href={`/group/${group.handle}/management/manager`}
+                        <a href={`/group/${group.name}/management/manager`}
                            className={`${buttonVariants({variant: 'secondary'})} w-full`}>
                             <div className="flex-row-item-center w-full justify-between">
                                 <div>Managers</div>
@@ -257,22 +246,6 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                         </a>
                     </div>
 
-                    <div className="flex-row-item-center justify-between mt-6">
-                        <div className="font-semibold">Enable Event</div>
-                        <Switch checked={newGroup.event_enabled}
-                                onClick={() => setNewGroup({...newGroup, event_enabled: !newGroup.event_enabled})}
-                        />
-                    </div>
-
-                    {enableGoogleMap &&
-                        <div className="flex-row-item-center justify-between mt-6">
-                            <div className="font-semibold">Enable Map</div>
-                            <Switch checked={newGroup.map_enabled}
-                                    onClick={() => setNewGroup({...newGroup, map_enabled: !newGroup.map_enabled})}
-                            />
-                        </div>
-                    }
-
                 </div>
 
                 <div className="flex-1 mt-6">
@@ -283,9 +256,9 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                                         className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
                                     <div className="w-9 flex flex-row justify-center">
-                                        <i className={`${Media_Meta[key].icon} !text-lg`}/>
+                                        <i className={`${Media_Meta[key]!.icon} !text-lg`}/>
                                     </div>
-                                    <span>{Media_Meta[key].label}</span>
+                                    <span>{Media_Meta[key]!.label}</span>
                                 </div>
                                 <div>
                                     {

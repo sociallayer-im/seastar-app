@@ -1,19 +1,22 @@
 'use client'
 
 import {Dictionary} from '@/lang'
-import {VenueDetail} from '@sola/sdk'
+import {Venue} from '@sola/sdk'
+
+// Group detail embeds the light Venue view; images/availabilities are optional extras.
+type VenueCardVenue = Venue & {image_urls?: string[], availabilities?: unknown[]}
 import {buttonVariants, Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
 import DialogVenue from '@/components/client/DialogVenue'
-import {cfImage, formatVenueDate} from '@/utils'
+import {cfImage} from '@/utils'
 
 
 interface VenueCardProps {
-    venue: VenueDetail
+    venue: VenueCardVenue
     lang: Dictionary
     groupHandle: string
     isManager?: boolean
-    onRemove: (venueId: number) => void
+    onRemove: (venueId: string) => void
 }
 
 export default function VenueCard({venue, lang, groupHandle, onRemove, isManager}: VenueCardProps) {
@@ -25,7 +28,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
             content: (close) => <DialogVenue
                 close={close!}
                 groupHandle={groupHandle}
-                venue={venue}
+                venue={venue as unknown as import('@sola/sdk').VenueDetail}
                 lang={lang}
                 isManager={isManager}/>
         })
@@ -36,7 +39,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
              className="bg-white rounded-lg shadow p-6 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
             <div className="flex gap-6 sm:flex-row flex-col">
                 <div className="flex-1 order-2 sm:order-1">
-                    <h2 className="font-semibold mb-1">{venue.title}</h2>
+                    <h2 className="font-semibold mb-1">{venue.name}</h2>
                     <div className="text-gray-500">{venue.about}</div>
 
                     <div className="space-y-1 text-sm mt-6">
@@ -45,12 +48,8 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
                             <span>{venue.capacity || lang['Unlimited']}</span>
                         </div>
                         <div className="flex">
-                            <span className="mr-1">Available Date:</span>
-                            <span>{formatVenueDate(venue, lang)}</span>
-                        </div>
-                        <div className="flex">
                             <span className="mr-1">Address:</span>
-                            <span>{venue.formatted_address || ''}</span>
+                            <span>{venue.about || ''}</span>
                         </div>
                     </div>
                 </div>
@@ -58,7 +57,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
                     <div className="w-[140px] h-[140px] rounded-lg overflow-hidden flex-shrink-0  order-1 sm:order-2">
                         <img
                             src={cfImage(venue.image_urls[0], { width: 400, height: 300, fit: 'cover' })}
-                            alt={venue.title}
+                            alt={venue.name}
                             className="w-full h-full object-cover"
                         />
                     </div>

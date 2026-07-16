@@ -2,7 +2,7 @@
 
 import { Dictionary } from '@/lang'
 import { createVenue, GroupDetail, VenueDetail } from '@sola/sdk'
-import VenueForm from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/VenueForm'
+import VenueForm, { VenueDraft } from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/VenueForm'
 import useModal from '@/components/client/Modal/useModal'
 import { useToast } from '@/components/shadcn/Toast/use-toast'
 import { getAuth } from '@/utils'
@@ -19,20 +19,20 @@ export default function CreateVenueForm({ lang, venueDetail, groupDetail }: Crea
     const { showLoading, closeModal } = useModal()
     const { toast } = useToast()
 
-    const handleCreate = async (venue: VenueDetail) => {
+    const handleCreate = async (venue: VenueDraft) => {
         const loading = showLoading()
         try {
             const authToken = getAuth()
             await createVenue({
                 params: {
-                    venue: venue,
+                    venue: { ...venue, group_id: groupDetail.id },
                     authToken: authToken!
                 },
                 clientMode: CLIENT_MODE
             })
             toast({ title: lang['Create successful'], variant: 'success' })
             setTimeout(() => {
-                window.location.href = `/event/${groupDetail.handle}/venues`
+                window.location.href = `/event/${groupDetail.name}/venues`
             }, 2000)
         } catch (e: unknown) {
             console.error(e)

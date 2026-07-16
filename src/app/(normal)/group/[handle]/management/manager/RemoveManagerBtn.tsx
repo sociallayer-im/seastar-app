@@ -9,8 +9,8 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {CLIENT_MODE} from '@/app/config'
 
 export interface RemoveManagerBtnProps {
-    profileId: number,
-    groupId: number,
+    profileId: string,
+    groupId: string,
     lang: Dictionary
 }
 

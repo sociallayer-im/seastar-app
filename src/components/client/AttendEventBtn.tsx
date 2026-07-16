@@ -11,7 +11,7 @@ import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {useState} from 'react'
 
 export default function AttendEventBtn({eventId, lang, className, onAttended, form, requireApproval}: {
-    eventId: number,
+    eventId: string,
     lang: Dictionary,
     className?: string
     onAttended?: () => void

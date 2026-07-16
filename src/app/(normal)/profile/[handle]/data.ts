@@ -1,7 +1,7 @@
 import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import {redirect} from "next/navigation"
 import {pickSearchParam} from "@/utils"
-import {type ProfileDetail,  getProfileDetailByHandle, getProfileDetailByAuth} from '@sola/sdk'
+import {type ProfileDetail, getProfileDetailByName, getProfileDetailByAuth} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {getServerSideAuth} from '@/app/actions'
 
@@ -27,8 +27,8 @@ export interface ProfileData {
 }
 
 export async function ProfileData(handle: string, tab='events'): Promise<ProfileData> {
-    const profileDetail = await getProfileDetailByHandle({
-        params: {handle: handle},
+    const profileDetail = await getProfileDetailByName({
+        params: {name: handle},
         clientMode: CLIENT_MODE
     })
 

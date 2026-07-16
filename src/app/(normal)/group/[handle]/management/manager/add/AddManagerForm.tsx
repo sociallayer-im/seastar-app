@@ -48,7 +48,7 @@ export default function AddManagerForm({lang, members, group}: AddManagerFormPro
 
             await addManager({
                 params: {
-                    profileId: selected[0]!.profile.id,
+                    profileId: selected[0]!.user.id,
                     groupId: group.id,
                     authToken
                 },
@@ -79,9 +79,9 @@ export default function AddManagerForm({lang, members, group}: AddManagerFormPro
                         <div className='flex-row-item-center'>
                             <Avatar
                                 size={28}
-                                profile={member.profile}
+                                profile={member.user}
                                 className="rounded-full mr-2"/>
-                            <div>{displayProfileName(member.profile)}</div>
+                            <div>{displayProfileName(member.user)}</div>
                         </div>
                         {
                             selected.includes(member) &&

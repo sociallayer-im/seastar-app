@@ -23,7 +23,8 @@ export interface DialogEventHomeFilterProp {
 }
 
 export default function DialogEventHomeFilter({filterOpts, groupDetail, unionVenues, close, lang, onFilterChange, dialogMode='dialog'}: DialogEventHomeFilterProp) {
-    const [opts, setOpts] = useState(filterOpts)
+    // skip_multi_day is a UI-only refinement (soon's list API has no such filter)
+    const [opts, setOpts] = useState<EventListFilterProps & {skip_multi_day?: string}>(filterOpts)
 
     useEffect(() => {
         setOpts(filterOpts)
@@ -75,7 +76,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, unionVen
     const handleChangeTags = (tags?: string[]) => {
         const newOpts = {
             ...opts,
-            tags: tags?.[0] ? tags.join(',') : undefined
+            tags: tags?.[0] ? tags : undefined
         }
         setOpts(newOpts)
         dialogMode === 'modal' && onFilterChange(newOpts)
@@ -98,10 +99,10 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, unionVen
         </div>
 
         <div className="my-3 text-sm">
-            {tagsGroupNeeded(groupDetail.id) ? '' : <div className="font-semibold mb-1">{lang['Programs']}</div>}          
+            {tagsGroupNeeded(Number(groupDetail.id)) ? '' : <div className="font-semibold mb-1">{lang['Programs']}</div>}          
                 <DropdownMenu
                     options={groupDetail.tracks}
-                    renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}{opt.kind === 'private' && <i className="uil uil-lock text-sm ml-1"/>}</div>}
+                    renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}{opt.is_private && <i className="uil uil-lock text-sm ml-1"/>}</div>}
                     valueKey={'id'}
                     onSelect={(opt) => {
                         if (opt[0]) {
@@ -151,27 +152,27 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, unionVen
 
         
         <div className={`${dialogMode === 'dialog' ? 'max-h-[calc(100vh-200px)] overflow-y-auto' : ''}`}>
-            {!!groupDetail.event_tags?.length &&
+            {!!groupDetail.event_tag_list?.length &&
                 <div className="my-3 text-sm">
-                    {tagsGroupNeeded(groupDetail.id) ? '' : <div className="font-semibold mb-2">{lang['Tags']}</div>}
+                    {tagsGroupNeeded(Number(groupDetail.id)) ? '' : <div className="font-semibold mb-2">{lang['Tags']}</div>}
                     <div className="my-2">
-                        {tagsGroupNeeded(groupDetail.id) ?
+                        {tagsGroupNeeded(Number(groupDetail.id)) ?
                             <TagGroupsFilter
                                 lang={lang}
                                 onSelected={(tags) => {
                                     handleChangeTags(tags)
                                 }}
                                 multiple={true}
-                                values={opts.tags ? opts.tags.split(',') : []}
-                                tags={groupDetail.event_tags || []}/>
+                                values={opts.tags || []}
+                                tags={groupDetail.event_tag_list || []}/>
                                 :   <TagsFilter
                                 lang={lang}
                                 onSelected={(tags) => {
                                     handleChangeTags(tags)
                                 }}
                                 multiple={true}
-                                values={opts.tags ? opts.tags.split(',') : []}
-                                tags={groupDetail.event_tags || []}/>
+                                values={opts.tags || []}
+                                tags={groupDetail.event_tag_list || []}/>
                         }
                     
                     </div>
@@ -220,7 +221,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, unionVen
                 <div className="font-semibold mb-1">{lang['Venues']}</div>
                 <DropdownMenu
                     options={[...groupDetail.venues, ...unionVenues]}
-                    renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.title}</div>}
+                    renderOption={opt => <div className="max-w-[274px] line-clamp-1">{opt!.name}</div>}
                     valueKey={'id'}
                     onSelect={(opt) => {
                         if (opt[0]) {
@@ -237,7 +238,7 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, unionVen
                     <Input
                         type="text"
                         readOnly
-                        value={[...groupDetail.venues, ...unionVenues].find((v => v.id.toString() === opts.venue_id))?.title || lang['All Venues']}
+                        value={[...groupDetail.venues, ...unionVenues].find((v => v.id.toString() === opts.venue_id))?.name || lang['All Venues']}
                         className="cursor-pointer w-full"
                         endAdornment={<i className="uil-angle-down text-lg"/>}
                     />

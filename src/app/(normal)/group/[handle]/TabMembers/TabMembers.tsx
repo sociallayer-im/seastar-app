@@ -27,14 +27,14 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
     const [searchKeyword, setSearchKeyword] = useState('')
 
     let ManagementOptions = [
-        {label: lang['Member Management'], url: `/group/${group.handle}/management/member`},
+        {label: lang['Member Management'], url: `/group/${group.name}/management/member`},
     ]
 
     if (isOwner) {
         ManagementOptions = [
             ...ManagementOptions,
-            {label: lang['Manager Management'], url: `/group/${group.handle}/management/manager`},
-            {label: lang['Transfer Owner'], url: `/group/${group.handle}/management/transfer-owner`}
+            {label: lang['Manager Management'], url: `/group/${group.name}/management/manager`},
+            {label: lang['Transfer Owner'], url: `/group/${group.name}/management/transfer-owner`}
         ]
     }
 
@@ -42,8 +42,8 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
         const keyword = searchKeyword.toLowerCase().trim()
         if (!searchKeyword) return members
         return members.filter(m => {
-            return m.profile.nickname?.toLowerCase().includes(keyword) ||
-                m.profile.handle?.toLowerCase().includes(keyword)
+            return m.user.nickname?.toLowerCase().includes(keyword) ||
+                m.user.name?.toLowerCase().includes(keyword)
         })
     }, [members, searchKeyword])
 
@@ -95,7 +95,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
             {isManager &&
                 <a
                     className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
-                    href={`/group/${group.handle}/management/invite`}>
+                    href={`/group/${group.name}/management/invite`}>
                     <i className="uil-plus-circle mr-2 text-2xl"/>
                     <div>{lang['Invite Member']}</div>
                 </a>
@@ -104,11 +104,11 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                 memberList.map((member, i) => {
                     return <a key={i}
                               className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
-                              href={`/profile/${member.profile.handle}`}>
+                              href={`/profile/${member.user.name}`}>
                     <div className="relative mr-2">
                             <img
                                 className="w-7 h-7 rounded-full"
-                                src={cfImage(getAvatar(member.profile.id, member.profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
+                                src={cfImage(getAvatar(member.user.id, member.user.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                             {
                                 member.role === 'owner' &&
                                 <img src="/images/icon_owner.png"
@@ -116,11 +116,11 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                                      alt=""/>
                             }
                         </div>
-                        <div>{member.profile.nickname || member.profile.handle}</div>
+                        <div>{member.user.nickname || member.user.name}</div>
                         {member.role !== 'member' &&
                             <Badge variant={"past"} className="ml-2 capitalize">{member.role}</Badge>
                         }
-                        {currProfile?.handle === member.profile.handle &&
+                        {currProfile?.name === member.user.name &&
                             <Badge variant={"upcoming"} className="ml-2 capitalize">You</Badge>
                         }
                     </a>

@@ -1,5 +1,5 @@
 import {redirect} from "next/navigation"
-import {getProfileDetailByHandle} from '@sola/sdk'
+import {getProfileDetailByName} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 
 export interface ProfilePageParams {
@@ -12,8 +12,8 @@ export interface EditProfileDataProps {
 
 export default async function EditProfileData({params} : EditProfileDataProps) {
     const handle = params.handle
-    const profile =  await getProfileDetailByHandle({
-        params: {handle: handle},
+    const profile =  await getProfileDetailByName({
+        params: {name: handle},
         clientMode: CLIENT_MODE
     })
 

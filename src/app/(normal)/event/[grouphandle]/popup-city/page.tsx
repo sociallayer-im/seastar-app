@@ -15,7 +15,7 @@ export default async function GroupPopupCityList(props: GroupEventSettingDataPro
                 {
                     popupCities?.map((popupCity, index) => {
                         return <div key={index} className="flex-row-item-center w-full">
-                            <a href={`/event/${groupDetail.handle}/popup-city/edit/${popupCity.id}`}
+                            <a href={`/event/${groupDetail.name}/popup-city/edit/${popupCity.id}`}
                                className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 justify-between`}>
                                 <div className="font-normal">{popupCity.title}</div>
                                 <i className="uil-edit-alt"/>

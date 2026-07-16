@@ -5,7 +5,7 @@ import DropdownMenu, { DropdownTrigger } from "@/components/client/DropdownMenu"
 import { cfImage, getAvatar } from "@/utils"
 import { debounce } from 'lodash'
 import useUploadAvatar from "@/hooks/useUploadAvatar"
-import { EventDraftType, EventRole, EventRoleDetail, EventRoleType, searchProfile } from '@sola/sdk'
+import { EventDraftType, EventRole, EventRoleType, searchProfile } from '@sola/sdk'
 import { CLIENT_MODE } from '@/app/config'
 
 interface EventRoleInputProps {
@@ -19,20 +19,20 @@ interface EventRoleInputProps {
 const getEmptyRole = (role: EventRoleType) => {
     return {
         role,
-        nickname: '',
+        display_name: '',
         item_id: null,
         email: '',
         image_url: '',
-        item_type: 'Profile'
+        item_type: 'User'
     } as EventRole
 }
 
 export default function EventRoleInput({ lang, role, multiple = true, state: { event, setEvent } }: EventRoleInputProps) {
     const initList = (): EventRole[] => {
-        return event.event_roles?.filter(r => r.role === role && !(r as EventRoleDetail)._destroy)
+        return event.event_roles?.filter(r => r.role === role && !r._destroy)
             .map(r => ({
                 role: r.role,
-                nickname: r.nickname,
+                display_name: r.display_name,
                 item_id: r.item_id,
                 email: r.email,
                 image_url: r.image_url,
@@ -54,7 +54,7 @@ export default function EventRoleInput({ lang, role, multiple = true, state: { e
 
     const updateEventRole = (newList: EventRole[]) => {
         const _list = event.event_roles?.filter(r => r.role !== role) || []
-        const __list = [..._list, ...newList.filter(r => !!r.nickname), ...listToRemove]
+        const __list = [..._list, ...newList.filter(r => !!r.display_name), ...listToRemove]
         setEvent({
             ...event,
             event_roles: __list
@@ -130,7 +130,7 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
         }
         const res = await searchProfile({
             params: {
-                query: _keyword
+                keyword: _keyword
             },
             clientMode: CLIENT_MODE
         })
@@ -142,12 +142,12 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
     }, 500), [dropDownTrigger])
 
     const handleInputName = async (e: ChangeEvent<HTMLInputElement>) => {
-        !!onChange && onChange({ ...item, nickname: e.target.value })
+        !!onChange && onChange({ ...item, display_name: e.target.value })
         await handleSearch(e.target.value)
     }
 
     const handleFocus = async () => {
-        await handleSearch(item.nickname || '')
+        await handleSearch(item.display_name || '')
     }
 
     const setAvatar = async () => {
@@ -161,14 +161,14 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
     const handleSelect = (profile: Solar.ProfileSample) => {
         !!onChange && onChange({
             ...item,
-            nickname: profile.handle,
+            display_name: profile.name,
             item_id: profile.id,
             image_url: profile.image_url
         })
     }
 
     return <div className="flex-row-item-center mb-2">
-        {!!item.nickname &&
+        {!!item.display_name &&
             <div className="w-11 h-11 relative flex-shrink-0 mr-3">
                 <img className="w-11 h-11 rounded-full"
                     src={item.image_url || "/images/default_avatar/avatar_0.png"} alt="" />
@@ -189,20 +189,20 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
                     renderOption={(profile) => <div className="flex-row-item-center">
                         <img className="w-6 h-6 rounded-full mr-1"
                             src={cfImage(getAvatar(profile.id, profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt="" />
-                        {profile.handle} {profile.nickname && `(${profile.nickname})`}
+                        {profile.name} {profile.nickname && `(${profile.nickname})`}
                     </div>}
                     trigger={dropDownTrigger}>
                     <Input
                         onFocus={handleFocus}
                         onChange={handleInputName}
                         startAdornment={<i className="uil-user text-xl" />}
-                        value={item.nickname || ''}
+                        value={item.display_name || ''}
                         className="w-full"
                         placeholder={lang['Input name']} />
                 </DropdownMenu>
             </div>
 
-            {!!item.nickname && (!item.item_id || !!item.email) &&
+            {!!item.display_name && (!item.item_id || !!item.email) &&
                 <Input className="flex-1  ml-3"
                     startAdornment={<i className="uil-envelope text-xl" />}
                     value={item.email || ''}

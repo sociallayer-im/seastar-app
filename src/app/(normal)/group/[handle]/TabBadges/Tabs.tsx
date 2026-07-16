@@ -4,8 +4,9 @@ import {useState} from "react"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
 import type {Dictionary} from "@/lang"
 import NoData from "@/components/NoData"
-import {cfImage, getAvatar} from "@/utils"
+import {cfImage, getAvatar, getAuth} from "@/utils"
 import {Invite, BadgeClass, ProfileDetail, Group, getInviteDetailByInviteId} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 import Image from 'next/image'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import useModal from '@/components/client/Modal/useModal'
@@ -27,7 +28,12 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
     const {openModal} = useModal()
 
     const handleShowInvite = async(invite: Invite) => {
-        const inviteDetail = await getInviteDetailByInviteId(invite.id)
+        const authToken = getAuth()
+        if (!authToken) return
+        const inviteDetail = await getInviteDetailByInviteId({
+            params: {inviteId: invite.id, authToken},
+            clientMode: CLIENT_MODE
+        })
         
         openModal({
             content: (close) => <DialogInviteDetail

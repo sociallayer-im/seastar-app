@@ -1,5 +1,7 @@
 import {redirect} from "next/navigation"
 import {getInviteDetailByInviteId} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
+import {getServerSideAuth} from '@/app/actions'
 import {getCurrProfile} from '@/app/actions'
 
 export interface InvitePageParams {
@@ -13,7 +15,14 @@ export interface InvitePageDataProps {
 
 export default async function InvitePageData({params, searchParams}: InvitePageDataProps) {
     const {inviteid} = params
-    const inviteDetail = await getInviteDetailByInviteId(parseInt(inviteid))
+    const authToken = await getServerSideAuth()
+    if (!authToken) {
+        redirect('/404')
+    }
+    const inviteDetail = await getInviteDetailByInviteId({
+        params: {inviteId: inviteid, authToken},
+        clientMode: CLIENT_MODE
+    })
 
     if (!inviteDetail) {
         redirect('/404')

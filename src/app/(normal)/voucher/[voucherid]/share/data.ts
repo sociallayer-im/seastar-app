@@ -14,7 +14,7 @@ export interface ShareVoucherPageDataProps {
 export default async function ShareVoucherPageData({params}: ShareVoucherPageDataProps) {
     const {voucherid} = params
     const voucher = await getVoucherDetailById({
-        params: {id: parseInt(voucherid)},
+        params: {id: voucherid},
         clientMode: CLIENT_MODE
     })
 

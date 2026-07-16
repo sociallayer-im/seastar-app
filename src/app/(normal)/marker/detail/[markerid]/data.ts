@@ -15,12 +15,12 @@ export default async function MarkerDetailData({params} : MarkerDetailPageDataPr
     const {markerid} = params
 
     const markerDetail = await getMarkerById({
-        params: {markerId: parseInt(markerid)},
+        params: {markerId: markerid},
         clientMode: CLIENT_MODE
     })
     const currProfile = await getCurrProfile()
 
-    const currProfileIsCreator = markerDetail?.owner.id === currProfile?.id
+    const currProfileIsCreator = !!currProfile && markerDetail?.owner?.id === currProfile.id
 
     if (!markerDetail) {
         redirect('/404')

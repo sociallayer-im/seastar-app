@@ -6,6 +6,7 @@ import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {getAuth} from '@/utils'
 import { IframeSchedulePageSearchParams, Filter } from "./utils"
+import {Venue, Track} from "@sola/sdk"
 
 export interface ScheduleFilterLabels {
     filters?: string
@@ -68,7 +69,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         })
     }
 
-    const updateVenue = (venueId?: number) => {
+    const updateVenue = (venueId?: string) => {
         setFilters({
             ...filters,
             venueId
@@ -76,7 +77,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
         ;(document.activeElement as HTMLInputElement)?.blur()
     }
 
-    const updateTrack = (trackId?: number) => {
+    const updateTrack = (trackId?: string) => {
         setFilters({
             ...filters,
             trackId
@@ -214,17 +215,17 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                     <div className="w-full">
                         <DropdownMenu
                             value={selectedVenue ? [selectedVenue] : []}
-                            options={[{id: 0, title: 'All venue'} as Solar.Venue, ...props.list.venues]}
+                            options={[{id: '', name: 'All venue'} as Venue, ...props.list.venues]}
                             valueKey="id"
                             onSelect={(values) => {
-                                values.length && updateVenue(values[0].id)
+                                values.length && updateVenue(values[0].id || undefined)
                             }}
                             renderOption={(option) => {
-                                return <div>{option.title}</div>
+                                return <div>{option.name}</div>
                             }}>
                             <Button variant="secondary" className="w-full">
                                 <div className="flex flex-row justify-between w-full">
-                                    {selectedVenue?.title || 'All venue'}
+                                    {selectedVenue?.name || 'All venue'}
                                     <i className="uil-angle-down"/>
                                 </div>
                             </Button>
@@ -238,11 +239,11 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
                     <div className="font-semibold mt-6 mb-3">{props.labels?.tracks || 'Tracks'}</div>
                     <div className="w-full">
                         <DropdownMenu
-                            value={selectedVenue ? [selectedVenue] : []}
-                            options={[{id: 0, title: 'All Tracks'} as Solar.Venue, ...props.list.tracks]}
+                            value={selectedTrack ? [selectedTrack] : []}
+                            options={[{id: '', title: 'All Tracks'} as Track, ...props.list.tracks]}
                             valueKey="id"
                             onSelect={(values) => {
-                                values.length && updateTrack(values[0].id)
+                                values.length && updateTrack(values[0].id || undefined)
                             }}
                             renderOption={(option) => {
                                 return <div>{option.title}</div>

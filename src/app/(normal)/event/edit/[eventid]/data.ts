@@ -2,23 +2,21 @@ import {
   EventDraftType,
   getAvailableGroupsForEventHost,
   getEventDetailById,
-  getGroupDetailByHandle,
+  getGroupDetailByName,
   getRecurringById,
-  getTrackRolesByTrackIds,
   Group,
   Profile,
   Recurring,
-  getGroupDetailById,
-  VenueDetail,
+  EventDetail,
 } from "@sola/sdk"
 import { getCurrProfile } from "@/app/actions"
 import { redirect } from "next/navigation"
 import { analyzeGroupMembershipAndCheckProfilePermissions } from "@/utils"
-import { CreateEventPageDataType } from "@/app/(normal)/event/[grouphandle]/create/data"
+import { CreateEventPageDataType, filterVenuesForProfile } from "@/app/(normal)/event/[grouphandle]/create/data"
 import { CLIENT_MODE } from "@/app/config"
 
 export interface EventEditEventPageProps {
-  params: { eventid: number }
+  params: { eventid: string }
   searchParams: { event_badge?: string }
 }
 
@@ -26,9 +24,45 @@ export interface EditEventProps extends EventEditEventPageProps {
   checkPermissions?: boolean
 }
 
+/**
+ * The editor's draft holds flat ids + location fields; the API detail carries
+ * nested objects — convert here.
+ */
+function toEventDraft(eventDetail: EventDetail): EventDraftType {
+  return {
+    id: eventDetail.id,
+    title: eventDetail.title,
+    content: eventDetail.content,
+    start_time: eventDetail.start_time,
+    end_time: eventDetail.end_time,
+    timezone: eventDetail.timezone,
+    status: eventDetail.status,
+    visibility: eventDetail.visibility,
+    group_id: eventDetail.group!.id,
+    venue_id: eventDetail.venue?.id || null,
+    track_id: eventDetail.track?.id || null,
+    meeting_url: eventDetail.meeting_url,
+    external_url: eventDetail.external_url,
+    max_participant: eventDetail.max_participant,
+    require_approval: eventDetail.require_approval,
+    category: eventDetail.category,
+    kind: eventDetail.kind,
+    tags: eventDetail.tags,
+    pinned: eventDetail.pinned,
+    image_url: eventDetail.image_url,
+    recurring_id: eventDetail.recurring_id,
+    tickets: (eventDetail.tickets || []).map(t => ({ ...t, payment_methods: t.payment_methods || [] })),
+    event_roles: eventDetail.event_roles || [],
+    location: eventDetail.place?.name || null,
+    formatted_address: eventDetail.place?.address || null,
+    geo_lat: eventDetail.place?.latitude ?? null,
+    geo_lng: eventDetail.place?.longitude ?? null,
+    location_data: eventDetail.place?.data?.place_id || null,
+  }
+}
+
 export default async function EditEventData({
   params: { eventid },
-  searchParams: { event_badge },
   checkPermissions = true,
 }: EditEventProps) {
   const currProfile = await getCurrProfile()
@@ -36,22 +70,16 @@ export default async function EditEventData({
     redirect("/")
   }
 
-  let eventDetail = await getEventDetailById({
+  const eventDetail = await getEventDetailById({
     params: { eventId: eventid },
     clientMode: CLIENT_MODE,
   })
   if (!eventDetail) {
     redirect("/404")
   }
-  if (event_badge) {
-    eventDetail = {
-      ...eventDetail,
-      badge_class_id: parseInt(event_badge),
-    }
-  }
 
-  const groupDetail = await getGroupDetailByHandle({
-    params: { groupHandle: eventDetail.group.handle },
+  const groupDetail = await getGroupDetailByName({
+    params: { groupName: eventDetail.group!.name },
     clientMode: CLIENT_MODE,
   })
   if (!groupDetail) {
@@ -63,7 +91,7 @@ export default async function EditEventData({
 
   const availableGroupHost = currProfile
     ? await getAvailableGroupsForEventHost({
-        params: { profileHandle: currProfile.handle },
+        params: { profileName: currProfile.name },
         clientMode: CLIENT_MODE,
       })
     : []
@@ -82,39 +110,11 @@ export default async function EditEventData({
     })
   }
 
-  const availableTrackIds = groupDetail.tracks?.map((track) => track.id) || []
-  const trackRoles = await getTrackRolesByTrackIds({
-    params: { trackIds: availableTrackIds },
-    clientMode: CLIENT_MODE,
-  })
-  const availableVenues = (groupDetail?.venues || []).filter(
-    (venue) =>
-      isOwner ||
-      isManager ||
-      !venue.track_ids ||
-      venue.track_ids.length === 0 ||
-      venue.track_ids.some((trackId) =>
-        trackRoles
-          .filter((role) => role.track_id === trackId)
-          .some((role) => role.profile_id === currProfile?.id)
-      )
-  )
-
- let unionVenues:VenueDetail[] = []
-  if (groupDetail.venue_union) {
-    const unionGroups = await Promise.all(groupDetail.venue_union.map(async (groupId) => {
-      const group = await getGroupDetailById({
-        params: { groupId },
-        clientMode: CLIENT_MODE,
-      })
-      return group
-    }))
-    unionVenues = unionGroups.map((group) => group?.venues || []).flat()
-  }
+  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager)
 
   return {
     currProfile,
-    eventDraft: eventDetail as EventDraftType,
+    eventDraft: toEventDraft(eventDetail),
     recurring,
     groupDetail,
     memberships: groupDetail.memberships || [],
@@ -125,7 +125,6 @@ export default async function EditEventData({
     availableHost,
     tracks: groupDetail?.tracks || [],
     venues: availableVenues,
-    tags: groupDetail?.event_tags || [],
-    unionVenues
+    tags: groupDetail?.event_tag_list || [],
   } as CreateEventPageDataType
 }

@@ -12,7 +12,7 @@ const cachedGroupPageData = cache(GroupPageData)
 export async function generateMetadata({params:{handle}}: GroupDataProps) {
     const {group} = await cachedGroupPageData(handle)
     return {
-        title: `Manager Management | ${group.nickname || group.handle}`
+        title: `Manager Management | ${group.nickname || group.name}`
     }
 }
 
@@ -39,7 +39,7 @@ export default async function ManagerManagementPage({params:{handle}}: GroupData
 
             <div className="w-full max-w-[800px] mx-auto">
                 <a
-                    href={`/group/${group.handle}/management/manager/add`}
+                    href={`/group/${group.name}/management/manager/add`}
                     className="mb-3 justify-between cursor-pointer flex-row-item-center shadow rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
                     <div className="flex-row-item-center">
                         <i className="uil-plus-circle text-3xl mr-2 text-green-500"/>
@@ -50,13 +50,13 @@ export default async function ManagerManagementPage({params:{handle}}: GroupData
                     return <div key={i}
                                 className="mb-3 justify-between cursor-pointer flex-row-item-center shadow rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
                         <div className="flex-row-item-center">
-                            <Avatar size={28} className="mr-2" profile={manager.profile}/>
-                            <div>{displayProfileName(manager.profile)}</div>
+                            <Avatar size={28} className="mr-2" profile={manager.user}/>
+                            <div>{displayProfileName(manager.user)}</div>
                         </div>
                         <RemoveManagerBtn
                             lang={lang}
                             groupId={group.id}
-                            profileId={manager.profile.id}/>
+                            profileId={manager.user.id}/>
                     </div>
                 })
                 }

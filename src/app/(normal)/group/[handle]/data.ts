@@ -7,7 +7,7 @@ import {cookies} from 'next/headers'
 import {
     GroupDetail,
     Membership,
-    getGroupDetailByHandle,
+    getGroupDetailByName,
     ProfileDetail, getProfileDetailByAuth
 } from "@sola/sdk"
 import {CLIENT_MODE} from '@/app/config'
@@ -40,8 +40,8 @@ export interface GroupData {
 
 export default async function GroupPageData(handle: string, tab='events'): Promise<GroupData> {
 
-    const groupsDetail = await getGroupDetailByHandle({
-        params: {groupHandle: handle},
+    const groupsDetail = await getGroupDetailByName({
+        params: {groupName: handle},
         clientMode: CLIENT_MODE
     })
 

@@ -60,7 +60,7 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
                 }
                 await acceptCodeInvite({
                     params: {
-                        groupInviteId: inviteDetail.id,
+                        groupId: inviteDetail.group.id,
                         code,
                         authToken
                     },
@@ -69,6 +69,7 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
             } else {
                 await acceptInvite({
                     params: {
+                        groupId: inviteDetail.group.id,
                         inviteId: inviteDetail.id,
                         authToken
                     },
@@ -82,7 +83,7 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
             })
 
             setTimeout(() => {
-                window.location.href = `/group/${inviteDetail.group.handle}`
+                window.location.href = `/group/${inviteDetail.group.name}`
                 close?.()
             }, 1000)
         } catch (e: unknown) {
@@ -112,7 +113,7 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
 
             await rejectInvite({
                 params: {
-                    inviteId: inviteDetail.id, authToken
+                    groupId: inviteDetail.group.id, inviteId: inviteDetail.id, authToken
                 },
                 clientMode: CLIENT_MODE
             })
@@ -169,8 +170,8 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
                     <DisplayDateTime dataTimeStr={inviteDetail.expires_at} />
                 </div>
 
-                {inviteDetail.ticket && (
-                    <TicketInfo ticket={inviteDetail.ticket} />
+                {(inviteDetail as InviteDetail & {ticket?: GroupTicket | null}).ticket && (
+                    <TicketInfo ticket={(inviteDetail as InviteDetail & {ticket?: GroupTicket | null}).ticket!} />
                 )}
             </div>
 

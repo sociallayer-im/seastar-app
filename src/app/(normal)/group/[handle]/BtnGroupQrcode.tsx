@@ -4,8 +4,9 @@ import useModal from "@/components/client/Modal/useModal"
 import {ReactNode, useRef} from "react"
 import QRcode from "@/components/client/QRcode"
 import {cfImage, getAvatar} from "@/utils"
+import {Group} from '@sola/sdk'
 
-export default function BtnGroupQrcode(props: { group: Solar.GroupSample, children: ReactNode }) {
+export default function BtnGroupQrcode(props: { group: Group, children: ReactNode }) {
     const {openModal, showLoading, closeModal} = useModal()
     const handleShowQrcode = () => {
         const loadingId = showLoading()
@@ -24,10 +25,10 @@ export default function BtnGroupQrcode(props: { group: Solar.GroupSample, childr
     </div>
 }
 
-function GroupCard(props: {group: Solar.GroupSample,  close: () => void }) {
+function GroupCard(props: {group: Group,  close: () => void }) {
     const cardRef = useRef(null)
 
-    const url = `${window.location.origin}/group/${props.group.handle}`
+    const url = `${window.location.origin}/group/${props.group.name}`
     return <div className="w-[316px] h-[486px]">
         <div className="card relative w-[316px] h-[486px]" ref={cardRef}>
             <img src="/images/qrcode_bg.png"
@@ -38,7 +39,7 @@ function GroupCard(props: {group: Solar.GroupSample,  close: () => void }) {
             <img className='avatar w-[32px] h-[32px] rounded-full block absolute left-[142px] top-[222px]'
                 src={cfImage(getAvatar(props.group.id, props.group.image_url), { width: 80, height: 80, fit: 'cover' })} alt=""/>
             <div className="absolute font-semibold text-base text-center top-[330px] leading-[22px] w-full">
-                {props.group.nickname || props.group.handle}
+                {props.group.nickname || props.group.name}
             </div>
         </div>
     </div>

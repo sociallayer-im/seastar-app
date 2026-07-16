@@ -4,10 +4,13 @@ import {useCallback, useEffect, useMemo, useState} from "react"
 import {debounce} from 'lodash'
 import {useMapsLibrary} from '@vis.gl/react-google-maps'
 import {MarkerDraft, VenueDetail} from '@sola/sdk'
+import {LegacyVenueLocation} from '@/utils'
+
+type VenueDraft = VenueDetail & LegacyVenueLocation
 import {Dictionary} from '@/lang'
 
 export interface SearchVenueLocationProps {
-    state: {draft: VenueDetail, setDraft: (draft: VenueDetail) => void}
+    state: {draft: VenueDraft, setDraft: (draft: VenueDraft) => void}
     lang: Dictionary
 
 }

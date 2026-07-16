@@ -45,12 +45,12 @@ export default function TransferOwnerForm({members, lang, group}: MemberManageme
             await transferGroup({
                 params: {
                     groupId: group.id,
-                    newOwnerHandle: selected!.profile.handle,
+                    newOwnerId: selected!.user.id,
                     authToken
                 },
                 clientMode: CLIENT_MODE
             })
-            window.location.href = `/group/${group.handle}`
+            window.location.href = `/group/${group.name}`
         } catch (e: unknown) {
             console.error(e)
             closeModal(loading)
@@ -84,11 +84,11 @@ export default function TransferOwnerForm({members, lang, group}: MemberManageme
                         <div className='flex-row-item-center'>
                             <img
                                 className="w-7 h-7 rounded-full mr-2"
-                                src={cfImage(getAvatar(member.profile.id, member.profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
-                            <div>{member.profile.nickname || member.profile.handle}</div>
+                                src={cfImage(getAvatar(member.user.id, member.user.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
+                            <div>{member.user.nickname || member.user.name}</div>
                         </div>
                         {
-                            selected?.profile.handle === member.profile.handle &&
+                            selected?.user.name === member.user.name &&
                             <i className="uil-check-circle text-2xl text-green-500"></i>
                         }
                     </div>

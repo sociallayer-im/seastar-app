@@ -58,9 +58,8 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             const newReceivers = rows.map(row => {
                 return {
                     nickname: row,
-                    id: 0,
-                    handle: '',
-                    username: '',
+                    id: '',
+                    name: '',
                     image_url: ''
                 } as Profile
             })
@@ -94,7 +93,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             },
             clientMode: CLIENT_MODE
         })
-        window.location.href = `/group/${group.handle}/management/invite/success?role=${role}&id=${newInvite.id}`
+        window.location.href = `/group/${group.name}/management/invite/success?role=${role}&id=${newInvite.id}`
     }
 
     const handleSendAccountInvite = async () => {
@@ -108,7 +107,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             setError('You are not logged in')
             return
         }
-        const handles = receivers.map(r => r.handle || r.nickname) as string[]
+        const handles = receivers.map(r => r.name || r.nickname) as string[]
         await sendInvite({
             params: {
                 groupId: group.id,
@@ -119,7 +118,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             },
             clientMode: CLIENT_MODE
         })
-        window.location.href = `/group/${group.handle}/management/invite/success?role=${role}`
+        window.location.href = `/group/${group.name}/management/invite/success?role=${role}`
     }
 
     const handleSend = async () => {

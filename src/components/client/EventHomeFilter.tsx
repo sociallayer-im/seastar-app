@@ -57,9 +57,9 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
             </a>
             {isManager &&
                 <a href="?private_event=1"
-                   className={`relative mr-4${filterOpts.private_event ? ' font-semibold text-2xl' : ''}`}>
+                   className={`relative mr-4${(filterOpts as EventListFilterProps & {private_event?: string}).private_event ? ' font-semibold text-2xl' : ''}`}>
                     {lang['Private']}
-                    {!!filterOpts.private_event &&
+                    {!!(filterOpts as EventListFilterProps & {private_event?: string}).private_event &&
                         <img src="/images/title_hightlight.png"
                              className="absolute left-0 top-0 translate-x-[-12px]"
                              alt=""/>
@@ -96,10 +96,10 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                 }
             </Button>
             <a className={`ml-3 ${buttonVariants({variant: 'outline'})}`}
-               href={`/event/${groupDetail.handle}/schedule/list`}>
+               href={`/event/${groupDetail.name}/schedule/list`}>
                 <i className="uil-calender text-lg"/>
             </a>
-            <AddToCalendarAppBtn groupHandle={groupDetail.handle} lang={lang}/>
+            <AddToCalendarAppBtn groupHandle={groupDetail.name} lang={lang}/>
         </div>
 
         {

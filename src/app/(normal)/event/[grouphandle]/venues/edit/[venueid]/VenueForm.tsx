@@ -1,6 +1,25 @@
 'use client'
 
-import { Track, VenueAvailability, VenueDetail, VenueOverride, VenueRole, VenueTimeslot, Weekday } from '@sola/sdk'
+import { Track, VenueAvailability, VenueDetail, Weekday } from '@sola/sdk'
+
+// Local UI state model: the form edits weekly timeslots + date overrides and
+// converts to/from soon's VenueAvailability at the edges. (The old SDK-level
+// VenueTimeslot/VenueOverride records no longer exist server-side; the
+// timeslot shape lives in @/utils.)
+export type VenueRole = 'all' | 'member' | 'manager'
+
+export interface VenueOverride {
+    id?: string
+    day: string
+    disabled: boolean
+    start_at: string | null
+    end_at: string | null
+    role?: string | null
+}
+
+// The form draft carries flat location fields written by SearchVenueLocation;
+// they are resolved to a place_id by the SDK write path.
+export type VenueDraft = VenueDetail & LegacyVenueLocation
 import { Dictionary } from '@/lang'
 import { Input } from '@/components/shadcn/Input'
 import { Button, buttonVariants } from '@/components/shadcn/Button'
@@ -9,7 +28,9 @@ import { useEffect, useState } from 'react'
 import {
     categorizeTimeslotByWeekDay,
     checkTimeSlotOverlapInWeekDay,
-    inValidStartEndTime
+    inValidStartEndTime,
+    VenueTimeslot,
+    LegacyVenueLocation
 } from '@/utils'
 import DatePicker from '@/components/client/DatePicker'
 import TimePicker from '@/components/client/TimePicker'
@@ -30,10 +51,10 @@ function weeklyAvailabilitiesToTimeslots(availabilities: VenueAvailability[]): V
         .filter(a => !!a.day_of_week && !a.day)
         .flatMap((a): VenueTimeslot[] => {
             if (a.intervals.length === 0) {
-                return [{ day_of_week: a.day_of_week as Weekday, disabled: true, start_at: '08:00', end_at: '20:00', role: a.role }]
+                return [{ day_of_week: a.day_of_week as Weekday, disabled: true, start_at: '08:00', end_at: '20:00', role: a.role_required || 'all' }]
             }
             return a.intervals.map(([start_at, end_at]) => ({
-                day_of_week: a.day_of_week as Weekday, disabled: false, start_at, end_at, role: a.role
+                day_of_week: a.day_of_week as Weekday, disabled: false, start_at, end_at, role: a.role_required || 'all'
             }))
         })
 }
@@ -43,12 +64,11 @@ function dateAvailabilitiesToOverrides(availabilities: VenueAvailability[]): Ven
         .filter(a => !!a.day && !a.day_of_week)
         .map(a => ({
             id: a.id,
-            venue_id: 0,
             day: a.day!,
             disabled: a.intervals.length === 0,
             start_at: a.intervals[0]?.[0] ?? null,
             end_at: a.intervals[0]?.[1] ?? null,
-            role: a.role
+            role: a.role_required
         }))
 }
 
@@ -62,7 +82,7 @@ function toAvailabilities(
             day_of_week: day,
             day: null,
             intervals: slots[0].disabled ? [] : slots.map(s => [s.start_at, s.end_at] as [string, string]),
-            role: slots[0].role
+            role_required: slots[0].role
         }))
         : []
 
@@ -71,7 +91,7 @@ function toAvailabilities(
         day_of_week: null,
         day: o.day,
         intervals: o.disabled ? [] : (o.start_at && o.end_at ? [[o.start_at, o.end_at]] as [string, string][] : []),
-        role: o.role
+        role_required: o.role
     }))
 
     return [...weekly, ...dateSpecific]
@@ -92,17 +112,17 @@ const getTargetRole = (role?: string) => {
 
 export interface VenueFormProps {
     isDashboardPage?: boolean
-    venueDetail: VenueDetail,
+    venueDetail: VenueDraft,
     tracks?: Track[]
     lang: Dictionary,
-    onConfirm?: (venue: VenueDetail) => void,
+    onConfirm?: (venue: VenueDraft) => void,
 }
 
 export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, isDashboardPage }: VenueFormProps) {
     const { editOverride } = useEditOverride()
     const { uploadImage } = useUploadImage()
 
-    const [draft, setDraft] = useState(venueDetail)
+    const [draft, setDraft] = useState<VenueDraft>(venueDetail)
     const [enableTimeslots, setEnableTimeslots] = useState(
         !!(venueDetail.availabilities?.some(a => a.day_of_week && !a.day))
     )
@@ -154,14 +174,6 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
         setTimeslots({ ...timeslots, [weekDay]: newTimeslots })
     }
 
-    const cleanStarDate = () => {
-        setDraft({ ...draft, start_date: null })
-    }
-
-    const cleanEndDate = () => {
-        setDraft({ ...draft, end_date: null })
-    }
-
     const handleConfirm = () => {
         const errMsg = document.querySelector('.err-msg')
         if (errMsg) {
@@ -169,7 +181,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
             return
         }
 
-        if (!draft.title) {
+        if (!draft.name) {
             setTitleError('Please input the name of venue')
             scrollToErrMsg()
             return
@@ -188,8 +200,6 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
         !!onConfirm && onConfirm({
             ...draft,
             availabilities: toAvailabilities(timeslots, overrides, enableTimeslots),
-            venue_timeslots: [],
-            venue_overrides: [],
             image_urls: draft.image_urls?.filter(img => !!img.trim()) || [],
             amenities: draft.amenities?.filter(amenity => !!amenity.trim()) || []
         })
@@ -236,9 +246,9 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
 
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Name of venue']}</div>
-                <Input className="w-full" value={draft.title}
+                <Input className="w-full" value={draft.name}
                     onChange={e => {
-                        setDraft({ ...draft, title: e.target.value })
+                        setDraft({ ...draft, name: e.target.value })
                     }} />
                 {!!titleError && <div className="err-msg text-red-400 mt-3">{titleError}</div>}
             </div>
@@ -323,81 +333,8 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
 
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Link (Optional)']}</div>
-                <Input className="w-full" value={draft.link || ''}
-                    onChange={(e) => setDraft({ ...draft, link: e.target.value })} />
-            </div>
-
-            <div className="mb-4">
-                <div className="font-semibold mb-1">{lang['Available Date (Optional)']}</div>
-                <div className="flex sm:flex-row flex-col flex-wrap ">
-                    <div className="flex-row-item-center mb-3 flex-1">
-                        <div className="w-16 text-center">From</div>
-                        <DatePicker initDate={draft.start_date || Dayjs().format('YYYY/MM/DD')}
-                            className={'w-full'}
-                            format={'YYYY-MM-DD'}
-                            onChange={date => {
-                                setDraft({ ...draft, start_date: date })
-                            }}>
-                            <Input className="w-full flex-1" readOnly
-                                value={draft.start_date || ''}
-                                endAdornment={!!draft.start_date &&
-                                    <i onClick={(e) => {
-                                        cleanStarDate()
-                                        e.stopPropagation()
-                                    }}
-                                        className="uil-times-circle cursor-pointer" />}
-                                placeholder={'YYYY/MM/DD'} />
-                        </DatePicker>
-                    </div>
-                    <div className="flex-row-item-center mb-3 flex-1">
-                        <div className="w-16 text-center">To</div>
-                        <DatePicker initDate={draft.end_date || Dayjs().add(1, 'month').format('YYYY/MM/DD')}
-                            className={'w-full'}
-                            format={'YYYY-MM-DD'}
-                            onChange={date => {
-                                setDraft({ ...draft, end_date: date })
-                            }}>
-                            <Input className="w-full flex-1" readOnly
-                                value={draft.end_date || ''}
-                                endAdornment={!!draft.end_date &&
-                                    <i onClick={(e) => {
-                                        cleanEndDate()
-                                        e.stopPropagation()
-                                    }}
-                                        className="uil-times-circle cursor-pointer" />}
-                                placeholder={'YYYY/MM/DD'} />
-                        </DatePicker>
-                    </div>
-                </div>
-                {inValidStartEndTime(draft.start_date, draft.end_date) &&
-                    <div className="err-msg text-sm text-red-400">
-                        {lang['Start time must be before end time']}
-                    </div>
-                }
-            </div>
-
-            <div className="mb-4">
-                <div className="font-semibold mb-1">{lang['Visibility']}</div>
-                <Button onClick={() => setDraft({ ...draft, visibility: 'all' })}
-                    variant={'secondary'} className="w-full mb-3">
-                    <div className="flex-row-item-center justify-between w-full">
-                        <div className="font-normal">Everyone</div>
-                        {(draft.visibility === 'all' || draft.visibility === 'everyone' || !draft.visibility)
-                            ? <i className="uil-check-circle text-green-400 text-2xl" />
-                            : <i className="uil-circle text-gray-300 text-2xl" />
-                        }
-                    </div>
-                </Button>
-                <Button onClick={() => setDraft({ ...draft, visibility: 'manager' })}
-                    variant={'secondary'} className='w-full mb-3'>
-                    <div className="flex-row-item-center justify-between w-full">
-                        <div className="font-normal">Manager</div>
-                        {(draft.visibility === 'manager' || !draft.visibility)
-                            ? <i className="uil-check-circle text-green-400 text-2xl" />
-                            : <i className="uil-circle text-gray-300 text-2xl" />
-                        }
-                    </div>
-                </Button>
+                <Input className="w-full" value={draft.website || ''}
+                    onChange={(e) => setDraft({ ...draft, website: e.target.value })} />
             </div>
 
             <div className="my-8 flex-row-item-center justify-between">
@@ -405,7 +342,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
                 <Switch onClick={() => {
                     setDraft({ ...draft, require_approval: !draft.require_approval })
                 }}
-                    checked={draft.require_approval} />
+                    checked={!!draft.require_approval} />
             </div>
 
             <div className='my-8'>

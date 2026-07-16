@@ -15,17 +15,17 @@ export interface EventMapProps {
     events: EventWithJoinStatus[]
     lang: Dictionary
     langType: string
-    targetEventId?: number
+    targetEventId?: string
     groupDetail: GroupDetail
 }
 
 export default function EventMap(props: EventMapProps) {
-    const eventsHasLocation = props.events.filter(event => event.geo_lat && event.geo_lng)
+    const eventsHasLocation = props.events.filter(event => event.place?.latitude && event.place?.longitude)
     const targetEvent = eventsHasLocation.find(event => event.id === props.targetEventId)
 
     // grouped event with same lat lng
     const groupedEvents = eventsHasLocation.reduce((acc: GroupedEvents, event) => {
-        const key = `${event.geo_lat}_${event.geo_lng}`
+        const key = `${event.place?.latitude}_${event.place?.longitude}`
         if (!acc[key]) {
             acc[key] = []
         }
@@ -54,7 +54,7 @@ export default function EventMap(props: EventMapProps) {
     }, [])
 
     const [currGroupEventsKey, setCurrGroupEventsKey] = useState<keyof GroupedEvents | undefined>(targetEvent
-        ? `${targetEvent.geo_lat}_${targetEvent.geo_lng}`
+        ? `${targetEvent.place?.latitude}_${targetEvent.place?.longitude}`
         : Object.keys(groupedEvents)[0] as any)
 
     useEffect(() => {
@@ -62,16 +62,16 @@ export default function EventMap(props: EventMapProps) {
     }, [currGroupEventsKey])
 
     const center = targetEvent
-        ? {lat: Number(targetEvent.geo_lat!), lng: Number(targetEvent.geo_lng!)}
+        ? {lat: Number(targetEvent.place!.latitude!), lng: Number(targetEvent.place!.longitude!)}
         : !!eventsHasLocation[0]
-            ? {lat: Number(eventsHasLocation[0]!.geo_lat!), lng: Number(eventsHasLocation[0]!.geo_lng!)}
+            ? {lat: Number(eventsHasLocation[0]!.place!.latitude!), lng: Number(eventsHasLocation[0]!.place!.longitude!)}
             : {lat: -34.397, lng: 150.644}
 
     return <div className='w-full h-[calc(100svh-48px)] relative outline-none'>
         <GoogleMap
             center={center}
             markers={Object.keys(groupedEvents).map((key: keyof typeof groupedEvents, index) => ({
-                position: {lat: Number(groupedEvents[key][0].geo_lat!), lng: Number(groupedEvents[key][0].geo_lng!)},
+                position: {lat: Number(groupedEvents[key][0].place!.latitude!), lng: Number(groupedEvents[key][0].place!.longitude!)},
                 title: `${groupedEvents[key].length}${props.lang['Upcoming Events']}`,
                 onClick: () => setCurrGroupEventsKey(key),
             } as GoogleMapMarkerProps))}

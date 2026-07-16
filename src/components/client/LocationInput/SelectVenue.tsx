@@ -6,6 +6,7 @@ import {MouseEvent, useMemo} from "react"
 import {Dictionary} from "@/lang"
 import useModal from "@/components/client/Modal/useModal"
 import DialogVenueDetail from "@/components/DialogVenueDetail"
+import {LegacyVenueLocation} from '@/utils'
 import {isEventTimeSuitable} from "@/utils"
 import {EventDraftType, VenueDetail} from '@sola/sdk'
 
@@ -24,7 +25,7 @@ export default function SelectVenue({
     const currVenue = venues.find(v => v.id === event.venue_id)
     const {openModal} = useModal()
 
-    const setVenue = (venue: VenueDetail) => {
+    const setVenue = (venue: VenueDetail & LegacyVenueLocation) => {
         if (!venue.id) {
             onSwitchToCreateLocation()
         } else {
@@ -35,7 +36,7 @@ export default function SelectVenue({
                 geo_lat: venue.geo_lat,
                 formatted_address: venue.formatted_address,
                 location_data: venue.location_data,
-                location: venue.title,
+                location: venue.name,
                 ...(venue.capacity !== undefined && {max_participant: venue.capacity})
             }
 
@@ -58,8 +59,8 @@ export default function SelectVenue({
     }
 
     const createLocationOpt = {
-        id: 0,
-        title: `<i class="uil-plus-circle text-lg"></i> ${lang['New Location']}`
+        id: '',
+        name: `<i class="uil-plus-circle text-lg"></i> ${lang['New Location']}`
     } as VenueDetail
 
     const toLink = (url: string) => {
@@ -68,7 +69,7 @@ export default function SelectVenue({
 
     const venueOpts = useMemo(() => {
         // check visibility
-        return venues.filter(v =>
+        return (venues as Array<VenueDetail & LegacyVenueLocation>).filter(v =>
             !v.visibility
             || v.visibility === 'all'
             || (v.visibility === 'manager' && isManager)
@@ -104,7 +105,7 @@ export default function SelectVenue({
                 className={`${buttonVariants({variant: 'secondary'})} w-full !justify-between items-center cursor-pointer`}>
                 <div className="overflow-hidden whitespace-nowrap overflow-ellipsis font-normal truncate max-w-[80vw]">
                     <i className="uil-location-point text-lg mr-1"/>
-                    {currVenue ? currVenue.title : lang['Select Venue']}
+                    {currVenue ? currVenue.name : lang['Select Venue']}
                 </div>
 
                 <div className="flex items-center">
@@ -132,9 +133,9 @@ export default function SelectVenue({
                 {lang['Overrides']}
                 <i className="uil-search ml-1"/>
             </Badge>}
-            {!!currVenue?.link && <Badge variant="secondary" className="mr-1 mt-2 cursor-pointer hover:brightness-95"
+            {!!currVenue?.website && <Badge variant="secondary" className="mr-1 mt-2 cursor-pointer hover:brightness-95"
                                          onClick={() => {
-                                             toLink(currVenue.link!)
+                                             toLink(currVenue.website!)
                                          }}>
                 {lang['Link']}
                 <i className="uil-link ml-1"/>
@@ -176,13 +177,13 @@ function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
 
     return <div className={`${inapplicable ? 'pointer-events-none' : ''}`}>
         <div className={`${inapplicable ? 'opacity-50' : ''}`}>
-            <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.title}}/>
+            <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.name}}/>
             <div className="text-sm text-[#999]">
                 {!!(venue.availabilities?.some(a => a.day_of_week && !a.day)) &&
                     <Badge variant="secondary" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
                 {!!(venue.availabilities?.some(a => a.day && !a.day_of_week)) &&
                     <Badge variant="secondary" className="mr-1 mt-2">{lang['Overrides']}</Badge>}
-                {!!venue.link && <Badge variant="secondary" className="mr-1 mt-2">{lang['Link']}</Badge>}
+                {!!venue.website && <Badge variant="secondary" className="mr-1 mt-2">{lang['Link']}</Badge>}
                 {!!venue.capacity &&
                     <Badge variant="secondary" className="mr-1 mt-2">{venue.capacity} {lang['Seats']}</Badge>}
                 {!!venue.require_approval &&

@@ -1,4 +1,4 @@
-import {getGroupDetailByHandle, getVenueDetailById} from '@sola/sdk'
+import {getGroupDetailByName, getVenueDetailById} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
 import {getCurrProfile} from '@/app/actions'
@@ -20,8 +20,8 @@ export interface EditVenueProps extends EditVenuePageProps {
 export default async function EditVenueData({params, checkPermissions=true} : EditVenueProps) {
     const {grouphandle, venueid} = params
 
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: grouphandle},
+    const groupDetail = await getGroupDetailByName({
+        params: {groupName: grouphandle},
         clientMode: CLIENT_MODE
     })
 
@@ -30,7 +30,7 @@ export default async function EditVenueData({params, checkPermissions=true} : Ed
     }
 
     const venueDetail = await getVenueDetailById({
-        params: {venueId: parseInt(venueid)},
+        params: {venueId: venueid},
         clientMode: CLIENT_MODE
     })
 
@@ -41,13 +41,13 @@ export default async function EditVenueData({params, checkPermissions=true} : Ed
     const currProfile = await getCurrProfile()
 
     if (!currProfile && checkPermissions) {
-        redirect(`/event/${groupDetail.handle}`)
+        redirect(`/event/${groupDetail.name}`)
     }
 
     const {isManager} = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
     if (!isManager && checkPermissions) {
-        redirect(`/event/${groupDetail.handle}`)
+        redirect(`/event/${groupDetail.name}`)
     }
 
     return {groupDetail, currProfile, venueDetail}

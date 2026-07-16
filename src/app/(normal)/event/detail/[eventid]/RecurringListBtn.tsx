@@ -11,7 +11,7 @@ import {CLIENT_MODE} from '@/app/config'
 export interface RecurringListBtnProps {
     recurring: Recurring
     lang: Dictionary
-    currEventId?: number
+    currEventId?: string
 }
 
 export default function RecurringListBtn({recurring, lang, currEventId}: RecurringListBtnProps) {
@@ -51,7 +51,7 @@ export default function RecurringListBtn({recurring, lang, currEventId}: Recurri
 
 interface DialogRecurringListProps {
     events: Event[],
-    currEventId?: number,
+    currEventId?: string,
     lang: Dictionary,
     close: () => void
 }
@@ -69,7 +69,7 @@ function DialogRecurringList({events, lang, currEventId, close}: DialogRecurring
                           href={`/event/detail/${event.id}`}
                           key={event.id}>
                     <div className="flex-row-item-center">
-                        <DisplayDateTime dataTimeStr={event.start_time} tz={event.timezone}/>
+                        <DisplayDateTime dataTimeStr={event.start_time} tz={event.timezone || undefined}/>
                     </div>
                 </a>
             })

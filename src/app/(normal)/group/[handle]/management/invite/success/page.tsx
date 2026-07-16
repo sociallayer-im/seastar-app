@@ -53,7 +53,7 @@ export default async function InviteSuccess(props: InviteSuccessDataProps) {
                     {lang["The other party has successfully joined the group"]}
                     </div>
             }
-            <InviteSuccessAction groupHandle={group.handle} lang={lang} id={inviteDetail?.id} code={inviteDetail?.receiver_address || undefined} />
+            <InviteSuccessAction groupName={group.name} lang={lang} id={inviteDetail?.id} code={inviteDetail?.receiver_address || undefined} />
         </div>
     </div>
 }

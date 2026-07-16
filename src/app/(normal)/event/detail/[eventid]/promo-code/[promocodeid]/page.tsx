@@ -62,8 +62,8 @@ export default async function PromoCodeDetail(props: PromoCodeDetailPageProps) {
                 records.map((record, i) => {
                     return <div key={i} className="flex-row-item-center border-b-[1px] py-3 justify-between">
                         <div className="flex-row-item-center mr-2">
-                            <Avatar profile={record.profile} size={24} className="mr-2"/>
-                            {displayProfileName(record.profile)}
+                            <Avatar profile={record.user!} size={24} className="mr-2"/>
+                            {displayProfileName(record.user!)}
                         </div>
                         <DisplayDateTime dataTimeStr={record.created_at!}/>
                     </div>

@@ -3,7 +3,7 @@
 import React from 'react'
 import {getAuth, shortWalletAddress} from '@/utils'
 import {Dictionary} from '@/lang'
-import {cancelAttendEvent, EventDetail, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant, getFormSubmission, listFormSubmissions, attendEventWithoutTicket, FormSubmission} from '@sola/sdk'
+import {cancelAttendEvent, EventDetail, EventForm, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant, getEventForm, getFormSubmission, listFormSubmissions, attendEventWithoutTicket, FormSubmission} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -67,7 +67,7 @@ export default function EventParticipantList({
         try {
             const authToken = getAuth()
             await approveParticipant({
-                params: {participantId: participant.id, authToken: authToken!},
+                params: {eventId: eventDetail.id, participantId: participant.id, authToken: authToken!},
                 clientMode: CLIENT_MODE
             })
             toast({description: 'Participant approved', variant: 'success'})
@@ -93,7 +93,7 @@ export default function EventParticipantList({
                 try {
                     const authToken = getAuth()
                     await rejectParticipant({
-                        params: {participantId: participant.id, authToken: authToken!},
+                        params: {eventId: eventDetail.id, participantId: participant.id, authToken: authToken!},
                         clientMode: CLIENT_MODE
                     })
                     toast({description: 'Participant rejected', variant: 'success'})
@@ -124,7 +124,7 @@ export default function EventParticipantList({
                         params: {
                             authToken: authToken!,
                             eventId: eventDetail.id,
-                            participantProfileId: participant.profile.id!
+                            userId: participant.user.id
                         },
                         clientMode: CLIENT_MODE
                     })
@@ -152,11 +152,14 @@ export default function EventParticipantList({
         const authToken = getAuth()
         const loading = showLoading()
         try {
-            const profileId = participant.profile_id ?? participant.profile.id
-            const submission = await getFormSubmission({
-                params: {formId: eventDetail.form_id, userId: profileId, authToken: authToken!},
-                clientMode: CLIENT_MODE
-            })
+            const userId = participant.user.id
+            const [submission, form] = await Promise.all([
+                getFormSubmission({
+                    params: {eventId: eventDetail.id, userId, authToken: authToken!},
+                    clientMode: CLIENT_MODE
+                }),
+                getEventForm({params: {eventId: eventDetail.id, authToken: authToken!}, clientMode: CLIENT_MODE})
+            ])
             closeModal(loading)
             openModal({
                 content: (close) => (
@@ -164,7 +167,7 @@ export default function EventParticipantList({
                         lang={lang}
                         close={close!}
                         submission={submission || null}
-                        form={eventDetail.form}
+                        form={form}
                         participant={participant}
                         onApprove={async () => { close?.(); await handleApproveParticipant(participant) }}
                         onReject={async () => { close?.(); await handleRejectParticipant(participant) }}
@@ -182,11 +185,14 @@ export default function EventParticipantList({
         const authToken = getAuth()
         const loading = showLoading()
         try {
-            const profileId = participant.profile_id ?? participant.profile.id
-            const submission = await getFormSubmission({
-                params: {formId: eventDetail.form_id, userId: profileId, authToken: authToken!},
-                clientMode: CLIENT_MODE
-            })
+            const userId = participant.user.id
+            const [submission, form] = await Promise.all([
+                getFormSubmission({
+                    params: {eventId: eventDetail.id, userId, authToken: authToken!},
+                    clientMode: CLIENT_MODE
+                }),
+                getEventForm({params: {eventId: eventDetail.id, authToken: authToken!}, clientMode: CLIENT_MODE})
+            ])
             closeModal(loading)
             openModal({
                 content: (close) => (
@@ -194,7 +200,7 @@ export default function EventParticipantList({
                         lang={lang}
                         close={close!}
                         submission={submission}
-                        form={eventDetail.form}
+                        form={form}
                         participant={participant}
                         isPending={participant.status === 'pending'}
                         onUpdate={async (answers) => {
@@ -225,11 +231,11 @@ export default function EventParticipantList({
     const downloadCSV = () => {
         const title = ['Username', 'Nickname', 'Email', 'Status', 'Register time']
         const rows = eventDetail.participants?.map((item, index) => {
-            return [item.profile.handle,
-                item.profile.nickname || '',
-                item.profile.email || '',
+            return [item.user.name,
+                item.user.nickname || '',
+                item.user.email || '',
                 item.status,
-                item.created_at + 'Z'
+                item.created_at || ''
             ]
         }) || []
 
@@ -247,27 +253,31 @@ export default function EventParticipantList({
     }
 
     const downloadSubmissionsCSV = async () => {
-        if (!eventDetail.form_id || !eventDetail.form) return
+        if (!eventDetail.form_id) return
         const loading = showLoading()
         try {
             const authToken = getAuth()
-            const submissions = await listFormSubmissions({
-                params: {formId: eventDetail.form_id, authToken: authToken!},
-                clientMode: CLIENT_MODE
-            })
-            const fields = [...eventDetail.form.fields].sort((a, b) => a.position - b.position)
-            const emailByProfileId = new Map<number, string>()
+            const [submissions, form] = await Promise.all([
+                listFormSubmissions({
+                    params: {eventId: eventDetail.id, authToken: authToken!},
+                    clientMode: CLIENT_MODE
+                }),
+                getEventForm({params: {eventId: eventDetail.id, authToken: authToken!}, clientMode: CLIENT_MODE})
+            ])
+            if (!form) return
+            const fields = [...form.fields].sort((a, b) => a.position - b.position)
+            const emailByUserId = new Map<string, string>()
             eventDetail.participants?.forEach(p => {
-                if (p.profile.id != null) emailByProfileId.set(p.profile.id, p.profile.email || '')
+                emailByUserId.set(p.user.id, p.user.email || '')
             })
 
-            const header = ['Handle', 'Nickname', 'Email', 'Status', 'Submitted at', ...fields.map(f => f.label)]
+            const header = ['Username', 'Nickname', 'Email', 'Status', 'Submitted at', ...fields.map(f => f.label)]
             const rows = submissions.map(sub => {
                 const answerByField = new Map(sub.answers.map(a => [a.form_field_id, a.value || '']))
                 return [
-                    sub.profile?.handle || '',
-                    sub.profile?.nickname || '',
-                    emailByProfileId.get(Number(sub.user_id)) || '',
+                    sub.user?.name || '',
+                    sub.user?.nickname || '',
+                    emailByUserId.get(sub.user_id) || '',
                     sub.status,
                     sub.submitted_at || '',
                     ...fields.map(f => answerByField.get(f.id) || '')
@@ -315,22 +325,16 @@ export default function EventParticipantList({
                 eventDetail.participants?.map(participant => {
                     return <div key={participant.id}
                                 className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
-                        <a className="flex-row-item-center" href={`/profile/${participant.profile.handle}`}>
-                            <Avatar profile={participant.profile} className="mr-2" size={32}/>
+                        <a className="flex-row-item-center" href={`/profile/${participant.user.name}`}>
+                            <Avatar profile={participant.user} className="mr-2" size={32}/>
                             <div className="text-xs">
-                                <div>{participant.profile.nickname || participant.profile.handle}</div>
-                                <div
-                                    className="text-gray-400">{!!participant.ticket_item?.sender_address && shortWalletAddress(participant.ticket_item?.sender_address)}</div>
-                                {!!participant.ticket &&
-                                    <div
-                                        className="text-xs text-gray-400 line-clamp-1 max-w-24">{participant.ticket.title}</div>
-                                }
+                                <div>{participant.user.nickname || participant.user.name}</div>
                             </div>
                         </a>
 
                         <div className="flex-row-item-center">
                             <div className="flex-col sm:flex-row items-end flex">
-                                {isEventOperator && canViewAllSubmissions && eventDetail.form_id && participant.profile.id !== currProfile?.id && (
+                                {isEventOperator && canViewAllSubmissions && eventDetail.form_id && participant.user.id !== currProfile?.id && (
                                     <div onClick={() => handleViewApplication(participant)}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-blue-200 flex flex-row-item-center text-xs text-blue-500 bg-blue-50">
                                         {lang['View Application']}
@@ -351,31 +355,31 @@ export default function EventParticipantList({
                                         {lang['Pending']}
                                     </div>
                                 }
-                                {participant.profile.id === currProfile?.id && eventDetail.form_id && participant.status !== 'rejected' &&
+                                {participant.user.id === currProfile?.id && eventDetail.form_id && participant.status !== 'declined' &&
                                     <div onClick={() => handleViewMyApplication(participant)}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-blue-200 flex flex-row-item-center text-xs text-blue-500 bg-blue-50">
                                         {participant.status === 'pending' ? lang['Edit Application'] : lang['View Application']}
                                     </div>
                                 }
-                                {participant.profile.id === currProfile?.id && participant.status !== 'pending' && participant.status !== 'rejected' &&
+                                {participant.user.id === currProfile?.id && participant.status !== 'pending' && participant.status !== 'declined' &&
                                     <div onClick={handleCancelParticipation}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-red-400">
                                         {lang['Cancel Participation']}
                                     </div>
                                 }
-                                {isEventOperator && participant.status !== 'checked' && participant.status !== 'pending' && participant.status !== 'rejected' &&
+                                {isEventOperator && !participant.register_time && participant.status !== 'pending' && participant.status !== 'declined' &&
                                     <div onClick={() => handleCheckInForParticipant(participant)}
                                          className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
                                         {lang['Check In']}
                                     </div>
                                 }
-                                {participant.status === 'checked' &&
+                                {!!participant.register_time &&
                                     <div
                                         className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs  bg-gray-50 font-semibold">
                                         {lang['Checked']}
                                     </div>
                                 }
-                                {participant.status === 'rejected' &&
+                                {participant.status === 'declined' &&
                                     <div className="h-7 rounded-lg px-2 ml-2 border border-red-200 flex flex-row-item-center text-xs text-red-500 bg-red-50">
                                         {lang['Rejected']}
                                     </div>
@@ -393,7 +397,7 @@ function MyApplicationDialog({lang, close, submission, form, participant, isPend
     lang: Dictionary
     close: () => void
     submission: FormSubmission | null
-    form: EventDetail['form']
+    form: EventForm | null
     participant: Participant
     isPending: boolean
     onUpdate: (answers: Array<{field_id: string, value: string}>) => Promise<void>
@@ -474,7 +478,7 @@ function ApplicationAnswersDialog({lang, close, submission, form, participant, o
     lang: Dictionary
     close: () => void
     submission: FormSubmission | null
-    form: EventDetail['form']
+    form: EventForm | null
     participant: Participant
     onApprove: () => Promise<void>
     onReject: () => Promise<void>
@@ -483,11 +487,11 @@ function ApplicationAnswersDialog({lang, close, submission, form, participant, o
         <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow p-5 max-h-[80vh] flex flex-col">
             <div className="flex-row-item-center justify-between mb-4">
                 <div className="flex-row-item-center gap-2">
-                    <img src={participant.profile.image_url || '/images/default_avatar.png'}
+                    <img src={participant.user.image_url || '/images/default_avatar.png'}
                          className="w-8 h-8 rounded-full object-cover" alt=""/>
                     <div>
-                        <div className="font-semibold text-sm">{participant.profile.nickname || participant.profile.handle}</div>
-                        <div className="text-xs text-gray-400">@{participant.profile.handle}</div>
+                        <div className="font-semibold text-sm">{participant.user.nickname || participant.user.name}</div>
+                        <div className="text-xs text-gray-400">@{participant.user.name}</div>
                     </div>
                 </div>
                 <i className="uil-times-circle text-xl text-gray-400 cursor-pointer" onClick={close}/>

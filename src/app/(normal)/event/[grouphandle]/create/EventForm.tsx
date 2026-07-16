@@ -106,7 +106,7 @@ export default function EventForm({
 
   const setCover = async () => {
     const picUrl = await uploadImage()
-    setDraft({ ...draft, cover_url: picUrl })
+    setDraft({ ...draft, image_url: picUrl })
   }
 
   useEffect(() => {
@@ -130,7 +130,7 @@ export default function EventForm({
 
   useEffect(() => {
     (async () => {
-      const venue = [...data.venues, ...data.unionVenues].find((v) => v.id === draft.venue_id)
+      const venue = data.venues.find((v) => v.id === draft.venue_id)
       const errorMsg = isEventTimeSuitable(
         draft.timezone!,
         draft.start_time!,
@@ -140,11 +140,6 @@ export default function EventForm({
         venue,
       )
       setTimeError(lang[errorMsg as keyof Dictionary])
-      if (data.unionVenues.length > 0 && data.unionVenues.some((v) => v.id === draft.venue_id)) {
-        // 如果venue_id是union venue，则不检查occupied
-        return
-      }
-
       const loading = showLoading()
       try {
         const occupiedEvents = await getOccupiedTimeEvent({
@@ -295,7 +290,7 @@ export default function EventForm({
 
         <div className="flex flex-col items-center sm:items-start sm:flex-row w-full">
           <div className="sm:order-2 mt-4 sm:mt-0 mb-8">
-            {!draft.cover_url ? (
+            {!draft.image_url ? (
               <div className="mb-4 flex-shrink-0 w-[324px] h-[324px] overflow-hidden mx-auto">
                 <div
                   className="default-cover w-[452px] h-[452px]"
@@ -316,7 +311,7 @@ export default function EventForm({
               </div>
             ) : (
               <img
-                src={cfImage(draft.cover_url, { width: 400, format: 'auto' })}
+                src={cfImage(draft.image_url, { width: 400, format: 'auto' })}
                 alt=""
                 className="w-[324px] h-auto mb-4"
               />
@@ -442,7 +437,7 @@ export default function EventForm({
                 lang={lang}
                 isManager={data.isGroupManager}
                 isMember={data.isGroupMember}
-                venues={[...data.venues, ...data.unionVenues]}
+                venues={data.venues}
                 state={{ event: draft, setEvent: setDraft }}
               />
             </div>
@@ -503,10 +498,6 @@ export default function EventForm({
                 />
               </div>
             </div>
-
-            {!!draft.venue_id && isEdgeCityGroup(draft.group_id) && (
-              <RequirementTagsSelector event={draft} setEvent={setDraft} lang={lang} />
-            )}
 
             {!!data.availableHost.length && (
               <div className="mb-8">
@@ -692,7 +683,7 @@ export default function EventForm({
                       </div>
                       <div
                         onClick={() => {
-                          setDraft({ ...draft, display: "normal" })
+                          setDraft({ ...draft, visibility: "public" })
                         }}
                         className={`flex-row-item-center justify-between border cursor-pointer p-2 rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
                       >
@@ -708,7 +699,7 @@ export default function EventForm({
                             }
                           </div>
                         </div>
-                        {draft.display === "normal" ? (
+                        {draft.visibility !== "private" ? (
                           <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
                         ) : (
                           <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
@@ -716,7 +707,7 @@ export default function EventForm({
                       </div>
                       <div
                         onClick={() => {
-                          setDraft({ ...draft, display: "private" })
+                          setDraft({ ...draft, visibility: "private" })
                         }}
                         className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
                       >
@@ -732,31 +723,7 @@ export default function EventForm({
                             }
                           </div>
                         </div>
-                        {draft.display === "private" ? (
-                          <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
-                        ) : (
-                          <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
-                        )}
-                      </div>
-                      <div
-                        onClick={() => {
-                          setDraft({ ...draft, display: "public" })
-                        }}
-                        className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
-                      >
-                        <div>
-                          <div className="text-xs font-semibold">
-                            {lang["Public Event"]}
-                          </div>
-                          <div className="text-gray-500 text-xs font-normal">
-                            {
-                              lang[
-                              "Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility."
-                              ]
-                            }
-                          </div>
-                        </div>
-                        {draft.display === "public" ? (
+                        {draft.visibility === "private" ? (
                           <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
                         ) : (
                           <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />

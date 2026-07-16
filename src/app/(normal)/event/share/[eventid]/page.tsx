@@ -34,8 +34,8 @@ export default async function ShareEventPage({params:{eventid},searchParams:{tab
             <div className="flex flex-col items-center justify-center">
                 <div
                     className="share-card shadow w-[335px] h-auto flex-shrink-0 bg-[#F1FCF8] p-5 pt-6 box-border overflow-hidden rounded-lg">
-                    {!!eventDetail.cover_url
-                        ? <img src={cfImage(eventDetail.cover_url, { width: 900, format: 'auto', quality: 85 })}
+                    {!!eventDetail.image_url
+                        ? <img src={cfImage(eventDetail.image_url, { width: 900, format: 'auto', quality: 85 })}
                                className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg"/>
                         : <div className="mb-4 flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
                             <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>
@@ -49,7 +49,7 @@ export default async function ShareEventPage({params:{eventid},searchParams:{tab
                                     {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).time}
                                 </div>
                                 <div
-                                    className="text-lg absolute font-semibold left-[76px] top-[240px]">{eventDetail.location}</div>
+                                    className="text-lg absolute font-semibold left-[76px] top-[240px]">{eventDetail.place?.name}</div>
                             </div>
                         </div>
                     }
@@ -62,7 +62,7 @@ export default async function ShareEventPage({params:{eventid},searchParams:{tab
                             <div className={'start-time'}>
                                 <DisplayDateTime
                                     dataTimeStr={eventDetail.start_time}
-                                    tz={eventDetail.timezone}/>
+                                    tz={eventDetail.timezone || undefined}/>
                             </div>
                             {
                                 eventDetail.end_time &&
@@ -71,7 +71,7 @@ export default async function ShareEventPage({params:{eventid},searchParams:{tab
                                     <div className={'end-time'}>
                                         <DisplayDateTime
                                             dataTimeStr={eventDetail.end_time}
-                                            tz={eventDetail.timezone}/>
+                                            tz={eventDetail.timezone || undefined}/>
                                     </div>
                                 </>
                             }
@@ -83,10 +83,10 @@ export default async function ShareEventPage({params:{eventid},searchParams:{tab
                         </div>
                     }
                     {
-                        !!eventDetail.location && <div className="text-xs flex flex-row items-start  mt-2">
+                        !!eventDetail.place?.name && <div className="text-xs flex flex-row items-start  mt-2">
                             <i className="uil-location-point mr-1"/>
-                            <div>{eventDetail.location}
-                                <br/> {eventDetail.formatted_address ? `${eventDetail.formatted_address}` : ''}</div>
+                            <div>{eventDetail.place?.name}
+                                <br/> {eventDetail.place?.address ? `${eventDetail.place?.address}` : ''}</div>
                         </div>
                     }
                     {
@@ -109,7 +109,7 @@ export default async function ShareEventPage({params:{eventid},searchParams:{tab
 
                 <div className="my-3 w-[335px] mx-auto">
                     <SocialShareBtn shareUrl={shareUrl} />
-                    <DynamicShareActionsBtn lang={lang} eventDetail={eventDetail} groupHandle={groupDetail.handle}/>
+                    <DynamicShareActionsBtn lang={lang} eventDetail={eventDetail} groupHandle={groupDetail.name}/>
                 </div>
             </div>
         </div>

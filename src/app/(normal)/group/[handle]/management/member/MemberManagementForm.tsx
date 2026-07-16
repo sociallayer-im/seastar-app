@@ -45,7 +45,7 @@ export default function MemberManagementForm({members, lang, group}: MemberManag
             }
             await removeMember({
                 params: {
-                    profileId:selected[0]!.profile.id,
+                    profileId:selected[0]!.user.id,
                     groupId: group.id,
                     authToken: auth_token
                 }, clientMode: CLIENT_MODE
@@ -61,7 +61,7 @@ export default function MemberManagementForm({members, lang, group}: MemberManag
         showConfirmDialog({
             lang,
             title: lang['Remove Member'],
-            content: `${lang['Are you sure you want to remove the selected member?']} <div style="text-align: center;font-size: 18px"><b>${displayProfileName(selected[0]!.profile)}</b></div>`,
+            content: `${lang['Are you sure you want to remove the selected member?']} <div style="text-align: center;font-size: 18px"><b>${displayProfileName(selected[0]!.user)}</b></div>`,
             onConfig: handleRemove,
         })
     }
@@ -81,9 +81,9 @@ export default function MemberManagementForm({members, lang, group}: MemberManag
                         <div className='flex-row-item-center'>
                             <Avatar
                                 size={28}
-                                profile={member.profile}
+                                profile={member.user}
                                 className="rounded-full mr-2" />
-                            <div>{displayProfileName(member.profile)}</div>
+                            <div>{displayProfileName(member.user)}</div>
                         </div>
                         {
                             selected.includes(member) &&

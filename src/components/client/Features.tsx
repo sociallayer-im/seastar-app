@@ -42,7 +42,7 @@ function FeatureItem(props: { popupCity: PopupCity }) {
         }
     }, [props.popupCity.image_url])
 
-    return <a className='relative block' href={`/event/${props.popupCity.group.handle}`}>
+    return <a className='relative block' href={`/event/${props.popupCity.group.name}`}>
         {props.popupCity.image_url &&
             <img src={cfImage(props.popupCity.image_url, { width: 900, fit: 'scale-down' })}
                 alt={props.popupCity.title}

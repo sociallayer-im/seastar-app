@@ -5,7 +5,8 @@ import {
 import { redirect } from "next/navigation"
 import { getCurrProfile } from "@/app/actions"
 import {
-  getGroupDetailByHandle,
+  getGroupDetailByName,
+  getVenueDetailById,
   Group,
   PaymentMethod,
   Profile,
@@ -15,11 +16,11 @@ import {
   Track,
   EventDraftType,
   VenueDetail,
+  Venue,
   getAvailableGroupsForEventHost,
+  getTrackDetailById,
   Recurring,
   ProfileDetail,
-  getTrackRolesByTrackIds,
-  getGroupDetailById,
 } from "@sola/sdk"
 import { CLIENT_MODE } from "@/app/config"
 
@@ -40,17 +41,16 @@ export interface CreateEventPageDataType {
   isGroupManager: boolean
   isGroupMember: boolean
   isGroupIssuer: boolean
-  availableHost: Array<Profile>
+  availableHost: Array<Profile | Group>
   tracks: Track[]
   venues: VenueDetail[]
   tags: string[]
   recurring: Recurring | null
-  unionVenues: VenueDetail[]
 }
 
 export const emptyEvent: EventDraftType = {
-  group_id: 0,
-  cover_url: "",
+  group_id: "",
+  image_url: "",
   title: "",
   track_id: null,
   content: "",
@@ -68,11 +68,9 @@ export const emptyEvent: EventDraftType = {
   event_roles: [],
   tags: [],
   max_participant: null,
-  display: "normal",
   pinned: false,
   require_approval: null,
-  status: "open",
-  badge_class_id: null,
+  status: "published",
   tickets: [],
   recurring_id: null,
   requirement_tags: [],
@@ -80,7 +78,6 @@ export const emptyEvent: EventDraftType = {
 }
 
 export const emptyPaymentMethod: PaymentMethod = {
-  item_type: "Ticket",
   chain: "",
   token_name: null,
   token_address: null,
@@ -100,6 +97,46 @@ export const emptyTicket: TicketDraft = {
   ticket_type: "event",
 }
 
+/**
+ * Venues restricted to specific tracks are only offered to managers or users
+ * holding a role in one of those tracks (roles come from each track's
+ * :with_roles detail).
+ */
+export async function filterVenuesForProfile(
+  groupDetail: GroupDetail,
+  currProfile: Profile | null | undefined,
+  isManager: boolean
+): Promise<VenueDetail[]> {
+  // The group payload embeds the light Venue view; the event form needs
+  // availabilities/track_ids, so hydrate each venue's detail.
+  const lightVenues = (groupDetail.venues || []) as Venue[]
+  const venues = (await Promise.all(lightVenues.map(v =>
+    getVenueDetailById({ params: { venueId: v.id }, clientMode: CLIENT_MODE }).catch(() => null)
+  ))).filter(Boolean) as VenueDetail[]
+  if (isManager) return venues
+
+  const restrictedTrackIds = Array.from(new Set(
+    venues.flatMap(v => v.track_ids || [])
+  ))
+  const myTrackIds = new Set<string>()
+  if (currProfile && restrictedTrackIds.length) {
+    const details = await Promise.all(restrictedTrackIds.map(trackId =>
+      getTrackDetailById({ params: { trackId }, clientMode: CLIENT_MODE }).catch(() => null)
+    ))
+    details.forEach(track => {
+      if (track?.track_roles?.some(role => role.user.id === currProfile.id)) {
+        myTrackIds.add(track.id)
+      }
+    })
+  }
+
+  return venues.filter(venue =>
+    !venue.track_ids ||
+    venue.track_ids.length === 0 ||
+    venue.track_ids.some(trackId => myTrackIds.has(trackId))
+  )
+}
+
 export default async function CreateEventPageData({
   params,
 }: CreateEventDataProps) {
@@ -108,8 +145,8 @@ export default async function CreateEventPageData({
     redirect("/")
   }
 
-  const groupDetail = await getGroupDetailByHandle({
-    params: { groupHandle: params.grouphandle },
+  const groupDetail = await getGroupDetailByName({
+    params: { groupName: params.grouphandle },
     clientMode: CLIENT_MODE,
   })
 
@@ -121,7 +158,7 @@ export default async function CreateEventPageData({
     analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
   const availableGroupHost = await getAvailableGroupsForEventHost({
-    params: { profileHandle: currProfile.handle },
+    params: { profileName: currProfile.name },
     clientMode: CLIENT_MODE,
   })
   const availableHost: Array<Profile | Group> = [
@@ -129,35 +166,7 @@ export default async function CreateEventPageData({
     ...availableGroupHost,
   ]
 
-  const availableTrackIds = groupDetail.tracks?.map((track) => track.id) || []
-  const trackRoles = await getTrackRolesByTrackIds({
-    params: { trackIds: availableTrackIds },
-    clientMode: CLIENT_MODE,
-  })
-  const availableVenues = (groupDetail?.venues || []).filter(
-    (venue) =>
-      isOwner ||
-      isManager ||
-      !venue.track_ids ||
-      venue.track_ids.length === 0 ||
-      venue.track_ids.some((trackId) =>
-        trackRoles
-          .filter((role) => role.track_id === trackId)
-          .some((role) => role.profile_id === currProfile.id)
-      )
-  )
-
-  let unionVenues:VenueDetail[] = []
-  if (groupDetail.venue_union) {
-    const unionGroups = await Promise.all(groupDetail.venue_union.map(async (groupId) => {
-      const group = await getGroupDetailById({
-        params: { groupId },
-        clientMode: CLIENT_MODE,
-      })
-      return group
-    }))
-    unionVenues = unionGroups.map((group) => group?.venues || []).flat()
-  }
+  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager)
 
   return {
     currProfile,
@@ -176,7 +185,6 @@ export default async function CreateEventPageData({
     availableHost,
     tracks: groupDetail?.tracks || [],
     venues: availableVenues,
-    tags: groupDetail?.event_tags || [],
-    unionVenues,
+    tags: groupDetail?.event_tag_list || [],
   } as CreateEventPageDataType
 }

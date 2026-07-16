@@ -1,4 +1,4 @@
-import {getGroupDetailByHandle, MarkerDraft} from '@sola/sdk'
+import {getGroupDetailByName, MarkerDraft} from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile} from '@/app/actions'
 import {CLIENT_MODE} from '@/app/config'
@@ -12,7 +12,7 @@ export interface CreateMarkerDataProps {
 }
 
 export const emptyMarker: MarkerDraft = {
-    group_id: 0,
+    group_id: '',
     category: null,
     cover_image_url: null,
     title: '',
@@ -23,18 +23,13 @@ export const emptyMarker: MarkerDraft = {
     geo_lat: null,
     geo_lng: null,
     location_data: null,
-    start_time: null,
-    end_time: null,
-    badge_class_id: null,
-    place_id: null,
-    place: null,
 }
 
 export default async function CreateMarkerData({params}: CreateMarkerDataProps) {
     const {grouphandle} = params
 
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: grouphandle},
+    const groupDetail = await getGroupDetailByName({
+        params: {groupName: grouphandle},
         clientMode: CLIENT_MODE
     })
     if (!groupDetail) {

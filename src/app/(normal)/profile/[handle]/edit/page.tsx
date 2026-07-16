@@ -7,7 +7,7 @@ export const fetchCache = 'force-no-store'
 export async function generateMetadata(props: EditProfileDataProps) {
     const profile = await EditProfileData(props)
     return {
-        title: `${profile.nickname || profile.handle} | Edit Profile | Social Layer`
+        title: `${profile.nickname || profile.name} | Edit Profile | Social Layer`
     }
 }
 

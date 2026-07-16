@@ -7,7 +7,7 @@ import {Button} from "@/components/shadcn/Button"
 import {checkDomainInput, cfImage, getAuth, verifyUsername} from '@/utils'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import useModal from '@/components/client/Modal/useModal'
-import {createGroup, createPopupCity, getGroupDetailByHandle, GroupDetail, updateGroup} from '@sola/sdk'
+import {createGroup, createPopupCity, getGroupDetailByName, GroupDetail, updateGroup} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import TimezonePicker from '@/components/client/TimezonePicker'
@@ -30,7 +30,6 @@ export default function RegisterForm(props: { lang: Dictionary }) {
     const [nickname, setNickname] = useState('')
     const [imageUrl, setImageUrl] = useState<string | null>(null)
     const [location, setLocation] = useState('')
-    const [website, setWebsite] = useState('')
     const [startDate, setStartDate] = useState<string | null>(null)
     const [endDate, setEndDate] = useState<string | null>(null)
     const [detailError, setDetailError] = useState('')
@@ -50,11 +49,11 @@ export default function RegisterForm(props: { lang: Dictionary }) {
                 try {
                     const authToken = getAuth()
                     const group = await createGroup({
-                        params: {handle, authToken: authToken!},
+                        params: {groupName: handle, authToken: authToken!},
                         clientMode: CLIENT_MODE
                     })
-                    const detail = await getGroupDetailByHandle({
-                        params: {groupHandle: group.handle},
+                    const detail = await getGroupDetailByName({
+                        params: {groupName: group.name},
                         clientMode: CLIENT_MODE
                     })
                     setGroupDetail(detail!)
@@ -120,7 +119,6 @@ export default function RegisterForm(props: { lang: Dictionary }) {
                     popupCityDraft: {
                         image_url: imageUrl,
                         location: location.trim(),
-                        website: website.trim() || null,
                         start_date: startDate,
                         end_date: endDate,
                         group_id: groupDetail!.id
@@ -178,15 +176,6 @@ export default function RegisterForm(props: { lang: Dictionary }) {
                            className="w-full"
                            value={location}
                            onChange={e => setLocation(e.target.value)}/>
-                </div>
-
-                <div className="my-3">
-                    <div className="font-semibold">{props.lang['Website (optional)']}</div>
-                    <Input placeholder="https://..."
-                           inputSize={'md'}
-                           className="w-full"
-                           value={website}
-                           onChange={e => setWebsite(e.target.value)}/>
                 </div>
 
                 <div className="my-3">

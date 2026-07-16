@@ -6,7 +6,7 @@ import {CLIENT_MODE} from '@/app/config'
 import DialogVenue from '@/components/client/DialogVenue'
 import {Dictionary} from '@/lang'
 
-export default function VenueDetailBtn({className, label, venueId, lang, groupHandle}:{className?: string, venueId: number, label: string, lang: Dictionary, groupHandle: string}) {
+export default function VenueDetailBtn({className, label, venueId, lang, groupHandle}:{className?: string, venueId: string, label: string, lang: Dictionary, groupHandle: string}) {
 
     const {openModal, showLoading, closeModal} = useModal()
 

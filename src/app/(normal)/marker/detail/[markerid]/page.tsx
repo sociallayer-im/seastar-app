@@ -12,7 +12,7 @@ export default async function MarkerDetailPage(props: MarkerDetailPageDataProps)
 
     return <div className="page-width !pt-4 !pb-12">
         <div className="flex flex-row items-center justify-between sm:mb-8 mb-4">
-            <a href={`/map/${markerDetail.group.handle}/marker`} className="flex-row-item-center">
+            <a href={`/map/${markerDetail.group!.name}/marker`} className="flex-row-item-center">
                 <Avatar size={24} profile={markerDetail.group!} className="mr-1"/>
                 <span
                     className="font-semibold font-sm overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[120px] sm:max-w-max">
@@ -57,11 +57,11 @@ export default async function MarkerDetailPage(props: MarkerDetailPageDataProps)
                     <div className="hide-scroll whitespace-nowrap overflow-auto">
                         <a
                             className="my-3 shrink-0 grow-0 inline-flex flex-row items-center mr-6 overflow-auto"
-                            href={`/profile/${markerDetail.owner!.handle}`}>
+                            href={`/profile/${markerDetail.owner!.name}`}>
                             <Avatar profile={markerDetail.owner!} size={44} className="mr-2"/>
                             <div>
                                 <div className="font-semibold text-sm text-nowrap">
-                                    {displayProfileName(markerDetail.owner)}
+                                    {displayProfileName(markerDetail.owner!)}
                                 </div>
                                 <div className="text-xs text-gray-400">{lang['Creator']}</div>
                             </div>
@@ -70,16 +70,16 @@ export default async function MarkerDetailPage(props: MarkerDetailPageDataProps)
                 </div>
 
                 <div>
-                    {!!markerDetail.location &&
+                    {!!markerDetail.place?.name &&
                         <div className="flex-row-item-center py-4">
                             <div
                                 className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
                                 <i className="uil-location-point text-base"></i>
                             </div>
                             <div>
-                                <div className="font-semibold text-base">{markerDetail.location}</div>
+                                <div className="font-semibold text-base">{markerDetail.place?.name}</div>
                                 <div className="text-gray-400 text-base">
-                                    {markerDetail.formatted_address}
+                                    {markerDetail.place?.address}
                                     <i className="cursor-pointer uil-copy ml-1 text-lg text-foreground"/>
                                 </div>
                             </div>

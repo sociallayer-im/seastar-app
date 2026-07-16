@@ -46,6 +46,19 @@ export const PAYMENT_STEP_LABEL: Record<PaymentStep, string> = {
     error: '',
 }
 
+// TSIDs are 13-char Crockford base32 strings encoding a 64-bit integer —
+// decode so on-chain productId/itemId stay stable, reversible references.
+const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
+export function tsidToBigInt(tsid: string): bigint {
+    let acc = BigInt(0)
+    for (const raw of tsid.toUpperCase()) {
+        const idx = CROCKFORD.indexOf(raw)
+        if (idx === -1) continue // skip separators/invalid chars
+        acc = acc * BigInt(32) + BigInt(idx)
+    }
+    return acc
+}
+
 export async function executePayHubPayment({
     chain,
     tokenAddress,
@@ -61,8 +74,8 @@ export async function executePayHubPayment({
     payHubAddress: string
     receiverAddress: string
     amount: bigint
-    eventId: number
-    orderNumber: number
+    eventId: string
+    orderNumber: bigint
     onStep: (step: PaymentStep) => void
 }): Promise<{txHash: `0x${string}`; account: `0x${string}`}> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,7 +119,7 @@ export async function executePayHubPayment({
     }
 
     // 4. Call PayHub.transfer(to, token, amount, productId, itemId)
-    //    productId = event_id, itemId = order_number
+    //    productId = event id (TSID → uint), itemId = ticket item id (TSID → uint)
     onStep('sending_payment')
     const txHash = await walletClient.writeContract({
         account,
@@ -117,8 +130,8 @@ export async function executePayHubPayment({
             receiverAddress as `0x${string}`,
             tokenAddress as `0x${string}`,
             amount,
-            BigInt(eventId),
-            BigInt(orderNumber),
+            tsidToBigInt(eventId),
+            orderNumber,
         ],
     })
 

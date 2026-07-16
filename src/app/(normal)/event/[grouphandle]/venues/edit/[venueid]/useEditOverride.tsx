@@ -1,5 +1,5 @@
 'use client'
-import {VenueOverride, VenueRole} from '@sola/sdk'
+import {VenueOverride, VenueRole} from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/VenueForm'
 import {useEffect, useState} from 'react'
 import useModal from '@/components/client/Modal/useModal'
 import {Dictionary} from '@/lang'
@@ -19,7 +19,7 @@ const ROLE_OPTIONS: { value: VenueRole, label: string }[] = [
     {value: 'manager', label: 'Manager'},
 ]
 
-const getTargetRole = (role?: string) => {
+const getTargetRole = (role?: string | null) => {
     if (!role) return ROLE_OPTIONS[0]
     return ROLE_OPTIONS.find(option => option.value === role)
 }

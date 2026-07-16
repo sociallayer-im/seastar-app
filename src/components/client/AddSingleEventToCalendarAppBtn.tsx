@@ -43,7 +43,7 @@ function DialogAddSingleEventToCalendarApp({event, lang, close}: {
             description: to_plain_text(event.content || '').replace(/\n/g, ' '),
             start: event.start_time,
             duration: [(new Date(event.end_time).getTime() - new Date(event.start_time).getTime()) / 1000 / 60 / 60, "hour"],
-            location: event.location,
+            location: event.place?.name,
             url: window.location.origin + `/event/detail/${event.id}`,
         } as CalendarEvent
 

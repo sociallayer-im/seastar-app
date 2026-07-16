@@ -37,7 +37,7 @@ function VenueDetailPage({venue, lang}: {venue: VenueDetail, lang: Dictionary}) 
             </div>
         }
 
-        <div className="font-semibold text-2xl">{venue.title}</div>
+        <div className="font-semibold text-2xl">{venue.name}</div>
         <div className="text-gray-500">{venue.about}</div>
         <div className="space-y-1 text-sm mt-6 ">
             <div className="flex">
@@ -50,12 +50,12 @@ function VenueDetailPage({venue, lang}: {venue: VenueDetail, lang: Dictionary}) 
             </div>
             <div className="flex">
                 <span className="mr-1">{lang['Location']}:</span>
-                <span>{venue.formatted_address || ''}</span>
+                <span>{venue.about || ''}</span>
             </div>
-            {!!venue.link &&
+            {!!venue.website &&
                 <div className="flex">
                     <span className="mr-1">Link:</span>
-                    <a href={prefixUrl(venue.link)} target={'_blank'} className="text-blue-500 break-all">{venue.link}</a>
+                    <a href={prefixUrl(venue.website)} target={'_blank'} className="text-blue-500 break-all">{venue.website}</a>
                 </div>
             }
         </div>

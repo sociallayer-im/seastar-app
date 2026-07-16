@@ -2,11 +2,11 @@ import Tabs from './Tabs'
 import {selectLang} from "@/app/actions"
 import {ProfileBadgeListData} from "@/app/(normal)/profile/[handle]/TabBadges/data"
 
-export default async function TabBadges({handle, isSelf}: { handle: string, isSelf: boolean,  labels?: {created?: string, collected?: string}}) {
+export default async function TabBadges({name, isSelf}: { name: string, isSelf: boolean,  labels?: {created?: string, collected?: string}}) {
     const lang = (await selectLang()).lang
-    const {created, owned} = await ProfileBadgeListData(handle)
+    const {created, owned} = await ProfileBadgeListData(name)
     
-    return  <Tabs handle={handle}
+    return  <Tabs handle={name}
         isSelf={isSelf}
         created={created}
         owned={owned}

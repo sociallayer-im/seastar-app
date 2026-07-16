@@ -1,4 +1,4 @@
-import {BadgeClass, EventWithJoinStatus, getProfileEventByHandle, Group, Profile, search} from '@sola/sdk'
+import {BadgeClass, EventWithJoinStatus, getProfileEventByName, Group, Profile, search} from '@sola/sdk'
 import {pickSearchParam, setEventAttendedStatus} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 import {getCurrProfile} from '@/app/actions'
@@ -37,8 +37,8 @@ export default async function SearchPageData({searchParams}: SearchPageProps) {
 
     const currProfile = await getCurrProfile()
 
-    const profileEvents = currProfile ? await getProfileEventByHandle({
-        params: {handle: currProfile?.handle},
+    const profileEvents = currProfile ? await getProfileEventByName({
+        params: {name: currProfile.name},
         clientMode: CLIENT_MODE
     }) : {
         attends: [],

@@ -1,5 +1,5 @@
 import {
-    Event, getEvents, EventListFilterProps, GroupDetail, EventWithJoinStatus, getGroupDetailById, VenueDetail
+    getEvents, EventListFilterProps, GroupDetail, EventWithJoinStatus
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
@@ -47,11 +47,11 @@ export default async function GroupEventHomeData({
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
     const filterOpts: EventListFilterProps = {
-        group_id: groupDetail.id.toString(),
+        group_id: groupDetail.id,
         timezone: groupDetail.timezone || undefined,
         ...searchParams
     }
-    if (!filterOpts.private_event && !filterOpts.collection) {
+    if (!filterOpts.collection) {
         filterOpts.collection = 'upcoming'
     }
 
@@ -62,7 +62,7 @@ export default async function GroupEventHomeData({
             params: {
                 filters: {
                     collection: undefined,
-                    group_id: groupDetail.id.toString(),
+                    group_id: groupDetail.id,
                     ...getTimePropsFromRange(groupDetail.timezone || '', 'today'),
                     page: 1,
                     pinned: 1,
@@ -77,24 +77,14 @@ export default async function GroupEventHomeData({
         })
     ])
 
-    const eventsWithTrack = filteredEvents.map(e => {
-        return {
-            ...e,
-            track: e.track_id ? groupDetail.tracks.find(t => t.id === e.track_id) : null
-        } as EventWithJoinStatus
-    })
+    // Events already embed their track (soon EventBlueprint).
+    const eventsWithTrack = filteredEvents as EventWithJoinStatus[]
 
     const highlightedEventsWithTrack = highlightedEvents
         .filter(e => {
             // check the event is past
             return new Date(e.end_time).getTime() >= new Date().getTime()
-        })
-        .map(e => {
-        return {
-            ...e,
-            track: e.track_id ? groupDetail.tracks.find(t => t.id === e.track_id) : null
-        } as EventWithJoinStatus
-    })
+        }) as EventWithJoinStatus[]
 
     if (Object.keys(searchParams).length === 0 && filteredEvents.length === 0) {
         const pastEvents = await getEvents({
@@ -102,39 +92,26 @@ export default async function GroupEventHomeData({
             clientMode: CLIENT_MODE,
         })
         if (!!pastEvents.length) {
-            redirect(`/event/${groupDetail.handle}?collection=past`)
+            redirect(`/event/${groupDetail.name}?collection=past`)
         }
     }
 
+    // Geo now lives on each event's place.
     const mapMarkers: GoogleMapMarkerProps[] = []
-    if (groupDetail.map_enabled) {
-        const mapEvents = filteredEvents.filter((e) => e.geo_lat && e.geo_lng)
-        mapEvents.reverse().forEach((event: Event) => {
-            if (!mapMarkers.find((m) => {
-                return m.position.lng === event.geo_lng! && m.position.lat === event.geo_lng!
-            })) {
-                mapMarkers.push({
-                    position: {
-                        lat: event.geo_lat!,
-                        lng: event.geo_lng!
-                    },
-                    title: event.title,
-                })
-            }
-        })
-    }
-
-    let unionVenues:VenueDetail[] = []
-    if (groupDetail.venue_union) {
-      const unionGroups = await Promise.all(groupDetail.venue_union.map(async (groupId) => {
-        const group = await getGroupDetailById({
-          params: { groupId },
-          clientMode: CLIENT_MODE,
-        })
-        return group
-      }))
-      unionVenues = unionGroups.map((group) => group?.venues || []).flat()
-    }
+    const mapEvents = filteredEvents.filter((e) => e.place?.latitude && e.place?.longitude)
+    mapEvents.reverse().forEach((event) => {
+        if (!mapMarkers.find((m) => {
+            return m.position.lng === event.place!.longitude! && m.position.lat === event.place!.latitude!
+        })) {
+            mapMarkers.push({
+                position: {
+                    lat: event.place!.latitude!,
+                    lng: event.place!.longitude!
+                },
+                title: event.title,
+            })
+        }
+    })
 
     return {
         mapMarkers,
@@ -151,6 +128,5 @@ export default async function GroupEventHomeData({
         canPublishEvent,
         canSubmitEvent,
         enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true',
-        unionVenues,
     }
 }

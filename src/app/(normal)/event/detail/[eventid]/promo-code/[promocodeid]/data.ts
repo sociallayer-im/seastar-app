@@ -22,7 +22,8 @@ export default async function PromoCodeDetailData(props: PromoCodeDetailPageProp
 
     const couponDetail = await getCouponById({
         params: {
-            couponId: parseInt(promocodeid),
+            couponId: promocodeid,
+            authToken: (await getServerSideAuth())!,
         },
         clientMode: CLIENT_MODE
     })
@@ -44,7 +45,7 @@ export default async function PromoCodeDetailData(props: PromoCodeDetailPageProp
     }
 
     const records = await getCouponUsageRecord({
-        params: {couponId: parseInt(promocodeid)},
+        params: {couponId: promocodeid, authToken: (await getServerSideAuth())!},
         clientMode: CLIENT_MODE
     })
 

@@ -1,5 +1,5 @@
 import {redirect} from 'next/navigation'
-import {getGroupDetailByHandle} from '@sola/sdk'
+import {getGroupDetailByName} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {analyzeGroupMembershipAndCheckProfilePermissions} from '@/utils'
 import {getCurrProfile} from '@/app/actions'
@@ -11,8 +11,8 @@ interface Props {
 }
 
 export default async function EmailMembersPage({params}: Props) {
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: params.grouphandle},
+    const groupDetail = await getGroupDetailByName({
+        params: {groupName: params.grouphandle},
         clientMode: CLIENT_MODE
     })
     if (!groupDetail) redirect('/404')

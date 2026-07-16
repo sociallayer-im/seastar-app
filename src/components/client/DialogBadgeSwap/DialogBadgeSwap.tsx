@@ -52,7 +52,7 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
                     setSuccess(true)
                     setTimeout(() => {
                         props.close?.()
-                        window.location.href = `/profile/${user.handle}?tab=badges`
+                        window.location.href = `/profile/${user.name}?tab=badges`
                     }, 500)
                 } catch (e: any) {
                     console.error(e)
@@ -80,7 +80,7 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
                             description: 'Swap success',
                             variant: 'success'
                         })
-                        window.location.href = `/profile/${user.handle}?tab=badges`
+                        window.location.href = `/profile/${user.name}?tab=badges`
                     }, 1500)
                 }
             })

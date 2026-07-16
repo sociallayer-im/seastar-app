@@ -8,7 +8,7 @@ import dayjs from "@/libs/dayjs"
 import { useState } from "react"
 import { Input } from "../shadcn/Input"
 
-export default function ExportGroupEventBtn(props: { lang: Dictionary , groupId: number}) {
+export default function ExportGroupEventBtn(props: { lang: Dictionary , groupId: string}) {
     const { lang, groupId } = props
     
     const { openModal } = useModal()
@@ -27,7 +27,7 @@ export default function ExportGroupEventBtn(props: { lang: Dictionary , groupId:
 </Button>
 }
 
-function ExportModal(props: { lang: Dictionary, groupId: number, close: () => void }) {
+function ExportModal(props: { lang: Dictionary, groupId: string, close: () => void }) {
     const { lang, close, groupId } = props
     const now = dayjs()
     const [startDate, setStartDate] = useState<string>(now.subtract(1, 'week').format('YYYY/MM/DD'))

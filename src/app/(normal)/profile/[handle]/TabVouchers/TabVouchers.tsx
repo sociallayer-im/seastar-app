@@ -3,8 +3,8 @@ import NoData from "@/components/NoData"
 import CardVoucher from '@/components/client/CardVoucher'
 import {selectLang} from '@/app/actions'
 
-export default async function TabVouchers(props: {handle: string}) {
-    const vouchers = await ProfileVoucherData(props.handle)
+export default async function TabVouchers(props: {name: string}) {
+    const vouchers = await ProfileVoucherData(props.name)
     const {lang} = await selectLang()
 
     return <div className="py-4">

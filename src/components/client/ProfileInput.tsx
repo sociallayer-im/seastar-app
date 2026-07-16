@@ -20,9 +20,8 @@ const getEmptyRole = () => {
     return {
         nickname: '',
         image_url: '',
-        handle: '',
-        email: '',
-        id: 0,
+        name: '',
+        id: '',
     } as Solar.ProfileSample
 }
 
@@ -106,7 +105,7 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placehol
         }
         const res = await searchProfile({
             params: {
-                query: _keyword
+                keyword: _keyword
             },
             clientMode: CLIENT_MODE
         })
@@ -144,7 +143,7 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placehol
                     renderOption={(profile) => <div className="flex-row-item-center">
                         <img className="w-6 h-6 rounded-full mr-1"
                             src={cfImage(getAvatar(profile.id, profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
-                        {profile.handle} {profile.nickname && `(${profile.nickname})`}
+                        {profile.name} {profile.nickname && `(${profile.nickname})`}
                     </div>}
                     trigger={dropDownTrigger}>
                     <Input
@@ -158,7 +157,7 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placehol
                                 : <i className="uil-user text-xl"/>
                             }
                         </div>}
-                        value={item.nickname || item.handle}
+                        value={item.nickname || item.name}
                         className="w-full"
                         placeholder={placeholder || lang['Input name']}/>
                 </DropdownMenu>

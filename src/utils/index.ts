@@ -14,10 +14,30 @@ import {
     Ticket,
     Track,
     VenueDetail,
-    VenueTimeslot,
     Weekday,
-    EventWithJoinStatus, Participant, getProfileDetailByEmail, EventRoleDetail
+    EventWithJoinStatus, Participant
 } from '@sola/sdk'
+
+// Legacy sails venue location fields — soon venues reference a Place instead.
+// Optional widening so venue-driven drafts compile and degrade gracefully.
+export type LegacyVenueLocation = {
+    geo_lat?: string | number | null
+    geo_lng?: string | number | null
+    formatted_address?: string | null
+    location?: string | null
+    location_data?: string | null
+    visibility?: string | null
+}
+
+// UI-local weekly-editing shape (the SDK/API only speak `availabilities`;
+// VenueForm expands them into per-day timeslots for editing).
+export interface VenueTimeslot {
+    day_of_week: Weekday
+    disabled: boolean
+    start_at: string
+    end_at: string
+    role: string
+}
 import domtoimage from 'dom-to-image'
 import { Dictionary } from '@/lang'
 import {CLIENT_MODE, SOLA_APP_SUBDOMAINS} from '@/app/config'
@@ -45,7 +65,7 @@ export const clientRedirectToReturn = () => {
 export const clientCheckUserLoggedInAndRedirect = async (auth_token: string) => {
     const profile = await getProfileDetailByAuth({params: {authToken: auth_token}, clientMode: CLIENT_MODE})
 
-    if (profile && !profile.handle) {
+    if (profile && !profile.name) {
         window.location.href = '/register'
     } else {
         const cookiePath = Cookies.get('return')
@@ -67,7 +87,7 @@ export const checkProcess = (startTime: string, endTime: string) => {
     }
 }
 
-export const getAvatar = (id?: number | null, url?: string | null) => {
+export const getAvatar = (id?: number | string | null, url?: string | null) => {
     if (url) return url
 
     const defAvatars = [
@@ -197,17 +217,6 @@ export function isEventTimeSuitable(
         return 'Only same-day events can be created'
     }
 
-    // venue start_date / end_date bounds
-    const availableStart = venue.start_date ? dayjs.tz(venue.start_date, timezone) : null
-    const availableEnd = venue.end_date ? dayjs.tz(venue.end_date, timezone).hour(23).minute(59) : null
-    if (availableStart && !availableEnd && startTime.isBefore(availableStart)) {
-        return 'The date you selected should be after the venue start date'
-    } else if (!availableStart && availableEnd && endTime.isAfter(availableEnd)) {
-        return 'The date you selected should be before the venue end date'
-    } else if (availableStart && availableEnd && (startTime.isBefore(availableStart) || endTime.isAfter(availableEnd))) {
-        return 'The date you selected should be between the venue start date and end date'
-    }
-
     // date-specific override takes priority over weekly slot
     const startDate = startTime.format('YYYY-MM-DD')
     const override = availabilities.find(a => a.day === startDate && !a.day_of_week)
@@ -215,10 +224,10 @@ export function isEventTimeSuitable(
         if (override.intervals.length === 0) {
             return 'The date you selected is not available for the current venue due to the override settings'
         }
-        if (override.role === 'manager' && !isManager) {
+        if (override.role_required === 'manager' && !isManager) {
             return 'The date you selected is not available for the current venue, requires manager permission'
         }
-        if (override.role === 'member' && !isMember) {
+        if (override.role_required === 'member' && !isMember) {
             return 'The date you selected is not available for the current venue, requires member permission'
         }
         const eventStart = startTime.format('HH:mm')
@@ -237,10 +246,10 @@ export function isEventTimeSuitable(
         if (timeslot.intervals.length === 0) {
             return 'The date you selected is not available for the current venue due to the timeslot settings'
         }
-        if (timeslot.role === 'manager' && !isManager) {
+        if (timeslot.role_required === 'manager' && !isManager) {
             return 'The date you selected is not available for the current venue, requires manager permission'
         }
-        if (timeslot.role === 'member' && !isMember) {
+        if (timeslot.role_required === 'member' && !isMember) {
             return 'The date you selected is not available for the current venue, requires member permission'
         }
         const eventStart = startTime.format('HH:mm')
@@ -258,11 +267,12 @@ export function isEventTimeSuitable(
 }
 
 export function displayTicketPrice(ticket: Ticket) {
-    if (ticket.payment_methods.length === 0) {
+    const paymentMethods = ticket.payment_methods || []
+    if (paymentMethods.length === 0) {
         return 'Free'
     }
 
-    const prices = ticket.payment_methods
+    const prices = paymentMethods
         .filter(item => !item._destroy)
         .map(item => {
             const targetToken = findMethodToken(item)
@@ -279,8 +289,8 @@ export function displayTicketPrice(ticket: Ticket) {
 }
 
 export function getEventDetailPageTimeStr(event: Event) {
-    const startTime = dayjs.tz(new Date(event.start_time).getTime(), event.timezone)
-    const endTime = dayjs.tz(new Date(event.end_time!).getTime(), event.timezone)
+    const startTime = dayjs.tz(new Date(event.start_time).getTime(), event.timezone || 'UTC')
+    const endTime = dayjs.tz(new Date(event.end_time!).getTime(), event.timezone || 'UTC')
     const offset = startTime.utcOffset() / 60
 
     const startDateStr = startTime.format('ddd, MMM DD, YYYY')
@@ -305,7 +315,7 @@ export function shortWalletAddress(address: string) {
 }
 
 export function displayProfileName(profile: Profile) {
-    return profile.nickname || profile.handle
+    return profile.nickname || profile.name
 }
 
 export function clientToSignIn() {
@@ -343,7 +353,7 @@ export const setEventAttendedStatus = ({
     currProfile
 }: SetEventAttendedStatusParams) => {
     return events.map(e => {
-        const isCreator = e.owner.handle === currProfile?.handle
+        const isCreator = e.owner.name === currProfile?.name
         const isJoined = !!currProfileAttends.find(h => h.id === e.id)
         const isStarred = !!currProfileStarred.find(h => h.id === e.id)
         return {
@@ -365,7 +375,7 @@ export const setEventIsOwnerStatus = ({
     currProfile
 }: SetEventIsOwnerStatusParams) => {
     return events.map(e => {
-        const isOwner = currProfile?.handle === e.owner?.handle
+        const isOwner = currProfile?.name === e.owner?.name
         return {
             ...e,
             is_owner: isOwner
@@ -375,25 +385,23 @@ export const setEventIsOwnerStatus = ({
 
 export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: GroupDetail, profile?: Profile | null) => {
     const owner = groupDetail.memberships.find(m => m.role === 'owner')!
-    const managers = groupDetail.memberships.filter(m => m.role === 'manager')
-    const issuers = groupDetail.memberships.filter(m => m.role === 'issuer')
+    // soon roles: owner | admin | member (the old "manager" is "admin"; "issuer" is gone)
+    const managers = groupDetail.memberships.filter(m => m.role === 'admin')
+    const issuers: typeof groupDetail.memberships = []
     const members = groupDetail.memberships.filter(m => m.role === 'member')
 
-    const isManager = groupDetail.memberships.some(m => m.profile.handle === profile?.handle && (m.role === 'manager' || m.role === 'owner'))
-    const isMember = groupDetail.memberships.some(m => m.profile.handle === profile?.handle)
-    const isIssuer = groupDetail.memberships.some(m => m.profile.handle === profile?.handle && m.role === 'issuer')
-    const isOwner = owner?.profile?.handle === profile?.handle
+    const isManager = groupDetail.memberships.some(m => m.user.name === profile?.name && (m.role === 'admin' || m.role === 'owner'))
+    const isMember = groupDetail.memberships.some(m => m.user.name === profile?.name)
+    const isIssuer = false
+    const isOwner = owner?.user?.name === profile?.name
 
     const canPublishEvent = (!groupDetail.can_publish_event || groupDetail.can_publish_event === 'all' || groupDetail.can_publish_event === 'everyone')
         || (groupDetail.can_publish_event === 'manager' && isManager)
         || (groupDetail.can_publish_event === 'member' && isMember)
 
-    const reviewLevel = groupDetail.event_review_required
-    const canSubmitForReview = !!profile && !!reviewLevel && (
-        reviewLevel === 'everyone'
-        || (reviewLevel === 'member' && isMember)
-        || (reviewLevel === 'manager' && isManager)
-    )
+    // soon has no group-level review_required field: members who cannot publish
+    // directly submit events as status "pending" for manager approval.
+    const canSubmitForReview = !!profile && isMember
     // can submit (create) an event — either publishes directly or goes into pending review
     const canSubmitEvent = canPublishEvent || canSubmitForReview
 
@@ -431,15 +439,17 @@ export const checkEventPermissionsForProfile = (eventDetail: EventDetail, groupD
             || eventDetail.event_roles?.some(role => role.role === 'speaker' && role.item_id === profile.id)
         )
 
+    // soon: a participant row with status attending/pending is a spot; paid
+    // tickets are only attending once payment_status succeeds; check-in is the
+    // register_time stamp.
     const attended = !!eventDetail.participants?.find((item: Participant) => {
-        const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
-        return (!item.ticket_id && item.profile.id === profile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked')) // no tickets needed
-            || (!!ticket && !!item.ticket_id && item.profile.id === profile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && item.payment_status?.includes('succe')) // paid ticket
-            || (!!ticket && !!item.ticket_id && item.profile.id === profile?.id && (item.status === 'applied' || item.status === 'attending' || item.status === 'checked') && ticket.payment_methods.length === 0) // free ticket
+        if (item.user.id !== profile?.id) return false
+        if (item.status !== 'attending' && item.status !== 'pending') return false
+        return !item.payment_status || item.payment_status.includes('succe') || item.payment_status === 'pending'
     })
 
     const checkedIn = eventDetail.participants?.find((item: Participant) => {
-        return item.profile.id === profile?.id && item.status === 'checked'
+        return item.user.id === profile?.id && !!item.register_time
     })
 
     return {
@@ -799,20 +809,23 @@ export const prefixUrl = (url: string) => {
 }
 
 export const formatVenueDate = (venue: VenueDetail, lang: Dictionary) => {
-    if (!venue.start_date && !venue.end_date) {
+    // soon venues carry no start/end date columns — kept optional so the label
+    // degrades to "Unlimited".
+    const {start_date = null, end_date = null} = venue as VenueDetail & {start_date?: string | null, end_date?: string | null}
+    if (!start_date && !end_date) {
         return lang['Unlimited']
     }
 
-    if (venue.start_date && !venue.end_date) {
-        return lang['After {date}'].replace('{date}', venue.start_date)
+    if (start_date && !end_date) {
+        return lang['After {date}'].replace('{date}', start_date)
     }
 
-    if (!venue.start_date && venue.end_date) {
-        return lang['Before {date}'].replace('{date}', venue.end_date)
+    if (!start_date && end_date) {
+        return lang['Before {date}'].replace('{date}', end_date)
     }
 
-    const startDate = dayjs(venue.start_date!)
-    const endDate = dayjs(venue.end_date!)
+    const startDate = dayjs(start_date!)
+    const endDate = dayjs(end_date!)
 
     if (startDate.year() === endDate.year()) {
         return `${startDate.format('DD MMM')} - ${endDate.format('DD MMM')}, ${startDate.format('YYYY')}`
@@ -860,32 +873,8 @@ export function getInterval(startDate?: string, view: 'week' | 'day' | 'list' | 
 }
 
 export async function processEventRoles(eventDraft: EventDraftType) {
-    const eventRole = eventDraft.event_roles
-    const getProfileByEmailTask = []
-    if (eventRole && eventRole.length > 0) {
-        for (const role of eventRole) {
-            if (role.email && !(role as EventRoleDetail)._destroy) {
-                getProfileByEmailTask.push(getProfileDetailByEmail({
-                    params: {email: role.email}, clientMode: CLIENT_MODE
-                }))
-            }
-        }
-    }
-
-    if (getProfileByEmailTask.length !== 0) {
-        const emailProfiles = await Promise.all(getProfileByEmailTask)
-        eventDraft.event_roles = eventRole!.map((role, index) => {
-            const profile = emailProfiles.find(emailProfiles => emailProfiles?.email === role.email)
-            if (profile) {
-                return {
-                    ...role,
-                    item_id: profile.id,
-                }
-            }
-            return role
-        })
-    }
-
+    // soon stores email-only roles directly on the event_role (EventRole.email);
+    // there is no by-email profile lookup (PII), so no resolution is needed.
     return eventDraft
 }
 

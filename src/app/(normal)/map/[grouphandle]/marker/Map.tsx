@@ -22,7 +22,7 @@ export interface MarkerMapProps {
 export default function MarkerMap({markers, langType, lang, groupDetail, currCategory}: MarkerMapProps) {
 
     const markerBarRef = useRef<HTMLDivElement>(null)
-    const [selectedMarkerId, setSelectedMarkerId] = useState<number | undefined>(markers[0]?.id)
+    const [selectedMarkerId, setSelectedMarkerId] = useState<string | undefined>(markers[0]?.id)
     const [waitingPickLocation, setWaitingPickLocation] = useState(false)
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
     }, [])
 
     const defaultCenter = !!markers[0]
-        ? {lat: Number(markers[0]!.geo_lat!), lng: Number(markers[0]!.geo_lng!)}
+        ? {lat: Number(markers[0]!.place?.latitude ?? 0), lng: Number(markers[0]!.place?.longitude ?? 0)}
         : {lat: -34.397, lng: 150.644}
 
     useEffect(() => {
@@ -75,7 +75,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
             defaultZoom={currCategory ? 15 : 3}
             center={defaultCenter}
             markers={markers.map((m, i) => ({
-                position: {lat: Number(m.geo_lat!), lng: Number(m.geo_lng!)},
+                position: {lat: Number(m.place?.latitude ?? 0), lng: Number(m.place?.longitude ?? 0)},
                 title: m.title,
                 onClick: () => {
                     setSelectedMarkerId(m.id)
@@ -114,11 +114,11 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
                                     {marker.title}
                                 </div>
 
-                                {!!marker.location &&
+                                {!!marker.place?.name &&
                                     <div className="h-6 flex-row-item-center text-xs sm:text-sm sm:my-1">
                                         <i className="uil-location-point mr-1 sm:text-lg text-sm"/>
                                         <span
-                                            className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{marker.location}</span>
+                                            className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{marker.place?.name}</span>
                                     </div>
                                 }
                             </div>

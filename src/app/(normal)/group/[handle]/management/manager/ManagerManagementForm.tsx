@@ -41,8 +41,8 @@ export default function ManagerManagementForm({lang, members}: ManagerManagement
                         <div className="flex-row-item-center">
                             <img
                                 className="w-7 h-7 rounded-full mr-2"
-                                src={cfImage(getAvatar(member.profile.id, member.profile.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
-                            <div>{member.profile.nickname || member.profile.handle}</div>
+                                src={cfImage(getAvatar(member.user.id, member.user.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
+                            <div>{member.user.nickname || member.user.name}</div>
                         </div>
                         <i className="uil-minus-circle text-2xl text-gray-500"></i>
                     </div>

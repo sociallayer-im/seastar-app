@@ -21,7 +21,7 @@ export default async function ShareVoucherPage(props: ShareVoucherPageDataProps)
                     <div>
                         <div className='font-semibold'>{voucher.badge_class.title}</div>
                         <div className='text-sm'>
-                            {voucher.sender.nickname || voucher.sender.handle} {lang['send you a badge']}
+                            {voucher.sender.nickname || voucher.sender.name} {lang['send you a badge']}
                         </div>
                     </div>
                 </div>
@@ -36,7 +36,7 @@ export default async function ShareVoucherPage(props: ShareVoucherPageDataProps)
                 voucherId={voucher.id}
                 code={voucherCode}
                 badgeName={voucher.badge_class.title}
-                profileHandle={voucher.sender.handle}
+                profileHandle={voucher.sender.name}
             />
         </div>
     </div>

@@ -37,7 +37,6 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
         canSubmitEvent,
         highlightedEvents,
         enableGoogleMap,
-        unionVenues,
     } = data
 
     const { showLoading, closeModal } = useModal()
@@ -51,7 +50,6 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
         showHighlight: boolean
     } => {
         const isFiltered = !!currFilter.skip_recurring
-            || !!currFilter.skip_multi_day
             || !!currFilter.start_date
             || !!currFilter.end_date
             || !!currFilter.venue_id
@@ -83,19 +81,15 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                 params: {
                     filters: {
                         ...filter,
-                        group_id: groupDetail.id + '',
+                        group_id: groupDetail.id,
                         timezone: groupDetail.timezone || undefined
                     },
                     authToken: getAuth(),
                     limit: PAGE_SIZE
                 }, clientMode: CLIENT_MODE
             })
-            const listWithTrack = events.map(e => {
-                return {
-                    ...e,
-                    track: e.track_id ? groupDetail.tracks.find(t => t.id === e.track_id) : null,
-                }
-            })
+            // Events already embed their track (soon EventBlueprint).
+            const listWithTrack = events
 
             setHasMore(listWithTrack.length === PAGE_SIZE)
 
@@ -116,12 +110,12 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
     return <div style={{ background: '#fff url(/images/event_home_bg.png) top center repeat-x' }}>
         <div className="page-width min-h-[100svh] sm:pt-8 pt-3 flex-col flex md:flex-row">
             <div className="flex-1 md:max-w-[648px] order-2 md:order-1">
-                {groupDetail.map_enabled && enableGoogleMap &&
+                {enableGoogleMap && mapMarkers.length > 0 &&
                     <EventHomeMap
                         mapMarkers={mapMarkers}
                         lang={lang}
                         langType={langType}
-                        groupHandle={groupDetail.handle}
+                        groupHandle={groupDetail.name}
                     />
                 }
                 <EventHomeFilter
@@ -129,7 +123,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     onFilterChange={(filter) => handleFilterChange({ ...filter, page: 1 })}
                     groupDetail={groupDetail}
                     isManager={isManager}
-                    unionVenues={unionVenues}
+                    unionVenues={[]}
                     isFiltered={uiStatus.isFiltered}
                     lang={lang} />
                 <div className="my-3">
@@ -149,7 +143,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
 
             <div className="md:w-[328px] ml-0 flex-col flex order-1 md:order-2 md:ml-6 mb-6">
                 <a className="flex-row-item-center justify-between  p-3 rounded-lg mb-3"
-                    href={`/group/${groupDetail.handle}?tab=members`}>
+                    href={`/group/${groupDetail.name}?tab=members`}>
                     <div className="flex-row-item-center">
                         <img src={cfImage((groupDetail.image_url && groupDetail.image_url != "") ? groupDetail.image_url : "/images/default_avatar/avatar_1.png", { width: 32, height: 32, fit: 'cover' })}
                             className="w-4 h-4 rounded-full mr-2" alt="" />
@@ -161,7 +155,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     <div className='text-xs'>{members.length} {lang['Members']} <i className="uil-arrow-right" /></div>
                 </a>
 
-                <a href={`/event/${groupDetail.handle}/schedule/compact`}
+                <a href={`/event/${groupDetail.name}/schedule/compact`}
                     className={`${buttonVariants({ variant: "warm" })} w-full`}>
                     <i className="uil-calender text-lg" />
                     <span>{lang['Event Schedule']}</span>
@@ -175,7 +169,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                 }
 
                 {!!groupDetail.venues.length &&
-                    <a href={`/event/${groupDetail.handle}/venues`}
+                    <a href={`/event/${groupDetail.name}/venues`}
                         className={`${buttonVariants({ variant: "normal" })} w-full mt-3`}
                     >
                         <img src="/images/icon_venue.svg" alt="" />
@@ -185,8 +179,8 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
 
 
                 {!!currProfile && <>
-                    {canSubmitEvent && groupDetail.status !== 'freezed' &&
-                        <a href={`/event/${groupDetail.handle}/create`}
+                    {canSubmitEvent && groupDetail.active !== false &&
+                        <a href={`/event/${groupDetail.name}/create`}
                             className={`${buttonVariants({ variant: "special" })} w-full mt-3`}
                         >{lang['Create an Event']}</a>
                     }
@@ -204,11 +198,11 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     {isManager &&
                         <>
                         <div className="flex-row-item-center mt-3 gap-2">
-                            <a href={`/event/${groupDetail.handle}/setting`}
+                            <a href={`/event/${groupDetail.name}/setting`}
                                 className={`${buttonVariants({ variant: "secondary" })} flex-1`}>
                                 {lang['Settings']}
                             </a>
-                            <a href={`https://dashboard.sola.day/event/${groupDetail.handle}`}
+                            <a href={`https://dashboard.sola.day/event/${groupDetail.name}`}
                                 className={`${buttonVariants({ variant: "secondary" })} flex-1`}>
                                 Dashboard
                             </a>
@@ -229,7 +223,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                     <DialogEventHomeFilter
                         filterOpts={currFilter}
                         groupDetail={groupDetail}
-                        unionVenues={unionVenues}
+                        unionVenues={[]}
                         lang={lang}
                         onFilterChange={(filter) => handleFilterChange({ ...filter, page: 1 })}
                         dialogMode="modal"

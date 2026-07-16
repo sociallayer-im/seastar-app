@@ -15,11 +15,11 @@ import ScheduleViewSwitcher from "@/app/(iframe)/schedule/ScheduleViewSwitcher"
 import DailyViewAllDayEventItem from "@/app/(iframe)/schedule/day/[grouphandle]/DailyViewAllDayEventItem"
 import {selectLang} from "@/app/actions"
 import {cache} from 'react'
-import {getGroupDetailByHandle} from '@sola/sdk'
+import {getGroupDetailByName} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 
 const cachedGetGroupDetailByHandle = cache((handle: string) => {
-    return getGroupDetailByHandle({params: {groupHandle: handle}, clientMode: CLIENT_MODE})
+    return getGroupDetailByName({params: {groupName: handle}, clientMode: CLIENT_MODE})
 })
 
 export async function generateMetadata({params}: {
@@ -31,7 +31,7 @@ export async function generateMetadata({params}: {
         redirect('/404')
     } else {
         return {
-            title: `${groupDetail.nickname || groupDetail.handle} Event Schedule | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`
+            title: `${groupDetail.nickname || groupDetail.name} Event Schedule | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`
         }
     }
 }

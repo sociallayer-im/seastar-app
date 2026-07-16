@@ -11,7 +11,7 @@ export default function AddToCalendarAppBtn({groupHandle, lang}: { groupHandle: 
     const {openModal} = useModal()
 
     const urls = getEventIcsUrl({
-        params: {groupHandle: groupHandle},
+        params: {groupIdOrName: groupHandle},
         clientMode: CLIENT_MODE
     })
 

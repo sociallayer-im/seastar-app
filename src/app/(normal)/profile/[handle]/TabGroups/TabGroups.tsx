@@ -4,7 +4,7 @@ import {selectLang} from "@/app/actions"
 import {Profile} from '@sola/sdk'
 
 export default async function TabGroups(props: { profile: Profile}) {
-    const groups = await UserGroupListData(props.profile.handle)
+    const groups = await UserGroupListData(props.profile.name)
     const lang = (await selectLang()).lang
 
     return <div className="py-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -19,7 +19,7 @@ export default async function TabGroups(props: { profile: Profile}) {
 
 
         {groups.map((group, i) => {
-            return <CardGroup key={i} group={group} currProfileHandle={props.profile.handle}/>
+            return <CardGroup key={i} group={group} currProfileHandle={props.profile.name}/>
         })}
     </div>
 }

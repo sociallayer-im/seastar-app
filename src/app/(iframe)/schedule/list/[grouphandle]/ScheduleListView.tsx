@@ -120,7 +120,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
                 </a>
                 <span className="whitespace-nowrap">{lang['Event Schedule']}</span>
             </div>
-            <ShareScheduleBtn lang={lang} className="sm:block hidden" groupHandle={groupDetail.handle} view="list" />
+            <ShareScheduleBtn lang={lang} className="sm:block hidden" groupHandle={groupDetail.name} view="list" />
         </div>
 
         <div className="desk-tool-bar hidden sm:flex flex-row justify-between">
@@ -211,7 +211,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
                 lang={lang} 
                 compact={true} 
                 className="sm:hidden block"
-                groupHandle={groupDetail.handle}
+                groupHandle={groupDetail.name}
                 view="list"/>
             </div>
 

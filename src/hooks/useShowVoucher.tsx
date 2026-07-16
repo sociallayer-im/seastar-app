@@ -7,7 +7,7 @@ import {CLIENT_MODE} from '@/app/config'
 
 export default function useShowVoucher() {
     const {showLoading, closeModal, openModal} = useModal()
-    const showVoucher = async (voucherId: number, lang: Dictionary) => {
+    const showVoucher = async (voucherId: string, lang: Dictionary) => {
         const loading = showLoading()
         try {
             let currProfile: ProfileDetail | null

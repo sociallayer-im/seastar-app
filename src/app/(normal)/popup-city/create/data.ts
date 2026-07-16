@@ -15,7 +15,7 @@ export default async function CreatePopupCityPageData(grouphandle?: string) {
     }
 
     const groups = await getAvailableGroupsForEventHost(({
-        params: {profileHandle: currProfile.handle},
+        params: {profileName: currProfile.name},
         clientMode: CLIENT_MODE
     }))
 
@@ -23,7 +23,7 @@ export default async function CreatePopupCityPageData(grouphandle?: string) {
 
     if (grouphandle) {
         presetGroup = groups.find(g => {
-            return g.handle === grouphandle
+            return g.name === grouphandle
         })
 
         if (!presetGroup) {

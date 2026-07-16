@@ -11,7 +11,7 @@ import {
     getUserPopupcitys,
     joinRemember,
     mintRemember,
-    ProfileDetail, Profile, BadgeClass
+    ProfileDetail, Profile, BadgeClass, Group,
 } from '@sola/sdk'
 // import DialogBindEmail from "./DialogBindEmail"
 import {Dictionary} from '@/lang'
@@ -34,16 +34,16 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
     const {scanQrcode} = useScanQrcode()
     const [success, setSuccess] = useState(false)
     // 1080
-    const [voucherId, setVoucherId] = useState<null | number>(null)
+    const [voucherId, setVoucherId] = useState<null | string>(null)
     const [joinedUser, setJoinedUser] = useState<Profile[]>([])
-    const [isJoinedOtherVoucherId, setIsJoinedOtherVoucherId] = useState<null | number>(null)
+    const [isJoinedOtherVoucherId, setIsJoinedOtherVoucherId] = useState<null | string>(null)
     const [joinedTargetUser, setJoinedTargetUser] = useState<null | Profile>(null)
-    const [joinedActivityId, setJoinedActivityId] = useState<null | number>(null)
+    const [joinedActivityId, setJoinedActivityId] = useState<null | string>(null)
     const [joinedUserPopupcitys, setJoinedUserPopupcitys] = useState<{
-        [index: string]: { groups: { id: number, handle: string, image_url: null | string }[] }
+        [index: string]: { name?: string, groups: Group[] }
     }>({})
 
-    const [rememberBadgeClassId, setRememberBadgeClassId] = useState<null | number>(null)
+    const [rememberBadgeClassId, setRememberBadgeClassId] = useState<null | string>(null)
     const [combineAmount, setCombineAmount] = useState(2)
 
     const searchParams = useSearchParams()
@@ -167,7 +167,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
     }, [joinedUser])
 
     const totalPopUpCitys = useMemo(() => {
-        const res: { id: number, handle: string, image_url: null | string }[] = []
+        const res: Group[] = []
         Object.values(joinedUserPopupcitys).map(g => {
             g.groups.map(c => {
                 if (!res.some(r => r.id === c.id)) {
@@ -183,7 +183,8 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
         const loading = showLoading()
         try {
             const authToken = getAuth()
-            const voucherId = parseInt(window.atob(enCodedVoucherId))
+            // QR payload is btoa('0000' + voucherId) — strip the legacy pad.
+            const voucherId = window.atob(enCodedVoucherId).replace(/^0{4}/, '')
             const joinInfo = await joinRemember({
                 params: {
                     authToken: authToken!,
@@ -191,9 +192,9 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
                 },
                 clientMode: CLIENT_MODE
             })
-            setJoinedTargetUser(joinInfo.sender)
+            setJoinedTargetUser(joinInfo.voucher.sender)
             setIsJoinedOtherVoucherId(voucherId)
-            setJoinedActivityId(joinInfo.activity.id)
+            setJoinedActivityId(joinInfo.activities.find(a => a.initiator.id === user?.id)?.id || null)
         } catch (e: any) {
             console.error(e)
             toast({
@@ -216,7 +217,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
                     <svg className={styles['btn']}
                          onClick={() => {
                              close()
-                             router.push(`/profile/${user!.handle}?tab=badges`)
+                             router.push(`/profile/${user!.name}?tab=badges`)
                          }}
                          width="227" height="58" viewBox="0 0 227 58" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect width="227" height="58" rx="18" fill="#250258"/>
@@ -254,7 +255,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
                 const data = await mintRemember({
                     params: {
                         authToken: authToken!,
-                        voucherId: voucherId || 0
+                        voucherId: voucherId!
                     }, clientMode: CLIENT_MODE
                 })
                 showRes(data)

@@ -1,6 +1,6 @@
 import {getCurrProfile} from '@/app/actions'
 import {redirect} from 'next/navigation'
-import {getProfileEventByHandle} from '@sola/sdk'
+import {getProfileEventByName} from '@sola/sdk'
 import {setEventAttendedStatus} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
@@ -11,8 +11,8 @@ export default async function MyEventsCohostingPageData() {
         redirect('/404')
     }
 
-    const profileEvents = await getProfileEventByHandle({
-        params: {handle: currProfile.handle},
+    const profileEvents = await getProfileEventByName({
+        params: {name: currProfile.name},
         clientMode: CLIENT_MODE
     })
 

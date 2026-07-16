@@ -1,6 +1,6 @@
 'use client'
 
-import {createPopupCity, getGroupDetailByHandle, Group, GroupDetail, updateGroup} from '@sola/sdk'
+import {createPopupCity, getGroupDetailByName, Group, GroupDetail, updateGroup} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {useEffect, useMemo, useState} from 'react'
 import useModal from '@/components/client/Modal/useModal'
@@ -26,7 +26,7 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
         return [
             {
                 nickname: lang['Create a Group'],
-                id: 0
+                id: ''
             } as Group,
             ...availableGroups
         ]
@@ -37,7 +37,6 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
         image_url: null,
         location: null,
         title: '',
-        website: null,
         start_date: null,
         end_date: null,
         group_id: null,
@@ -50,8 +49,8 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
     const [groupDetail, setGroupDetail] = useState<GroupDetail | null>(null)
     const handleSetStep1 = async (presetGroupHandle?:string) => {
         const loading = showLoading()
-        const groupDetail = await getGroupDetailByHandle({
-            params: {groupHandle: presetGroupHandle || selectedGroup!.handle},
+        const groupDetail = await getGroupDetailByName({
+            params: {groupName: presetGroupHandle || selectedGroup!.name},
             clientMode: CLIENT_MODE
         })
         setGroupDetail(groupDetail)
@@ -65,7 +64,7 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
                 ...draft,
                 group_id: presetGroup.id
             })
-            handleSetStep1(presetGroup.handle)
+            handleSetStep1(presetGroup.name)
         }
     }, [presetGroup])
 
@@ -87,7 +86,6 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
                     popupCityDraft: {
                         image_url: draft.image_url,
                         location: draft.location,
-                        website: draft.website,
                         start_date: draft.start_date,
                         end_date: draft.end_date,
                         group_id: draft.group_id!
@@ -147,7 +145,7 @@ export default function CreatePopupCityForm({availableGroups, lang, presetGroup}
                 <Step3
                     lang={lang}
                     popupCityName={draft.title || ''}
-                    groupHandle={selectedGroup?.handle || ''}
+                    groupName={selectedGroup?.name || ''}
                 />
             }
         </div>

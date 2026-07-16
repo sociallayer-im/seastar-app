@@ -8,7 +8,7 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {buttonVariants} from '@/components/shadcn/Button'
 
 export default function StarEventCardStarBtn({eventId, starred, label, className, kind = 'compact'}: {
-    eventId: number,
+    eventId: string,
     starred: boolean,
     label?: string
     kind?: 'compact' | 'normal' | 'small',

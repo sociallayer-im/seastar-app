@@ -3,15 +3,15 @@ import GroupEventHome from '@/app/(normal)/event/[grouphandle]/GroupEventHome'
 import { headers } from "next/headers"
 import GroupEventHomeData, { GroupEventHomeSearchParams} from '@/app/(normal)/event/[grouphandle]/data'
 import {cache} from 'react'
-import {getGroupDetailByHandle} from '@sola/sdk'
+import {getGroupDetailByName} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
 import {displayProfileName} from '@/utils'
 import {selectLang} from '@/app/actions'
 
 const cachedGetGroupDetailByHandle = cache(async (handle: string) => {
-    return await getGroupDetailByHandle({
-        params: {groupHandle: handle!},
+    return await getGroupDetailByName({
+        params: {groupName: handle!},
         clientMode: CLIENT_MODE
     })
 })

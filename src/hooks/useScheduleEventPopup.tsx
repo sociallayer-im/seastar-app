@@ -19,7 +19,7 @@ export default function useScheduleEventPopup() {
     const {openModal, showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const getCachedGroupDetail = async (groupId: number) => {
+    const getCachedGroupDetail = async (groupId: string) => {
         if (cachedGroupDetail && cachedGroupDetail.id === groupId) {
             return cachedGroupDetail
         }
@@ -40,7 +40,7 @@ export default function useScheduleEventPopup() {
         return profile
     }
 
-    const showPopup = async (eventId: number, groupId: number, starred: boolean, lang: Dictionary, onHighlighted?: (highlighted: boolean) => void) => {
+    const showPopup = async (eventId: string, groupId: string, starred: boolean, lang: Dictionary, onHighlighted?: (highlighted: boolean) => void) => {
         const loadingModalId = showLoading()
         try {
             
@@ -59,7 +59,7 @@ export default function useScheduleEventPopup() {
             }
     
             const url = new URL(window.location.href)
-            url.searchParams.set('popup', eventId.toString())
+            url.searchParams.set('popup', eventId)
             window.history.pushState({}, '', url.toString())
             openModal({
                 content: (close) => <DynamicScheduleEventPopup

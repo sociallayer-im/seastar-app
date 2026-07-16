@@ -20,7 +20,7 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
     const {openModal, showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const showEditSocialMedia = (type: keyof Solar.SocialMedia, value?: string) => {
+    const showEditSocialMedia = (type: keyof NonNullable<ProfileDetail['social_links']>, value?: string) => {
         openModal({
             content: (close) => <DialogEditSocialMedia
                 lang={lang}
@@ -53,7 +53,7 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                 clientMode: CLIENT_MODE
             })
             toast({title: 'Profile updated'})
-            window.location.href = '/profile/' + newProfile.handle
+            window.location.href = '/profile/' + newProfile.name
         } catch (e: unknown) {
             console.error('[EditProfile]: ', e)
             toast({title: e instanceof Error ? e.message : 'Failed to update profile', variant: 'destructive'})
@@ -91,19 +91,11 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                            endAdornment={<span>{newProfile.nickname?.length || 0}/30</span>}
                            className="w-full mb-4"/>
 
-                    <div className="font-semibold pb-2">{lang['Where are you based?']}</div>
-                    <Input value={newProfile.location || ''}
-                           placeholder={lang['Location']}
-                           onChange={e => {
-                               setNewProfile({...newProfile, location: e.target.value})
-                           }}
-                           className="w-full mb-4"/>
-
                     <div className="font-semibold pb-2">{lang['Bio']}</div>
-                    <Textarea value={newProfile.about || ''}
+                    <Textarea value={newProfile.bio || ''}
                               placeholder={lang['Bio']}
                               onChange={e => {
-                                  setNewProfile({...newProfile, about: e.target.value})
+                                  setNewProfile({...newProfile, bio: e.target.value})
                               }}
                               className="min-h-[120px]"
                     />
@@ -116,9 +108,9 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                                         className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
                                     <div className="w-9 flex flex-row justify-center">
-                                        <i className={`${Media_Meta[key].icon} !text-lg`}/>
+                                        <i className={`${Media_Meta[key]!.icon} !text-lg`}/>
                                     </div>
-                                    <span>{Media_Meta[key].label}</span>
+                                    <span>{Media_Meta[key]!.label}</span>
                                 </div>
                                 <div>
                                     {

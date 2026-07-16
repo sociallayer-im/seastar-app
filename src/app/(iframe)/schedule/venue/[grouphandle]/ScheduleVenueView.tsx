@@ -155,10 +155,10 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
                     {venues.map((venue, index) => (
                         <div key={index}
                             className="overflow-hidden text-sm border-r border-b border-t  border-gray-200 bg-gray-50 text-center font-medium relative">
-                            {venue.image_urls?.[0] && venue.id !== 0 && <img src={cfImage(venue.image_urls?.[0], { width: 400, height: 300, fit: 'cover' })} alt="" className="w-full h-full object-cover" />}
-                            {!venue.image_urls?.[0] && venue.id !== 0 && <img src={'/images/venue_default_bg.jpg'} alt="" className="w-full h-full object-cover opacity-50" />}
+                            {(venue as any).image_urls?.[0] && venue.id !== '' && <img src={cfImage((venue as any).image_urls?.[0], { width: 400, height: 300, fit: 'cover' })} alt="" className="w-full h-full object-cover" />}
+                            {!(venue as any).image_urls?.[0] && venue.id !== '' && <img src={'/images/venue_default_bg.jpg'} alt="" className="w-full h-full object-cover opacity-50" />}
                             <div className="font-semibold p-3 absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-end bg-gradient-to-b from-transparent via-[rgba(255,255,255,0.8)]  to-[rgba(255,255,255,1)] ">
-                                {venue.title}
+                                {venue.name}
                             </div>
                         </div>
                     ))}

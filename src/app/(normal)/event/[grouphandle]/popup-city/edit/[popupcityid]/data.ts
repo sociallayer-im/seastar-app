@@ -11,7 +11,7 @@ export interface EditPopupCityPageProps {
 
 export default async function EditPopupCityPageData(popupCityId: string) {
     const popupCity = await getPopupCityById({
-        params: {id: Number(popupCityId)},
+        params: {id: popupCityId},
         clientMode: CLIENT_MODE
     })
 
@@ -22,7 +22,7 @@ export default async function EditPopupCityPageData(popupCityId: string) {
     const currProfile = await getCurrProfile()
 
     if (!currProfile) {
-        redirect(`/event/${popupCity.group.handle}`)
+        redirect(`/event/${popupCity.group.name}`)
     }
 
     return {

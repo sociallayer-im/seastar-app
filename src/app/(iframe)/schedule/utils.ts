@@ -1,6 +1,6 @@
 import dayjs from "@/libs/dayjs"
 import {getInterval, pickSearchParam} from "@/utils"
-import {getSdkConfig, GroupDetail, Track} from '@sola/sdk'
+import {GroupDetail, Track, EventRole, Profile, EventWithJoinStatus} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {Venue, getEvents} from '@sola/sdk'
 import { redirect } from "next/navigation"
@@ -22,26 +22,30 @@ export interface IframeSchedulePageParams {
 }
 
 export interface IframeSchedulePageDataGroup {
-    id: number,
+    id: string,
     handle: string,
     timezone: string,
     nickname: string,
-    venues: Solar.Venue[],
-    tracks: Solar.Track[],
+    venues: Venue[],
+    tracks: Track[],
 }
 
 export interface Filter {
     tags: string[]
-    venueId?: number
-    trackId?: number
-    profileId?: number
+    venueId?: string
+    trackId?: string
+    profileId?: string
     applied?: boolean
     skipRecurring?: boolean
     skipMultiDay?: boolean
 }
 
+/**
+ * The schedule views' event model, built from soon's EventWithJoinStatus
+ * (location/cover/geo derived from `place`/`image_url`).
+ */
 export interface IframeSchedulePageDataEvent {
-    id: number,
+    id: string,
     title: string,
     start_time: string,
     end_time: string,
@@ -53,24 +57,19 @@ export interface IframeSchedulePageDataEvent {
     external_url: null | string,
     group: {
         handle: string,
-        id: number,
+        id: string,
         nickname: string,
         timezone: string,
         username: string
     },
-    host_info: {
-        speaker?: Solar.ProfileSample[]
-        co_host?: Solar.ProfileSample[]
-        group_host?: Solar.ProfileSample[]
-    } | null
     geo_lat: string | null,
     geo_lng: string | null,
-    owner: Solar.ProfileSample,
-    track_id: number | null,
-    track: Solar.Track | null,
-    recurring_id: number | null,
+    owner: Profile,
+    track_id: string | null,
+    track: Track | null,
+    recurring_id: string | null,
     pinned: boolean,
-    event_roles: Solar.EventRole[] | null,
+    event_roles: EventRole[] | null,
     location_data: string | null,
     is_attending: boolean
     is_starred: boolean
@@ -81,8 +80,8 @@ export interface IframeSchedulePageDataEvent {
 export interface IframeSchedulePageDataType {
     group: IframeSchedulePageDataGroup
     tags: string[],
-    venues: Solar.Venue[],
-    tracks: Solar.Track[],
+    venues: Venue[],
+    tracks: Track[],
     events: IframeSchedulePageDataEvent[],
     filters: Filter,
     weeklyUrl: string,
@@ -130,51 +129,71 @@ export async function IframeSchedulePageData({   searchParams,
                                                  authToken,
                                                  currPath
                                              }: IframeSchedulePageDataProps): Promise<IframeSchedulePageDataType> {
-    const groupName = groupDetail.handle
+    const groupName = groupDetail.name
     const filters: Filter = {
         tags: searchParams.tags ? pickSearchParam(searchParams.tags)!.split(',') : [],
-        trackId: searchParams.track ? Number(pickSearchParam(searchParams.track)!) : undefined,
-        venueId: searchParams.venue ? Number(pickSearchParam(searchParams.venue)!) : undefined,
+        trackId: pickSearchParam(searchParams.track) || undefined,
+        venueId: pickSearchParam(searchParams.venue) || undefined,
         applied: searchParams.applied === 'true',
         skipRecurring: searchParams.skip_repeat === 'true',
         skipMultiDay: searchParams.skip_multi_day === 'true'
     }
     const startDate = pickSearchParam(searchParams.start_date)
     const {start, end} = getInterval(startDate, view, groupDetail.timezone || undefined)
-    
-    const apiSearchParams = new URLSearchParams()
-    apiSearchParams.set('group_id', groupName)
-    apiSearchParams.set('start_date', start)
-    apiSearchParams.set('end_date', end)
-    apiSearchParams.set('limit', '400')
-    filters.tags?.length && apiSearchParams.set('tags', filters.tags.join(','))
-    filters.trackId && apiSearchParams.set('track_id', filters.trackId.toString())
-    filters.venueId && apiSearchParams.set('venue_id', filters.venueId.toString())
-    filters.profileId && apiSearchParams.set('source_profile_id', filters.profileId.toString())
-    filters.applied && apiSearchParams.set('my_event', '1')
-    filters.skipRecurring && apiSearchParams.set('skip_recurring', '1')
-    filters.skipMultiDay && apiSearchParams.set('skip_multiday', '1')
 
-    if (!!authToken) {
-        apiSearchParams.set('auth_token', authToken)
-        apiSearchParams.set('with_attending', '1')
-        apiSearchParams.set('with_stars', '1')
-    }
-
-    const url = `${getSdkConfig(CLIENT_MODE).api}/api/event/list?${apiSearchParams.toString()}`
-    // console.log('url =>', url)
-    const response = await fetch(url, {
-        cache: 'no-store',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+    const rawEvents = await getEvents({
+        params: {
+            filters: {
+                group_id: groupName,
+                start_date: start,
+                end_date: end,
+                timezone: groupDetail.timezone || undefined,
+                tags: filters.tags?.length ? filters.tags : undefined,
+                track_id: filters.trackId,
+                venue_id: filters.venueId,
+                skip_recurring: filters.skipRecurring ? 1 : undefined,
+            },
+            authToken: authToken || undefined,
+            limit: 400
+        },
+        clientMode: CLIENT_MODE
     })
 
-    if (!response.ok) {
-        throw new Error('Fail to get schedule data: ' + response.statusText + ' api: ' + url)
-    }
+    const toScheduleEvent = (e: EventWithJoinStatus): IframeSchedulePageDataEvent => ({
+        id: e.id,
+        title: e.title,
+        start_time: e.start_time,
+        end_time: e.end_time,
+        timezone: e.timezone || groupDetail.timezone || 'UTC',
+        meeting_url: e.meeting_url,
+        location: e.venue?.name || e.place?.name || '',
+        cover_url: e.image_url || '',
+        tags: e.tags,
+        external_url: e.external_url,
+        group: {
+            handle: groupDetail.name,
+            id: groupDetail.id,
+            nickname: groupDetail.nickname || groupDetail.name,
+            timezone: groupDetail.timezone || '',
+            username: groupDetail.name
+        },
+        geo_lat: e.place?.latitude != null ? String(e.place.latitude) : null,
+        geo_lng: e.place?.longitude != null ? String(e.place.longitude) : null,
+        owner: e.owner,
+        track_id: e.track?.id || null,
+        track: e.track || null,
+        recurring_id: e.recurring_id,
+        pinned: e.pinned,
+        // soon's list view doesn't embed event_roles — host chips render from owner.
+        event_roles: null,
+        location_data: e.place?.data?.place_id || null,
+        is_attending: !!e.is_attending,
+        is_starred: !!e.is_starred,
+        is_owner: !!e.is_owner,
+        venue: e.venue
+    })
 
-    const data = await response.json()
+    const data = {events: rawEvents.map(toScheduleEvent)}
 
     const intervelStart = dayjs.tz(start, groupDetail.timezone!).startOf('day')
     const intervelEnd = dayjs.tz(end, groupDetail.timezone!).endOf('day')
@@ -203,15 +222,16 @@ export async function IframeSchedulePageData({   searchParams,
         venueUrl = `/schedule/venue/${groupName}`
     }
 
+    const isMultiDay = (event: IframeSchedulePageDataEvent) => {
+        const tz = groupDetail.timezone || 'UTC'
+        return !dayjs.tz(event.start_time, tz).isSame(dayjs.tz(event.end_time, tz), 'day')
+    }
+
     const events = data.events
         .filter((event: IframeSchedulePageDataEvent) => {
-            return filters.applied ? event.is_attending : true
-        })
-        .map((event: IframeSchedulePageDataEvent) => {
-            return {
-                ...event,
-                track: groupDetail.tracks.find((track: Track) => track.id === event.track_id) || null
-            }
+            if (filters.applied && !event.is_attending) return false
+            if (filters.skipMultiDay && isMultiDay(event)) return false
+            return true
         })
 
         if (events.length === 0 && !startDate) {
@@ -219,7 +239,7 @@ export async function IframeSchedulePageData({   searchParams,
            const upcomingEvents = await getEvents({
             params: {
                 filters: {
-                    group_id: groupDetail.id.toString(),
+                    group_id: groupDetail.id,
                     timezone: groupDetail.timezone || undefined,
                     collection: 'upcoming',
                 },
@@ -237,18 +257,25 @@ export async function IframeSchedulePageData({   searchParams,
     const isFiltered = filters.tags.length > 0
         || !!filters.venueId
         || !!filters.trackId
-        || filters.applied
-        || filters.skipRecurring
-        || filters.skipMultiDay
+        || !!filters.applied
+        || !!filters.skipRecurring
+        || !!filters.skipMultiDay
 
 
-    const eventHomeUrl = `/event/${groupDetail.handle}`
+    const eventHomeUrl = `/event/${groupDetail.name}`
 
     return {
         ...data,
-        group: groupDetail,
+        group: {
+            id: groupDetail.id,
+            handle: groupDetail.name,
+            timezone: groupDetail.timezone || '',
+            nickname: groupDetail.nickname || groupDetail.name,
+            venues: groupDetail.venues || [],
+            tracks: groupDetail.tracks || [],
+        },
         events,
-        tags: groupDetail.event_tags || [],
+        tags: groupDetail.event_tag_list || [],
         tracks: groupDetail.tracks || [],
         venues: groupDetail.venues || [],
         filters: filters,

@@ -10,7 +10,7 @@ const cachedGroupPageData = cache(GroupPageData)
 export async function generateMetadata({params:{handle}}: GroupDataProps) {
     const {group} = await cachedGroupPageData(handle)
     return {
-        title: `Member Management | ${group.nickname || group.handle}`
+        title: `Member Management | ${group.nickname || group.name}`
     }
 }
 

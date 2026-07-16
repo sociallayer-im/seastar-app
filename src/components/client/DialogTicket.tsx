@@ -3,8 +3,10 @@ import {
     Ticket,
     TicketItem,
     EventDetail,
+    BadgeClassDetail,
     checkBadgeOwnership,
     createTicketPayment,
+    getBadgeClassDetailByBadgeClassId,
     submitPaymentTxHash,
     validateCoupon
 } from '@sola/sdk'
@@ -19,7 +21,7 @@ import {
 } from '@/utils'
 import {useEffect, useMemo, useState} from 'react'
 import {Payments, PaymentSettingToken, PaymentsType} from '@/utils/payment_setting'
-import {executePayHubPayment, PAYMENT_STEP_LABEL, PaymentStep, resolveTokenAddress} from '@/utils/evm_payment'
+import {executePayHubPayment, PAYMENT_STEP_LABEL, PaymentStep, resolveTokenAddress, tsidToBigInt} from '@/utils/evm_payment'
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {Button} from '@/components/shadcn/Button'
@@ -69,18 +71,27 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         setPromoCodeError('')
     }, [])
 
+    const [checkBadgeClass, setCheckBadgeClass] = useState<BadgeClassDetail | null>(null)
+
     useEffect(() => {
         ;(async () => {
-            if (!ticket.check_badge_class) {
+            if (!ticket.check_badge_class_id) {
                 setBadgeCollected(true)
             } else if (currProfile) {
                 setCheckingCheckBadgeCollected(true)
                 try {
-                    const collected = await checkBadgeOwnership({
-                        params: {handle: currProfile.handle, badgeId: ticket.check_badge_class.id},
-                        clientMode: CLIENT_MODE
-                    })
+                    const [collected, badgeClass] = await Promise.all([
+                        checkBadgeOwnership({
+                            params: {name: currProfile.name, badgeClassId: ticket.check_badge_class_id},
+                            clientMode: CLIENT_MODE
+                        }),
+                        getBadgeClassDetailByBadgeClassId({
+                            params: {badgeClassId: ticket.check_badge_class_id},
+                            clientMode: CLIENT_MODE
+                        })
+                    ])
                     setBadgeCollected(collected)
+                    setCheckBadgeClass(badgeClass)
                 } catch (e: unknown) {
                     console.error(e)
                     toast({
@@ -92,7 +103,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 }
             }
         })()
-    }, [ticket.check_badge_class, currProfile])
+    }, [ticket.check_badge_class_id, currProfile])
 
     const soldOut = ticket.quantity === 0
 
@@ -145,7 +156,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const selectedMethod = useMemo(() => {
         if (!selectedPaymentType || !selectedToken) return undefined
 
-        return ticket.payment_methods.find(method => {
+        return (ticket.payment_methods || []).find(method => {
             const effectiveChains = method.chains?.length ? method.chains : (method.chain ? [method.chain] : [])
             return effectiveChains.includes(selectedPaymentType.chain) &&
                 method.token_name === selectedToken.name
@@ -198,7 +209,6 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 params: {
                     coupon: promoCode,
                     eventId: eventDetail.id,
-                    authToken: authToken!,
                     price: selectedMethod!.price!,
                     methodId: selectedMethod!.id!
                 },
@@ -231,8 +241,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 payHubAddress,
                 receiverAddress: selectedMethod.receiver_address!,
                 amount: BigInt(ticketItem.amount ?? 0),
-                eventId: ticketItem.event_id,
-                orderNumber: parseInt(ticketItem.order_number!),
+                eventId: ticketItem.event_id || eventDetail.id,
+                orderNumber: tsidToBigInt(ticketItem.id),
                 onStep: setPaymentStep,
             })
 
@@ -301,13 +311,13 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                     {formatEventTime(eventDetail.start_time, eventDetail.timezone)}
                 </div>
                 {
-                    !!eventDetail.location &&
-                    <div className='text-sm'><i className="uil-location-point mr-1"/>{eventDetail.location}</div>
+                    !!eventDetail.place?.name &&
+                    <div className='text-sm'><i className="uil-location-point mr-1"/>{eventDetail.place.name}</div>
                 }
             </div>
-            {!!eventDetail.cover_url ?
+            {!!eventDetail.image_url ?
                 <div className="w-[80px] h-[80px]">
-                    <img className="w-full h-full object-cover rounded-lg" src={cfImage(eventDetail.cover_url, { width: 900, format: 'auto', quality: 85 })} alt=""/>
+                    <img className="w-full h-full object-cover rounded-lg" src={cfImage(eventDetail.image_url, { width: 900, format: 'auto', quality: 85 })} alt=""/>
                 </div>
                 : <div className="w-[80px] h-[80px] flex-shrink-0 flex-grow-0">
                     <div className="default-cover w-[452px] h-[452px] scale-[0.17]">
@@ -318,9 +328,9 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">
                             {formatEventTime(eventDetail.start_time, eventDetail.timezone)}
                         </div>
-                        {!!eventDetail.location &&
+                        {!!eventDetail.place?.name &&
                             <div className="text-lg absolute font-semibold left-[76px] top-[240px]">
-                                {eventDetail.location}
+                                {eventDetail.place.name}
                             </div>
                         }
                     </div>
@@ -341,14 +351,14 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         </div>}
 
 
-        {!!ticket.check_badge_class && !checkingBadgeCollected &&
+        {!!checkBadgeClass && !checkingBadgeCollected &&
             <div className="my-3 border-t pt-2">
                 <div className="font-semibold mb-2">{lang['Badge Needed']}</div>
                 <div className="flex-row-item-center">
-                    <img src={cfImage(ticket.check_badge_class.image_url, { width: 120, height: 120, fit: 'cover' })}
+                    <img src={cfImage(checkBadgeClass!.image_url, { width: 120, height: 120, fit: 'cover' })}
                          className="w-12 h-12 rounded-full bg-gray-50 mr-3" alt=""/>
                     <div>
-                        <div className="font-semibold">{ticket.check_badge_class.title}</div>
+                        <div className="font-semibold">{checkBadgeClass!.title}</div>
 
                         {badgeCollected
                             ? <div className="text-sm text-green-500 flex-row-item-center">
@@ -464,14 +474,14 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             variant={'special'} className="text-sm w-full">{lang['Sign In']}</Button>
         }
 
-        {!ticket.payment_methods.length && !!currProfile && !soldOut && !stopSelling &&
+        {!ticket.payment_methods?.length && !!currProfile && !soldOut && !stopSelling &&
             <Button variant={'special'}
                     disabled={!badgeCollected || checkingBadgeCollected || buying}
                     onClick={() => handlePurchaseForFree()}
                     className="text-sm w-full">{lang['Purchase for Free']}</Button>
         }
 
-        {!!ticket.payment_methods.length && !!currProfile && !soldOut && !stopSelling && !pendingTicketItem &&
+        {!!ticket.payment_methods?.length && !!currProfile && !soldOut && !stopSelling && !pendingTicketItem &&
             <Button variant={'special'}
                     disabled={!badgeCollected || checkingBadgeCollected || buying || !selectedMethod}
                     onClick={handlePay}

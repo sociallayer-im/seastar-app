@@ -40,7 +40,7 @@ export default function DialogVoucherDetail({
     const [error, setError] = useState('')
 
     const isOwner = currProfile?.id === voucherDetail.sender.id
-    const currProfileHasAccepted = voucherDetail.badges.some(b => b.owner.handle === currProfile?.handle)
+    const currProfileHasAccepted = (voucherDetail.badges || []).some(b => b.owner.name === currProfile?.name)
     const canSandAgain = isOwner && voucherDetail.counter !== 0
 
     let canAccept = false
@@ -82,7 +82,7 @@ export default function DialogVoucherDetail({
                     clientMode: CLIENT_MODE
                 })
             }
-            window.location.href = `/profile/${currProfile!.handle}?tab=badges`
+            window.location.href = `/profile/${currProfile!.name}?tab=badges`
         } catch (e: unknown) {
             closeModal(loading)
             console.error(e)
@@ -96,7 +96,7 @@ export default function DialogVoucherDetail({
             const authToken = getAuth()
             await rejectVoucher({
                 params: {
-                    badgeClassId: voucherDetail.badge_class.id,
+                    voucherId: voucherDetail.id,
                     authToken: authToken!
                 },
                 clientMode: CLIENT_MODE
@@ -104,7 +104,7 @@ export default function DialogVoucherDetail({
             if (close) {
                 close()
             } else {
-                window.location.href = `/profile/${currProfile!.handle}?tab=badges`
+                window.location.href = `/profile/${currProfile!.name}?tab=badges`
             }
         } catch (e: unknown) {
             closeModal(loading)
@@ -136,7 +136,7 @@ export default function DialogVoucherDetail({
             </div>
 
             <div className="text-center">
-                <a href={`/profile/${voucherDetail.sender.handle}`}
+                <a href={`/profile/${voucherDetail.sender.name}`}
                     className="!inline-flex whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-6">
                     <div className="font-semibold">{lang['Creator']}</div>
                     <Avatar profile={voucherDetail.sender} size={24} className="mx-2" />

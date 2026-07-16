@@ -4,7 +4,7 @@ import { Button } from "@/components/shadcn/Button"
 import { Dictionary } from "@/lang"
 import { toast, useToast } from "@/components/shadcn/Toast/use-toast"
 
-export default function InviteSuccessAction({ groupHandle, lang, id, code }: { groupHandle: string, lang: Dictionary, id?: number, code?: string }) {
+export default function InviteSuccessAction({ groupName, lang, id, code }: { groupName: string, lang: Dictionary, id?: string, code?: string }) {
     const { toast } = useToast()
 
     const handleCopyLink = () => {
@@ -17,7 +17,7 @@ export default function InviteSuccessAction({ groupHandle, lang, id, code }: { g
     }
 
     const toGroup = () => {
-        window.location.href = `/group/${groupHandle}`
+        window.location.href = `/group/${groupName}`
     }
 
     return <div className="flex flex-col w-[330px] mx-auto">

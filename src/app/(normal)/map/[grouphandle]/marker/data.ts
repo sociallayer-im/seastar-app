@@ -1,4 +1,4 @@
-import {getGroupDetailByHandle, getMarkersByGroupHandle, getMarkersByGroupHandleAndCategory} from '@sola/sdk'
+import {getGroupDetailByName, getMarkersByGroupName} from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile} from '@/app/actions'
 import {pickSearchParam} from '@/utils'
@@ -22,9 +22,9 @@ export default async function GroupMarkerMapPageData({params, searchParams}: Gro
     if (process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP !== 'true') redirect('/')
 
     const groupHandle = params.grouphandle
-    const groupDetail = await getGroupDetailByHandle({
+    const groupDetail = await getGroupDetailByName({
         clientMode: CLIENT_MODE,
-        params: {groupHandle: groupHandle}
+        params: {groupName: groupHandle}
     })
 
     if (!groupDetail) {
@@ -35,18 +35,12 @@ export default async function GroupMarkerMapPageData({params, searchParams}: Gro
 
     const category = MARKER_TYPES.find(type => type.label === pickSearchParam(searchParams.category)) || null
 
-    const markers = category
-        ? await getMarkersByGroupHandleAndCategory({
-            params: {
-                groupHandle: groupHandle,
-                category: category.label
-            }, clientMode: CLIENT_MODE
-        })
-        : await getMarkersByGroupHandle({
-            params: {
-                groupHandle: groupHandle,
-            }, clientMode: CLIENT_MODE
-        })
+    const markers = await getMarkersByGroupName({
+        params: {
+            groupName: groupHandle,
+            category: category?.label
+        }, clientMode: CLIENT_MODE
+    })
 
     return {
         groupDetail,

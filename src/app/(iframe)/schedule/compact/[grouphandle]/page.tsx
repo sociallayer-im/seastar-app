@@ -6,14 +6,14 @@ import {
 } from "@/app/(iframe)/schedule/utils"
 import {getServerSideAuth, selectLang} from "@/app/actions"
 import {cache} from 'react'
-import {getGroupDetailByHandle} from '@sola/sdk'
+import {getGroupDetailByName} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import ScheduleCompactView from "./ScheduleCompactView"
 import { getAuth } from "@/utils"
 import { headers } from "next/headers"
 
 const cachedGetGroupDetailByHandle = cache((handle: string) => {
-    return getGroupDetailByHandle({params: {groupHandle: handle}, clientMode: CLIENT_MODE})
+    return getGroupDetailByName({params: {groupName: handle}, clientMode: CLIENT_MODE})
 })
 
 export async function generateMetadata({params}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
@@ -22,7 +22,7 @@ export async function generateMetadata({params}: {params: IframeSchedulePagePara
         redirect('/404')
     } else {
         return {
-            title: `${groupDetail.nickname || groupDetail.handle} Event Schedule | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`
+            title: `${groupDetail.nickname || groupDetail.name} Event Schedule | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`
         }
     }
 }

@@ -5,7 +5,7 @@ import {Dictionary} from "@/lang"
 import {toast, useToast} from "@/components/shadcn/Toast/use-toast"
 
 export interface ShareVoucherActionProps {
-    voucherId: number
+    voucherId: string
     lang: Dictionary
     badgeName: string
     code?: string

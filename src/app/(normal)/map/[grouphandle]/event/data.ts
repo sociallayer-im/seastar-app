@@ -1,4 +1,4 @@
-import {Event, getEvents, getGroupDetailByHandle, getProfileEventByHandle} from '@sola/sdk'
+import {Event, getEvents, getGroupDetailByName, getProfileEventByName} from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {analyzeGroupMembershipAndCheckProfilePermissions, pickSearchParam, setEventAttendedStatus} from '@/utils'
@@ -22,8 +22,8 @@ export default async function GroupEventMapData({params, searchParams}: GroupEve
     if (process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP !== 'true') redirect('/')
 
     const groupHandle = params.grouphandle
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle},
+    const groupDetail = await getGroupDetailByName({
+        params: {groupName: groupHandle},
         clientMode: CLIENT_MODE
     })
     if (!groupDetail) {
@@ -56,8 +56,8 @@ export default async function GroupEventMapData({params, searchParams}: GroupEve
     let currProfileAttends: Event[] = []
     let currProfileStarred: Event[] = []
     if (!!currProfile) {
-        const {attends, starred} = await getProfileEventByHandle({
-            params: {handle: currProfile.handle},
+        const {attends, starred} = await getProfileEventByName({
+            params: {name: currProfile.name},
             clientMode: CLIENT_MODE
         })
         currProfileAttends = attends
@@ -71,7 +71,7 @@ export default async function GroupEventMapData({params, searchParams}: GroupEve
         currProfile
     })
 
-    const targetEventId = pickSearchParam(searchParams.event) ? parseInt(pickSearchParam(searchParams.event)!) : undefined
+    const targetEventId = pickSearchParam(searchParams.event) || undefined
 
     return {
         groupDetail,

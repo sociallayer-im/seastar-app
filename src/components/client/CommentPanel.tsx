@@ -23,7 +23,7 @@ export interface CommentPanelProps {
     currProfile: ProfileDetail | null
     itemType: CommentItemType
     commentType: CommentType
-    itemId: number
+    itemId: string
 }
 
 export default function CommentPanel({lang, currProfile, itemType, itemId, commentType}: CommentPanelProps) {
@@ -128,8 +128,8 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
             {comments.map((comment, index) => {
                 return <div key={index} className='w-full'>
                     <div className="flex-row-item-center  text-sm">
-                        <Avatar profile={comment.profile} size={28} className="mr-2 border"/>
-                       <span className="font-semibold">{displayProfileName(comment.profile)}</span>
+                        <Avatar profile={comment.user} size={28} className="mr-2 border"/>
+                       <span className="font-semibold">{displayProfileName(comment.user)}</span>
 
                         <div className="ml-2 text-xs"><DisplayDateTime
                             dataTimeStr={comment.created_at}/></div>

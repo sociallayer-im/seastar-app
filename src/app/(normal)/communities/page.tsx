@@ -16,7 +16,7 @@ export default async function CommunitiesPage() {
 
         <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-2">
             {eventGroups.map((group, index) => {
-                return <a key={index} href={`/group/${group.handle}`}
+                return <a key={index} href={`/group/${group.name}`}
                           className="h-[200px] rounded shadow p-3 duration-200 hover:translate-y-[-6px]">
                     <Avatar profile={group} size={64} className="object-cover"/>
                     <div className="webkit-box-clamp-2 text-lg font-semibold leading-5 h-10 mb-4 mt-2">

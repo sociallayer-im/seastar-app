@@ -74,7 +74,7 @@ export default function EditMarkerForm({lang, draft, group}: EditMarkerFormProps
                     })
 
                     setTimeout(() => {
-                        window.location.href = `/map/${group.handle}/marker`
+                        window.location.href = `/map/${group.name}/marker`
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)

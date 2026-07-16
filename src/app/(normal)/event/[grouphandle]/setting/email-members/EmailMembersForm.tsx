@@ -10,7 +10,7 @@ import {Button} from '@/components/shadcn/Button'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 
 interface Props {
-    groupId: number
+    groupId: string
     groupHandle: string
     memberCount: number
     lang: Dictionary

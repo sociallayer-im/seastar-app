@@ -13,10 +13,9 @@ export interface PopupCityFormDraft {
     title: string
     image_url: string | null
     location: string | null
-    website: string | null
     start_date: string | null
     end_date: string | null
-    group_id: number | null
+    group_id: string | null
 }
 
 export interface CreatePopupCityStepProps {
@@ -33,7 +32,7 @@ export default function Step0({availableGroups, popupCityState, lang, onNext}: C
         return [
             {
                 nickname: lang['Create a Group'],
-                id: 0
+                id: ''
             } as Group,
             ...(availableGroups || [])
         ]
@@ -54,7 +53,7 @@ export default function Step0({availableGroups, popupCityState, lang, onNext}: C
                 value={selectedGroup ? [selectedGroup] : undefined}
                 renderOption={(group) => {
                     return <div className="flex-row-item-center">
-                        {group.id === 0
+                        {group.id === ''
                             ? <>
                                 <i className="uil-plus-circle text-2xl mr-2"/>
                                 <div className="font-semibold">{displayProfileName(group)}</div>
@@ -67,7 +66,7 @@ export default function Step0({availableGroups, popupCityState, lang, onNext}: C
                     </div>
                 }}
                 onSelect={(group) => {
-                    if (group[0].id === 0) {
+                    if (group[0].id === '') {
                         location.href = '/group/create?create-popup-city=1'
                     } else {
                         popupCityState[1]({

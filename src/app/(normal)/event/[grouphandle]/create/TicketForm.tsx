@@ -24,7 +24,7 @@ import {
     TicketDraft,
     PaymentMethod,
     EventRole,
-    getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerHandle, getBadgeClassDetailByBadgeClassId
+    getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerName, getBadgeClassDetailByBadgeClassId
 } from '@sola/sdk'
 import {cfImage} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
@@ -227,11 +227,11 @@ function TicketItem({
     const handleSelectBadge = async () => {
         const loading = showLoading()
         try {
-            const profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle({
-                params: {handle: currProfile.handle},
+            const profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerName({
+                params: {name: currProfile.name},
                 clientMode: CLIENT_MODE
             })).badgeClasses
-            let groupHostBadgeClasses: Solar.BadgeClass[] = []
+            let groupHostBadgeClasses: BadgeClass[] = []
             const groupHost = eventRoles.find(r => r.role === 'group_host')
             if (groupHost) {
                 if (groupHost) {
@@ -275,7 +275,7 @@ function TicketItem({
                 className="text-red-500">*</span></div>
             <Input type="text"
                    className="w-full"
-                   value={ticketDraft.title}
+                   value={ticketDraft.title || ''}
                    onChange={e => setTicketDraft({...ticket, title: e.target.value})}
             />
             {!!errors?.title && <div className="err-msg text-red-400 mt-2 text-xs">{errors?.title}</div>}
@@ -314,7 +314,7 @@ function TicketItem({
                             key={t.id}>
                             <div className="text-xs font-normal">
                                 <div className="font-semibold">{t.title}</div>
-                                <div>{t.kind}</div>
+                                <div>{t.is_private ? 'private' : 'public'}</div>
                             </div>
                         </Button>
                     })}
@@ -502,7 +502,9 @@ export interface PaymentMethodForm {
 
 
 function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
-    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(props.paymentMethods)
+    // chain_token_addresses exists in the DB but is not emitted/permitted by soon yet.
+    type PaymentMethodDraft = PaymentMethod & {chain_token_addresses?: Record<string, string>}
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethodDraft[]>(props.paymentMethods)
 
     const EVM_CHAINS = [...new Map(
         Payments.filter(c => c.chain !== 'stripe').map(c => [c.chain, c])
@@ -535,7 +537,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         }
     }
 
-    const toggleChain = (pmIndex: number, chainOpt: PaymentsType, p: PaymentMethod) => {
+        const toggleChain = (pmIndex: number, chainOpt: PaymentsType, p: PaymentMethodDraft) => {
         const currentChains = [...(p.chains || [])]
         const addresses: Record<string, string> = {...(p.chain_token_addresses || {})}
         const idx = currentChains.indexOf(chainOpt.chain)
@@ -556,7 +558,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         } : pm))
     }
 
-    const changeToken = (pmIndex: number, token: PaymentSettingToken, p: PaymentMethod) => {
+    const changeToken = (pmIndex: number, token: PaymentSettingToken, p: PaymentMethodDraft) => {
         const newAddresses = {...(p.chain_token_addresses || {})}
         ;(p.chains || []).forEach(chain => {
             const chainConfig = EVM_CHAINS.find(c => c.chain === chain)

@@ -39,7 +39,7 @@ export default function DialogVenue({venue, isManager, lang, groupHandle, close}
                </div>
            }
 
-           <div className="font-semibold text-2xl">{venue.title}</div>
+           <div className="font-semibold text-2xl">{venue.name}</div>
            <div className="text-gray-500">{venue.about}</div>
            <div className="space-y-1 text-sm mt-6 ">
                <div className="flex">
@@ -52,12 +52,12 @@ export default function DialogVenue({venue, isManager, lang, groupHandle, close}
                </div>
                <div className="flex">
                    <span className="mr-1">{lang['Location']}:</span>
-                   <span>{venue.formatted_address || ''}</span>
+                   <span>{(venue as typeof venue & {formatted_address?: string | null}).formatted_address || ''}</span>
                </div>
-               {!!venue.link &&
+               {!!venue.website &&
                    <div className="flex">
                        <span className="mr-1">Link:</span>
-                       <a href={prefixUrl(venue.link)} target={'_blank'} className="text-blue-500 break-all">{venue.link}</a>
+                       <a href={prefixUrl(venue.website)} target={'_blank'} className="text-blue-500 break-all">{venue.website}</a>
                    </div>
                }
            </div>

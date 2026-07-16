@@ -43,7 +43,7 @@ export default function Tabs({labels, created, owned, isSelf}: {
                         <div
                             className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
                             {
-                                badge.display === 'top' &&
+                                badge.display === 'pinned' &&
                                 <div
                                     className="bg-[#ffdc62] rounded-br-lg px-3 py-1 font-semibold absolute left-0 top-0">
                                     Top
@@ -71,7 +71,7 @@ export default function Tabs({labels, created, owned, isSelf}: {
                         className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
                         <div
                             className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
-                            {badgeClass.display === 'top' && <div
+                            {badgeClass.display === 'pinned' && <div
                                 className="bg-[#ffdc62] rounded-br-lg px-3 py-1 font-semibold absolute left-0 top-0">Top
                             </div>
                             }

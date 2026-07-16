@@ -8,7 +8,7 @@ import {
     EventDraftType,
     BadgeClass,
     Profile,
-    getBadgeAndBadgeClassByOwnerHandle,
+    getBadgeAndBadgeClassByOwnerName,
     getBadgeClassByGroupId, getBadgeClassDetailByBadgeClassId
 } from '@sola/sdk'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -37,28 +37,28 @@ export default function SelectedEventBadge({
 
     useEffect(() => {
         ;(async () => {
-            if (!!event.badge_class_id && event.badge_class_id !== badgeClass?.id) {
+            if (!!(event as EventDraftType & {badge_class_id?: string | null}).badge_class_id && (event as EventDraftType & {badge_class_id?: string | null}).badge_class_id !== badgeClass?.id) {
                 setLoading(true)
                 const newBadgeClass = await getBadgeClassDetailByBadgeClassId({
-                    params: {badgeClassId: event.badge_class_id},
+                    params: {badgeClassId: (event as EventDraftType & {badge_class_id?: string | null}).badge_class_id!},
                     clientMode: CLIENT_MODE
                 })
                 setBadgeClass(newBadgeClass)
                 setLoading(false)
             }
         })()
-    }, [event.badge_class_id, badgeClass])
+    }, [(event as EventDraftType & {badge_class_id?: string | null}).badge_class_id, badgeClass])
 
     const resetBadge = () => {
-        setEvent({...event, badge_class_id: null})
+        setEvent({...event, badge_class_id: null} as EventDraftType)
         setBadgeClass(null)
     }
 
     const handleSelectedBadge = async () => {
         const loading = showLoading()
         try {
-            const profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle({
-                params: {handle: currProfile.handle},
+            const profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerName({
+                params: {name: currProfile.name},
                 clientMode: CLIENT_MODE
             })).badgeClasses
             let groupHostBadgeClasses: BadgeClass[] = []
@@ -78,7 +78,7 @@ export default function SelectedEventBadge({
                 profileBadgeClasses,
                 groupBadgeClasses: groupHostBadgeClasses,
                 onSelect: (b) => {
-                    setEvent({...event, badge_class_id: b.id})
+                    setEvent({...event, badge_class_id: b.id} as EventDraftType)
                     setBadgeClass(b)
                     closeModal()
                 }

@@ -89,7 +89,7 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
 
             <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-2">
                 {filteredCities.map((popupCity, index) => {
-                    return <a key={index} href={`/event/${popupCity.group.handle}`}
+                    return <a key={index} href={`/event/${popupCity.group.name}`}
                               className="rounded shadow p-3 duration-200 hover:translate-y-[-6px]">
                         <div className="rounded aspect-[3/2] mb-3 overflow-hidden">
                             <img className="object-cover w-full h-full rounded"
@@ -116,9 +116,9 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
                                     <div className="webkit-box-clamp-1">by {displayProfileName(popupCity.group)}</div>
                                 </div>
                             </div>
-                            {!!popupCity.website && 
+                            {!!(popupCity as typeof popupCity & {website?: string | null}).website && 
                                 <div
-                                onClick={(e) => {e.preventDefault();window.open(prefixUrl(popupCity.website!), '_blank')}}
+                                onClick={(e) => {e.preventDefault();window.open(prefixUrl((popupCity as typeof popupCity & {website?: string | null}).website!), '_blank')}}
                                 className="whitespace-nowrap text-xs bg-[#EEF2FE] py-1.5 px-2 rounded-lg ml-1">
                                 <i className="uil-link-alt text-[#7492EF]" />
                             </div>

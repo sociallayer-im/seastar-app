@@ -33,7 +33,7 @@ export default function CreateMarkerForm({draft, lang, groupDetail}: CreateMarke
             })
 
             setTimeout(() => {
-                window.location.href = `/map/${groupDetail.handle}/marker`
+                window.location.href = `/map/${groupDetail.name}/marker`
             }, 2000)
         } catch (e: unknown) {
             console.error(e)

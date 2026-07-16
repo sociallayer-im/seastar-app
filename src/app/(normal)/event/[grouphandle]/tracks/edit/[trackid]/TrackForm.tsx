@@ -30,7 +30,7 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
     const [draft, setDraft] = useState(trackDetail)
     const [titleError, setTitleError] = useState('')
     const [timeError, setTimeError] = useState('')
-    const [members, setMembers] = useState<TrackMemberItem[]>(trackDetail.track_roles?.map(r => ({ profile: r.profile, role: r.role as 'manager' | 'member' })) || [])
+    const [members, setMembers] = useState<TrackMemberItem[]>(trackDetail.track_roles?.map(r => ({ profile: r.user, role: (r.role === 'admin' ? 'manager' : 'member') as 'manager' | 'member' })) || [])
 
     useEffect(() => {
     }, [draft, members])
@@ -103,13 +103,13 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Icon (optional)']}</div>
                 <div className="mb-1 text-sm text-gray-500">{lang['Display on the schedule page']}</div>
-                <div onClick={async () => setDraft({ ...draft, icon_url: await uploadImage() })}
+                <div onClick={async () => setDraft({ ...draft, image_url: await uploadImage() })}
                     className="cursor-pointer bg-secondary rounded-lg h-[170px] flex-col flex justify-center items-center mb-4">
                     {
-                        draft.icon_url
+                        draft.image_url
                             ? <img
                                 className="max-w-[100%] max-h-[100px]"
-                                src={draft.icon_url} alt="" />
+                                src={draft.image_url} alt="" />
                             : <img className="w-[100px] h-[100px] rounded-full"
                                 src={'/images/upload_default.png'} alt="" />
                     }
@@ -118,16 +118,16 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
 
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Description (Optional)']}</div>
-                <Input className="w-full" value={draft.about || ''}
+                <Input className="w-full" value={draft.description || ''}
                     onChange={(e) => {
-                        setDraft({ ...draft, about: e.target.value })
+                        setDraft({ ...draft, description: e.target.value })
                     }} />
             </div>
 
             <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Visibility']}</div>
                 <div onClick={e => {
-                    setDraft({ ...draft, kind: 'public' })
+                    setDraft({ ...draft, is_private: false })
                 }}
                     className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                     <div>
@@ -136,13 +136,13 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
                             {lang['Everyone can view events in the program']}
                         </div>
                     </div>
-                    {draft.kind == 'public'
+                    {!draft.is_private
                         ? <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
                         : <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
                     }
                 </div>
                 <div onClick={e => {
-                    setDraft({ ...draft, kind: 'private' })
+                    setDraft({ ...draft, is_private: true })
                 }}
                     className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}>
                     <div>
@@ -151,7 +151,7 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
                             {lang['Only program members or group managers can view events in the program.']}
                         </div>
                     </div>
-                    {draft.kind == 'private'
+                    {draft.is_private
                         ? <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
                         : <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
                     }
@@ -274,18 +274,18 @@ function DialogSelectorMember({ lang, onChange, close, memberships }: DialogSele
                 {memberships.map((member, i) => {
                     return <div key={i}
                         onClick={() => {
-                            setSelected(member.profile)
+                            setSelected(member.user)
                         }}
                         className="mb-3 justify-between cursor-pointer flex-row-item-center shadow rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
                         <div className='flex-row-item-center'>
                             <Avatar
                                 size={28}
-                                profile={member.profile}
+                                profile={member.user}
                                 className="rounded-full mr-2" />
-                            <div>{displayProfileName(member.profile)}</div>
+                            <div>{displayProfileName(member.user)}</div>
                         </div>
                         {
-                            selected?.id === member.profile.id &&
+                            selected?.id === member.user.id &&
                             <i className="uil-check-circle text-2xl text-green-500"></i>
                         }
                     </div>

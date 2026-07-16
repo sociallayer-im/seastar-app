@@ -84,7 +84,7 @@ export default function ScheduleCompactView({data: initialData, groupDetail, eve
             <ShareScheduleBtn 
             lang={lang} 
             className="sm:block hidden" 
-            groupHandle={groupDetail.handle} 
+            groupHandle={groupDetail.name} 
             view="compact"/>
         </div>
 
@@ -174,7 +174,7 @@ export default function ScheduleCompactView({data: initialData, groupDetail, eve
                 lang={lang} 
                 compact={true} 
                 className="sm:hidden block"
-                groupHandle={groupDetail.handle}
+                groupHandle={groupDetail.name}
                 view="compact"/>
             </div>
 

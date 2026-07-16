@@ -10,14 +10,11 @@ import {displayProfileName, getAuth} from '@/utils'
 import useShowVoucher from '@/hooks/useShowVoucher'
 import {setActivityRead} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
-import useModal from '@/components/client/Modal/useModal'
-import DialogInviteDetail from '@/components/client/DialogInviteDetail'
 import Dynamic from 'next/dynamic'
 
 const DynamicDisplayDateTime = Dynamic(() => import('@/components/client/DisplayDateTime'), {ssr: false})
 
 export default function Notifications({activities, lang}: { activities: ActivityDetail[], lang: Dictionary }) {
-    const {openModal} = useModal()
     const {showVoucher} = useShowVoucher()
 
 
@@ -33,15 +30,16 @@ export default function Notifications({activities, lang}: { activities: Activity
     const [currTab, setCurrTab] = useState('invite')
 
     const handleShowVoucher = (activity: ActivityDetail) => {
-        if (!activity.data) return
-        const voucherId = activity.data.split(':')[1]
+        // soon activities reference the voucher via item_type/item_id.
+        const voucherId = activity.item_type === 'Voucher' ? activity.item_id : null
+        if (!voucherId) return
         const authToken = getAuth()
         setActivityRead({
             params: {activityId: activity.id, authToken: authToken!},
             clientMode: CLIENT_MODE
         })
         setLocalActivities(localActivities.map(a => a.id === activity.id ? {...a, has_read: true} : a))
-        showVoucher(Number(voucherId), lang)
+        showVoucher(voucherId, lang)
     }
 
     const handleShowInvite = (activity: ActivityDetail) => {
@@ -51,13 +49,11 @@ export default function Notifications({activities, lang}: { activities: Activity
             clientMode: CLIENT_MODE
         })
         setLocalActivities(localActivities.map(a => a.id === activity.id ? {...a, has_read: true} : a))
-        if (!!activity.group_invite) {
-            openModal({
-                content: (close) => <DialogInviteDetail
-                    inviteDetail={activity.group_invite!}
-                    close={close!}
-                    lang={lang}/>
-            })
+        // soon activities do not embed the invite object; the invite itself is
+        // handled on the group join page / pending invites flow.
+        const groupName = typeof activity.payload?.group_name === 'string' ? activity.payload.group_name : null
+        if (groupName) {
+            window.location.href = `/group/${groupName}`
         }
     }
 
@@ -93,7 +89,7 @@ export default function Notifications({activities, lang}: { activities: Activity
                         </div>
                         {!a.has_read && <i className="bg-red-400 w-3 h-3 rounded-full"/>}
                     </div>
-                    <div>{displayProfileName(a.initiator)} {lang['Send you a badge']} {!!a.badge_class?.title ? `[${a.badge_class?.title}]` : ''}</div>
+                    <div>{displayProfileName(a.initiator)} {lang['Send you a badge']}</div>
                 </div>)
             }
 
@@ -111,7 +107,7 @@ export default function Notifications({activities, lang}: { activities: Activity
                         </div>
                         {!a.has_read && <i className="bg-red-400 w-3 h-3 rounded-full"/>}
                     </div>
-                    <div>{a.group_invite?.message || a.memo}</div>
+                    <div>{typeof a.payload?.message === 'string' ? a.payload.message : lang['Invites']}</div>
                 </div>)
             }
 

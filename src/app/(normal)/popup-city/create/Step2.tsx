@@ -75,15 +75,6 @@ export default function Step2({lang, groupDetailState, popupCityState, onNext, o
             </div>
 
             <div className="my-3">
-                <div className="font-semibold">{lang['Website (optional)']}</div>
-                <Input placeholder="https://..."
-                       inputSize={'md'}
-                       className="w-full"
-                       value={popupCityState[0].website || ''}
-                       onChange={e => popupCityState[1]({...popupCityState[0], website: e.target.value})}/>
-            </div>
-
-            <div className="my-3">
                 <div className="font-semibold">{lang['Timezone']}</div>
                 <TimezonePicker
                     className="w-full"

@@ -11,7 +11,7 @@ import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {Dictionary} from '@/lang'
 
 export default function RejectBtn({children, eventId, langPkg, ...props}: ButtonProps & {
-    eventId: number,
+    eventId: string,
     langPkg: Dictionary
 }) {
     const {showLoading, closeModal} = useModal()

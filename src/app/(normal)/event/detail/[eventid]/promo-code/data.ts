@@ -1,7 +1,7 @@
 import {getCouponByEventId, getEventDetailById, getGroupDetailById} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
-import {getCurrProfile} from '@/app/actions'
+import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {analyzeGroupMembershipAndCheckProfilePermissions} from '@/utils'
 
 export interface PromoCodePageParams {
@@ -16,7 +16,7 @@ export default async function PromoCodePageData({params}: PromoCodePageProps) {
     const {eventid} = params
 
     const eventDetail = await getEventDetailById({
-        params: {eventId: parseInt(eventid)},
+        params: {eventId: eventid},
         clientMode: CLIENT_MODE
     })
 
@@ -25,7 +25,7 @@ export default async function PromoCodePageData({params}: PromoCodePageProps) {
     }
 
     const groupDetail = await getGroupDetailById({
-        params: {groupId: eventDetail.group_id!},
+        params: {groupId: eventDetail.group!.id},
         clientMode: CLIENT_MODE
     })
 
@@ -56,7 +56,7 @@ export default async function PromoCodePageData({params}: PromoCodePageProps) {
     }
 
     const coupons = await getCouponByEventId({
-        params: {eventId: parseInt(eventid)},
+        params: {eventId: eventid, authToken: (await getServerSideAuth())!},
         clientMode: CLIENT_MODE
     })
 

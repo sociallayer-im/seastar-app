@@ -38,15 +38,15 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
     const host: Solar.ProfileSample = customHostRole ?
         {
             image_url: customHostRole.image_url,
-            nickname: customHostRole.nickname,
-            handle: customHostRole.nickname!,
+            nickname: customHostRole.display_name,
+            name: customHostRole.display_name!,
             id: customHostRole.item_id!
         }
         : groupHostRole ?
             {
                 image_url: groupHostRole.image_url,
-                nickname: groupHostRole.nickname,
-                handle: groupHostRole.nickname!,
+                nickname: groupHostRole.display_name,
+                name: groupHostRole.display_name!,
                 id: groupHostRole.item_id!
             }
             : event.owner || (event as any).profile
@@ -82,22 +82,22 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                         }
                         <img className="mr-1 w-4 h-4 flex-shrink-0 rounded-full" src={getAvatar(host.id, host.image_url)} alt="" />
                         <span className="mr-1">by</span>
-                        <span>{host.nickname || host.handle}</span>
+                        <span>{host.nickname || host.name}</span>
                     </div>
                 }
-                {event.location && event.geo_lng && event.geo_lat &&
+                {!!event.place?.name && event.place.longitude != null && event.place.latitude != null &&
                     <a target="_blank"
                         className="text-xs flex-row-item-center mt-1 ml-1 hover:underline"
-                        href={genGoogleMapLink(event.geo_lat!, event.geo_lng!, event.location_data)}>
+                        href={genGoogleMapLink(event.place.latitude!, event.place.longitude!, (event.place.data as any)?.place_id ?? null)}>
                         <i className="uil-location-point mr-1" />
-                        <span className="w-[180px] sm:w-auto overflow-hidden overflow-ellipsis whitespace-nowrap">{event.location}</span>
+                        <span className="w-[180px] sm:w-auto overflow-hidden overflow-ellipsis whitespace-nowrap">{event.place.name}</span>
                     </a>
                 }
             </div>
             <div
                 className="sm:w-[160px] sm:h-[160px] w-[99px] h-[99px] rounded overflow-hidden flex-grow-0 flex-shrink-0 relative">
-                {!!event.cover_url
-                    ? <img src={event.cover_url} className="w-full h-full object-cover" alt="" />
+                {!!event.image_url
+                    ? <img src={event.image_url} className="w-full h-full object-cover" alt="" />
                     : <div className="default-cover w-[452px] h-[452px] sm:scale-[0.356] scale-[0.22]">
                         <div className="font-semibold text-[27px] webkit-box-clamp-2 max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
                             {event.title}
@@ -108,7 +108,7 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                             {eventCoverTimeStr(event.start_time!, event.timezone!).time}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[240px]">
-                            {event.location}
+                            {event.place?.name}
                         </div>
                     </div>
                 }
@@ -158,7 +158,7 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                     </a>
                 }
 
-                {!canAccess && !!profile && !!groupDetail.ticket_link && event.status !== 'cancelled' && event.status !== 'closed' &&
+                {!canAccess && !!profile && !!(groupDetail as GroupDetail & {ticket_link?: string | null}).ticket_link && event.status !== 'cancelled' && event.status !== 'closed' &&
                     <Button variant={'special'}
                         className="sm:mr-3 mt-3 sm:w-auto w-full"
                         onClick={() => {
@@ -166,7 +166,7 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                             showConfirmDialog({
                                 lang,
                                 title: '购票或加入社区 / Purchase Ticket or Join',
-                                content: `请购票或申请加入社区 Please purchase a ticket or apply to join the community.<br /><br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="${groupDetail.ticket_link}" target="_blank">前往购票 / Go to Purchase</a>`,
+                                content: `请购票或申请加入社区 Please purchase a ticket or apply to join the community.<br /><br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="${(groupDetail as GroupDetail & {ticket_link?: string | null}).ticket_link}" target="_blank">前往购票 / Go to Purchase</a>`,
                                 type: 'info'
                             })
                         }}>

@@ -1,4 +1,5 @@
-import {getGroupDetailByHandle, VenueAvailability, VenueDetail} from '@sola/sdk'
+import {getGroupDetailByName, VenueAvailability} from '@sola/sdk'
+import {VenueDraft} from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/VenueForm'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
 import {getCurrProfile} from '@/app/actions'
@@ -13,8 +14,8 @@ export interface CreateVenueDataProps {
 }
 
 export default async function CreateVenueData({params: {grouphandle}}: CreateVenueDataProps) {
-    const groupDetail = await getGroupDetailByHandle({
-        params: {groupHandle: grouphandle},
+    const groupDetail = await getGroupDetailByName({
+        params: {groupName: grouphandle},
         clientMode: CLIENT_MODE
     })
 
@@ -24,35 +25,30 @@ export default async function CreateVenueData({params: {grouphandle}}: CreateVen
 
     const currProfile = await getCurrProfile()
     if (!currProfile) {
-        redirect(`/event/${groupDetail.handle}`)
+        redirect(`/event/${groupDetail.name}`)
     }
 
     const {isManager} = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
     if (!isManager) {
-        redirect(`/event/${groupDetail.handle}`)
+        redirect(`/event/${groupDetail.name}`)
     }
 
     const emptyVenue = {
-        title: '',
-        visibility: 'all',
+        name: '',
         formatted_address: null,
-        location:'',
+        location: '',
         about: '',
         group_id: groupDetail.id,
         geo_lat: null,
         geo_lng: null,
         location_data: null,
-        start_date: null,
-        end_date: null,
-        link: null,
+        website: null,
         capacity: null,
         require_approval: false,
         availabilities: [] as VenueAvailability[],
-        venue_timeslots: [],
-        venue_overrides: [],
         image_urls: [] as string[],
         amenities: [] as string[],
-    } as unknown as VenueDetail
+    } as unknown as VenueDraft
 
     return {
         currProfile,

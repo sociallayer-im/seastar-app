@@ -1,9 +1,9 @@
 type SubscriptionDisplayHistory = {
-    invites: number[]
+    invites: string[]
 }
 
 
-export const newInviteDisplayed = (inviteId: number) => {
+export const newInviteDisplayed = (inviteId: string) => {
     const history = sessionStorage.getItem('subscription_display_history')
     if (!history) {
         return false
@@ -13,7 +13,7 @@ export const newInviteDisplayed = (inviteId: number) => {
     return displayHistory.invites.includes(inviteId)
 }
 
-export const addDisplayedInvite = (inviteId: number) => {
+export const addDisplayedInvite = (inviteId: string) => {
     const history = sessionStorage.getItem('subscription_display_history')
     let displayHistory: SubscriptionDisplayHistory = {
         invites: []

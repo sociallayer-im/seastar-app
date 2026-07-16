@@ -105,7 +105,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                     {result.groups.map((group, index) => {
                         return <a key={index}
                                   className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
-                                  href={`/group/${group.handle}`}>
+                                  href={`/group/${group.name}`}>
                             <div className="relative mr-2">
                                 <Avatar profile={group} size={28}/>
                             </div>
@@ -121,7 +121,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                     {result.profiles.map((profile, index) => {
                         return <a key={index}
                                   className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
-                                  href={`/profile/${profile.handle}`}>
+                                  href={`/profile/${profile.name}`}>
                             <div className="relative mr-2">
                                 <Avatar profile={profile} size={28}/>
                             </div>

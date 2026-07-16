@@ -40,7 +40,7 @@ export const getCurrProfile = async function () {
         clientMode: CLIENT_MODE
     })
 
-    if (!profile?.handle) {
+    if (!profile?.name) {
         return null
     }
 

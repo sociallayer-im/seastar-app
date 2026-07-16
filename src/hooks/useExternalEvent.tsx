@@ -26,7 +26,7 @@ export default function useExternalEvent() {
                     const content = data.description.replace(/(?<!\n)\n(?!\n)/g, '\n\n')
 
                     const eventData = {
-                        cover_url: data.cover_image || null,
+                        image_url: data.cover_image || null,
                         title: data.title,
                         content,
                         geo_lat: data.location?.coordinates?.latitude || null,
@@ -39,7 +39,7 @@ export default function useExternalEvent() {
                         timezone: data.start?.timezone,
                     }
 
-                    return eventData as EventDraftType
+                    return eventData as unknown as EventDraftType
                 } catch (e) {
                     console.error('[load luma Event]: ', e)
                     toast({title: 'Failed to load the event', variant: 'destructive'})

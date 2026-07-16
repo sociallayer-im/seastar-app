@@ -5,9 +5,9 @@ import {GroupDetail, PopupCity} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 
 
-export default function Step3({lang, groupHandle, popupCityName}: {
+export default function Step3({lang, groupName, popupCityName}: {
     lang: Dictionary
-    groupHandle: string,
+    groupName: string,
     popupCityName: string
 }) {
 
@@ -18,22 +18,22 @@ export default function Step3({lang, groupHandle, popupCityName}: {
         </div>
         <div className="text-secondary-foreground">Next, you can :</div>
         <div className="my-6 grid grid-cols-1 gap-3">
-            <a href={`/event/${groupHandle}/create`}
+            <a href={`/event/${groupName}/create`}
                className={`${buttonVariants({variant: 'primary'})} w-full`}>
                 {lang['Create an Event']}
             </a>
 
-            <a href={`/event/${groupHandle}`}
+            <a href={`/event/${groupName}`}
                className={`${buttonVariants({variant: 'secondary'})} w-full`}>
                 {lang['View Event Home Page']}
             </a>
 
-            <a  href={`/event/${groupHandle}/permission`}
+            <a  href={`/event/${groupName}/permission`}
                 className={`${buttonVariants({variant: 'secondary'})} w-full`}>
                 {lang['Set Event Permission']}
             </a>
 
-            <a href={`/group/${groupHandle}/management/invite`}
+            <a href={`/group/${groupName}/management/invite`}
                 className={`${buttonVariants({variant: 'secondary'})} w-full`}>
                 {lang['Invite Managers']}
             </a>

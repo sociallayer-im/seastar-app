@@ -26,7 +26,7 @@ export default async function CreateBadgePageData({searchParams} : CreateBadgePa
     }
 
     const availableGroupCreator = await getAvailableGroupsForBadgeClassCreator({
-        params: {profileHandle: currProfile.handle},
+        params: {profileName: currProfile.name},
         clientMode: CLIENT_MODE
     })
 

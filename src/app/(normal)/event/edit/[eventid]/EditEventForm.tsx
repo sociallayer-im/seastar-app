@@ -133,7 +133,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                     })
                     toast({description: 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
-                        window.location.href = `/event/${props.data.groupDetail.handle}`
+                        window.location.href = `/event/${props.data.groupDetail.name}`
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)
@@ -169,7 +169,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
 
                     toast({description: 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
-                        window.location.href = `/event/${props.data.groupDetail.handle}`
+                        window.location.href = `/event/${props.data.groupDetail.name}`
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)

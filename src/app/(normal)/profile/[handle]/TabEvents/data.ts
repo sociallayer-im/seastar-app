@@ -1,5 +1,5 @@
 import {
-    getProfileEventByHandle,
+    getProfileEventByName,
     getStaredEvent,
     Profile,
 } from '@sola/sdk'
@@ -8,15 +8,15 @@ import {CLIENT_MODE} from '@/app/config'
 import {getServerSideAuth} from '@/app/actions'
 
 export const ProfileEventListData = async function (handle: string, currProfile?: Profile | null) {
-    const profileEvents = await getProfileEventByHandle({
-        params: {handle: handle},
+    const profileEvents = await getProfileEventByName({
+        params: {name: handle},
         clientMode: CLIENT_MODE
     })
-    const isSelf = currProfile?.handle === handle
+    const isSelf = currProfile?.name === handle
 
     const [currProfileAttends, staredEvents] = await Promise.all([
-        currProfile ? (await getProfileEventByHandle({
-            params: {handle: handle},
+        currProfile ? (await getProfileEventByName({
+            params: {name: handle},
             clientMode: CLIENT_MODE
         })).attends : [],
         (async () => {

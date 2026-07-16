@@ -6,6 +6,7 @@ import dynamic from "next/dynamic"
 import {selectLang} from '@/app/actions'
 import {buttonVariants} from '@/components/shadcn/Button'
 import Avatar from '@/components/Avatar'
+import {Badge} from '@sola/sdk'
 import NoData from '@/components/NoData'
 import {cache} from 'react'
 
@@ -47,13 +48,13 @@ async function PublicBadgeClassPage({badgeClass, badges, isOwner, groupCreator}:
 
                 <div className="grid grid-cols-1 gap-3 text-sm">
                     {!!groupCreator
-                        ? <a href={`/group/${groupCreator.handle}`}
+                        ? <a href={`/group/${groupCreator.name}`}
                              className="w-full whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full p-2">
                             <div className="font-semibold">{lang['Creator']}</div>
                             <Avatar profile={groupCreator} size={24} className="mx-2"/>
                             <div>{displayProfileName(groupCreator)}</div>
                         </a>
-                        : <a href={`/profile/${badgeClass.creator.handle}`}
+                        : <a href={`/profile/${badgeClass.creator.name}`}
                              className="w-full whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full p-2">
                             <div className="font-semibold">{lang['Creator']}</div>
                             <Avatar profile={badgeClass.creator} size={24} className="mx-2"/>
@@ -73,7 +74,7 @@ async function PublicBadgeClassPage({badgeClass, badges, isOwner, groupCreator}:
 
             <div className="flex-1 sm:ml-8 w-full">
                 <div className="my-3">
-                    <span className="sm:text-2xl font-semibold mr-2 text-base">{badgeClass.badges.length}</span>
+                    <span className="sm:text-2xl font-semibold mr-2 text-base">{badges.length}</span>
                     <span className="sm:text-xl text-base">{lang['Receivers']}</span>
                 </div>
 
@@ -82,16 +83,16 @@ async function PublicBadgeClassPage({badgeClass, badges, isOwner, groupCreator}:
                 </div>}
 
                 {
-                    badges.map((badge, i) => {
+                    badges.map((badge: Badge, i: number) => {
                         return <div key={i} className="p-3 bg-secondary rounded-lg mb-3 text-sm w-full">
                             <div className="mb-3">
                                 <div className={"font-semibold mb-1"}>{lang['Receiver']}</div>
-                                <a href={`/profile/${badge.owner.handle}`}
+                                <a href={`/profile/${badge.owner.name}`}
                                    className="flex-row-item-center">
                                     <img
                                         className="w-6 h-6 rounded-full mr-2"
                                         src={cfImage(getAvatar(badge.owner.id, badge.owner.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
-                                    {badge.owner.nickname || badge.owner.handle}
+                                    {badge.owner.nickname || badge.owner.name}
                                 </a>
                             </div>
 
@@ -131,7 +132,7 @@ async function PrivateBadgeClassPage({badgeClass}: Awaited<ReturnType<typeof Bad
                 <div className="font-semibold text-2xl text-center">🔒</div>
 
                 <div className="grid grid-cols-1 gap-3 text-sm">
-                    <a href={`/profile/${badgeClass.creator.handle}`}
+                    <a href={`/profile/${badgeClass.creator.name}`}
                        className="w-full whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full p-2">
                         <div className="font-semibold">{lang['Creator']}</div>
                         <Avatar profile={badgeClass.creator} size={24} className="mx-2"/>

@@ -2,7 +2,8 @@ import {Dictionary} from "@/lang"
 import {VenueAvailability, VenueDetail} from '@sola/sdk'
 
 export interface DialogVenueDetailProps {
-    venue: VenueDetail
+    // soon venues carry no start/end date columns — optional so display degrades
+    venue: VenueDetail & {start_date?: string | null, end_date?: string | null}
     lang: Dictionary
 }
 

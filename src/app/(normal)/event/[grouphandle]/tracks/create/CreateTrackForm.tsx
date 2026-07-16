@@ -18,15 +18,16 @@ export default function CreateTrackForm({trackDetail, lang, groupDetail}: TrackF
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const handleCreate = async (track: Track, managers: Profile[], members: Profile[]) => {
+    // soon persists track managers via manager_ids; member-level roles are
+    // not persisted via the API.
+    const handleCreate = async (track: Track, managers: Profile[], _members: Profile[]) => {
         const loading = showLoading()
         try {
             const authToken = getAuth()
             await createTrack({
                 params: {
-                    track: track,
-                    managers: managers,
-                    members: members,
+                    track: {...track, group_id: groupDetail.id},
+                    managerIds: managers.map(m => m.id),
                     authToken: authToken!
                 },
                 clientMode: CLIENT_MODE

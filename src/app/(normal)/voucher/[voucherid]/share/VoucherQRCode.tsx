@@ -3,7 +3,7 @@
 import QrCode from "@/components/client/QRcode"
 import {useEffect, useState} from 'react'
 
-export default function VoucherQRCode(props: {voucherId: number, code?: string}) {
+export default function VoucherQRCode(props: {voucherId: string, code?: string}) {
     const [voucherLink, setVoucherLink] = useState('')
 
     useEffect(() => {

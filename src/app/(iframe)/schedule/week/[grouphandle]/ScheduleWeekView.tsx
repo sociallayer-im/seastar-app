@@ -84,7 +84,7 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
                 <ShareScheduleBtn
                     lang={lang}
                     className="sm:block hidden"
-                    groupHandle={groupDetail.handle}
+                    groupHandle={groupDetail.name}
                     view="week" />
             </div>
 
@@ -174,7 +174,7 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
                             lang={lang}
                             compact={true}
                             className="sm:hidden block"
-                            groupHandle={groupDetail.handle}
+                            groupHandle={groupDetail.name}
                             view="week" />
                     </div>
 

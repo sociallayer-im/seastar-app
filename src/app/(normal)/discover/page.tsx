@@ -23,15 +23,12 @@ export async function generateMetadata() {
 }
 
 export default async function DiscoverPage() {
-    const { eventGroups, popupCities, currProfile, popupCityMap, enableGoogleMap, featuredPopupCities } = await DiscoverPageData()
+    const { eventGroups, popupCities, currProfile, enableGoogleMap, featuredPopupCities } = await DiscoverPageData()
     const { lang, type } = await selectLang()
 
-    const mapMarkers = popupCityMap.map((event) => {
-        return {
-            position: { lat: Number(event.geo_lat), lng: Number(event.geo_lng) },
-            title: event.title
-        }
-    })
+    // popup-city map pins come from the cities' own locations now (the old
+    // popupCityMap fed off a hardcoded group's past events).
+    const mapMarkers: { position: { lat: number, lng: number }, title: string }[] = []
 
     return <div className="page-width min-h-[100svh] pt-4 sm:pt-6 !pb-16">
         {enableGoogleMap && <PopupCityMap mapMarkers={mapMarkers} lang={lang} langType={type} />}
@@ -72,7 +69,7 @@ export default async function DiscoverPage() {
                         </div>
                     </SelectedBadgeWannaSend>
 
-                    <a href={`/profile/${currProfile.handle}?tab=badges`}
+                    <a href={`/profile/${currProfile.name}?tab=badges`}
                         className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
                         style={{ 'background': 'linear-gradient(180deg, #FEFFF3 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -83,7 +80,7 @@ export default async function DiscoverPage() {
                         <div className="text-lg font-semibold mt-2">{lang['My Badge']}</div>
                     </a>
 
-                    <a href={`/profile/${currProfile.handle}?tab=groups`}
+                    <a href={`/profile/${currProfile.name}?tab=groups`}
                         className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
                         style={{ 'background': 'linear-gradient(180deg, #F3F7FF 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -94,7 +91,7 @@ export default async function DiscoverPage() {
                         <div className="text-lg font-semibold mt-2">{lang['My Groups']}</div>
                     </a>
 
-                    <a href={`/profile/${currProfile.handle}/edit`}
+                    <a href={`/profile/${currProfile.name}/edit`}
                         className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
                         style={{ 'background': 'linear-gradient(180deg, #FDF3FF 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">

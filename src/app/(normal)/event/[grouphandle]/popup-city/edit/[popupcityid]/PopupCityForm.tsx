@@ -132,14 +132,6 @@ export default function EditPopupCityForm({popupCity, lang}: { popupCity: PopupC
                 </div>
 
                 <div className="my-3">
-                    <div className="font-semibold mb-1">{lang['Website (optional)']}</div>
-                    <Input placeholder="https://..."
-                           className="w-full"
-                           value={draft.website || ''}
-                           onChange={e => setDraft({...draft, website: e.target.value})}/>
-                </div>
-
-                <div className="my-3">
                     <div className="font-semibold mb-1">{lang['Duration']}</div>
                     <div className="flex-row-item-center">
                         <DatePicker

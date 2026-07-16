@@ -63,7 +63,7 @@ export default function SendBadgeForm({badgeClass, lang, toProfile, isPrivate}: 
                 authToken: authToken!,
                 badgeClassId: badgeClass.id,
                 message: reason,
-                receivers: receivers.map(item => item.handle || item.nickname) as string[]
+                receivers: receivers.map(item => item.name || item.nickname) as string[]
             }, clientMode: CLIENT_MODE
         })
         location.href = `/voucher/${vouchers[0].id}/share`

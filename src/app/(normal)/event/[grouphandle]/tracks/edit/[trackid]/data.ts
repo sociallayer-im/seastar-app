@@ -10,7 +10,7 @@ export interface TrackDetailDataProps {
 export default async function TrackDetailData({params: {trackid}}: TrackDetailDataProps) {
     const trackDetail = await getTrackDetailById({
         params: {
-            trackId: parseInt(trackid)
+            trackId: trackid
         }, clientMode: CLIENT_MODE
     })
 
@@ -25,7 +25,7 @@ export default async function TrackDetailData({params: {trackid}}: TrackDetailDa
     }
 
     const groupDetail = await getGroupDetailById({
-        params: {groupId: trackDetail.group_id},
+        params: {groupId: trackDetail.group!.id},
         clientMode: CLIENT_MODE
     })
 

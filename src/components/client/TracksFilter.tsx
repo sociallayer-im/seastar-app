@@ -10,13 +10,13 @@ export interface TracksFilterProps {
     allowResetBtn?: boolean
     tracks: Track[]
     multiple?: boolean
-    values?: number[] | null
-    onSelect?: (trackIds?: number[]) => void
+    values?: string[] | null
+    onSelect?: (trackIds?: string[]) => void
 }
 
 export default function TracksFilter({tracks, values, onSelect, multiple, lang, allowResetBtn=true}: TracksFilterProps) {
 
-    const handleSelect = (trackId: number) => {
+    const handleSelect = (trackId: string) => {
         if (values?.includes(trackId)) {
             const newValues = values.filter(v => v !== trackId)
             onSelect?.(newValues.length ? newValues : undefined)
@@ -48,7 +48,7 @@ export default function TracksFilter({tracks, values, onSelect, multiple, lang, 
                 className={`select-none hover:brightness-95 mb-1 mr-1 ${selected ? 'border-foreground' : 'border-gray-300'} h-[44px]`}>
                 <div className="text-xs font-normal">
                     <div className="font-semibold">{t.title}</div>
-                    <div className="capitalize">{t.kind}</div>
+                    <div className="capitalize">{t.is_private ? 'private' : 'public'}</div>
                 </div>
             </Button>
         })}

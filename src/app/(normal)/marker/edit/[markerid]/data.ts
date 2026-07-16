@@ -8,7 +8,7 @@ export default async function MarkerEditData({params}: MarkerDetailPageDataProps
     const {markerid} = params
 
     const markerDetail = await getMarkerById({
-        params: {markerId: parseInt(markerid)},
+        params: {markerId: markerid},
         clientMode: CLIENT_MODE
     })
     const currProfile = await getCurrProfile()
@@ -22,7 +22,7 @@ export default async function MarkerEditData({params}: MarkerDetailPageDataProps
     }
 
 
-    const currProfileIsCreator = markerDetail?.owner.id === currProfile?.id
+    const currProfileIsCreator = markerDetail?.owner?.id === currProfile?.id
     if (!currProfileIsCreator) {
         redirect('/marker/detail/' + markerid)
     }

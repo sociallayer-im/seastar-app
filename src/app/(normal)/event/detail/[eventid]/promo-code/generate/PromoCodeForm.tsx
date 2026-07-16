@@ -33,7 +33,7 @@ export default function PromoCodeForm({lang, eventId}: { lang: Dictionary, event
         try {
             const authToken = getAuth()
             await setCoupon({
-                params: {...draft, authToken: authToken!} as CouponDraft,
+                params: {...draft, eventId: String(eventId), authToken: authToken!} as CouponDraft,
                 clientMode: CLIENT_MODE
             })
             toast({title: lang['Create Successfully'], variant: 'success'})

@@ -1,4 +1,4 @@
-import {getCurrProfile} from '@/app/actions'
+import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {redirect} from 'next/navigation'
 import {getProfileActivities} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
@@ -11,7 +11,7 @@ export default async function NotificationData() {
     }
 
     const activities = await getProfileActivities({
-        params: {profile_id: currProfile.id},
+        params: {authToken: (await getServerSideAuth())!},
         clientMode: CLIENT_MODE
     })
 

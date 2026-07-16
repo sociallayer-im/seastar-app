@@ -4,6 +4,7 @@ import SearchLocation from "@/components/client/LocationInput/SearchLocation"
 import {Dictionary} from "@/lang"
 import GoogleMapProvider from "@/providers/GoogleMapProvider"
 import {EventDraftType, VenueDetail} from '@sola/sdk'
+import {LegacyVenueLocation} from '@/utils'
 
 export interface LocationInputProps {
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
@@ -23,14 +24,15 @@ export default function LocationInput({state: {event, setEvent}, venues, lang, i
 
     const setUseVenue = (useVenue: boolean) => {
         if (useVenue) {
+            const cached = venueCache.current as (VenueDetail & LegacyVenueLocation) | null
             setEvent({
                 ...event,
-                venue_id: venueCache.current?.id || null,
-                geo_lng: venueCache.current?.geo_lng || null,
-                geo_lat: venueCache.current?.geo_lat || null,
-                formatted_address: venueCache.current?.formatted_address || null,
-                location_data: venueCache.current?.location_data || null,
-                location: venueCache.current?.location || null
+                venue_id: cached?.id || null,
+                geo_lng: cached?.geo_lng || null,
+                geo_lat: cached?.geo_lat || null,
+                formatted_address: cached?.formatted_address || null,
+                location_data: cached?.location_data || null,
+                location: cached?.location || null
             })
         } else {
             if (!!event.venue_id) {

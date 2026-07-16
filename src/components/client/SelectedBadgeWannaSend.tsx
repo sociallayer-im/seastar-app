@@ -6,7 +6,7 @@ import {ReactNode} from "react"
 import useSelectBadgeClass from "@/hooks/useSelectBadgeClass"
 import {
     BadgeClass,
-    getBadgeAndBadgeClassByOwnerHandle,
+    getBadgeAndBadgeClassByOwnerName,
     Group,
     ProfileDetail
 } from '@sola/sdk'
@@ -40,16 +40,16 @@ export default function SelectedBadgeWannaSend({
         try {
             let profileBadgeClasses: BadgeClass[] = []
             if (profileDetail) {
-                profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle({
-                    params: {handle: profileDetail.handle},
+                profileBadgeClasses = (await getBadgeAndBadgeClassByOwnerName({
+                    params: {name: profileDetail.name},
                     clientMode: CLIENT_MODE
                 })).badgeClasses
             }
 
             let groupBadgeClasses: BadgeClass[] = []
             if (group) {
-                groupBadgeClasses = (await getBadgeAndBadgeClassByOwnerHandle({
-                    params: {handle: group.handle},
+                groupBadgeClasses = (await getBadgeAndBadgeClassByOwnerName({
+                    params: {name: group.name},
                     clientMode: CLIENT_MODE
                 })).badgeClasses
             }

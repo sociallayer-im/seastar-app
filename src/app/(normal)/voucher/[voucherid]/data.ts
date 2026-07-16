@@ -20,7 +20,7 @@ export interface VoucherPageDataProps {
 export default async function VoucherPageData({params, searchParams}: VoucherPageDataProps) {
     const {voucherid} = params
     const voucher = await getVoucherDetailById({
-        params: {id: parseInt(voucherid)},
+        params: {id: voucherid},
         clientMode: CLIENT_MODE
     })
     const voucherCode = pickSearchParam(searchParams.code)

@@ -38,9 +38,9 @@ export default async function PopupCityListPage() {
 
         <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-2">
             {sortedPopupCities.map((popupCity, index) => {
-                return <a key={index} href={`/event/${popupCity.group.handle}`}
+                return <a key={index} href={`/event/${popupCity.group.name}`}
                     className="h-[292px] rounded shadow p-3 duration-200 hover:translate-y-[-6px] relative">
-                    {!!currProfile && currProfile.status === 'admin' && <ManagActions popupCity={popupCity} lang={lang} />}
+                    
                     <div className="rounded h-[148px] mb-3 overflow-hidden bg-gray-100">
                         <img className="object-cover w-full h-full rounded"
                             width={227} height={148}

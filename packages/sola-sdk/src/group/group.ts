@@ -260,3 +260,25 @@ export const getEventGroups = async ({clientMode}: {clientMode?: ClientMode}) =>
     const data = await request<{groups: Group[]}>('/discover', {clientMode})
     return data.groups || []
 }
+
+/**
+ * Manager broadcast to all active group members (POST /groups/:id/send_email).
+ * With testRecipient set, sends a single preview email to that address instead.
+ */
+export const sendEmailToGroupMembers = async (
+    {params, clientMode}: SolaSdkFunctionParams<{
+        groupId: string,
+        subject: string,
+        content: string,
+        testRecipient?: string,
+        authToken: string,
+    }>
+) => {
+    const res = await request<{sent_count: number, test: boolean}>(`/groups/${params.groupId}/send_email`, {
+        method: 'POST',
+        clientMode,
+        authToken: params.authToken,
+        body: {subject: params.subject, content: params.content, test_recipient: params.testRecipient}
+    })
+    return {sentCount: res.sent_count, isTest: res.test}
+}

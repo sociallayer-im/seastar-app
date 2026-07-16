@@ -11,7 +11,7 @@ import {Dictionary} from '@/lang'
 import {CLIENT_MODE} from '@/app/config'
 
 export default function EventFeedbackBtn({eventId, lang, className}: {
-    eventId: number,
+    eventId: string,
     lang: Dictionary,
     className?: string
 }) {
@@ -33,7 +33,7 @@ export default function EventFeedbackBtn({eventId, lang, className}: {
     </Button>
 }
 
-function DialogFeedback({lang, ...props}: { close: () => void, event_id: number, lang: Dictionary }) {
+function DialogFeedback({lang, ...props}: { close: () => void, event_id: string, lang: Dictionary }) {
     const [feedback, setFeedback] = useState<string>('')
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
