@@ -90,3 +90,32 @@ export const updatePopupCity = async ({params, clientMode}: SolaSdkFunctionParam
         clientMode
     })
 }
+
+/**
+ * Platform-admin curation: replace a popup city's group_tags (e.g. add/remove
+ * "featured"/"top"). Privileged tags only pass through for platform admins
+ * (users.permissions includes "admin") — the backend strips them otherwise.
+ */
+export const updatePopupCityGroupTags = async ({params, clientMode}: SolaSdkFunctionParams<{
+    popupCity: PopupCity,
+    authToken: string
+}>) => {
+    await request(`/groups/${params.popupCity.id}`, {
+        method: 'PATCH',
+        body: {group: {group_tags: params.popupCity.group_tags || []}},
+        authToken: params.authToken,
+        clientMode
+    })
+}
+
+/** Platform-admin removal of a popup city (deletes the group). */
+export const deletePopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{
+    popupCity: PopupCity,
+    authToken: string
+}>) => {
+    await request(`/groups/${params.popupCity.id}`, {
+        method: 'DELETE',
+        authToken: params.authToken,
+        clientMode
+    })
+}

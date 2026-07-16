@@ -13,10 +13,10 @@ export default async function PopupCityListPage() {
     const popupCities = await getPopupCities({ clientMode: CLIENT_MODE })
 
     const sortedPopupCities = popupCities.sort((a, b) => {
-        const aIsFeatured = a.group_tags?.includes(":featured") || false
-        const bIsFeatured = b.group_tags?.includes(":featured") || false
-        const aIsTop = a.group_tags?.includes(":top") || false
-        const bIsTop = b.group_tags?.includes(":top") || false
+        const aIsFeatured = a.group_tags?.includes("featured") || false
+        const bIsFeatured = b.group_tags?.includes("featured") || false
+        const aIsTop = a.group_tags?.includes("top") || false
+        const bIsTop = b.group_tags?.includes("top") || false
         
         // 如果 a 是 featured 而 b 不是，a 排在前面
         if (aIsFeatured && !bIsFeatured) return -1
@@ -72,6 +72,8 @@ export default async function PopupCityListPage() {
                             {lang['View events']}
                         </div>
                     </div>
+                    {!!currProfile && currProfile.permissions?.includes('admin') &&
+                        <ManagActions popupCity={popupCity} lang={lang}/>}
                 </a>
             })
             }

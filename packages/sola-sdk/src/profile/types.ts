@@ -15,6 +15,8 @@ export interface ProfileDetail extends Profile {
     eth: string | null
     social_links: SocialMedia | null
     email?: string | null
+    /** Only on /users/me (:self view). "admin" marks a platform administrator. */
+    permissions?: string[]
 }
 
 export interface SocialMedia {
