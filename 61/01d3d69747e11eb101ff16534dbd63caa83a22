@@ -1,0 +1,77 @@
+packages/sola-sdk/src/badge/types.ts
+  s_f621b7e1fcb97a::t_c7583f9af13e8f 5-6,8,12,15-19,21-22,25-27,29-30,32-34,36-39,41,45-46,48,50,52-55,57-58,60,63-65,67,74-75
+packages/sola-sdk/src/remember.ts
+  s_f621b7e1fcb97a::t_393890634b0001 1-2,5,7-17,19-22,25-27,30-31,33,35-37,39,42-49,54,56,58-59,63,65,67,69-70,72,74-112
+packages/sola-sdk/src/utils.ts
+  s_f621b7e1fcb97a::t_1f7e031e64acf1 1-26
+packages/sola-sdk/src/group/venue.ts
+  s_f621b7e1fcb97a::t_c05ae282f358ec 2,6-30,33-34,36-38,41-42,44,48,51-56,59-60,62,65-66,69-74,76-84,86-90,92,94-113
+packages/sola-sdk/src/profile/profile.ts
+  s_f621b7e1fcb97a::t_b6031242d509d8 1-94
+packages/sola-sdk/src/popup_city/popup_city.ts
+  s_f621b7e1fcb97a::t_df4791c19c26ac 1-2,5-13,15-36,39,42,46-48,51-54,57-70,74-90
+packages/sola-sdk/src/popup_city/types.ts
+  s_f621b7e1fcb97a::t_895184f8228fe0 3-6,8-10,17-18,26
+packages/sola-sdk/src/profile/index.ts
+  s_f621b7e1fcb97a::t_8297a95c5bfad5 1-2
+packages/sola-sdk/src/service.tsx
+  s_f621b7e1fcb97a::t_425d13cc19506e 3,9-12,15,17,19-21,26-27,31,34-36,38-53
+packages/sola-sdk/src/comment/comment.ts
+  s_f621b7e1fcb97a::t_37eece271d1f26 2-3,10-11,16-29,31-32,34-50,52,54-55,57-71,73-86,89-101
+packages/sola-sdk/src/constants.ts
+  s_f621b7e1fcb97a::t_a7078a4ad67ff6 6-8
+packages/sola-sdk/src/voucher/types.ts
+  s_f621b7e1fcb97a::t_1b0b9d236af670 1-2,4,6,8,10-15,17-19,22-23
+packages/sola-sdk/src/voucher/voucher.ts
+  s_f621b7e1fcb97a::t_0ed215ddb2df72 1-2,7-8,10-15,19,21-22,25-34,38,44-49,51-52,56,61,67-73,75-80,85,90-92,94-95,97-98,102-109,111,114-120,122,126-135
+packages/sola-sdk/src/group/track.ts
+  s_f621b7e1fcb97a::t_f19293bcb167be 2-9,12-17,20,22-35,39-42,44-45,48-60,66-67,70-73
+packages/sola-sdk/src/event/ticket.ts
+  s_f621b7e1fcb97a::t_e35326b74de600 2-3,7-9,11-13,16,18-30,33-34,38,40,45,47,50-53,55,58-63,65-71,74-89,92-95,98-106,108,110-119,123-124,126-134,138-139,141-154,159,168,170-183,185-186,190,193,195,197-201,203,207-215,217,219,221-245,247-266
+packages/sola-sdk/src/group/types.ts
+  s_f621b7e1fcb97a::t_2309afe0710282 4-9,12-14,16-37,39-40,44-48,51-55,64,67-69,71,74-82,85-94,98-101,105-106,108-110,112-114,119
+packages/sola-sdk/src/activity/types.ts
+  s_f621b7e1fcb97a::t_6f129110f0c6f0 3,5,7-8,10,16
+packages/sola-sdk/src/request.ts
+  s_f621b7e1fcb97a::t_6b6e60e013426f 1-109
+packages/sola-sdk/src/place/types.ts
+  s_f621b7e1fcb97a::t_f5e0f2c394423e 2,5-8
+packages/sola-sdk/src/comment/types.ts
+  s_f621b7e1fcb97a::t_fd287770e079d2 4,6,8-9,11,13,16,18-19
+packages/sola-sdk/src/badge/badge.ts
+  s_f621b7e1fcb97a::t_719e0ae583ce35 1-2,5-14,17-21,24-33,36-44,47-55,58-62,65-73,76-85,87-95,97-107,110-115,117-124,128-136,139-144,146-147,149,151-160,163-169,171-172,174,176-185,187-196
+packages/sola-sdk/src/profile/types.ts
+  s_f621b7e1fcb97a::t_b13355fe4dd6ac 2-7,10-12,14-17,21-28
+packages/sola-sdk/src/group/group.ts
+  s_f621b7e1fcb97a::t_6c1788761d80c6 1-3,8,10-11,14-16,18-24,26-28,32,34-39,42-47,53-73,75-76,78-80,85,87-88,90-91,95-99,102-109,111,114-119,123-130,134-136,138-140,144-146,148-150,154-160,164-166,169-170,174-175,177-189,191,194-195,197-198,202-206,211,215,221,223-225,231,236,238-240,245-253,256-261
+packages/sola-sdk/src/index.ts
+  s_f621b7e1fcb97a::t_c7c029ebad8b16 3
+packages/sola-sdk/src/place/place.ts
+  s_f621b7e1fcb97a::t_9aa1d07d37e6d3 1,5-8,10,12-17,20-22,24,27-30,34-37,40-41,43-46,59-63,66,72-74
+packages/sola-sdk/src/marker/types.ts
+  s_f621b7e1fcb97a::t_553af98a8b6801 4,6,8-9,16-20,23,25-40
+packages/sola-sdk/src/event/event.ts
+  s_f621b7e1fcb97a::t_34b119d1104f53 1-12,14,24,30,34,39,43,48,53-101,108-111,118-119,126-134,141-148,150-155,158-160,164-167,171-173,175-183,186-190,193,203-205,207,211,215,217-224,226-227,232,234,236,238-239,241-243,245,247-263,265-266,268,271-272,274-284,287,289-291,296,299-302,307-308,310-314,318-319,322-329,333,336-338,341-383,387-417,419,421-424,427-449,452-459,463,465-467,469,471-473,476-477,479-480,483,490-491,493,495-499,502-503,505-509,512,515,517,520-521,523,525-530,533-541,543,546,548-553,555-557,562-563,566,568-569,574-575,578,580-581,585-599,601-622,624-625,629-630,632,635-636,638-640,645,647,653-680,682-683,690-693,695-697,699-700,704,706-710,712-714,718-722,724-726,730-735,738-750
+packages/sola-sdk/src/event/types.ts
+  s_f621b7e1fcb97a::t_59c07c4a84f4f6 7-10,12,14,17,19-22,24-33,35-37,46,48,50,53,55-59,61-71,74,76-81,83,88,90,93-95,98,100,102-105,108,113-117,120-130,132-147,150-155,158,160,164,166-167,170,172-176,180-182,184-188,195,198,204,209,214,224,234,239,241-242,244-245,249-252
+packages/sola-sdk/src/marker/marker.ts
+  s_f621b7e1fcb97a::t_c09f34e128b107 3,6-24,27-35,38-56,59,61-63,67-72,74,76-80,84-91,93
+packages/sola-sdk/src/activity/activity.ts
+  s_f621b7e1fcb97a::t_ca3cccc1a3a6b4 1,5-16,20,23-24,26-27,29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "6101d3d69747e11eb101ff16534dbd63caa83a22",
+  "prompts": {},
+  "sessions": {
+    "s_f621b7e1fcb97a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e5be7fa-d46b-4a5d-9402-cfb18fa1c82c",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
