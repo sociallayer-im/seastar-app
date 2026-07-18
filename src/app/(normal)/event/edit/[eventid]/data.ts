@@ -50,6 +50,7 @@ function toEventDraft(eventDetail: EventDetail): EventDraftType {
     tags: eventDetail.tags,
     pinned: eventDetail.pinned,
     image_url: eventDetail.image_url,
+    notes: eventDetail.notes,
     recurring_id: eventDetail.recurring_id,
     tickets: (eventDetail.tickets || []).map(t => ({ ...t, payment_methods: t.payment_methods || [] })),
     event_roles: eventDetail.event_roles || [],

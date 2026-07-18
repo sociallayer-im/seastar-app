@@ -27,6 +27,7 @@ export interface Event {
     participant_count: number,
     require_approval: boolean | null,
     image_url: string | null,
+    notes: string | null,
     recurring_id: string | null,
     form_id: string | null,
     created_at: string,

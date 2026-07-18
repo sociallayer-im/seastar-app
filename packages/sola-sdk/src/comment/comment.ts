@@ -32,8 +32,8 @@ export const createComment = async ({params, clientMode}: SolaSdkFunctionParams<
 }
 
 /**
- * List comments of an item. soon's comments#index currently requires auth —
- * pass authToken; anonymous comment reading needs a backend tweak if wanted.
+ * List comments of an item. soon's comments#index is public (no auth required);
+ * authToken is optional and only needed if the caller wants viewer-scoped data.
  */
 export const getCommentsByItemIdAndType = async ({params, clientMode}: SolaSdkFunctionParams<{
     itemId: string,

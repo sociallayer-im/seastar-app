@@ -341,10 +341,15 @@ export const listFormSubmissions = async ({params, clientMode}: SolaSdkFunctionP
 // --- event create/update orchestration ---
 
 // Only these keys go into the {event: {...}} payload; roles/tickets/location
-// are handled by their own endpoints.
+// are handled by their own endpoints. image_url (cover) and notes are set in the
+// editor and must round-trip. pinned is sent too but the API only honors it for
+// group managers (non-managers can't feature their own event).
 const eventBody = (draft: EventDraftType, placeId: string | null) => ({
     title: draft.title,
     content: draft.content,
+    notes: draft.notes,
+    image_url: draft.image_url,
+    pinned: draft.pinned,
     start_time: draft.start_time,
     end_time: draft.end_time,
     timezone: draft.timezone,
@@ -384,37 +389,76 @@ const createEventRoles = async (eventId: string, roles: EventRole[], authToken: 
     }
 }
 
+const ticketBody = (t: TicketDraft, groupId: string | null) => ({
+    title: t.title,
+    content: t.content,
+    check_badge_class_id: t.check_badge_class_id,
+    quantity: t.quantity,
+    end_time: t.end_time,
+    need_approval: t.need_approval,
+    ticket_type: t.ticket_type,
+    group_id: groupId,
+    tracks_allowed: t.tracks_allowed || [],
+    payment_methods_attributes: (t.payment_methods || []).map(pm => ({
+        chain: pm.chain,
+        kind: pm.kind,
+        token_name: pm.token_name,
+        token_address: pm.token_address,
+        receiver_address: pm.receiver_address,
+        price: pm.price,
+        protocol: pm.protocol,
+        chains: pm.chains
+    }))
+})
+
 const createEventTickets = async (eventId: string, tickets: TicketDraft[], groupId: string | null, authToken: string, clientMode?: any) => {
     for (const t of tickets) {
         if (t._destroy) continue
         await request(`/events/${eventId}/tickets`, {
             method: 'POST',
-            body: {
-                ticket: {
-                    title: t.title,
-                    content: t.content,
-                    check_badge_class_id: t.check_badge_class_id,
-                    quantity: t.quantity,
-                    end_time: t.end_time,
-                    need_approval: t.need_approval,
-                    ticket_type: t.ticket_type,
-                    group_id: groupId,
-                    tracks_allowed: t.tracks_allowed || [],
-                    payment_methods_attributes: (t.payment_methods || []).map(pm => ({
-                        chain: pm.chain,
-                        kind: pm.kind,
-                        token_name: pm.token_name,
-                        token_address: pm.token_address,
-                        receiver_address: pm.receiver_address,
-                        price: pm.price,
-                        protocol: pm.protocol,
-                        chains: pm.chains
-                    }))
-                }
-            },
+            body: {ticket: ticketBody(t, groupId)},
             authToken,
             clientMode
         })
+    }
+}
+
+/**
+ * Diff draft tickets against the server's and create/update/delete to match,
+ * mirroring syncEventRoles. The API retires sold-out tickets (status→inactive)
+ * on DELETE rather than destroying them, so removing a ticket that already has
+ * buyers is safe.
+ */
+const syncEventTickets = async (eventId: string, draftTickets: TicketDraft[], groupId: string | null, authToken: string, clientMode?: any) => {
+    for (const t of draftTickets) {
+        if (t.id && t._destroy) {
+            await request(`/events/${eventId}/tickets/${t.id}`, {
+                method: 'DELETE', authToken, clientMode
+            })
+        } else if (t.id) {
+            await request(`/events/${eventId}/tickets/${t.id}`, {
+                method: 'PATCH',
+                body: {ticket: ticketBody(t, groupId)},
+                authToken, clientMode
+            })
+        } else if (!t._destroy) {
+            await createEventTickets(eventId, [t], groupId, authToken, clientMode)
+        }
+    }
+
+    // Tickets dropped from the draft entirely (no _destroy marker) are deleted too.
+    // (tickets#index is paginated; a single event never has more than a handful
+    // of ticket types, so one generous page covers it.)
+    const draftIds = new Set(draftTickets.filter(t => t.id && !t._destroy).map(t => t.id))
+    const existingRes = await request<Paginated<{ id: string }>>(`/events/${eventId}/tickets`, {
+        params: {limit: 200}, authToken, clientMode, noCache: true
+    })
+    for (const ticket of existingRes.data) {
+        if (ticket.id && !draftIds.has(ticket.id) && !draftTickets.some(t => t.id === ticket.id)) {
+            await request(`/events/${eventId}/tickets/${ticket.id}`, {
+                method: 'DELETE', authToken, clientMode
+            })
+        }
     }
 }
 
@@ -502,11 +546,8 @@ export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
     if (params.eventDraft.event_roles) {
         await syncEventRoles(event.id, params.eventDraft.event_roles, params.authToken, clientMode)
     }
-    // Tickets: soon only exposes create (no update/delete endpoint yet) —
-    // create the drafts that don't exist server-side.
-    const newTickets = (params.eventDraft.tickets || []).filter(t => !t.id && !t._destroy)
-    if (newTickets.length) {
-        await createEventTickets(event.id, newTickets, params.eventDraft.group_id ?? null, params.authToken, clientMode)
+    if (params.eventDraft.tickets) {
+        await syncEventTickets(event.id, params.eventDraft.tickets, params.eventDraft.group_id ?? null, params.authToken, clientMode)
     }
 
     return event

@@ -26,12 +26,15 @@ export default async function DiscoverPage() {
     const { eventGroups, popupCities, currProfile, enableGoogleMap, featuredPopupCities } = await DiscoverPageData()
     const { lang, type } = await selectLang()
 
-    // popup-city map pins come from the cities' own locations now (the old
-    // popupCityMap fed off a hardcoded group's past events).
+    // popup-city map pins should come from the cities' own coordinates, but the
+    // discover payload doesn't expose lat/lng yet, so there are no markers to
+    // plot. Keep the map hidden until real coordinates are available — rendering
+    // it with an empty array both shows a blank map and crashes PopupCityMap,
+    // which centers on mapMarkers[last].position.
     const mapMarkers: { position: { lat: number, lng: number }, title: string }[] = []
 
     return <div className="page-width min-h-[100svh] pt-4 sm:pt-6 !pb-16">
-        {enableGoogleMap && <PopupCityMap mapMarkers={mapMarkers} lang={lang} langType={type} />}
+        {enableGoogleMap && mapMarkers.length > 0 && <PopupCityMap mapMarkers={mapMarkers} lang={lang} langType={type} />}
 
         <Features featuredPopupCities={featuredPopupCities} />
         
