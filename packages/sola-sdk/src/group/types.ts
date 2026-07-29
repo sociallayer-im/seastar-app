@@ -22,6 +22,7 @@ export interface GroupDetail extends Group {
     banner_image_url: string | null
     banner_link_url: string | null
     banner_text: string | null
+    featured_image_url: string | null
     social_links: SocialMedia | null
     group_tags: string[] | null
     event_tag_list: string[] | null

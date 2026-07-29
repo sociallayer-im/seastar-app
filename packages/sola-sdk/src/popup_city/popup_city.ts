@@ -13,11 +13,15 @@ interface DiscoverPayload {
 }
 
 // A group (detail view) with popup-city fields → PopupCity.
+// image_url prefers featured_image_url — a wide/banner-style image meant
+// for exactly this card, distinct from the group's small avatar image_url —
+// falling back to the avatar only when no featured image is set. Matches
+// sails' `group.featured_image_url || group.image_url` (event/discover).
 const toPopupCity = (g: any): PopupCity => ({
     id: g.id,
     title: g.nickname || g.name,
     name: g.name,
-    image_url: g.image_url ?? null,
+    image_url: g.featured_image_url || g.image_url || null,
     banner_image_url: g.banner_image_url ?? null,
     location: g.location ?? null,
     start_date: g.start_date ?? null,
