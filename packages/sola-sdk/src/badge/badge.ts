@@ -120,16 +120,19 @@ export const getBadgeClassAndInviteByGroupName = async ({params, clientMode}: So
 }
 
 /**
- * A group invite addressed to the current user, looked up in their pending
- * invites (soon has no standalone invite show endpoint).
+ * A single invite by id — powers the /invite/:id preview/accept page. Covers
+ * BOTH email invites and reusable code invites (the previous implementation
+ * only listed the current user's `pending_for_email` invites, which never
+ * includes code invites — receiver_address_type "code" isn't an email match —
+ * so a code-invite link 404'd for every recipient). See
+ * GroupInvitePolicy#view? on the backend for who may fetch what.
  */
 export const getInviteDetailByInviteId = async ({params, clientMode}: SolaSdkFunctionParams<{inviteId: string, authToken: string}>) => {
-    const invites = await request<Invite[]>('/group_invites/pending', {
+    return await requestOrNull<Invite>(`/group_invites/${params.inviteId}`, {
         clientMode,
         authToken: params.authToken,
         noCache: true
     })
-    return invites.find(i => i.id === params.inviteId) || null
 }
 
 /**
