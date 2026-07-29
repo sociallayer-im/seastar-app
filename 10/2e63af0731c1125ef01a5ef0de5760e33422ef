@@ -1,0 +1,21 @@
+packages/sola-sdk/src/popup_city/popup_city.ts
+  s_e9ed806a3d225c::t_0596ae9c959b1b 16-19,24
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_16923f2948183f 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "102e63af0731c1125ef01a5ef0de5760e33422ef",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
