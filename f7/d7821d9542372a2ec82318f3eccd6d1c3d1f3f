@@ -1,0 +1,57 @@
+src/app/(normal)/group/[handle]/TabBadges/data.ts
+  s_e9ed806a3d225c::t_db528230abefa9 3-4,8-9
+src/app/(normal)/group/[handle]/management/invite/InviteForm.tsx
+  s_e9ed806a3d225c::t_919fcf0435849f 35-36
+src/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/VenueForm.tsx
+  s_e9ed806a3d225c::t_fed744c11861ee 310-321
+  s_e9ed806a3d225c::t_255df6e3b67855 309
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_ce2ea589e2d7e9 241-242
+src/app/(normal)/group/[handle]/data.ts
+  s_e9ed806a3d225c::t_c8da6e1d0fc686 83-94,102
+  s_e9ed806a3d225c::t_4bc6a0fe37f3b0 11
+  s_e9ed806a3d225c::t_f6614807d84dd8 36-41
+src/lang/en.ts
+  s_e9ed806a3d225c::t_4f5989fa79518c 242-243
+packages/sola-sdk/src/event/event.ts
+  s_e9ed806a3d225c::t_f883960550be89 399,402-404,407-408
+packages/sola-sdk/src/badge/badge.ts
+  s_e9ed806a3d225c::t_b6c64d00ecd766 88-92,94-106,108-119
+  s_e9ed806a3d225c::t_ef6b99d4e10b99 190-192
+packages/sola-sdk/src/popup_city/popup_city.ts
+  s_e9ed806a3d225c::t_c25622e68d5bc1 53-56
+packages/sola-sdk/src/group/group.ts
+  s_e9ed806a3d225c::t_77adb42c667f8e 69-80
+  s_e9ed806a3d225c::t_6d1867014f8d36 145-151,153-155,158
+src/app/(normal)/group/[handle]/page.tsx
+  s_e9ed806a3d225c::t_edc2b35efc85fb 48
+  s_e9ed806a3d225c::t_90bbfa52d74f21 195-196
+packages/sola-sdk/src/remember.ts
+  s_e9ed806a3d225c::t_19d9d140da0dc1 95
+packages/sola-sdk/src/marker/marker.ts
+  s_e9ed806a3d225c::t_bfc2c7a541133c 75-77
+src/app/(normal)/group/[handle]/TabMembers/TabMembers.tsx
+  s_e9ed806a3d225c::t_17321c46e60337 88
+  s_e9ed806a3d225c::t_90318bd6d57f53 19-22,30,33-35,43-49,52
+  s_e9ed806a3d225c::t_05a1abfc786673 53
+packages/sola-sdk/src/event/types.ts
+  s_e9ed806a3d225c::t_7a0a3686802144 118-121
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_2f8b5e5fea1f42 86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "f7d7821d9542372a2ec82318f3eccd6d1c3d1f3f",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
