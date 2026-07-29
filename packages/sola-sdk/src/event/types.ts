@@ -4,6 +4,19 @@ import {Place} from '../place'
 
 export type EventKind = null | "talk" | "panel" | "workshop" | "activity" | "seminar" | "conference" | "meetup" | "networking" | "training" | "exhibition" | "other" | "hackathon" | "demoday" | "social" | "openmic" | "wellness"
 
+/** VenueRefBlueprint — all an embedded event's venue ever carries. Fetch the
+ *  venue by id (getVenueDetailById) for capacity/about/amenities/etc. */
+export interface EventVenueRef {
+    id: string,
+    name: string,
+}
+
+/** TrackRefBlueprint — all an embedded event's track ever carries. */
+export interface EventTrackRef {
+    id: string,
+    title: string,
+}
+
 /**
  * EventBlueprint (default view). Geo lives on `place`
  * (place.latitude/longitude); the event cover image is `image_url`.
@@ -11,7 +24,6 @@ export type EventKind = null | "talk" | "panel" | "workshop" | "activity" | "sem
 export interface Event {
     id: string,
     title: string,
-    content: string | null,
     start_time: string,
     end_time: string,
     timezone: string | null,
@@ -33,9 +45,9 @@ export interface Event {
     created_at: string,
     group: Group | null,
     place: Place | null,
-    venue: VenueDetail | null,
+    venue: EventVenueRef | null,
     owner: Profile,
-    track: Track | null,
+    track: EventTrackRef | null,
 }
 
 export interface EventWithJoinStatus extends Event {
@@ -46,6 +58,7 @@ export interface EventWithJoinStatus extends Event {
 
 /** EventBlueprint :extended — GET /events/:id. */
 export interface EventDetail extends Event {
+    content: string | null
     event_roles: EventRole[] | null
     participants: Participant[] | null
     tickets: Ticket[] | null

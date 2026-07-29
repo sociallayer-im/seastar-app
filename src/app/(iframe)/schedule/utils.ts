@@ -1,6 +1,6 @@
 import dayjs from "@/libs/dayjs"
 import {getInterval, pickSearchParam} from "@/utils"
-import {GroupDetail, Track, EventRole, Profile, EventWithJoinStatus} from '@sola/sdk'
+import {GroupDetail, Track, EventRole, Profile, EventWithJoinStatus, EventTrackRef, EventVenueRef} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {Venue, getEvents} from '@sola/sdk'
 import { redirect } from "next/navigation"
@@ -66,7 +66,7 @@ export interface IframeSchedulePageDataEvent {
     geo_lng: string | null,
     owner: Profile,
     track_id: string | null,
-    track: Track | null,
+    track: EventTrackRef | null,
     recurring_id: string | null,
     pinned: boolean,
     event_roles: EventRole[] | null,
@@ -74,7 +74,7 @@ export interface IframeSchedulePageDataEvent {
     is_attending: boolean
     is_starred: boolean
     is_owner: boolean
-    venue?: Venue | null
+    venue?: EventVenueRef | null
 }
 
 export interface IframeSchedulePageDataType {

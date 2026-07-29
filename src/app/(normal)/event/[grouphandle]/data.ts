@@ -67,7 +67,7 @@ export default async function GroupEventHomeData({
                     page: 1,
                     pinned: 1,
                 },
-                authToken, limit: 1000
+                authToken, limit: 100
             },
             clientMode: CLIENT_MODE,
         }),
