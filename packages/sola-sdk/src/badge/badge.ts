@@ -1,17 +1,18 @@
-import {request, requestOrNull, Paginated} from '../request'
+import {request, requestOrNull, requestAllPages, Paginated} from '../request'
 import {Badge, BadgeClass, Invite} from './types'
 import {SolaSdkFunctionParams} from '../types'
 
 /**
- * Get badges owned by a user (soon returns minted badges only)
+ * Get badges owned by a user (soon returns minted badges only). Fetches every
+ * page — sails' equivalent endpoint returned the full unpaginated set, and a
+ * profile can hold more than one page's worth of badges.
  * @param name - owner's username
  */
 export const getBadgesByOwnerName = async ({params, clientMode}: SolaSdkFunctionParams<{name: string}>) => {
-    const res = await request<Paginated<Badge>>('/badges', {
+    return await requestAllPages<Badge>('/badges', {
         clientMode,
         params: {owner_handle: params.name}
     })
-    return res.data
 }
 
 /**
@@ -22,15 +23,15 @@ export const getBadgeDetailByBadgeId = async ({params, clientMode}: SolaSdkFunct
 }
 
 /**
- * Get badge classes created by a user
+ * Get badge classes created by a user. Fetches every page — see
+ * getBadgesByOwnerName for why.
  * @param name - creator's username
  */
 export const getBadgeClassesByCreatorName = async ({params, clientMode}: SolaSdkFunctionParams<{name: string}>) => {
-    const res = await request<Paginated<BadgeClass>>('/badge_classes', {
+    return await requestAllPages<BadgeClass>('/badge_classes', {
         clientMode,
         params: {creator_handle: params.name}
     })
-    return res.data
 }
 
 /**
