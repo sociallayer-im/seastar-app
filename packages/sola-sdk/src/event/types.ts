@@ -115,6 +115,10 @@ export interface TicketDraft extends Pick<Ticket, 'title' | 'content' | 'check_b
     id?: string
     payment_methods: PaymentMethod[]
     need_approval?: boolean | null
+    status?: string | null
+    start_date?: string | null
+    end_date?: string | null
+    days_allowed?: string[] | null
     _destroy?: string
 }
 

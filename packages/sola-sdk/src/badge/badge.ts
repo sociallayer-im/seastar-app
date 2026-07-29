@@ -85,13 +85,38 @@ export const getBadgeAndBadgeClassByOwnerName = async ({params, clientMode}: Sol
 }
 
 /**
- * Badge classes of a group. NOTE: soon does not expose a group's pending
- * invites publicly (sails' badge_class/invites did) — groupInvites is always
- * empty; the invite flow reads GET /group_invites/pending instead.
+ * A group's pending (non-expired) invites, via any one of its badge classes —
+ * GroupInvite is a group-level relation, so the badge_class chosen to hang the
+ * request off doesn't matter. Manager-only: 403s for non-managers, so callers
+ * without authToken (or without manage rights) should treat a thrown error as
+ * "no invites visible to me", not "the group has none".
  */
-export const getBadgeClassAndInviteByGroupName = async ({params, clientMode}: SolaSdkFunctionParams<{groupName: string}>) => {
+export const getGroupInvitesViaBadgeClass = async ({params, clientMode}: SolaSdkFunctionParams<{badgeClassId: string, authToken: string}>) => {
+    const data = await request<{badge_class: BadgeClass, invites: Invite[]}>(`/badge_classes/${params.badgeClassId}/invites`, {
+        clientMode,
+        authToken: params.authToken
+    })
+    return data.invites
+}
+
+/**
+ * Badge classes of a group, plus its pending invites (manager-only — requires
+ * authToken; falls back to an empty list for anonymous/non-manager callers).
+ */
+export const getBadgeClassAndInviteByGroupName = async ({params, clientMode}: SolaSdkFunctionParams<{groupName: string, authToken?: string}>) => {
     const badgeClasses = await getBadgeClassesByGroupName({params, clientMode})
-    return {badgeClasses, groupInvites: [] as Invite[]}
+    if (!params.authToken || !badgeClasses.length) {
+        return {badgeClasses, groupInvites: [] as Invite[]}
+    }
+    try {
+        const groupInvites = await getGroupInvitesViaBadgeClass({
+            params: {badgeClassId: badgeClasses[0]!.id, authToken: params.authToken},
+            clientMode
+        })
+        return {badgeClasses, groupInvites}
+    } catch {
+        return {badgeClasses, groupInvites: [] as Invite[]}
+    }
 }
 
 /**
@@ -162,7 +187,9 @@ export async function getSwapCode({params, clientMode}: SolaSdkFunctionParams<{a
 
 /**
  * Transfer a badge you own to another user.
- * @param target - recipient's username (eth address / email also accepted)
+ * @param target - recipient's username. Unlike voucher sending, the backend
+ * (BadgesController#transfer) resolves the target ONLY by User.find_by(name:) —
+ * an eth address or email will not match and the request fails.
  */
 export async function transferBadge({params, clientMode}: SolaSdkFunctionParams<{authToken: string, badgeId: string, target: string}>) {
     await request(`/badges/${params.badgeId}/transfer`, {

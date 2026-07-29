@@ -32,10 +32,11 @@ export default function InviteForm({lang, group}: InviteFormProps) {
     const [isCodeInvite, setIsCodeInvite] = useState(false)
     const {showLoading, closeModal} = useModal()
 
+    // soon roles: owner | manager | member — "issuer" was retired in the
+    // admin→manager migration and the backend rejects it (422).
     const roleOptions: RoleOpt[] = [
         {label: lang['Member'], value: 'member'},
         {label: lang['Manager'], value: 'manager'},
-        {label: lang['Issuer'], value: 'issuer'},
     ]
 
     useEffect(() => {

@@ -307,6 +307,19 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
             </div>
 
             <div className="mb-4">
+                <div className="font-semibold mb-1">{lang['Booking Window (Optional)']}</div>
+                <div className="text-xs text-gray-500 mb-2">
+                    {lang['Restrict which dates this venue can be booked. Leave either side blank for no limit.']}
+                </div>
+                <div className="flex-row-item-center gap-3">
+                    <Input type="date" className="flex-1" value={draft.start_date || ''}
+                        onChange={e => setDraft({ ...draft, start_date: e.target.value || null })} />
+                    <Input type="date" className="flex-1" value={draft.end_date || ''}
+                        onChange={e => setDraft({ ...draft, end_date: e.target.value || null })} />
+                </div>
+            </div>
+
+            <div className="mb-4">
                 <div className="font-semibold mb-1">{lang['Amenities']}</div>
                 {
                     (draft.amenities?.length ? draft.amenities : ['']).map((tag, index) => {

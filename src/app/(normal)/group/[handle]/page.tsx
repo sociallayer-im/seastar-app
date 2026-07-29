@@ -45,6 +45,7 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
         currUserIsIssuer,
         currUserIsMember,
         currUserIsOwner,
+        currUserIsParentManager,
         members,
         canPublishEvent,
         canSubmitEvent
@@ -191,7 +192,8 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                         members={members}
                         isOwner={currUserIsOwner}
                         isMember={currUserIsMember}
-                        isManager={currUserIsManager}/>
+                        isManager={currUserIsManager}
+                        isParentManager={currUserIsParentManager}/>
                 </div>
                 }
 

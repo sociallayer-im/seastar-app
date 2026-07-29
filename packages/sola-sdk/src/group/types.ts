@@ -83,6 +83,7 @@ export interface Venue {
     /** Overall booking window — a venue with no bounds here is bookable any date. */
     start_date: string | null
     end_date: string | null
+    archived: boolean
 }
 
 /**

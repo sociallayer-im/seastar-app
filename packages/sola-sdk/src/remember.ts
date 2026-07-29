@@ -92,7 +92,7 @@ export const getRememberMetadata = async ({clientMode}: { clientMode: ClientMode
     const data = await request<{types: {path: string, badge_class_id: string, count: number}[]}>(
         '/remember/meta', {clientMode}
     )
-    return data.types[0]
+    return data.types[0] ?? null
 }
 
 /**

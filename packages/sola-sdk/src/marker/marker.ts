@@ -72,6 +72,9 @@ export const updateMarker = async ({params, clientMode}: SolaSdkFunctionParams<{
         throw new Error('markerDraft.id is required')
     }
     const placeId = await resolvePlaceId({params: {...params.markerDraft, authToken: params.authToken}, clientMode})
+    if (!placeId) {
+        throw new Error('A marker requires a location')
+    }
 
     return await request<Marker>(`/markers/${params.markerDraft.id}`, {
         method: 'PATCH',

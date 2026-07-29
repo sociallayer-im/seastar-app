@@ -16,6 +16,10 @@ export interface TabMembersProps {
     isManager: boolean
     isMember: boolean
     isOwner:boolean
+    // Parent-group admin/owner viewing a child group: no membership here, but
+    // can still toggle a child member's role to/from "manager" — see
+    // GroupPolicy#can_assign_manager?. Grants nothing else.
+    isParentManager?: boolean
     group: Group,
     lang: Dictionary,
     currProfile?: Profile | null
@@ -23,12 +27,12 @@ export interface TabMembersProps {
 
 
 
-export default function TabMembers({members, isManager, isMember, currProfile, isOwner, lang, group}: TabMembersProps) {
+export default function TabMembers({members, isManager, isMember, currProfile, isOwner, isParentManager, lang, group}: TabMembersProps) {
     const [searchKeyword, setSearchKeyword] = useState('')
 
-    let ManagementOptions = [
-        {label: lang['Member Management'], url: `/group/${group.name}/management/member`},
-    ]
+    let ManagementOptions = isManager
+        ? [{label: lang['Member Management'], url: `/group/${group.name}/management/member`}]
+        : []
 
     if (isOwner) {
         ManagementOptions = [
@@ -36,7 +40,16 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
             {label: lang['Manager Management'], url: `/group/${group.name}/management/manager`},
             {label: lang['Transfer Owner'], url: `/group/${group.name}/management/transfer-owner`}
         ]
+    } else if (isParentManager) {
+        // Scoped down: only the manager-role toggle is authorized for a
+        // parent manager, so that's the only option offered here.
+        ManagementOptions = [
+            ...ManagementOptions,
+            {label: lang['Manager Management'], url: `/group/${group.name}/management/manager`}
+        ]
     }
+
+    const showManagement = isManager || isParentManager
 
     const memberList = useMemo(() => {
         const keyword = searchKeyword.toLowerCase().trim()
@@ -72,7 +85,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                 }
 
                 <div className="ml-2 mt-3 sm:mt-0">
-                    {isManager &&
+                    {showManagement &&
                         <DropdownMenu
                             align={'right'}
                             options={ManagementOptions}

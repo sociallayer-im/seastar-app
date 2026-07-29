@@ -238,6 +238,8 @@ export const zh: Dictionary = {
   "Available Date (Optional)": "可用日期（可选）",
   Visibility: "可见性",
   "Venue Capacity (Optional)": "场地容量（可选）",
+  "Booking Window (Optional)": "可预订时间范围（可选）",
+  "Restrict which dates this venue can be booked. Leave either side blank for no limit.": "限制该场地可被预订的日期范围，留空表示不限制。",
   "Require Approval (Optional)": "需要批准（可选）",
   "Opening Hours": "营业时间",
   "Add dates when your availability changes from your daily hours.":

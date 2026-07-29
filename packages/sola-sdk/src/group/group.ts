@@ -66,7 +66,18 @@ export const updateGroup = async ({params: {group, authToken}, clientMode}: Sola
                 bio: group.bio,
                 image_url: group.image_url,
                 logo_url: group.logo_url,
-                parent_id: group.parent_id
+                parent_id: group.parent_id,
+                banner_image_url: group.banner_image_url,
+                banner_link_url: group.banner_link_url,
+                banner_text: group.banner_text,
+                social_links: group.social_links,
+                group_tags: group.group_tags,
+                event_tag_list: group.event_tag_list,
+                requirement_tag_list: group.requirement_tag_list,
+                venue_tag_list: group.venue_tag_list,
+                can_publish_event: group.can_publish_event,
+                can_join_event: group.can_join_event,
+                can_view_event: group.can_view_event
             }
         }
     })
@@ -131,13 +142,20 @@ export const removeManager = async ({params, clientMode}: SolaSdkFunctionParams<
     })
 }
 
-/** Grant the manager role — adds the user to the group if needed. */
+/**
+ * Grant the manager role to an EXISTING member. Uses PATCH (role change on
+ * their membership), not POST (which requires full `manage?` and 403s for a
+ * parent-group manager, who can only toggle the manager role specifically —
+ * see GroupPolicy#can_assign_manager?). The one caller (AddManagerForm) only
+ * ever offers already-members, so this is safe for the direct-manager case too.
+ */
 export const addManager = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: string, groupId: string, authToken: string}>) => {
-    await request(`/groups/${params.groupId}/memberships`, {
-        method: 'POST',
+    const membership = await findMembership(params.groupId, params.profileId, clientMode)
+    await request(`/groups/${params.groupId}/memberships/${membership.id}`, {
+        method: 'PATCH',
         clientMode,
         authToken: params.authToken,
-        body: {user_id: params.profileId, role: 'manager'}
+        body: {membership: {role: 'manager'}}
     })
 }
 

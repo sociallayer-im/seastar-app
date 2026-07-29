@@ -50,7 +50,10 @@ export const getPopupCities = async ({clientMode}: { clientMode: ClientMode }) =
 
 export const getPopupCityById = async ({params, clientMode}: SolaSdkFunctionParams<{ id: string }>) => {
     const group = await requestOrNull<any>(`/groups/${params.id}`, {clientMode, noCache: true})
-    if (!group || (!group.start_date && !group.location)) return null
+    // Must match discover_controller.rb's popup-city criteria exactly (both
+    // start_date AND location) — otherwise a group reachable here could never
+    // appear in the discover/list views, or vice versa.
+    if (!group || !group.start_date || !group.location) return null
     return toPopupCity(group)
 }
 

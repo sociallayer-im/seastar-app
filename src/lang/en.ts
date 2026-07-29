@@ -239,6 +239,8 @@ export const en = {
     "Available Date (Optional)": "Available Date (Optional)",
     Visibility: "Visibility",
     "Venue Capacity (Optional)": "Venue Capacity (Optional)",
+    "Booking Window (Optional)": "Booking Window (Optional)",
+    "Restrict which dates this venue can be booked. Leave either side blank for no limit.": "Restrict which dates this venue can be booked. Leave either side blank for no limit.",
     "Require Approval (Optional)": "Require Approval (Optional)",
     "Opening Hours": "Opening Hours",
     "Add dates when your availability changes from your daily hours.":
