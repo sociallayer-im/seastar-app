@@ -69,6 +69,8 @@ export type EventListFilterProps = {
     skip_recurring?: string | number,
     owner_id?: string,           // TSID or username — events a user hosts
     attendee_id?: string,        // TSID or username — events a user attends
+    co_host_id?: string,         // TSID or username — events with this user as an EventRole item
+    starred_id?: string,         // TSID or username — events this user has starred
     page?: number,
 }
 
@@ -115,34 +117,27 @@ export const getMyPendingApprovalEvent = async ({params: {authToken}, clientMode
     }
 }
 
-/** The events a user has starred (their own list — requires auth). */
-export const getStaredEvent = async ({params: {authToken}, clientMode}: SolaSdkFunctionParams<{
-    authToken: string
+/**
+ * The events a user has starred. Backed by GET /events?starred_id=, a single
+ * query (Comment star rows joined against Event) — previously this resolved
+ * the caller via /users/me, listed up to 30 star comments, then fetched each
+ * referenced event individually (N+1, and silently dropped anything that
+ * 404'd), all now folded into one filtered listing on the backend.
+ */
+export const getStaredEvent = async ({params: {name, authToken}, clientMode}: SolaSdkFunctionParams<{
+    name: string,
+    authToken?: string
 }>) => {
-    if (!authToken) {
-        throw new Error('authToken is required')
-    }
     try {
-        const me = await request<{ id: string }>('/users/me', {authToken, clientMode, noCache: true})
-        const stars = await request<Paginated<{ item_id: string }>>('/comments', {
-            params: {comment_type: 'star', item_type: 'Event', user_id: me.id, limit: 30},
-            authToken, clientMode, noCache: true
-        })
-        const events = await Promise.all(
-            stars.data.map(s => requestOrNull<Event>(`/events/${s.item_id}`, {authToken, clientMode, noCache: true}))
-        )
-        return (events.filter(Boolean) as Event[]).sort(sortEventsByTime)
+        const events = await getEvents({params: {filters: {starred_id: name}, authToken}, clientMode})
+        return events.sort(sortEventsByTime)
     } catch (e: unknown) {
         console.error(e)
         return []
     }
 }
 
-/**
- * Profile-page event tabs. Hosting/attended come from the owner_id/attendee_id
- * filters on GET /events; co-hosting has no backend filter yet (returns []);
- * starred is only visible for the authenticated user (see getStaredEvent).
- */
+/** Profile-page event tabs: hosting/attended/co-hosting/starred, each a GET /events filter. */
 export const getProfileEventByName = async ({params: {name, authToken}, clientMode}: SolaSdkFunctionParams<{
     name: string,
     authToken?: string
@@ -155,16 +150,18 @@ export const getProfileEventByName = async ({params: {name, authToken}, clientMo
         }
     }
 
-    const [attends, hosting] = await Promise.all([
+    const [attends, hosting, coHosting, starred] = await Promise.all([
         fetchWith({attendee_id: name}),
         fetchWith({owner_id: name}),
+        fetchWith({co_host_id: name}),
+        fetchWith({starred_id: name}),
     ])
 
     return {
         attends: attends.sort(sortEventsByTime),
         hosting: hosting.sort(sortEventsByTime),
-        coHosting: [] as Event[], // TODO: needs a backend co-host filter (event_roles)
-        starred: [] as Event[],   // only the viewer's own stars are queryable — use getStaredEvent
+        coHosting: coHosting.sort(sortEventsByTime),
+        starred: starred.sort(sortEventsByTime),
     }
 }
 

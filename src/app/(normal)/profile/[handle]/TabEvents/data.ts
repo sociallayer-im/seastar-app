@@ -1,6 +1,5 @@
 import {
     getProfileEventByName,
-    getStaredEvent,
     Profile,
 } from '@sola/sdk'
 import {setEventAttendedStatus} from '@/utils'
@@ -8,56 +7,44 @@ import {CLIENT_MODE} from '@/app/config'
 import {getServerSideAuth} from '@/app/actions'
 
 export const ProfileEventListData = async function (handle: string, currProfile?: Profile | null) {
+    const authToken = await getServerSideAuth()
     const profileEvents = await getProfileEventByName({
-        params: {name: handle},
+        params: {name: handle, authToken},
         clientMode: CLIENT_MODE
     })
-    const isSelf = currProfile?.name === handle
-
-    const [currProfileAttends, staredEvents] = await Promise.all([
-        currProfile ? (await getProfileEventByName({
-            params: {name: handle},
-            clientMode: CLIENT_MODE
-        })).attends : [],
-        (async () => {
-            if (isSelf) {
-                const authToken = await getServerSideAuth()
-                if (authToken) {
-                    return await getStaredEvent({
-                        params: {authToken: authToken},
-                        clientMode: CLIENT_MODE
-                    })
-                }
-            }
-            return []
-        })()
-    ])
+    // The viewer's own attended/starred events, for the "you're going" /
+    // "you starred this" badges on someone else's profile tabs.
+    const currProfileAttends = currProfile
+        ? (currProfile.name === handle
+            ? profileEvents.attends
+            : (await getProfileEventByName({params: {name: currProfile.name, authToken}, clientMode: CLIENT_MODE})).attends)
+        : []
 
     const hosting = setEventAttendedStatus({
         events: profileEvents.hosting,
         currProfileAttends,
-        currProfileStarred: staredEvents,
+        currProfileStarred: profileEvents.starred,
         currProfile
     })
 
     const attends = setEventAttendedStatus({
         events: profileEvents.attends,
         currProfileAttends,
-        currProfileStarred: staredEvents,
+        currProfileStarred: profileEvents.starred,
         currProfile
     })
 
     const stared = setEventAttendedStatus({
-        events: staredEvents,
+        events: profileEvents.starred,
         currProfileAttends,
-        currProfileStarred: staredEvents,
+        currProfileStarred: profileEvents.starred,
         currProfile
     })
 
     const coHosting = setEventAttendedStatus({
         events: profileEvents.coHosting,
         currProfileAttends,
-        currProfileStarred: staredEvents,
+        currProfileStarred: profileEvents.starred,
         currProfile
     })
 

@@ -7,7 +7,7 @@ import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
     getEventDetailById,
     getEventForm,
-    getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId, getRecurringById, getStaredEvent,
+    getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId, getRecurringById,
     Participant,
     Recurring, Ticket
 } from '@sola/sdk'
@@ -32,7 +32,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const currProfile = await getCurrProfile()
 
     const eventDetail = await getEventDetailById({
-        params: {eventId: eventid},
+        params: {eventId: eventid, authToken: await getServerSideAuth()},
         clientMode: CLIENT_MODE
     })
     if (!eventDetail) {
@@ -129,15 +129,9 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         })
     }
 
-    let currProfileStarred = false
-    if (!!currProfile) {
-        const token = await getServerSideAuth()
-        const starredEvents = await getStaredEvent({
-            params: {authToken: token!},
-            clientMode: CLIENT_MODE
-        })
-        currProfileStarred = !!starredEvents.find(e => e.id === eventDetail.id)
-    }
+    // eventDetail was fetched with the viewer's authToken (see getEventDetailById
+    // above), so the backend already annotated it with is_starred for them.
+    const currProfileStarred = !!currProfile && !!(eventDetail as unknown as {is_starred?: boolean}).is_starred
 
     // The registration form is fetched separately now (EventDetail carries form_id only).
     const form = eventDetail.form_id
