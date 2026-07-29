@@ -385,12 +385,12 @@ export const setEventIsOwnerStatus = ({
 
 export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: GroupDetail, profile?: Profile | null) => {
     const owner = groupDetail.memberships.find(m => m.role === 'owner')!
-    // soon roles: owner | admin | member (the old "manager" is "admin"; "issuer" is gone)
-    const managers = groupDetail.memberships.filter(m => m.role === 'admin')
+    // soon roles: owner | manager | member ("issuer" is gone)
+    const managers = groupDetail.memberships.filter(m => m.role === 'manager')
     const issuers: typeof groupDetail.memberships = []
     const members = groupDetail.memberships.filter(m => m.role === 'member')
 
-    const isManager = groupDetail.memberships.some(m => m.user.name === profile?.name && (m.role === 'admin' || m.role === 'owner'))
+    const isManager = groupDetail.memberships.some(m => m.user.name === profile?.name && (m.role === 'manager' || m.role === 'owner'))
     const isMember = groupDetail.memberships.some(m => m.user.name === profile?.name)
     const isIssuer = false
     const isOwner = owner?.user?.name === profile?.name

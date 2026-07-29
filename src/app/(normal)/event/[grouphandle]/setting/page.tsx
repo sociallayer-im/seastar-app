@@ -12,7 +12,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
     const currMembership = currProfile
         ? groupDetail.memberships.find(m => m.user.id === currProfile.id)
         : undefined
-    const isManagerOrOwner = currMembership?.role === 'admin' || currMembership?.role === 'owner'
+    const isManagerOrOwner = currMembership?.role === 'manager' || currMembership?.role === 'owner'
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">

@@ -29,12 +29,12 @@ export const getProfileGroup = async ({params: {profileName}, clientMode}: SolaS
 }
 
 /**
- * Groups a profile can act on as a manager (owner/admin roles)
+ * Groups a profile can act on as a manager (owner/manager roles)
  */
 export const getAvailableGroupsForBadgeClassCreator = async ({params, clientMode}: SolaSdkFunctionParams<{profileName: string}>) => {
     const memberships = await request<MembershipDetail[]>(
         `/users/${encodeURIComponent(params.profileName)}/groups`,
-        {clientMode, params: {role: 'owner,admin'}}
+        {clientMode, params: {role: 'owner,manager'}}
     )
     return memberships.map(m => m.group) as Group[]
 }
@@ -42,7 +42,7 @@ export const getAvailableGroupsForBadgeClassCreator = async ({params, clientMode
 export const getAvailableGroupsForEventHost = async ({params, clientMode}: SolaSdkFunctionParams<{profileName: string}>) => {
     const memberships = await request<MembershipDetail[]>(
         `/users/${encodeURIComponent(params.profileName)}/groups`,
-        {clientMode, params: {role: 'owner,admin'}}
+        {clientMode, params: {role: 'owner,manager'}}
     )
     return memberships.map(m => m.group) as Group[]
 }
@@ -131,13 +131,13 @@ export const removeManager = async ({params, clientMode}: SolaSdkFunctionParams<
     })
 }
 
-/** Grant the admin (manager) role — adds the user to the group if needed. */
+/** Grant the manager role — adds the user to the group if needed. */
 export const addManager = async ({params, clientMode}: SolaSdkFunctionParams<{profileId: string, groupId: string, authToken: string}>) => {
     await request(`/groups/${params.groupId}/memberships`, {
         method: 'POST',
         clientMode,
         authToken: params.authToken,
-        body: {user_id: params.profileId, role: 'admin'}
+        body: {user_id: params.profileId, role: 'manager'}
     })
 }
 

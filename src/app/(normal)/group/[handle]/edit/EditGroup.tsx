@@ -38,7 +38,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
     const {toast} = useToast()
 
     const memberCount = members.filter(m => m.role !== 'owner').length
-    const managerCount = members.filter(m => m.role === 'admin').length
+    const managerCount = members.filter(m => m.role === 'manager').length
 
     const enableGoogleMap = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true'
 
