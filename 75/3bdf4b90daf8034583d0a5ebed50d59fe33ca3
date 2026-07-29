@@ -1,0 +1,19 @@
+packages/sola-sdk/src/badge/badge.ts
+  s_e9ed806a3d225c::t_7ee5c31afa5de8 123-128,131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "753bdf4b90daf8034583d0a5ebed50d59fe33ca3",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
