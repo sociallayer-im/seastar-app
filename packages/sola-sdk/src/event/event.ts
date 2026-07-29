@@ -510,21 +510,33 @@ export const createEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
 }>) => {
     const placeId = await resolvePlaceId({params: {...params.eventDraft, authToken: params.authToken}, clientMode})
 
-    const event = await request<Event>('/events', {
+    // Roles and tickets are sent inline so the API commits the whole event in one
+    // transaction. This is atomic (a bad ticket rolls the event back) and
+    // retry-safe (a failure leaves no partial event for a retry to duplicate).
+    const roles = (params.eventDraft.event_roles || [])
+        .filter(r => !r._destroy)
+        .map(r => ({
+            item_id: r.item_id,
+            item_type: r.item_type,
+            role: r.role,
+            email: r.email,
+            display_name: r.display_name,
+            image_url: r.image_url
+        }))
+    const tickets = (params.eventDraft.tickets || [])
+        .filter(t => !t._destroy)
+        .map(t => ticketBody(t, params.eventDraft.group_id ?? null))
+
+    return await request<Event>('/events', {
         method: 'POST',
-        body: {event: {...eventBody(params.eventDraft, placeId), group_id: params.eventDraft.group_id}},
+        body: {
+            event: {...eventBody(params.eventDraft, placeId), group_id: params.eventDraft.group_id},
+            ...(roles.length ? {event_roles: roles} : {}),
+            ...(tickets.length ? {tickets} : {})
+        },
         authToken: params.authToken,
         clientMode
     })
-
-    if (params.eventDraft.event_roles?.length) {
-        await createEventRoles(event.id, params.eventDraft.event_roles, params.authToken, clientMode)
-    }
-    if (params.eventDraft.tickets?.length) {
-        await createEventTickets(event.id, params.eventDraft.tickets, params.eventDraft.group_id, params.authToken, clientMode)
-    }
-
-    return event
 }
 
 export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
