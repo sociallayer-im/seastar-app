@@ -22,7 +22,9 @@ const venueBody = (venue: Partial<VenueDetail>, placeId: string | null) => ({
         amenities: venue.amenities || undefined,
         tags: venue.tags || undefined,
         image_urls: venue.image_urls || undefined,
-        track_ids: venue.track_ids || undefined
+        track_ids: venue.track_ids || undefined,
+        start_date: venue.start_date,
+        end_date: venue.end_date
     }
 })
 

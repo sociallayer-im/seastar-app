@@ -80,6 +80,9 @@ export interface Venue {
     amenities: string[] | null
     tags: string[] | null
     featured_image_url: string | null
+    /** Overall booking window — a venue with no bounds here is bookable any date. */
+    start_date: string | null
+    end_date: string | null
 }
 
 /**
