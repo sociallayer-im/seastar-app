@@ -645,6 +645,7 @@ export const en = {
     'We value your feedback!': 'We value your feedback!',
     'About us': 'About us',
     'Contact us': 'Contact us',
+    'Remember': 'Remember',
     'My Badge': 'My Badge',
     'My Groups': 'My Groups',
     'Setting': 'Setting',

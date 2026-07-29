@@ -627,6 +627,7 @@ export const zh: Dictionary = {
   'We value your feedback!': '我们重视您的反馈！',
   'About us': '关于我们',
   'Contact us': '联系我们',
+  'Remember': 'Remember',
   'My Badge': '我的徽章',
   'My Groups': '我的群组',
   'Setting': '设置',
