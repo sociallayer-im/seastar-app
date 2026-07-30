@@ -27,7 +27,7 @@ import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
-import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
+import {CLIENT_MODE, CRYPTO_PAYMENT_ENABLED, STRIPE_ENABLED} from '@/app/config'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Switch} from '@/components/shadcn/Switch'
 
@@ -123,6 +123,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 if (seen.has(chain)) return
                 // Card payments only exist on STRIPE_ENABLED deployments.
                 if (chain === 'stripe' && !STRIPE_ENABLED) return
+                // Every other chain is an on-chain EVM payment, off on CN.
+                if (chain !== 'stripe' && !CRYPTO_PAYMENT_ENABLED) return
                 const type = Payments.find(p => p.chain === chain)
                 if (type) { seen.add(chain); result.push(type) }
             })

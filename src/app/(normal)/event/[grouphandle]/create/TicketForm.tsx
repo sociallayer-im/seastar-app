@@ -27,7 +27,7 @@ import {
     getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerName, getBadgeClassDetailByBadgeClassId
 } from '@sola/sdk'
 import {cfImage, getAuth} from '@/utils'
-import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
+import {CLIENT_MODE, CRYPTO_PAYMENT_ENABLED, PAYMENTS_ENABLED, STRIPE_ENABLED} from '@/app/config'
 import {StripeSetting, getStripeSettings, getEventStripeSettings} from '@sola/sdk'
 
 export interface TicketFormProps {
@@ -208,6 +208,12 @@ function TicketItem({
 
     const [ticketDraft, setTicketDraft] = useState<TicketDraft>(ticket)
     const [enablePayment, setEnablePayment] = useState(!!ticket.payment_methods?.length)
+
+    // With no payment rail at all (CN: crypto and card both off) a ticket can
+    // only be free, so the Free/Payment choice has nothing to offer. A ticket
+    // that already carries payment methods keeps the UI regardless — hiding a
+    // control must not silently strip data a previous deployment created.
+    const showPrice = PAYMENTS_ENABLED || !!ticket.payment_methods?.length
     const [enableQuantity, setEnableQuantity] = useState(!!ticket.quantity)
     const [enableEndTime, setEnableEndTime] = useState(!!ticket.end_time)
     const [badgeClass, setBadgeClass] = useState<BadgeClass | null>(null)
@@ -341,7 +347,7 @@ function TicketItem({
                 </div>
             </div>
         }
-        <div className="my-3">
+        {showPrice && <div className="my-3">
             <div className="flex-row-item-center">
                 <div className="text-sm mr-6">{lang['Price']}</div>
                 <div className="flex-row-item-center text-sm font-semibold">
@@ -380,7 +386,7 @@ function TicketItem({
                 />
             }
 
-        </div>
+        </div>}
 
         <div className="my-3">
             <div className="flex-row-item-center">
@@ -562,8 +568,10 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         EVM_CHAINS.flatMap(c => c.tokenList).map(t => [t.name, t])
     ).values()]
 
+    // Seeds a blank crypto method so the form is never empty — only where
+    // crypto payments exist. Without them there is nothing valid to seed.
     useEffect(() => {
-        if (!paymentMethods.length) {
+        if (!paymentMethods.length && CRYPTO_PAYMENT_ENABLED) {
             setPaymentMethods([{
                 ...emptyPaymentMethod,
                 token_name: ALL_TOKENS[0].name,
@@ -801,7 +809,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                     })}
                                 </div>
                             </div>
-                            {index === paymentMethods.length - 1 &&
+                            {index === paymentMethods.length - 1 && CRYPTO_PAYMENT_ENABLED &&
                                 <i onClick={addNewPaymentMethod}
                                    className="uil-plus-circle text-2xl text-green-500 cursor-pointer"/>
                             }

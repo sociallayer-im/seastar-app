@@ -18,3 +18,19 @@ export const THIRD_PARTY_LOGIN = process.env.NEXT_PUBLIC_THIRD_PARTY_LOGIN === '
 // #13): set in .env.production, absent in .env.cn.production. The backend's
 // STRIPE_ENABLED is authoritative — this flag only hides UI.
 export const STRIPE_ENABLED = process.env.NEXT_PUBLIC_STRIPE_ENABLED === 'true'
+
+// The next two are opt-OUT, unlike the flags above. Both features have always
+// been unconditionally on, and .env.production is gitignored — an opt-in flag
+// would make them vanish from SG the first time someone builds without that
+// file. Only a deployment that explicitly writes "false" (CN) loses them.
+
+// Sign-In with Ethereum. Off on CN: wallet software is largely unreachable
+// there and the flow ends at a wallet that never appears.
+export const WALLET_LOGIN = process.env.NEXT_PUBLIC_WALLET_LOGIN !== 'false'
+
+// On-chain (PayHub/EVM) ticket payments. Off on CN.
+export const CRYPTO_PAYMENT_ENABLED = process.env.NEXT_PUBLIC_CRYPTO_PAYMENT_ENABLED !== 'false'
+
+// Whether any payment rail exists at all. With none, a ticket can only be free,
+// so the price UI has nothing to offer.
+export const PAYMENTS_ENABLED = CRYPTO_PAYMENT_ENABLED || STRIPE_ENABLED
