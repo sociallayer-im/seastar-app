@@ -44,12 +44,46 @@ import {CLIENT_MODE, SOLA_APP_SUBDOMAINS} from '@/app/config'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
+/**
+ * The registrable parent domain, so the session cookie is shared across
+ * app.sola.day, auth.sola.day and every group subdomain (<handle>.sola.day)
+ * — which is what made a separate auth origin work in the first place, and what
+ * has to keep working now that sign-in happens in this app.
+ *
+ * Returns undefined for localhost and bare IPs: a Domain attribute is invalid
+ * for a single-label host, and browsers drop the whole Set-Cookie when one is
+ * sent, which would silently break sign-in in local dev.
+ */
+export const authCookieDomain = (hostname?: string): string | undefined => {
+    const host = hostname ?? (typeof window === 'undefined' ? '' : window.location.hostname)
+    if (!host) return undefined
+    if (/^(\d{1,3}\.){3}\d{1,3}$/.test(host)) return undefined
+    const labels = host.split('.')
+    if (labels.length < 2) return undefined
+    return labels.slice(-2).join('.')
+}
+
+// expires is what makes this a persistent cookie rather than a session one, so
+// closing the tab doesn't sign the user out. Matches what seastar-auth set.
 export const setAuth = (token: string) => {
-    Cookies.set(AUTH_FIELD, token, { expires: 365 })
+    Cookies.set(AUTH_FIELD, token, {expires: 365, domain: authCookieDomain()})
 }
 
 export const getAuth = () => {
     return Cookies.get(AUTH_FIELD)
+}
+
+/**
+ * Removal has to repeat the exact domain the cookie was written with —
+ * js-cookie matches on it, and a mismatch leaves the original cookie in place
+ * (the user appears signed in again on the next navigation). The host-only
+ * remove is a deliberate second attempt: a session written by an older build,
+ * before setAuth set a domain, is scoped to this host alone and is otherwise
+ * unreachable from here.
+ */
+export const signOut = () => {
+    Cookies.remove(AUTH_FIELD, {domain: authCookieDomain()})
+    Cookies.remove(AUTH_FIELD)
 }
 
 export const pickSearchParam = (param?: string | string[]): string | undefined => {
@@ -57,19 +91,75 @@ export const pickSearchParam = (param?: string | string[]): string | undefined =
     return value === 'undefined' ? undefined : value
 }
 
-export const clientRedirectToReturn = () => {
-    const cookiePath = Cookies.get('return')
-    window.location.href = cookiePath || process.env.NEXT_PUBLIC_DEFAULT_RETURN!
+/**
+ * Where to land after signing in. `return` is set by middleware from the
+ * ?return= query param, exactly as the standalone auth app did, so existing
+ * links keep working untouched.
+ *
+ * The '/' fallback is load-bearing: NEXT_PUBLIC_DEFAULT_RETURN is not set in
+ * any environment, so the previous `cookiePath || process.env.…!` navigated to
+ * the literal string "undefined".
+ */
+/**
+ * The `return` value originates in a query parameter and is then fed straight to
+ * window.location / redirect(), so it is attacker-controlled navigation unless
+ * it is checked. Two things have to be refused:
+ *
+ *  - non-http schemes — `?return=javascript:…` is script execution on our origin;
+ *  - other people's domains — otherwise this is an open redirect wearing ours,
+ *    which is exactly the primitive a phishing link wants.
+ *
+ * Absolute URLs can't simply be banned: a group subdomain (<handle>.sola.day) is
+ * a different origin from app.sola.day, and signing in there has to come back
+ * there. So the test is the registrable domain, not the origin — anything under
+ * the same parent domain as the page doing the redirect is allowed, and a bare
+ * path always is.
+ */
+export const sanitizeReturnTarget = (value?: string | null, currentHost?: string | null): string => {
+    const fallback = process.env.NEXT_PUBLIC_DEFAULT_RETURN || '/'
+    if (!value) return fallback
+    // Protocol-relative ("//evil.com") is an absolute URL in disguise, so this
+    // has to be checked before treating a leading "/" as a local path.
+    if (value.startsWith('//')) return fallback
+    if (value.startsWith('/')) return value
+
+    try {
+        const url = new URL(value)
+        if (url.protocol !== 'https:' && url.protocol !== 'http:') return fallback
+
+        const host = currentHost ?? (typeof window === 'undefined' ? '' : window.location.host)
+        const parent = authCookieDomain(host.split(':')[0])
+        // No parent domain to compare against (localhost, an IP): accept only
+        // an exact host match, so dev keeps working without opening a hole.
+        if (!parent) return url.host === host ? value : fallback
+
+        return url.hostname === parent || url.hostname.endsWith(`.${parent}`) ? value : fallback
+    } catch {
+        return fallback
+    }
 }
 
-export const clientCheckUserLoggedInAndRedirect = async (auth_token: string) => {
+export const returnTarget = () => sanitizeReturnTarget(Cookies.get('return'))
+
+export const clientRedirectToReturn = () => {
+    window.location.href = returnTarget()
+}
+
+/**
+ * Post-sign-in routing. An account with no username yet has to finish at
+ * /register before anything else — getCurrProfile reports a nameless account as
+ * signed-out, so skipping this step would drop the user back on a page that
+ * still thinks they never signed in.
+ */
+export const clientCheckUserLoggedInAndRedirect = async (auth_token: string, prefillUsername?: string) => {
     const profile = await getProfileDetailByAuth({params: {authToken: auth_token}, clientMode: CLIENT_MODE})
 
     if (profile && !profile.name) {
-        window.location.href = '/register'
+        window.location.href = prefillUsername
+            ? `/register?username=${encodeURIComponent(prefillUsername)}`
+            : '/register'
     } else {
-        const cookiePath = Cookies.get('return')
-        window.location.href = cookiePath || process.env.NEXT_PUBLIC_DEFAULT_RETURN!
+        clientRedirectToReturn()
     }
 }
 
@@ -318,8 +408,34 @@ export function displayProfileName(profile: Profile) {
     return profile.nickname || profile.name
 }
 
+/**
+ * Sign-in entry points. The auth screens now live in this app, so these are
+ * same-origin paths — no hop to auth.sola.day and back, which is the whole
+ * point of the integration.
+ *
+ * The paths deliberately match the standalone auth app's one-for-one
+ * (/register, /bind-email, /verify-email, /verify-bind-email, and ?return=), so
+ * links that already exist — including auth.sola.day URLs still sitting in
+ * caches and bookmarks — resolve to the same screens. Only the sign-in root
+ * differs: '/' is this app's home page, so it is served at /signin and
+ * middleware rewrites the auth host's '/' onto it.
+ *
+ * Set NEXT_PUBLIC_SIGN_IN_URL to fall back to an external auth origin; leaving
+ * it empty (the default now) keeps everything in-app.
+ */
+const authPath = (path: string, returnTo?: string) => {
+    const base = process.env.NEXT_PUBLIC_SIGN_IN_URL || ''
+    // The standalone app's sign-in screen was its root, not '/signin'.
+    const target = base && path === '/signin' ? '' : path
+    const url = `${base}${target}` || '/'
+    return returnTo ? `${url}?return=${encodeURIComponent(returnTo)}` : url
+}
+
+export const signInUrl = (returnTo?: string) => authPath('/signin', returnTo)
+export const bindEmailUrl = (returnTo?: string) => authPath('/bind-email', returnTo)
+
 export function clientToSignIn() {
-    window.location.href = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${window.encodeURIComponent(window.location.href)}`
+    window.location.href = signInUrl(window.location.href)
 }
 
 export function getGroupSubdomain(url?: string | null) {

@@ -1,0 +1,85 @@
+'use client'
+
+import {useState} from 'react'
+import {Dictionary} from '@/lang'
+import {requestEmailCode, verifyEmailCode} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
+import useModal from '@/components/client/Modal/useModal'
+import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {Button} from '@/components/shadcn/Button'
+import {clientCheckUserLoggedInAndRedirect, setAuth} from '@/utils'
+
+export default function FormVerifyEmail({lang, email}: {lang: Dictionary, email: string}) {
+    const [code, setCode] = useState('')
+    const {showLoading, closeModal} = useModal()
+    const {toast} = useToast()
+
+    const verify = async () => {
+        const loading = showLoading()
+        try {
+            const {token, user} = await verifyEmailCode({
+                params: {email, code: code.trim().toUpperCase()},
+                clientMode: CLIENT_MODE
+            })
+            setAuth(token)
+            // A first-time sign-in has no username yet; seed /register with the
+            // local part of the address as a starting suggestion.
+            await clientCheckUserLoggedInAndRedirect(token, user.name ? undefined : email.split('@')[0])
+        } catch (e: unknown) {
+            toast({
+                title: lang['Sign In'],
+                description: e instanceof Error ? e.message : 'Invalid or expired code',
+                variant: 'destructive'
+            })
+        } finally {
+            closeModal(loading)
+        }
+    }
+
+    const resend = async () => {
+        const loading = showLoading()
+        try {
+            await requestEmailCode({params: {email}, clientMode: CLIENT_MODE})
+            // The backend invalidates any previous unused code, so say so —
+            // otherwise people try the first one they received.
+            toast({title: lang['Check your inbox'], description: `${lang['Enter the code we sent to']} ${email}`})
+        } catch (e: unknown) {
+            toast({
+                title: lang['Sign In'],
+                description: e instanceof Error ? e.message : 'Failed to send code',
+                variant: 'destructive'
+            })
+        } finally {
+            closeModal(loading)
+        }
+    }
+
+    return <div className="max-w-[400px] w-full px-4 mx-auto">
+        <div className="text-xl font-semibold mb-2">{lang['Check your inbox']}</div>
+        <div className="text-sm text-gray-500 mb-4">
+            {lang['Enter the code we sent to']} <span className="font-medium">{email}</span>
+        </div>
+
+        <input
+            className="input shadow w-full bg-secondary text-center tracking-[0.3em] uppercase mb-4 outline-none focus:border-primary"
+            inputMode="text"
+            autoComplete="one-time-code"
+            autoFocus
+            maxLength={6}
+            value={code}
+            onChange={e => setCode(e.target.value)}
+            onKeyDown={e => {
+                if (e.key === 'Enter' && code.trim().length >= 6) verify()
+            }}/>
+
+        <Button variant="special" className="w-full" onClick={verify} disabled={code.trim().length < 6}>
+            {lang['Confirm']}
+        </Button>
+        <div className="flex flex-row justify-between mt-3">
+            <Button variant="ghost" onClick={() => {
+                window.location.href = '/signin'
+            }}>{lang['Back']}</Button>
+            <Button variant="ghost" onClick={resend}>{lang['Resend Code']}</Button>
+        </div>
+    </div>
+}

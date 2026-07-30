@@ -15,7 +15,11 @@ registry:
   password: GHCR_TOKEN
 
 proxy:
-  hosts: [app.sola.day]
+  # auth.sola.day is served by this app now that the sign-in screens live here.
+  # Traefik routing is undefined if two services claim the same Host rule, so
+  # seastar-auth must give the host up (deploy it with the host removed) BEFORE
+  # this is deployed with the host added.
+  hosts: [app.sola.day, auth.sola.day]
   app_port: 3000
   ssl: true
   health_check_path: /api/health
@@ -42,5 +46,11 @@ secrets:
     - NEXT_PUBLIC_ENABLE_GOOGLE_MAP
     - NEXT_PUBLIC_GOOGLE_MAP_API_KEY
     - NEXT_PUBLIC_SIGN_IN_URL
+    - NEXT_PUBLIC_THIRD_PARTY_LOGIN
+    - NEXT_PUBLIC_GOOGLE_CLIENT_ID
+    # Server-side only — read by app/api/google-signin to call
+    # /auth/trusted_signin. NOT a NEXT_PUBLIC_ var, and must not become one:
+    # it mints a session for any email.
+    - NEXT_TOKEN
 
 retain_containers: 5

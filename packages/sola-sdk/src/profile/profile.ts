@@ -59,27 +59,9 @@ export const updateProfile = async ({params, clientMode}: SolaSdkFunctionParams<
     })
 }
 
-/**
- * Request a sign-in code by email
- */
-export const requestEmailCode = async ({params, clientMode}: SolaSdkFunctionParams<{email: string}>): Promise<void> => {
-    await request('/auth/request_code', {
-        method: 'POST',
-        clientMode,
-        body: {email: params.email}
-    })
-}
-
-/**
- * Verify a sign-in code — returns the JWT and a minimal user object
- */
-export const verifyEmailCode = async ({params, clientMode}: SolaSdkFunctionParams<{email: string, code: string}>) => {
-    return await request<{token: string, user: {id: string, email: string, name: string}}>('/auth/verify_code', {
-        method: 'POST',
-        clientMode,
-        body: {email: params.email, code: params.code}
-    })
-}
+// requestEmailCode / verifyEmailCode moved to ../auth — they belong with the
+// rest of the sign-in flow (nonce, verify_wallet, bind_email), and the version
+// there also carries the `context` argument the bind-email flow needs.
 
 /**
  * Search profiles by keyword (public)

@@ -1,0 +1,80 @@
+'use client'
+
+import {useRef, useState} from 'react'
+import {Dictionary} from '@/lang'
+import {requestEmailCode} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
+import useModal from '@/components/client/Modal/useModal'
+import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {Button} from '@/components/shadcn/Button'
+import {clientRedirectToReturn} from '@/utils'
+
+const EMAIL_RE = /^[\w.+-]+@([\w-]+\.)+[\w-]{2,63}$/
+
+export default function BindEmailForm({lang}: {lang: Dictionary}) {
+    const [email, setEmail] = useState('')
+    const [error, setError] = useState('')
+    const submitting = useRef(false)
+    const {showLoading, closeModal} = useModal()
+    const {toast} = useToast()
+
+    const submit = async () => {
+        const address = email.toLowerCase().trim()
+        if (!EMAIL_RE.test(address)) {
+            setError(lang['Invalid email'])
+            return
+        }
+        setError('')
+        if (submitting.current) return
+        submitting.current = true
+
+        const loading = showLoading()
+        try {
+            // context: 'bind_email' matters. The backend scopes codes by context
+            // so a bind code can never be replayed as a login code — a login
+            // code minted here would be a way to take over the address.
+            await requestEmailCode({params: {email: address, context: 'bind_email'}, clientMode: CLIENT_MODE})
+            window.location.href = `/verify-bind-email?email=${encodeURIComponent(address)}`
+        } catch (e: unknown) {
+            toast({
+                title: lang['Bind Email'],
+                description: e instanceof Error ? e.message : 'Failed to send code',
+                variant: 'destructive'
+            })
+        } finally {
+            submitting.current = false
+            closeModal(loading)
+        }
+    }
+
+    return <div className="max-w-[400px] w-full px-4 mx-auto">
+        <div className="text-xl font-semibold mb-2">{lang['Bind Email']}</div>
+        <div className="text-sm text-gray-500 mb-4">
+            {lang['Please enter your email address so that you can log in and receive important notifications via email.']}
+        </div>
+
+        <label className={`${error ? 'border-red-400 ' : ''}input shadow flex flex-row items-center w-full bg-secondary focus-within:outline-none focus-within:border-primary`}>
+            <i className="uil-envelope mr-2 text-2xl"/>
+            <input
+                className="flex-1 w-full bg-transparent outline-none"
+                type="email"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                placeholder={lang['Your email']}
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                onKeyDown={e => {
+                    if (e.key === 'Enter') submit()
+                }}/>
+        </label>
+        <div className="text-red-400 text-sm min-h-6 my-1">{error}</div>
+
+        <Button variant="special" className="w-full" onClick={submit}>{lang['Continue']}</Button>
+        {/* Binding is optional — a wallet account works without an email, it
+            just can't sign in by email or receive notifications. */}
+        <Button variant="ghost" className="w-full mt-2" onClick={clientRedirectToReturn}>
+            {lang['Skip']}
+        </Button>
+    </div>
+}
