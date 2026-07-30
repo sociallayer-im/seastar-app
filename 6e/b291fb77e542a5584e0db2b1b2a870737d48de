@@ -1,0 +1,64 @@
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_e9ed806a3d225c::t_4d7400cc3fe510 636-700
+  s_e9ed806a3d225c::t_72d7a385b6a100 791-796
+  s_e9ed806a3d225c::t_dad5577c7e23a9 615-628
+  s_e9ed806a3d225c::t_b70dc72caefb1e 95-107
+  s_e9ed806a3d225c::t_e6ef286e67e470 523-533
+  s_e9ed806a3d225c::t_876a023b0c4834 29-31
+packages/sola-sdk/src/event/ticket.ts
+  s_e9ed806a3d225c::t_aeecc8bd7a8a5d 249-251
+packages/sola-sdk/src/stripe/stripe.ts
+  s_e9ed806a3d225c::t_a6abd6f2744c0c 1-111
+packages/sola-sdk/src/event/event.ts
+  s_e9ed806a3d225c::t_efd8db3d7fbf82 413-414
+src/components/client/DialogTicket.tsx
+  s_e9ed806a3d225c::t_bbb6d24f9aa081 287-307
+  s_e9ed806a3d225c::t_0c10b5d500efaf 124-125
+  s_e9ed806a3d225c::t_04953fd92973d2 9
+  s_e9ed806a3d225c::t_6739f73d6345ca 30
+src/lang/en.ts
+  s_e9ed806a3d225c::t_2e1274103b3919 675-693
+packages/sola-sdk/src/event/types.ts
+  s_e9ed806a3d225c::t_88d9315baae50a 99-100
+src/app/(normal)/event/detail/[eventid]/StripePaymentReturn.tsx
+  s_e9ed806a3d225c::t_719046830d46cf 1-67
+src/components/client/EventTicketOrderList.tsx
+  s_e9ed806a3d225c::t_d87ebbd53c1711 31-49
+  s_e9ed806a3d225c::t_5b9c00eba0dbbe 105-117
+  s_e9ed806a3d225c::t_a75f1092f4fcfc 3,5,8-10
+packages/sola-sdk/src/index.ts
+  s_e9ed806a3d225c::t_83b26b7df96a76 17
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_01ea4170ba1a52 657-675
+src/app/config.ts
+  s_e9ed806a3d225c::t_f3ff70c3ba3d0b 5-10
+src/app/(normal)/profile/[handle]/edit/StripeKeysManager.tsx
+  s_e9ed806a3d225c::t_618079e2de6316 1-137
+packages/sola-sdk/src/stripe/index.ts
+  s_e9ed806a3d225c::t_83b26b7df96a76 1
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_1c23f4a5257cb3 259-268
+  s_e9ed806a3d225c::t_ecf92c183662cf 62,64,66
+  s_e9ed806a3d225c::t_edd202458c2c0a 28
+src/app/(normal)/profile/[handle]/edit/EditProfile.tsx
+  s_e9ed806a3d225c::t_8dfd3256ba4012 15-16
+  s_e9ed806a3d225c::t_22c481d2dec4a7 134-135
+.env
+  s_e9ed806a3d225c::t_2e4a4426184b30 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "6eb291fb77e542a5584e0db2b1b2a870737d48de",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
