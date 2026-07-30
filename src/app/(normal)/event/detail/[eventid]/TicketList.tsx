@@ -7,17 +7,21 @@ import {displayTicketPrice, getPaymentMethodChainIcons} from '@/utils'
 import useModal from '@/components/client/Modal/useModal'
 import DialogTicket from '@/components/client/DialogTicket'
 
-export default function TicketList({eventDetail, lang, currProfile, attended}: {
+export default function TicketList({eventDetail, lang, currProfile, attended, paymentPending}: {
     eventDetail: EventDetail,
     lang: Dictionary,
     currProfile?: null | ProfileDetail,
-    attended?: boolean
+    attended?: boolean,
+    /** An order of theirs is awaiting payment/confirmation — buying again would
+     *  create a second order for the same seat. */
+    paymentPending?: boolean
 }) {
 
     const {openModal} = useModal()
+    const locked = attended || paymentPending
 
     const showTicket = (ticket: Ticket) => {
-        if (attended) return
+        if (locked) return
         openModal({
             content: (close) => <DialogTicket
                 eventDetail={eventDetail}
@@ -35,11 +39,15 @@ export default function TicketList({eventDetail, lang, currProfile, attended}: {
     return <div>
         <div className="border-gray-200 p-4">
             {attended && <div className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-lg px-4 py-2 mb-3">You have already registered for this event.</div>}
+            {!attended && paymentPending &&
+                <div className="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 mb-3">
+                    {lang['Order awaiting payment']}
+                </div>}
             {!tickets || tickets.length === 0 && <NoData/>}
             {tickets?.map(ticket => {
                 return <div key={ticket.id}
                             onClick={() => showTicket(ticket)}
-                            className={`bg-gray-100 p-4 rounded-lg mb-3 border-2 ${attended ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-[#baffad] hover:bg-[#effff9]'}`}>
+                            className={`bg-gray-100 p-4 rounded-lg mb-3 border-2 ${locked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-[#baffad] hover:bg-[#effff9]'}`}>
                     <div className="font-semibold">{ticket.title}</div>
                     <div className="text-xs my-2 break-words text-gray-500">
                         {ticket.content}

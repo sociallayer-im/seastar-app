@@ -672,6 +672,7 @@ export const en = {
     'Cancelled': 'Cancelled',
     'You have accepted the invite':'You have accepted the invite',
     'The other party has successfully joined the group': 'The other party has successfully joined the group',
+    'Order awaiting payment': 'You have an order for this event awaiting payment or confirmation. Finish that one rather than starting another.',
     'Group ticket event': 'Group ticket event',
     'Group ticket event intro': "Tickets on this event grant membership in the group rather than admitting to this event alone. A group can have only one.",
     'Group ticket event exists': 'This group already has a group ticket event.',

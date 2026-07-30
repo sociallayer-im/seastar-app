@@ -76,6 +76,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
         isEventOperator,
         canAccess,
         currProfileAttended,
+        currProfilePaymentPending,
         currProfileCheckedIn,
         isTicketEvent,
         eventProcess,
@@ -220,12 +221,20 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             </div>
                         }
 
-                        {isTicketEvent && !currProfileAttended && canAccess &&
+                        {isTicketEvent && !currProfileAttended && canAccess && !currProfilePaymentPending &&
                             <div className="flex-row-item-center mt-2">
                                 <a href={`/event/detail/${eventDetail.id}?tab=tickets`}
                                     className={`${buttonVariants({ variant: 'special' })} text-xs flex-1`}>
                                     {lang['Join Event(RSVP)']} 1
                                 </a>
+                            </div>
+                        }
+
+                        {/* An order is already in flight — finishing it is the
+                            action, not starting another. */}
+                        {isTicketEvent && !currProfileAttended && currProfilePaymentPending &&
+                            <div className="mt-2 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+                                {lang['Order awaiting payment']}
                             </div>
                         }
 
@@ -605,7 +614,8 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         eventDetail={eventDetail}
                         lang={lang}
                         currProfile={currProfile}
-                        attended={currProfileAttended} />
+                        attended={currProfileAttended}
+                        paymentPending={currProfilePaymentPending} />
                 }
 
 

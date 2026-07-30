@@ -83,6 +83,12 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         && ['attending', 'pending'].includes(currProfileParticipant.status || '')
         && currProfileParticipant.payment_status !== 'pending'
 
+    // An order of theirs is awaiting payment or awaiting the webhook's
+    // confirmation. They must not be able to start a SECOND order in that
+    // window — the existing one is what needs finishing (the API hands back
+    // the same Checkout Session rather than minting another).
+    const currProfilePaymentPending = currProfileParticipant?.payment_status === 'pending'
+
     // Check-in is checked_in_at, NOT registered_at — the latter is stamped on
     // every RSVP, which made every registrant look checked in.
     const currProfileCheckedIn = !!currProfileParticipant && !!currProfileParticipant.checked_in_at
@@ -155,6 +161,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         eventProcess: checkProcess(eventDetail.start_time, eventDetail.end_time),
         isTicketEvent: !!eventDetail.tickets?.length,
         currProfileAttended,
+        currProfilePaymentPending,
         currProfileCheckedIn,
         currProfileStarred,
         owner: eventDetail.owner,

@@ -654,6 +654,7 @@ export const zh: Dictionary = {
   'Cancelled': '已取消',
   'You have accepted the invite': '您已接受邀请',
   'The other party has successfully joined the group': '对方已成功加入群组',
+  'Order awaiting payment': '你在该活动已有一笔待支付或待确认的订单，请先完成它，不要重新下单。',
   'Group ticket event': '群组门票活动',
   'Group ticket event intro': '该活动下的门票将授予群组成员资格，而不只是参加这一场活动。每个群组只能有一个。',
   'Group ticket event exists': '该群组已存在群组门票活动。',
