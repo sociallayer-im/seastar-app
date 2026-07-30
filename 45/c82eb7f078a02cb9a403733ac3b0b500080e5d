@@ -1,0 +1,34 @@
+src/app/(normal)/event/[grouphandle]/setting/page.tsx
+  s_e9ed806a3d225c::t_3e84ab817b32e9 48
+  s_e9ed806a3d225c::t_d250356d536f5f 9
+packages/sola-sdk/src/group/group.ts
+  s_e9ed806a3d225c::t_c8a7a72c699325 73
+packages/sola-sdk/src/popup_city/popup_city.ts
+  s_e9ed806a3d225c::t_409c7f37eced25 2
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_66062ddf529e8c 576-580
+src/app/(normal)/event/[grouphandle]/setting/data.ts
+  s_e9ed806a3d225c::t_923f2cecae9c8d 2
+src/app/(normal)/event/[grouphandle]/popup-city/PopupCityForm.tsx
+  s_e9ed806a3d225c::t_db05ca2d678656 1-145
+src/lang/en.ts
+  s_e9ed806a3d225c::t_17cc3ddbf4e6cd 590-594
+src/app/(normal)/event/[grouphandle]/popup-city/page.tsx
+  s_e9ed806a3d225c::t_c654be7ade377f 3,5-11,14-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "45c82eb7f078a02cb9a403733ac3b0b500080e5d",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
