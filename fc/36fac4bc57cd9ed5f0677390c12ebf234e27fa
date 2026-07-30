@@ -1,0 +1,19 @@
+design/AUTH_INTEGRATION.md
+  s_e9ed806a3d225c::t_6af52813c4db9f 1-247
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "fc36fac4bc57cd9ed5f0677390c12ebf234e27fa",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
