@@ -29,6 +29,11 @@ yarn-error.log*
 # local env files
 .env*.local
 .env.production
+# The CN deploy pipeline parks the SG file here while it builds with the CN
+# values. It exists for the length of every CN deploy and is a verbatim copy of
+# .env.production, secrets included — a `git add -A` in that window would
+# commit them.
+.env.production.sgbak
 
 # vercel
 .vercel
