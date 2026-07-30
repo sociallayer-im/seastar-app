@@ -15,7 +15,26 @@ registry:
   password: GHCR_TOKEN
 
 proxy:
-  hosts: [app.sola.day]
+  # auth.sola.day is served by this app now that the sign-in screens live here —
+  # middleware rewrites that host's '/' to /signin, so sign-in URLs already in
+  # circulation keep working.
+  #
+  # Traefik routing is undefined while two services claim the same Host rule, so
+  # the cutover has an order:
+  #   1. cd soon && ginger deploy            # SIWE allowlist must accept app.sola.day
+  #   2. cd seastar-auth && ginger remove    # releases auth.sola.day (and its memory)
+  #   3. cd seastar-app && ginger deploy     # claims it here
+  # Step 3 builds before it boots, so auth.sola.day is unrouted for roughly the
+  # length of one deploy. Only stale cached HTML still points there — freshly
+  # served pages link to /signin on their own origin — and a retry fixes it. To
+  # close even that gap, deploy step 3 once with auth.sola.day removed from this
+  # list, then re-add it and `ginger deploy --skip-push` (seconds, no rebuild).
+  #
+  # Rollback: `ginger rollback <prev>` here (the previous image has
+  # NEXT_PUBLIC_SIGN_IN_URL=https://auth.sola.day baked in) then
+  # `cd seastar-auth && ginger deploy --skip-push`. seastar-auth's config is left
+  # pointing at auth.sola.day precisely so that second step needs no edit.
+  hosts: [app.sola.day, auth.sola.day]
   app_port: 3000
   ssl: true
   health_check_path: /api/health
@@ -41,6 +60,17 @@ secrets:
     - NEXT_PUBLIC_CLIENT_MODE
     - NEXT_PUBLIC_ENABLE_GOOGLE_MAP
     - NEXT_PUBLIC_GOOGLE_MAP_API_KEY
-    - NEXT_PUBLIC_SIGN_IN_URL
+    # NEXT_PUBLIC_SIGN_IN_URL is deliberately NOT injected: its value is now the
+    # empty string (meaning "use the in-app sign-in screens"), and ginger treats
+    # an inject key with no value as unset and aborts the deploy. Nothing reads
+    # it server-side either — NEXT_PUBLIC_* are inlined at `next build`, and its
+    # only readers are client components. Rolling back to an external auth origin
+    # means editing .env.production and rebuilding, not flipping a runtime var.
+    - NEXT_PUBLIC_THIRD_PARTY_LOGIN
+    - NEXT_PUBLIC_GOOGLE_CLIENT_ID
+    # Server-side only — read by app/api/google-signin to call
+    # /auth/trusted_signin. NOT a NEXT_PUBLIC_ var, and must not become one:
+    # it mints a session for any email.
+    - NEXT_TOKEN
 
 retain_containers: 5

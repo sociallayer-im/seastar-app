@@ -17,7 +17,9 @@ registry:
   password: YATCH_TOKEN          # resolved from .env.cn.production
 
 proxy:
-  hosts: [www.juluo.xyz]
+  # auth.juluo.xyz is served by this app now that the sign-in screens live here.
+  # seastar-auth must release the host first — see ginger.yml.
+  hosts: [www.juluo.xyz, auth.juluo.xyz]
   app_port: 3000
   ssl: true
   health_check_path: /api/health
@@ -44,7 +46,12 @@ secrets:
     - NEXT_PUBLIC_CLIENT_MODE
     - NEXT_PUBLIC_ENABLE_GOOGLE_MAP
     - NEXT_PUBLIC_GOOGLE_MAP_API_KEY
-    - NEXT_PUBLIC_SIGN_IN_URL
+    # NEXT_PUBLIC_SIGN_IN_URL / NEXT_PUBLIC_GOOGLE_CLIENT_ID are both empty on
+    # CN (in-app sign-in; Google sign-in off), and ginger rejects an inject key
+    # with no value. See ginger.yml — neither is read server-side.
+    - NEXT_PUBLIC_THIRD_PARTY_LOGIN
+    # Server-side only — see ginger.yml.
+    - NEXT_TOKEN
 
 # NEXT_PUBLIC_* are inlined at `next build` from .env.production in the build
 # context. Swap in the CN values for the build, then restore the SG file.

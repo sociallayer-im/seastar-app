@@ -2,15 +2,17 @@
 
 import {Dictionary} from '@/lang'
 import {useEffect, useState} from 'react'
+import {signInUrl} from '@/utils'
 
 export default function HeaderSignInBtn({lang}: {lang: Dictionary}) {
-    const [authUrl,  setAuthUrl] = useState<string>(process.env.NEXT_PUBLIC_SIGN_IN_URL!)
+    // The return target is window.location.href, which doesn't exist during
+    // SSR. Render without it, then fill it in on mount — the button stays
+    // clickable either way, it just lands on the home page if someone manages
+    // to click within that first tick.
+    const [authUrl, setAuthUrl] = useState<string>(signInUrl())
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const currentPath = window.location.href
-            setAuthUrl(`${process.env.NEXT_PUBLIC_SIGN_IN_URL}?return=${encodeURIComponent(currentPath)}`)
-        }
+        setAuthUrl(signInUrl(window.location.href))
     }, [])
 
     return  <a className="cursor-pointer flex-row-item-center btn btn-ghost btn-sm text-xs font-normal px-1"

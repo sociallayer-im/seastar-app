@@ -1,6 +1,7 @@
 export * from './constants'
 export * from './client'
 export * from './request'
+export * from './auth'
 export * from './profile'
 export * from './badge'
 export * from './group'

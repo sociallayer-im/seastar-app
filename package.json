@@ -20,6 +20,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.1",
+    "@react-oauth/google": "^0.13.5",
     "@vis.gl/react-google-maps": "^1.4.2",
     "bignumber.js": "^9.1.2",
     "calendar-link": "^2.8.0",

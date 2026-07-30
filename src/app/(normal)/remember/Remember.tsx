@@ -18,7 +18,7 @@ import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import Avatar from '@/components/Avatar'
-import {cfImage, clientToSignIn, displayProfileName, getAuth} from '@/utils'
+import {bindEmailUrl, cfImage, clientToSignIn, displayProfileName, getAuth} from '@/utils'
 import {Button} from '@/components/shadcn/Button'
 import QrCode from '@/components/client/QRcode'
 import useScanQrcode from '@/hooks/useScanQrcode'
@@ -309,7 +309,7 @@ export default function Remember({currProfile}: { lang: Dictionary, currProfile:
 
 
     async function showBindEmailDialog() {
-        window.location.href = `${process.env.NEXT_PUBLIC_SIGN_IN_URL}/bind-email?return=${window.location.href}`
+        window.location.href = bindEmailUrl(window.location.href)
     }
 
     return (<div>

@@ -1,6 +1,16 @@
 import type { Dictionary } from "./index"
 
 export const zh: Dictionary = {
+  "Go": "继续",
+  "Resend Code": "重新发送验证码",
+  "or": "或",
+  "Invalid email": "邮箱格式不正确",
+  "User already exists": "该用户名已被使用",
+  "Should be equal or longer than": "长度不得少于：",
+  "Should be equal or shorter than": "长度不得超过：",
+  "Ethereum Wallet": "以太坊钱包",
+  "Google Auth": "Google 登录",
+  "No Ethereum wallet found in this browser": "未检测到以太坊钱包，请安装钱包扩展后重试",
   "Social Layer": "Social Layer",
   "Sign In": "登录",
   Email: "邮箱",

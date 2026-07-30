@@ -1,16 +1,17 @@
 'use client'
 
-import Cookies from 'js-cookie'
 import DropdownMenu from "@/components/client/DropdownMenu"
 import Avatar from '@/components/Avatar'
 import {useEffect, useState} from 'react'
 import {Dictionary} from '@/lang'
 import {ProfileDetail} from '@sola/sdk'
+import {bindEmailUrl, signOut} from '@/utils'
 
 export default function ProfileMenu({lang, currentPath, ...props}: { profile: ProfileDetail, lang: Dictionary, currentPath: string }) {
     const handleSignOut = () => {
-        const currTopDomain = window.location.hostname.split('.').slice(-2).join('.')
-        Cookies.remove(process.env.NEXT_PUBLIC_AUTH_FIELD!, {domain: currTopDomain})
+        // signOut() owns the cookie's domain, which has to match what setAuth
+        // wrote or the removal silently does nothing.
+        signOut()
         window.location.reload()
     }
 
@@ -33,7 +34,7 @@ export default function ProfileMenu({lang, currentPath, ...props}: { profile: Pr
         menus.push({
             id: 'Bind Email',
             label: lang['Bind Email'],
-            href: `${process.env.NEXT_PUBLIC_SIGN_IN_URL}/bind-email?return=${encodeURIComponent(currentPath)}`
+            href: bindEmailUrl(currentPath)
         })
     }
 
