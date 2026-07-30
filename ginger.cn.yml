@@ -41,6 +41,15 @@ builder:
 env:
   NODE_ENV: production
 
+# Same 900 as SG, and for the same measured reason: `next start` idles near
+# 350 MiB but spikes past ginger's 512 MiB default while server-rendering the
+# heavier routes. On SG that produced a cgroup-OOM restart loop — three
+# allocations dead in 19 minutes — during which Traefik had no backend and
+# answered every request with a bare Go "404 page not found". CN runs the same
+# build, so it gets the same headroom.
+resources:
+  memory: 900
+
 secrets:
   load: [.env.cn.production]
   inject:
