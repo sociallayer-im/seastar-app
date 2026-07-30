@@ -92,15 +92,6 @@ export const pickSearchParam = (param?: string | string[]): string | undefined =
 }
 
 /**
- * Where to land after signing in. `return` is set by middleware from the
- * ?return= query param, exactly as the standalone auth app did, so existing
- * links keep working untouched.
- *
- * The '/' fallback is load-bearing: NEXT_PUBLIC_DEFAULT_RETURN is not set in
- * any environment, so the previous `cookiePath || process.env.…!` navigated to
- * the literal string "undefined".
- */
-/**
  * The `return` value originates in a query parameter and is then fed straight to
  * window.location / redirect(), so it is attacker-controlled navigation unless
  * it is checked. Two things have to be refused:
@@ -139,6 +130,15 @@ export const sanitizeReturnTarget = (value?: string | null, currentHost?: string
     }
 }
 
+/**
+ * Where to land after signing in. `return` is set by middleware from the
+ * ?return= query param, exactly as the standalone auth app did, so existing
+ * links keep working untouched.
+ *
+ * The '/' fallback inside sanitizeReturnTarget is load-bearing:
+ * NEXT_PUBLIC_DEFAULT_RETURN is set in no environment, so the previous
+ * `cookiePath || process.env.…!` navigated to the literal string "undefined".
+ */
 export const returnTarget = () => sanitizeReturnTarget(Cookies.get('return'))
 
 export const clientRedirectToReturn = () => {
