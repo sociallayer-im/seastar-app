@@ -1,0 +1,23 @@
+src/components/client/EventParticipantList.tsx
+  s_e9ed806a3d225c::t_aa8390edf324b9 335-342
+src/lang/en.ts
+  s_e9ed806a3d225c::t_d7acad12becf15 675
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_d7acad12becf15 657
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d9aad238238fbc7996aea4904b7d13057157baed",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
