@@ -332,6 +332,14 @@ export default function EventParticipantList({
                             <Avatar profile={participant.user} className="mr-2" size={32}/>
                             <div className="text-xs">
                                 <div>{participant.user.nickname || participant.user.name}</div>
+                                {/* When they signed up — distinct from checked_in_at, shown
+                                    on the Checked badge. Only operators need it. */}
+                                {isEventOperator && !!participant.registered_at &&
+                                    <div className="text-gray-400">
+                                        {lang['Registered at']}{' '}
+                                        <DisplayDateTime dataTimeStr={participant.registered_at}/>
+                                    </div>
+                                }
                             </div>
                         </a>
 
