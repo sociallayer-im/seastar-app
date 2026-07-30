@@ -42,11 +42,15 @@ function FeatureItem(props: { popupCity: PopupCity }) {
         }
     }, [props.popupCity.image_url])
 
-    return <a className='relative block' href={`/event/${props.popupCity.group.name}`}>
+    // 固定 300px 高度。CarouselContent 是 flex 容器，slide 会被拉伸到最高的一张
+    // 图片的高度，所以任由 img 用 h-auto 时，整个 carousel 的高度由最高的那张
+    // 图片决定（一张竖图就能把首页顶开）。高度约束回到 slide 自身，图片用
+    // object-cover 填充——这也是 a0cfb65 之前的做法。
+    return <a className='relative block h-[300px]' href={`/event/${props.popupCity.group.name}`}>
         {props.popupCity.image_url &&
             <img src={cfImage(props.popupCity.image_url, { width: 900, fit: 'scale-down' })}
                 alt={props.popupCity.title}
-                className='w-full h-auto' />
+                className='w-full h-full object-cover' />
         }
         <div className='hidden absolute bottom-0 left-0 right-0 sm:pt-[140px] pt-[100px] px-6 h-[250px]' style={{ background: dominantColor }}>
             <h3 className='text-white text-3xl font-bold mb-1' style={{ color: textColor }}>{props.popupCity.title}</h3>
