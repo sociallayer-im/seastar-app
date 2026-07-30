@@ -15,10 +15,25 @@ registry:
   password: GHCR_TOKEN
 
 proxy:
-  # auth.sola.day is served by this app now that the sign-in screens live here.
-  # Traefik routing is undefined if two services claim the same Host rule, so
-  # seastar-auth must give the host up (deploy it with the host removed) BEFORE
-  # this is deployed with the host added.
+  # auth.sola.day is served by this app now that the sign-in screens live here —
+  # middleware rewrites that host's '/' to /signin, so sign-in URLs already in
+  # circulation keep working.
+  #
+  # Traefik routing is undefined while two services claim the same Host rule, so
+  # the cutover has an order:
+  #   1. cd soon && ginger deploy            # SIWE allowlist must accept app.sola.day
+  #   2. cd seastar-auth && ginger remove    # releases auth.sola.day (and its memory)
+  #   3. cd seastar-app && ginger deploy     # claims it here
+  # Step 3 builds before it boots, so auth.sola.day is unrouted for roughly the
+  # length of one deploy. Only stale cached HTML still points there — freshly
+  # served pages link to /signin on their own origin — and a retry fixes it. To
+  # close even that gap, deploy step 3 once with auth.sola.day removed from this
+  # list, then re-add it and `ginger deploy --skip-push` (seconds, no rebuild).
+  #
+  # Rollback: `ginger rollback <prev>` here (the previous image has
+  # NEXT_PUBLIC_SIGN_IN_URL=https://auth.sola.day baked in) then
+  # `cd seastar-auth && ginger deploy --skip-push`. seastar-auth's config is left
+  # pointing at auth.sola.day precisely so that second step needs no edit.
   hosts: [app.sola.day, auth.sola.day]
   app_port: 3000
   ssl: true
