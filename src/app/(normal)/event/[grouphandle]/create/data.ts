@@ -3,7 +3,7 @@ import {
   getPrefillEventDateTime,
 } from "@/utils"
 import { redirect } from "next/navigation"
-import { getCurrProfile } from "@/app/actions"
+import { getCurrProfile, getServerSideAuth } from "@/app/actions"
 import {
   getGroupDetailByName,
   getVenueDetailById,
@@ -105,13 +105,15 @@ export const emptyTicket: TicketDraft = {
 export async function filterVenuesForProfile(
   groupDetail: GroupDetail,
   currProfile: Profile | null | undefined,
-  isManager: boolean
+  isManager: boolean,
+  authToken?: string
 ): Promise<VenueDetail[]> {
   // The group payload embeds the light Venue view; the event form needs
-  // availabilities/track_ids, so hydrate each venue's detail.
+  // availabilities/track_ids, so hydrate each venue's detail. Both callers are
+  // signed in, so the token goes along.
   const lightVenues = (groupDetail.venues || []) as Venue[]
   const venues = (await Promise.all(lightVenues.map(v =>
-    getVenueDetailById({ params: { venueId: v.id }, clientMode: CLIENT_MODE }).catch(() => null)
+    getVenueDetailById({ params: { venueId: v.id, authToken }, clientMode: CLIENT_MODE }).catch(() => null)
   ))).filter(Boolean) as VenueDetail[]
   if (isManager) return venues
 
@@ -166,7 +168,7 @@ export default async function CreateEventPageData({
     ...availableGroupHost,
   ]
 
-  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager)
+  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager, await getServerSideAuth())
 
   return {
     currProfile,

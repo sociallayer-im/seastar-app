@@ -1,7 +1,7 @@
 import {getGroupDetailByName, getVenueDetailById} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {redirect} from 'next/navigation'
-import {getCurrProfile} from '@/app/actions'
+import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {analyzeGroupMembershipAndCheckProfilePermissions} from '@/utils'
 
 export interface EditVenueParams {
@@ -29,8 +29,12 @@ export default async function EditVenueData({params, checkPermissions=true} : Ed
         redirect('/404')
     }
 
+    // Signed-in viewers fetch with their token: the endpoint is public, but an
+    // editor should not be served a cached anonymous response.
+    const authToken = await getServerSideAuth()
+
     const venueDetail = await getVenueDetailById({
-        params: {venueId: venueid},
+        params: {venueId: venueid, authToken},
         clientMode: CLIENT_MODE
     })
 

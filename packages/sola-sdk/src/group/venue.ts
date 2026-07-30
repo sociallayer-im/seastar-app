@@ -3,10 +3,21 @@ import {request, requestOrNull} from '../request'
 import {VenueAvailability, VenueDetail} from './types'
 import {resolvePlaceId} from '../place'
 
-export const getVenueDetailById = async function ({params: {venueId}, clientMode}: SolaSdkFunctionParams<{
-    venueId: string
+/**
+ * Venue detail. The endpoint is public, so the token is optional — pass it
+ * when a signed-in user is viewing (server-side: getServerSideAuth()), both so
+ * the request is attributed and so Next doesn't serve them a cached anonymous
+ * response.
+ */
+export const getVenueDetailById = async function ({params: {venueId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    venueId: string,
+    authToken?: string
 }>) {
-    return await requestOrNull<VenueDetail>(`/venues/${encodeURIComponent(venueId)}`, {clientMode})
+    return await requestOrNull<VenueDetail>(`/venues/${encodeURIComponent(venueId)}`, {
+        authToken,
+        clientMode,
+        ...(authToken ? {noCache: true} : {})
+    })
 }
 
 const venueBody = (venue: Partial<VenueDetail>, placeId: string | null) => ({

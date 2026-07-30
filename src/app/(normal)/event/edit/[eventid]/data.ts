@@ -9,7 +9,7 @@ import {
   Recurring,
   EventDetail,
 } from "@sola/sdk"
-import { getCurrProfile } from "@/app/actions"
+import { getCurrProfile, getServerSideAuth } from "@/app/actions"
 import { redirect } from "next/navigation"
 import { analyzeGroupMembershipAndCheckProfilePermissions } from "@/utils"
 import { CreateEventPageDataType, filterVenuesForProfile } from "@/app/(normal)/event/[grouphandle]/create/data"
@@ -111,7 +111,7 @@ export default async function EditEventData({
     })
   }
 
-  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager)
+  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager, await getServerSideAuth())
 
   return {
     currProfile,
