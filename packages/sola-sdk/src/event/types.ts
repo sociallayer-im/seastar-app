@@ -106,7 +106,10 @@ export interface Participant {
     id: string,
     status: string | null,
     payment_status: string | null,
-    register_time: string | null,
+    /** When they RSVP'd — NOT a check-in marker. */
+    registered_at: string | null,
+    /** When a manager scanned them at the door; null until then. */
+    checked_in_at: string | null,
     created_at: string | null,
     user: Profile,
 }

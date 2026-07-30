@@ -654,6 +654,7 @@ export const zh: Dictionary = {
   'Cancelled': '已取消',
   'You have accepted the invite': '您已接受邀请',
   'The other party has successfully joined the group': '对方已成功加入群组',
+  'Checked in at': '签到时间',
   'Stripe Payment Keys': 'Stripe 收款密钥',
   'Stripe keys intro': '添加你的 Stripe secret key 即可用银行卡售票，收入直接进入你的 Stripe 账户。建议使用带 charge/refund 权限的受限密钥（rk_live_…）而非完整密钥。',
   'Key Name': '密钥名称',

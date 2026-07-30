@@ -83,8 +83,9 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         && ['attending', 'pending'].includes(currProfileParticipant.status || '')
         && currProfileParticipant.payment_status !== 'pending'
 
-    // Check-in is recorded as register_time on the participant (was status 'checked').
-    const currProfileCheckedIn = !!currProfileParticipant && !!currProfileParticipant.register_time
+    // Check-in is checked_in_at, NOT registered_at — the latter is stamped on
+    // every RSVP, which made every registrant look checked in.
+    const currProfileCheckedIn = !!currProfileParticipant && !!currProfileParticipant.checked_in_at
 
     const isEventCreator = !!eventDetail.owner && eventDetail.owner.id === currProfile?.id
 

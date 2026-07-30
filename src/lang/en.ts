@@ -672,6 +672,7 @@ export const en = {
     'Cancelled': 'Cancelled',
     'You have accepted the invite':'You have accepted the invite',
     'The other party has successfully joined the group': 'The other party has successfully joined the group',
+    'Checked in at': 'Checked in at',
     'Stripe Payment Keys': 'Stripe Payment Keys',
     'Stripe keys intro': 'Add your Stripe secret key to sell tickets by card. The money goes directly to your Stripe account. Restricted keys (rk_live_…) with charge/refund scopes are recommended over full secret keys.',
     'Key Name': 'Key Name',

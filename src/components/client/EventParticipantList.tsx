@@ -9,6 +9,9 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {CLIENT_MODE} from '@/app/config'
+import dynamic from 'next/dynamic'
+
+const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTime'))
 
 export interface EventParticipantListProps {
     lang: Dictionary
@@ -367,16 +370,20 @@ export default function EventParticipantList({
                                         {lang['Cancel Participation']}
                                     </div>
                                 }
-                                {isEventOperator && !participant.register_time && participant.status !== 'pending' && participant.status !== 'declined' &&
+                                {isEventOperator && !participant.checked_in_at && participant.status !== 'pending' && participant.status !== 'declined' &&
                                     <div onClick={() => handleCheckInForParticipant(participant)}
                                          className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
                                         {lang['Check In']}
                                     </div>
                                 }
-                                {!!participant.register_time &&
+                                {!!participant.checked_in_at &&
                                     <div
-                                        className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs  bg-gray-50 font-semibold">
+                                        className="h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs  bg-gray-50 font-semibold"
+                                        title={`${lang['Checked in at']} ${participant.checked_in_at}`}>
                                         {lang['Checked']}
+                                        <span className="ml-1 font-normal text-gray-500">
+                                            <DisplayDateTime dataTimeStr={participant.checked_in_at}/>
+                                        </span>
                                     </div>
                                 }
                                 {participant.status === 'declined' &&
