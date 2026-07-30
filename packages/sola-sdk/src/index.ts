@@ -14,3 +14,4 @@ export * from './activity'
 export * from './remember'
 export * from './place'
 
+export * from './stripe'

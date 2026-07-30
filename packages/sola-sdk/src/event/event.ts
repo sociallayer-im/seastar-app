@@ -410,7 +410,8 @@ const ticketBody = (t: TicketDraft, groupId: string | null) => ({
         receiver_address: pm.receiver_address,
         price: pm.price,
         protocol: pm.protocol,
-        chains: pm.chains
+        chains: pm.chains,
+        stripe_setting_id: pm.stripe_setting_id
     }))
 })
 

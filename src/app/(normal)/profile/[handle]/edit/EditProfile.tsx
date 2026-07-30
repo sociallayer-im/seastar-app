@@ -12,7 +12,8 @@ import DialogEditSocialMedia from "@/components/client/DialogEditSocialMedia"
 import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {ProfileDetail, updateProfile} from '@sola/sdk'
-import {CLIENT_MODE} from '@/app/config'
+import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
+import StripeKeysManager from './StripeKeysManager'
 
 export default function EditProfile({profile, lang}: { profile: ProfileDetail, lang: Dictionary }) {
     const [newProfile, setNewProfile] = useState<ProfileDetail>(profile)
@@ -130,6 +131,8 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                     }
                 </div>
             </div>
+            {STRIPE_ENABLED && <StripeKeysManager lang={lang}/>}
+
             <div className="flex-row-item-center sm:justify-center my-4">
                 <Button variant={'secondary'} className="flex-1 sm:flex-grow-0 sm:min-w-36 mr-4" onClick={() => {
                     history.go(-1)

@@ -1,10 +1,13 @@
 'use client'
 
-import {displayProfileName} from '@/utils'
+import {displayProfileName, getAuth} from '@/utils'
 import {Dictionary} from '@/lang'
-import {EventDetail, TicketItem, Ticket, Profile} from '@sola/sdk'
+import {EventDetail, TicketItem, Ticket, Profile, refundTicketItem} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import dynamic from 'next/dynamic'
+import {Button} from '@/components/shadcn/Button'
+import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
 
 const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTime'))
 
@@ -25,6 +28,25 @@ export default function EventTicketOrderList({
                                                  eventDetail,
                                                  isEventOperator
                                              }: EventParticipantListProps) {
+    const {toast} = useToast()
+
+    // Full refund only in v1 (PAYMENTS_PLAN decision #11). The backend
+    // authorizes (owner/co-host; group owner for group tickets) and the
+    // refund finalizes asynchronously via Stripe's webhook.
+    const handleRefund = async (ticketItemId: string) => {
+        if (!window.confirm(lang['Refund this order'])) return
+        try {
+            const authToken = getAuth()
+            await refundTicketItem({params: {ticketItemId, authToken: authToken!}, clientMode: CLIENT_MODE})
+            toast({description: lang['Refund submitted'], variant: 'success'})
+            setTimeout(() => window.location.reload(), 1500)
+        } catch (e: unknown) {
+            toast({
+                description: e instanceof Error ? e.message : 'Refund failed',
+                variant: 'destructive'
+            })
+        }
+    }
 
     const downloadCSV = () => {
         const title = ['Username', 'Nickname', 'Email', 'Payment wallet address', 'Status', 'Create time', 'Ticket Type']
@@ -80,6 +102,19 @@ export default function EventTicketOrderList({
                                 <i className="uil-ticket text-base mr-1" />
                                 {participant.ticket?.title}
                             </div>
+                            {['refunded', 'partially_refunded', 'disputed'].includes(participant.status || '') &&
+                                <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">
+                                    {participant.status}
+                                </span>
+                            }
+                            {STRIPE_ENABLED && isEventOperator && participant.chain === 'stripe' &&
+                                (participant.status === 'succeeded' || participant.status === 'partially_refunded') &&
+                                !!participant.amount &&
+                                <Button variant={'ghost'} size={'sm'} className="ml-2 text-red-400"
+                                    onClick={() => handleRefund(participant.id)}>
+                                    {lang['Refund']}
+                                </Button>
+                            }
                         </div>
                     </div>
                 })

@@ -26,8 +26,9 @@ import {
     EventRole,
     getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerName, getBadgeClassDetailByBadgeClassId
 } from '@sola/sdk'
-import {cfImage} from '@/utils'
-import {CLIENT_MODE} from '@/app/config'
+import {cfImage, getAuth} from '@/utils'
+import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
+import {StripeSetting, getStripeSettings} from '@sola/sdk'
 
 export interface TicketFormProps {
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
@@ -91,6 +92,19 @@ export default function TicketForm({
             if (t.payment_methods && t.payment_methods.length) {
                 errors.payment_methods = t.payment_methods.map((p) => {
                     const errMsg: { price?: string, receiver_address?: string } = {}
+                    if (p.chain === 'stripe') {
+                        // Card methods: no wallet/chains — a key and the $4
+                        // floor instead (mirrors soon's creation validation).
+                        if (p.price < 400) {
+                            allTicketValid = false
+                            errMsg.price = lang['Card price minimum']
+                        }
+                        if (!p.stripe_setting_id) {
+                            allTicketValid = false
+                            errMsg.receiver_address = lang['Stripe key required']
+                        }
+                        return errMsg
+                    }
                     if (!p.price && p.price !== 0) {
                         allTicketValid = false
                         errMsg.price = 'Price is required'
@@ -506,6 +520,17 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
     type PaymentMethodDraft = PaymentMethod & {chain_token_addresses?: Record<string, string>}
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethodDraft[]>(props.paymentMethods)
 
+    // The creator's Stripe keys, for card payment methods (SG only).
+    const [stripeSettings, setStripeSettings] = useState<StripeSetting[]>([])
+    useEffect(() => {
+        if (!STRIPE_ENABLED) return
+        const authToken = getAuth()
+        if (!authToken) return
+        getStripeSettings({params: {authToken}, clientMode: CLIENT_MODE})
+            .then(setStripeSettings)
+            .catch(console.error)
+    }, [])
+
     const EVM_CHAINS = [...new Map(
         Payments.filter(c => c.chain !== 'stripe').map(c => [c.chain, c])
     ).values()]
@@ -587,12 +612,91 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         }])
     }
 
+    // A card method is its own entry (chain 'stripe', price in cents) — never
+    // mixed into a crypto method's chains, whose price unit differs.
+    const addStripePaymentMethod = () => {
+        setPaymentMethods([...paymentMethods, {
+            ...emptyPaymentMethod,
+            chain: 'stripe',
+            kind: 'fiat',
+            token_name: 'USD',
+            price: 400,
+            stripe_setting_id: stripeSettings.length === 1 ? stripeSettings[0].id : null
+        }])
+    }
+    const hasStripeMethod = paymentMethods.some(p => p.chain === 'stripe' && !p._destroy)
+
     return <div>
         {
             paymentMethods
                 .filter(p => !p._destroy)
                 .map((p, index) => {
                     const currToken = ALL_TOKENS.find(t => t.name === p.token_name) || ALL_TOKENS[0]
+
+                    if (p.chain === 'stripe') {
+                        const currSetting = stripeSettings.find(s => s.id === p.stripe_setting_id)
+                        return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
+                            <div className="mb-2 text-sm font-semibold flex-row-item-center">
+                                <img src="/images/payment_icon/stripe.png" className="w-5 h-5 rounded-full mr-2" alt=""/>
+                                {lang['Card Payment (Stripe)']}
+                                {currSetting?.mode === 'test' &&
+                                    <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">{lang['TEST MODE']}</span>}
+                            </div>
+                            <div className="flex-row-item-center text-sm mb-3 whitespace-nowrap">
+                                <div>{lang['Price']} (USD)</div>
+                                <Input type="number"
+                                       value={!!p.price || Number(p.price) === 0 ? p.price / 100 : ''}
+                                       onWheel={e => e.currentTarget.blur()}
+                                       inputSize={'md'}
+                                       onChange={e => setPaymentMethods(paymentMethods.map((pm, i) => i === index ? {
+                                           ...pm,
+                                           price: Math.round(parseFloat(e.target.value) * 100) || 0
+                                       } : pm))}
+                                       className="ml-2"/>
+                            </div>
+                            {!!props.errors?.[index]?.price &&
+                                <div className="err-msg text-red-400 mb-2 text-xs">{props.errors?.[index]?.price}</div>
+                            }
+                            <div className="flex-row-item-center text-sm">
+                                <div className="whitespace-nowrap">{lang['Select a Stripe key']}</div>
+                                <div className="ml-2 flex-1">
+                                    <DropdownMenu
+                                        options={stripeSettings}
+                                        value={currSetting ? [currSetting] : []}
+                                        onSelect={(option: StripeSetting[]) => setPaymentMethods(paymentMethods.map((pm, i) => i === index ? {
+                                            ...pm,
+                                            stripe_setting_id: option[0].id
+                                        } : pm))}
+                                        renderOption={(option) => (
+                                            <div className="flex-row-item-center">
+                                                <div>{option.name}</div>
+                                                <div className="ml-2 text-gray-400">{option.masked_key}</div>
+                                                {option.mode === 'test' && <div className="ml-2 text-xs text-amber-600">{lang['TEST MODE']}</div>}
+                                            </div>
+                                        )}
+                                        valueKey={'id'}>
+                                        <Input
+                                            type="text"
+                                            readOnly
+                                            value={currSetting ? `${currSetting.name} ${currSetting.masked_key}` : ''}
+                                            placeholder={lang['Select a Stripe key']}
+                                            inputSize={'md'}
+                                            className="cursor-pointer w-full"
+                                            endAdornment={<i className="uil-angle-down text-lg"/>}
+                                        />
+                                    </DropdownMenu>
+                                </div>
+                                <i onClick={() => handleRemovePaymentMethod(index)}
+                                   className="uil-minus-circle text-2xl text-gray-500 cursor-pointer ml-2"/>
+                            </div>
+                            {!!props.errors?.[index]?.receiver_address &&
+                                <div className="err-msg text-red-400 mt-2 text-xs">{props.errors?.[index]?.receiver_address}</div>
+                            }
+                            {!stripeSettings.length &&
+                                <div className="text-xs text-gray-500 mt-2">{lang['Stripe keys intro']}</div>
+                            }
+                        </div>
+                    }
 
                     return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
                         <div className="mb-2 text-sm font-semibold">{lang['Payment']} {index + 1}</div>
@@ -683,6 +787,12 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                         </div>
                     </div>
                 })
+        }
+        {STRIPE_ENABLED && !hasStripeMethod &&
+            <Button variant={'secondary'} size={'sm'} onClick={addStripePaymentMethod}>
+                <img src="/images/payment_icon/stripe.png" className="w-4 h-4 rounded-full mr-1" alt=""/>
+                {lang['Add card payment']}
+            </Button>
         }
     </div>
 }

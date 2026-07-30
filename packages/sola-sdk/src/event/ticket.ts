@@ -246,21 +246,6 @@ export const listGroupTicketTypes = async ({params, clientMode}: SolaSdkFunction
     }
 }
 
-// --- stripe ---
-
-export const getStripeClientSecret = async ({params, clientMode}: SolaSdkFunctionParams<{
-    ticketItemId: string,
-    authToken: string
-}>) => {
-    return await request<{ result: string, payment_intent_id: string, client_secret: string }>(
-        '/tickets/stripe_client_secret', {
-            method: 'POST',
-            body: {ticket_item_id: params.ticketItemId},
-            authToken: params.authToken,
-            clientMode
-        })
-}
-
-export const getStripeConfig = async ({clientMode}: { clientMode?: SolaSdkFunctionParams<unknown>['clientMode'] }) => {
-    return await request<{ stripe_public_key: string | null }>('/tickets/stripe_config', {clientMode})
-}
+// (Stripe checkout/refund/key-management functions live in ../stripe — the
+// old getStripeClientSecret/getStripeConfig endpoints were removed from the
+// backend along with the Payment-Element flow.)

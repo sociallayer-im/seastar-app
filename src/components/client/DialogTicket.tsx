@@ -6,6 +6,7 @@ import {
     BadgeClassDetail,
     checkBadgeOwnership,
     createTicketPayment,
+    createStripeCheckoutSession,
     getBadgeClassDetailByBadgeClassId,
     submitPaymentTxHash,
     validateCoupon
@@ -26,7 +27,7 @@ import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
-import {CLIENT_MODE} from '@/app/config'
+import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Switch} from '@/components/shadcn/Switch'
 
@@ -120,6 +121,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             const effectiveChains = method.chains?.length ? method.chains : (method.chain ? [method.chain] : [])
             effectiveChains.forEach(chain => {
                 if (seen.has(chain)) return
+                // Card payments only exist on STRIPE_ENABLED deployments.
+                if (chain === 'stripe' && !STRIPE_ENABLED) return
                 const type = Payments.find(p => p.chain === chain)
                 if (type) { seen.add(chain); result.push(type) }
             })
@@ -281,6 +284,27 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 clientMode: CLIENT_MODE
             })
             setPendingTicketItem(ticketItem)
+
+            if (selectedPaymentType?.chain === 'stripe') {
+                // A 100% coupon can make the order free-and-confirmed with no
+                // session to pay — treat like the free path.
+                if (ticketItem.status === 'succeeded') {
+                    toast({description: lang['Purchase Successful'], variant: 'success'})
+                    closeModal(loading)
+                    setTimeout(() => window.location.reload(), 2000)
+                    return
+                }
+                // Everything else happens on Stripe's hosted page; the return
+                // URL lands back on the event page, which polls until the
+                // webhook confirms. Never mark paid client-side.
+                const {checkout_url} = await createStripeCheckoutSession({
+                    params: {ticketItemId: ticketItem.id, authToken: authToken!},
+                    clientMode: CLIENT_MODE
+                })
+                window.location.href = checkout_url
+                return
+            }
+
             closeModal(loading)
             await handleEVMPayment(ticketItem)
         } catch (e: unknown) {

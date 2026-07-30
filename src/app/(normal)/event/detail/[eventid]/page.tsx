@@ -25,6 +25,7 @@ import ClickToCopy from '@/components/client/ClickToCopy'
 import removeMarkdown from 'markdown-to-text'
 import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
+import StripePaymentReturn from '@/app/(normal)/event/detail/[eventid]/StripePaymentReturn'
 import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
@@ -58,10 +59,11 @@ export async function generateMetadata({ params: { eventid }, searchParams: { ta
     }
 }
 
-export default async function EventDetail({ params: { eventid }, searchParams: { tab: _tab } }: {
+export default async function EventDetail({ params: { eventid }, searchParams: { tab: _tab, payment } }: {
     params: EventDetailPageDataProps,
-    searchParams: EventDetailPageSearchParams
+    searchParams: EventDetailPageSearchParams & { payment?: string | string[] }
 }) {
+    const paymentReturn = pickSearchParam(payment)
     const {
         eventDetail,
         groupDetail,
@@ -251,6 +253,16 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                     className="text-xs flex-1">
                                     {lang['Checked']}
                                 </Button>
+                            </div>
+                        }
+
+                        {(paymentReturn === 'success' || paymentReturn === 'cancelled') && !!currProfile &&
+                            <div className="mt-3">
+                                <StripePaymentReturn
+                                    lang={lang}
+                                    eventId={eventDetail.id}
+                                    profileName={currProfile.name}
+                                    result={paymentReturn}/>
                             </div>
                         }
 
