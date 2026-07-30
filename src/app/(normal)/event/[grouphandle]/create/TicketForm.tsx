@@ -92,6 +92,9 @@ export default function TicketForm({
             if (t.payment_methods && t.payment_methods.length) {
                 errors.payment_methods = t.payment_methods.map((p) => {
                     const errMsg: { price?: string, receiver_address?: string } = {}
+                    // A method being removed is not validated — its errors are
+                    // never rendered, so it could block submission invisibly.
+                    if (p._destroy) return errMsg
                     if (p.chain === 'stripe') {
                         // Card methods: no wallet/chains — a key and the $4
                         // floor instead (mirrors soon's creation validation).
