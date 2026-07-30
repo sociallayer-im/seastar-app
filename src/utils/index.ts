@@ -200,6 +200,15 @@ export const getAvatar = (id?: number | string | null, url?: string | null) => {
 
 const CF_IMAGE_HOST = 'https://datastore.sola.day'
 
+// Cloudflare Images' own delivery host. Uploads go to the R2 bucket behind
+// CF_IMAGE_HOST, but for a while soon's upload endpoint returned Cloudflare
+// Images variant URLs instead, so a handful of stored *_url values still point
+// here. Left alone they are doubly broken: cfImage can't resize them, and
+// imagedelivery.net is unreachable from mainland China. Our own domain serves
+// the very same objects under /cdn-cgi/imagedelivery, which is reachable and
+// still goes through image resizing — so rewrite rather than pass through.
+const CF_DELIVERY_HOST = 'https://imagedelivery.net'
+
 export interface CfImageOptions {
     width?: number
     height?: number
@@ -209,13 +218,22 @@ export interface CfImageOptions {
 }
 
 export const cfImage = (url: string | null | undefined, options: CfImageOptions = {}): string => {
-    if (!url || !url.startsWith(CF_IMAGE_HOST)) return url || ''
+    if (!url) return ''
+
+    let path: string
+    if (url.startsWith(CF_IMAGE_HOST)) {
+        path = url.slice(CF_IMAGE_HOST.length)
+    } else if (url.startsWith(CF_DELIVERY_HOST)) {
+        path = `/cdn-cgi/imagedelivery${url.slice(CF_DELIVERY_HOST.length)}`
+    } else {
+        return url
+    }
+
     const opts: CfImageOptions = { format: 'auto', quality: 85, ...options }
     const params = (Object.entries(opts) as [string, string | number][])
         .filter(([, v]) => v !== undefined)
         .map(([k, v]) => `${k}=${v}`)
         .join(',')
-    const path = url.slice(CF_IMAGE_HOST.length)
     return `${CF_IMAGE_HOST}/cdn-cgi/image/${params}${path}`
 }
 
