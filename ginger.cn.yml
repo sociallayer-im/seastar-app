@@ -17,9 +17,13 @@ registry:
   password: YATCH_TOKEN          # resolved from .env.cn.production
 
 proxy:
-  # auth.juluo.xyz is served by this app now that the sign-in screens live here.
-  # seastar-auth must release the host first — see ginger.yml.
-  hosts: [www.juluo.xyz, auth.juluo.xyz]
+  # One host on CN. Sign-in lives in this app at /signin
+  # (NEXT_PUBLIC_SIGN_IN_URL is empty in .env.cn.production, which selects the
+  # in-app screens), so www.juluo.xyz is its own login provider and there is no
+  # second origin to hop to. auth.juluo.xyz is retired outright rather than
+  # re-pointed here the way auth.sola.day was: SG had sign-in links in
+  # circulation to keep working, CN has none.
+  hosts: [www.juluo.xyz]
   app_port: 3000
   ssl: true
   health_check_path: /api/health
