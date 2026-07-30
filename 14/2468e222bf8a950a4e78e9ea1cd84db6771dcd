@@ -1,0 +1,27 @@
+Dockerfile
+  s_e9ed806a3d225c::t_ec0dfe5332e008 2-8,11-16,18-19,22-25,38
+  s_e9ed806a3d225c::t_bcb0b7448d91c2 28-37,50,52
+  s_e9ed806a3d225c::t_2e08fc01cf9ee0 44-49
+  s_e9ed806a3d225c::t_90f14ffbeb347f 51,53-57
+package.json
+  s_e9ed806a3d225c::t_0b9c1e555a8ac2 10
+  s_e9ed806a3d225c::t_201a1afb222486 69,79
+bun.lock
+  s_e9ed806a3d225c::t_074dc9ddadf6ab 61,328,374,376,378,380,382,384,386,388,390,392,394,396,398,400,402,404,406,408,410,412,414,416,480,648,778,780,784,812,1016,1038,1072,1076,1106,1112,1158,1198,1218,1220,1228,1242
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "142468e222bf8a950a4e78e9ea1cd84db6771dcd",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
