@@ -104,7 +104,11 @@ export interface PaymentMethod {
 /** ParticipantBlueprint. */
 export interface Participant {
     id: string,
+    /** attending | pending (awaiting approval) | declined | maybe | cancelled
+     *  (withdrawn — the backend never lists these). Only "attending" holds a seat. */
     status: string | null,
+    /** Derived summary of this participant's orders: succeeded | pending |
+     *  cancelled, or null when the event has no ticket types. Never set on its own. */
     payment_status: string | null,
     /** When they RSVP'd — NOT a check-in marker. */
     registered_at: string | null,
