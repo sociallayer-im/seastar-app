@@ -45,7 +45,12 @@ secrets:
     - NEXT_PUBLIC_CLIENT_MODE
     - NEXT_PUBLIC_ENABLE_GOOGLE_MAP
     - NEXT_PUBLIC_GOOGLE_MAP_API_KEY
-    - NEXT_PUBLIC_SIGN_IN_URL
+    # NEXT_PUBLIC_SIGN_IN_URL is deliberately NOT injected: its value is now the
+    # empty string (meaning "use the in-app sign-in screens"), and ginger treats
+    # an inject key with no value as unset and aborts the deploy. Nothing reads
+    # it server-side either — NEXT_PUBLIC_* are inlined at `next build`, and its
+    # only readers are client components. Rolling back to an external auth origin
+    # means editing .env.production and rebuilding, not flipping a runtime var.
     - NEXT_PUBLIC_THIRD_PARTY_LOGIN
     - NEXT_PUBLIC_GOOGLE_CLIENT_ID
     # Server-side only — read by app/api/google-signin to call

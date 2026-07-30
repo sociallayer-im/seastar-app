@@ -46,9 +46,10 @@ secrets:
     - NEXT_PUBLIC_CLIENT_MODE
     - NEXT_PUBLIC_ENABLE_GOOGLE_MAP
     - NEXT_PUBLIC_GOOGLE_MAP_API_KEY
-    - NEXT_PUBLIC_SIGN_IN_URL
+    # NEXT_PUBLIC_SIGN_IN_URL / NEXT_PUBLIC_GOOGLE_CLIENT_ID are both empty on
+    # CN (in-app sign-in; Google sign-in off), and ginger rejects an inject key
+    # with no value. See ginger.yml — neither is read server-side.
     - NEXT_PUBLIC_THIRD_PARTY_LOGIN
-    - NEXT_PUBLIC_GOOGLE_CLIENT_ID
     # Server-side only — see ginger.yml.
     - NEXT_TOKEN
 
