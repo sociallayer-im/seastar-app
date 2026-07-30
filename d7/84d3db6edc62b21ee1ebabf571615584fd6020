@@ -1,0 +1,34 @@
+.env
+  s_e9ed806a3d225c::t_868bd073220d34 17-20
+src/app/config.ts
+  s_e9ed806a3d225c::t_400846e95fcdb1 20-36
+src/app/(auth)/signin/page.tsx
+  s_e9ed806a3d225c::t_290fb2faaf1f1c 29-33,38-48
+  s_e9ed806a3d225c::t_57fcc879a91ae2 4
+src/components/client/DialogTicket.tsx
+  s_e9ed806a3d225c::t_f078d0bafe0bc1 126-127
+  s_e9ed806a3d225c::t_42dea2525a7fd1 30
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_e9ed806a3d225c::t_c25c14e2fd7784 389
+  s_e9ed806a3d225c::t_2908b23b2b9c34 211-216
+  s_e9ed806a3d225c::t_3630580d36f29b 571-572,574
+  s_e9ed806a3d225c::t_d6ebd1992c325b 812
+  s_e9ed806a3d225c::t_880d5c20635a85 350
+  s_e9ed806a3d225c::t_35634427638ef2 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d784d3db6edc62b21ee1ebabf571615584fd6020",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
