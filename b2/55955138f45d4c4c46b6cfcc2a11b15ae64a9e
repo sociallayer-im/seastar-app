@@ -1,0 +1,21 @@
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_e9ed806a3d225c::t_75de5f37a0544d 31,153,178,199-200,374,516,528-531,537-541
+packages/sola-sdk/src/stripe/stripe.ts
+  s_e9ed806a3d225c::t_79c9e5cc46ee83 33-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "b255955138f45d4c4c46b6cfcc2a11b15ae64a9e",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
