@@ -540,6 +540,17 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         load.then(setStripeSettings).catch(console.error)
     }, [props.eventId])
 
+    // Backfill the single-key preselection once the keys actually arrive:
+    // picking it only at click time left the method keyless whenever the
+    // fetch hadn't landed yet, producing a ticket nobody can buy.
+    useEffect(() => {
+        if (stripeSettings.length !== 1) return
+        setPaymentMethods(prev => prev.some(p => p.chain === 'stripe' && !p._destroy && !p.stripe_setting_id)
+            ? prev.map(p => (p.chain === 'stripe' && !p._destroy && !p.stripe_setting_id)
+                ? {...p, stripe_setting_id: stripeSettings[0].id} : p)
+            : prev)
+    }, [stripeSettings])
+
     const EVM_CHAINS = [...new Map(
         Payments.filter(c => c.chain !== 'stripe').map(c => [c.chain, c])
     ).values()]
