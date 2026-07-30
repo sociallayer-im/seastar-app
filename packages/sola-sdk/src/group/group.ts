@@ -70,6 +70,7 @@ export const updateGroup = async ({params: {group, authToken}, clientMode}: Sola
                 banner_image_url: group.banner_image_url,
                 banner_link_url: group.banner_link_url,
                 banner_text: group.banner_text,
+                featured_image_url: group.featured_image_url,
                 social_links: group.social_links,
                 group_tags: group.group_tags,
                 event_tag_list: group.event_tag_list,

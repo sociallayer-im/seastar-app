@@ -1,34 +1,15 @@
 import GroupEventSettingData, {GroupEventSettingDataProps} from '@/app/(normal)/event/[grouphandle]/setting/data'
-import NoData from '@/components/NoData'
-import {buttonVariants} from '@/components/shadcn/Button'
 import {selectLang} from '@/app/actions'
+import PopupCityForm from './PopupCityForm'
 
-export default async function GroupPopupCityList(props: GroupEventSettingDataProps) {
-    const {popupCities, groupDetail} = await GroupEventSettingData(props)
+// Group and popup city are the same table now (no separate PopupCity
+// entity) — this edits the current group's own start_date/end_date/
+// location/featured_image_url directly via updateGroup, rather than the old
+// list-of-entities-you-manage + "create a new one" flow from when popup
+// cities lived in a separate table.
+export default async function GroupPopupCityPage(props: GroupEventSettingDataProps) {
+    const {groupDetail} = await GroupEventSettingData(props)
     const {lang} = await selectLang()
 
-    return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
-            <div className="py-6 font-semibold text-center text-xl">{lang['Pop-up Cities']}</div>
-            {!popupCities?.length && <NoData/>}
-            <div className="grid grid-cols-1 gap-3">
-                {
-                    popupCities?.map((popupCity, index) => {
-                        return <div key={index} className="flex-row-item-center w-full">
-                            <a href={`/event/${groupDetail.name}/popup-city/edit/${popupCity.id}`}
-                               className={`${buttonVariants({variant: 'secondary'})} flex-1 mr-3 justify-between`}>
-                                <div className="font-normal">{popupCity.title}</div>
-                                <i className="uil-edit-alt"/>
-                            </a>
-                        </div>
-                    })
-                }
-            </div>
-
-            <a href={`/popup-city/create`} className={`${buttonVariants({variant: 'secondary'})} mt-3`}>
-                <i className="uil-plus-circle text-lg"/>
-                {lang['Create Popup-City']}
-            </a>
-        </div>
-    </div>
+    return <PopupCityForm groupDetail={groupDetail} lang={lang}/>
 }

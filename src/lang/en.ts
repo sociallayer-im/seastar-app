@@ -587,6 +587,11 @@ export const en = {
     "Edit Popup-City": "Edit Popup-City",
     "Popup-City Name": "Popup-City Name",
     "Please input Popup-City name": "Please input Popup-City name",
+    "Enabled": "Enabled",
+    "Not set": "Not set",
+    "Featured Image": "Featured Image",
+    "Set a city and date range to run this group as a popup city — it will then be eligible to appear in Popup City discovery. Leave the date range blank to keep it a regular community.":
+        "Set a city and date range to run this group as a popup city — it will then be eligible to appear in Popup City discovery. Leave the date range blank to keep it a regular community.",
     "Input event URL": "Input event URL",
     "Support URL of Luma": "Support URL of Luma",
     "Load the Event URL": "Load the Event URL",

@@ -573,6 +573,11 @@ export const zh: Dictionary = {
   "Edit Popup-City": "编辑Popup-City",
   "Popup-City Name": "Popup-City Name",
   "Please input Popup-City name": "请输入Popup-City名称",
+  "Enabled": "已启用",
+  "Not set": "未设置",
+  "Featured Image": "推荐图片",
+  "Set a city and date range to run this group as a popup city — it will then be eligible to appear in Popup City discovery. Leave the date range blank to keep it a regular community.":
+    "设置城市和日期范围，将该群组作为 popup city 运行——设置后将有资格出现在 Popup City 发现页中。将日期范围留空则保持为普通社区。",
   "Input event URL": "输入活动链接",
   "Support URL of Luma": "支持 Luma 的 URL",
   "Load the Event URL": "加载活动 URL",

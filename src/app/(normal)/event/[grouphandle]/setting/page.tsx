@@ -6,7 +6,7 @@ import AdminNotificationToggle from "@/components/client/AdminNotificationToggle
 import { buttonVariants } from "@/components/shadcn/Button"
 
 export default async function GroupEventSettingPage(props: GroupEventSettingDataProps) {
-    const { groupDetail, currProfile, venues, tracks, popupCities } = await GroupEventSettingData(props)
+    const { groupDetail, currProfile, venues, tracks } = await GroupEventSettingData(props)
     const { lang } = await selectLang()
 
     const currMembership = currProfile
@@ -45,7 +45,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     <div className="flex-row-item-center w-full justify-between">
                         <div>{lang['Pop-up Cities']}</div>
                         <div className="font-normal flex-row-item-center">
-                            <div>{popupCities.length}</div>
+                            <div>{groupDetail.start_date ? lang['Enabled'] : lang['Not set']}</div>
                             <i className="uil-arrow-right text-2xl" />
                         </div>
                     </div>

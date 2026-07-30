@@ -1,5 +1,5 @@
 import {ClientMode} from '../client'
-import {request, requestOrNull} from '../request'
+import {request} from '../request'
 import {PopupCity, PopupCityDraft} from './types'
 import {SolaSdkFunctionParams} from '../types'
 import {Event} from '../event'
@@ -52,15 +52,6 @@ export const getPopupCities = async ({clientMode}: { clientMode: ClientMode }) =
     return (data.popup_cities || []).map(toPopupCity)
 }
 
-export const getPopupCityById = async ({params, clientMode}: SolaSdkFunctionParams<{ id: string }>) => {
-    const group = await requestOrNull<any>(`/groups/${params.id}`, {clientMode, noCache: true})
-    // Must match discover_controller.rb's popup-city criteria exactly (both
-    // start_date AND location) — otherwise a group reachable here could never
-    // appear in the discover/list views, or vice versa.
-    if (!group || !group.start_date || !group.location) return null
-    return toPopupCity(group)
-}
-
 /**
  * Marks an existing group as a popup city (sets its date range + location).
  * Requires manage rights on the group.
@@ -73,26 +64,6 @@ export const createPopupCity = async ({params, clientMode}: SolaSdkFunctionParam
     await request(`/groups/${group_id}`, {
         method: 'PATCH',
         body: {group: fields},
-        authToken: params.authToken,
-        clientMode
-    })
-}
-
-/** Updates a popup city's fields (id = group id). */
-export const updatePopupCity = async ({params, clientMode}: SolaSdkFunctionParams<{
-    popupCity: PopupCity,
-    authToken: string
-}>) => {
-    await request(`/groups/${params.popupCity.id}`, {
-        method: 'PATCH',
-        body: {
-            group: {
-                image_url: params.popupCity.image_url,
-                location: params.popupCity.location,
-                start_date: params.popupCity.start_date,
-                end_date: params.popupCity.end_date,
-            }
-        },
         authToken: params.authToken,
         clientMode
     })
