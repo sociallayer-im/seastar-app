@@ -1,0 +1,93 @@
+src/app/(auth)/signin/page.tsx
+  s_e9ed806a3d225c::t_4a8c320c9624b8 1-32,43-45
+  s_e9ed806a3d225c::t_7104eac4a366e2 33-42
+src/app/(auth)/bind-email/BindEmailForm.tsx
+  s_e9ed806a3d225c::t_94351a170892bb 1-80
+src/app/api/google-signin/route.ts
+  s_e9ed806a3d225c::t_79c49f1b940b4c 1-53
+src/app/(auth)/signin/WalletSignIn.tsx
+  s_e9ed806a3d225c::t_4ae2606b5aca6a 1-94
+ginger.yml
+  s_e9ed806a3d225c::t_7c8ca018f2dd3d 18-22
+  s_e9ed806a3d225c::t_62dfab03112d35 49-54
+src/app/(auth)/register/page.tsx
+  s_e9ed806a3d225c::t_3621af43a6d08f 1-32
+src/app/(auth)/verify-bind-email/page.tsx
+  s_e9ed806a3d225c::t_bc739961a02132 1-27
+src/app/(auth)/authRedirect.ts
+  s_e9ed806a3d225c::t_c6069e0b52f006 1,7-11,14
+  s_e9ed806a3d225c::t_6be4e790575fd5 3-6,12
+  s_e9ed806a3d225c::t_9a53add4afbe94 2,13
+src/app/(auth)/signin/GoogleSignIn.tsx
+  s_e9ed806a3d225c::t_98615b14a3f33b 1-80
+src/middleware.ts
+  s_e9ed806a3d225c::t_def92cc014bc62 4-16,26-32,38-43
+  s_e9ed806a3d225c::t_90331a4aab2f01 44-45
+src/components/client/HeaderSignInBtn.tsx
+  s_e9ed806a3d225c::t_92f2e863b80736 5,8-12,15,23
+ginger.cn.yml
+  s_e9ed806a3d225c::t_1236eecc095aac 20-22,50-53
+src/app/config.ts
+  s_e9ed806a3d225c::t_5a11c0201edc4f 7-16
+src/app/(auth)/register/RegisterForm.tsx
+  s_e9ed806a3d225c::t_097d0d2f593f70 1-111
+src/components/client/ProfileMenu.tsx
+  s_e9ed806a3d225c::t_1944920ee17307 8,12-14,37
+package.json
+  s_e9ed806a3d225c::t_36d125584138a4 23
+src/app/(auth)/verify-bind-email/FormVerifyBindEmail.tsx
+  s_e9ed806a3d225c::t_031b04920a6b80 1-86
+src/utils/index.ts
+  s_e9ed806a3d225c::t_1de862e3d7443b 47-67,69,76-88,94-102,145,148-154,158-160,162
+  s_e9ed806a3d225c::t_abeb9da51eddc7 103,117,119-120,126,137-142
+  s_e9ed806a3d225c::t_aceda28e8f4071 104-116,118,121-125,127-136
+  s_e9ed806a3d225c::t_43f8de515ba138 411-436,438
+  s_e9ed806a3d225c::t_091fce7d4bc6f2 143
+src/app/(auth)/bind-email/page.tsx
+  s_e9ed806a3d225c::t_a3015bf8e66b5d 1-28
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_158ecc6f0a3a50 4-13
+src/app/(auth)/layout.tsx
+  s_e9ed806a3d225c::t_8ebdce30a01801 1-54
+packages/sola-sdk/src/profile/profile.ts
+  s_e9ed806a3d225c::t_965ec7e6ecf48d 62-64
+packages/sola-sdk/src/auth/auth.ts
+  s_e9ed806a3d225c::t_ede11bd0b34074 51
+  s_e9ed806a3d225c::t_f9a8dc8d0b2cbd 2
+  s_e9ed806a3d225c::t_77f831de60c6c6 1,3-50,52-134
+packages/sola-sdk/src/index.ts
+  s_e9ed806a3d225c::t_623f696979a883 4
+src/app/(auth)/verify-email/page.tsx
+  s_e9ed806a3d225c::t_dd89b3867ae140 1-24
+src/app/(auth)/signin/EmailSignIn.tsx
+  s_e9ed806a3d225c::t_2343891cb0b48c 1-77
+src/app/(normal)/remember/Remember.tsx
+  s_e9ed806a3d225c::t_1944920ee17307 312
+  s_e9ed806a3d225c::t_359754a6407752 21
+.env
+  s_e9ed806a3d225c::t_47bb93273acfa7 5-7,16-21
+src/app/(auth)/verify-email/FormVerifyEmail.tsx
+  s_e9ed806a3d225c::t_008d4878d4a185 1-85
+packages/sola-sdk/src/auth/index.ts
+  s_e9ed806a3d225c::t_15482f248ec3b2 1
+bun.lock
+  s_e9ed806a3d225c::t_562bc49311e135 15,271-272
+src/lang/en.ts
+  s_e9ed806a3d225c::t_772484e8f22ceb 2-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "5207d3eb76a67444609cb205041da07a59f70ea1",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
