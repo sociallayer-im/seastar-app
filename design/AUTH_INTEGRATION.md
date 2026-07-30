@@ -224,12 +224,17 @@ wrong "the button is rendering" conclusion once during verification.
 
 ## 5. What is not done
 
-- **CN (`juluo.xyz`) was never deployed.** The configs on disk say
-  `seastar-app: [www.juluo.xyz, auth.juluo.xyz]` and
-  `seastar-auth: [id.juluo.xyz]`, but production still runs the old arrangement
-  (`auth.juluo.xyz` served by `seastar-auth`, `id.juluo.xyz` unrouted). Same
-  three-step order applies. Google sign-in is off on CN, so that prerequisite
-  does not apply.
+- ~~**CN (`juluo.xyz`) was never deployed.**~~ Done on 2026-07-30, and it went
+  further than a mirror of SG: CN now has **one host**. `seastar-auth` was
+  removed outright rather than moved to `id.juluo.xyz`, and `auth.juluo.xyz`
+  was retired instead of being re-pointed here. SG kept that host because
+  sign-in links to it were already in circulation; CN had none. So
+  `www.juluo.xyz` is its own login provider, via the same empty
+  `NEXT_PUBLIC_SIGN_IN_URL` that selects the in-app screens.
+
+  CN also compiles out Google sign-in, Ethereum sign-in, Stripe and on-chain
+  payments — leaving email codes as the only way in and free as the only kind
+  of ticket. See `juluo.xyz_deploy.md`.
 - **The backend does not enforce `can_join_event`.**
   `ParticipantsController#create` checks required form fields, duplicate joins
   and capacity — never the group's join scope. Hiding the RSVP button is a UI

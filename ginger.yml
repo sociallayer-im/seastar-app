@@ -45,6 +45,13 @@ ssh:
 builder:
   arch: amd64
   remote: ssh://ubuntu@wamo.city
+  # ginger's default is mode=min, which exports only the FINAL stage to the
+  # registry build cache. This Dockerfile is three-stage and the expensive step
+  # — `bun install` — lives in the `build` stage, so min never cached it
+  # anywhere but the wamo builder's own local store, one `docker buildx prune`
+  # away from a cold rebuild. max exports every stage. Verified from ginger's
+  # actual invocation: --cache-to type=registry,mode=min,ref=<image>:buildcache.
+  cache: max
 
 # ginger's default task memory is 512 MiB, and `next start` for this app sits
 # around 350 MiB steady but spikes past 512 while server-rendering the heavier
