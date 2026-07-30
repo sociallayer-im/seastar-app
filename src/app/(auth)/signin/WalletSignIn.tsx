@@ -5,6 +5,7 @@ import {buildSiweMessage, getSiweNonce, signInWithWallet} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {Button} from '@/components/shadcn/Button'
 import {clientCheckUserLoggedInAndRedirect, setAuth} from '@/utils'
 
 /**
@@ -85,10 +86,14 @@ export default function WalletSignIn({lang}: {lang: Dictionary}) {
         }
     }
 
-    return <div
+    // Uses this app's Button rather than the standalone auth app's `btn btn-md`,
+    // which were daisyUI classes — daisyUI isn't a dependency here, so those
+    // produced no padding, height or alignment at all.
+    return <Button
+        variant="outline"
         onClick={handleSignIn}
-        className="cursor-pointer w-full shadow btn btn-md bg-[var(--background)] mb-3 sm:mb-0 justify-start">
-        <i className="uil-wallet text-xl mr-2"/>
+        className="w-full justify-start gap-3 font-normal shadow-sm mb-3 sm:mb-0 [&_svg]:size-5">
+        <i className="uil-wallet text-xl"/>
         {lang['Ethereum Wallet']}
-    </div>
+    </Button>
 }

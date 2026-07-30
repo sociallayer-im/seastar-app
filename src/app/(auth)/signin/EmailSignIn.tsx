@@ -6,6 +6,7 @@ import {requestEmailCode} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {Input} from '@/components/shadcn/Input'
 
 // Intentionally the same permissive shape the auth app used. The backend
 // re-validates with URI::MailTo::EMAIL_REGEXP and owns the real verdict; this
@@ -49,29 +50,33 @@ export default function EmailSignIn({lang}: {lang: Dictionary}) {
         }
     }
 
+    // This app's Input rather than the standalone auth app's `input` class,
+    // which was daisyUI — not a dependency here, so it rendered with no padding
+    // or height. startAdornment/endAdornment keep the icon and the submit
+    // affordance inside the field's own padding.
     return <div className="mb-3">
-        <label className={`${error ? 'border-red-400 ' : ''}input shadow flex flex-row items-center w-full bg-secondary focus-within:outline-none focus-within:border-primary pr-0`}>
-            <i className="uil-envelope mr-2 text-2xl"/>
-            <input
-                className="flex-1 w-full bg-transparent outline-none"
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder={lang['Email']}
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => {
-                    if (e.key === 'Enter') submit()
-                }}/>
-            <button
-                type="button"
-                title={lang['Sign In']}
-                onClick={submit}
-                className="flex flex-row items-center gap-1 mr-2 px-2 cursor-pointer text-sm font-medium">
-                {lang['Go']}
-                <i className="uil-arrow-right text-2xl"/>
-            </button>
-        </label>
+        <Input
+            className={`w-full shadow-sm ${error ? 'border-red-400' : ''}`}
+            type="email"
+            name="email"
+            autoComplete="email"
+            placeholder={lang['Email']}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            onKeyDown={e => {
+                if (e.key === 'Enter') submit()
+            }}
+            startAdornment={<i className="uil-envelope text-2xl text-gray-400"/>}
+            endAdornment={
+                <button
+                    type="button"
+                    title={lang['Sign In']}
+                    onClick={submit}
+                    className="flex flex-row items-center gap-1 pl-2 cursor-pointer text-sm font-medium whitespace-nowrap">
+                    {lang['Go']}
+                    <i className="uil-arrow-right text-2xl"/>
+                </button>
+            }/>
         {!!error && <div className="text-red-400 text-sm my-2">{error}</div>}
     </div>
 }

@@ -46,6 +46,20 @@ builder:
   arch: amd64
   remote: ssh://ubuntu@wamo.city
 
+# ginger's default task memory is 512 MiB, and `next start` for this app sits
+# around 350 MiB steady but spikes past 512 while server-rendering the heavier
+# routes — which cgroup-OOM-killed the task (Nomad: exit 139 "OOM Killed") in a
+# restart loop, so requests intermittently got Traefik's bare 404 with no router
+# to send them to. Raised with headroom over the observed peak rather than to
+# just above it.
+#
+# This host has ~3.8 GiB of real RAM and Nomad is configured as if it had 8 GiB,
+# so it will schedule more than physically exists — raising any limit here needs
+# the actual free memory checked first (`free -h` on sg.sola.day), not just
+# Nomad's accounting.
+resources:
+  memory: 900
+
 env:
   NODE_ENV: production
 

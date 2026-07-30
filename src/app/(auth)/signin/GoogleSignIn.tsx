@@ -4,6 +4,7 @@ import {GoogleOAuthProvider, useGoogleLogin} from '@react-oauth/google'
 import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {Button} from '@/components/shadcn/Button'
 import {clientCheckUserLoggedInAndRedirect, setAuth} from '@/utils'
 
 /**
@@ -62,10 +63,13 @@ function GoogleButton({lang}: {lang: Dictionary}) {
         }
     })
 
-    return <div
+    // See WalletSignIn: `btn btn-md` were daisyUI classes and daisyUI is not a
+    // dependency of this app, so they rendered with no padding at all.
+    return <Button
+        variant="outline"
         onClick={() => login()}
-        className="cursor-pointer w-full shadow btn btn-md bg-[var(--background)] mb-3 sm:mb-0 justify-start">
-        <svg className="mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 18 18">
+        className="w-full justify-start gap-3 font-normal shadow-sm mb-3 sm:mb-0 [&_svg]:size-5">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
             <path fill="#4285f4" fillRule="evenodd"
                 d="M17.64 9.2q-.002-.956-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
             <path fill="#34a853" fillRule="evenodd"
@@ -76,5 +80,5 @@ function GoogleButton({lang}: {lang: Dictionary}) {
                 d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.428 0 9.002 0 5.485 0 2.44 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71"/>
         </svg>
         {lang['Google Auth']}
-    </div>
+    </Button>
 }

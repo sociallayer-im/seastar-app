@@ -7,6 +7,7 @@ import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
+import {Input} from '@/components/shadcn/Input'
 import {clientRedirectToReturn, getAuth} from '@/utils'
 
 // soon's rule, verbatim: /\A[a-z0-9_]{3,30}\z/ (app/models/user.rb). Kept in
@@ -82,26 +83,24 @@ export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill
             <li>{`${lang['Should be equal or longer than']} ${MIN_LENGTH}`}</li>
         </ul>
 
-        <label className={`${error ? 'border-red-400 ' : ''}input shadow flex flex-row w-full bg-secondary focus-within:outline-none focus-within:border-primary`}>
-            <input
-                className="flex-1 w-full bg-transparent outline-none"
-                type="text"
-                name="username"
-                autoFocus
-                autoComplete="off"
-                maxLength={MAX_LENGTH}
-                value={username}
-                placeholder={lang['Your username']}
-                onChange={e => {
+        <Input
+            className={`w-full shadow-sm ${error ? 'border-red-400' : ''}`}
+            type="text"
+            name="username"
+            autoFocus
+            autoComplete="off"
+            maxLength={MAX_LENGTH}
+            value={username}
+            placeholder={lang['Your username']}
+            onChange={e => {
                     // Reject disallowed characters at the keystroke rather than
                     // showing an error for something we won't accept anyway.
                     const next = e.target.value.toLowerCase()
                     if (!/[^a-z0-9_]/.test(next)) setUsername(next)
                 }}
-                onKeyDown={e => {
-                    if (e.key === 'Enter') submit()
-                }}/>
-        </label>
+            onKeyDown={e => {
+                if (e.key === 'Enter') submit()
+            }}/>
 
         <Button variant="special" className="w-full my-4" disabled={!!error || !username} onClick={submit}>
             {lang['Confirm']}

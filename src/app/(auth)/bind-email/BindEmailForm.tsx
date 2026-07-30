@@ -7,6 +7,7 @@ import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
+import {Input} from '@/components/shadcn/Input'
 import {clientRedirectToReturn} from '@/utils'
 
 const EMAIL_RE = /^[\w.+-]+@([\w-]+\.)+[\w-]{2,63}$/
@@ -53,21 +54,19 @@ export default function BindEmailForm({lang}: {lang: Dictionary}) {
             {lang['Please enter your email address so that you can log in and receive important notifications via email.']}
         </div>
 
-        <label className={`${error ? 'border-red-400 ' : ''}input shadow flex flex-row items-center w-full bg-secondary focus-within:outline-none focus-within:border-primary`}>
-            <i className="uil-envelope mr-2 text-2xl"/>
-            <input
-                className="flex-1 w-full bg-transparent outline-none"
-                type="email"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                placeholder={lang['Your email']}
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => {
-                    if (e.key === 'Enter') submit()
-                }}/>
-        </label>
+        <Input
+            className={`w-full shadow-sm ${error ? 'border-red-400' : ''}`}
+            type="email"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            placeholder={lang['Your email']}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            onKeyDown={e => {
+                if (e.key === 'Enter') submit()
+            }}
+            startAdornment={<i className="uil-envelope text-2xl text-gray-400"/>}/>
         <div className="text-red-400 text-sm min-h-6 my-1">{error}</div>
 
         <Button variant="special" className="w-full" onClick={submit}>{lang['Continue']}</Button>

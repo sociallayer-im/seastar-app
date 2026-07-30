@@ -7,6 +7,7 @@ import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
+import {Input} from '@/components/shadcn/Input'
 import {clientCheckUserLoggedInAndRedirect, setAuth} from '@/utils'
 
 export default function FormVerifyEmail({lang, email}: {lang: Dictionary, email: string}) {
@@ -60,8 +61,9 @@ export default function FormVerifyEmail({lang, email}: {lang: Dictionary, email:
             {lang['Enter the code we sent to']} <span className="font-medium">{email}</span>
         </div>
 
-        <input
-            className="input shadow w-full bg-secondary text-center tracking-[0.3em] uppercase mb-4 outline-none focus:border-primary"
+        <Input
+            variant="textCenter"
+            className="w-full shadow-sm tracking-[0.3em] uppercase mb-4"
             inputMode="text"
             autoComplete="one-time-code"
             autoFocus
