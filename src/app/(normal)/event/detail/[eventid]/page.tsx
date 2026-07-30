@@ -298,6 +298,13 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
 
                 <div className="flex-row-item-center my-3 gap-3 overflow-auto !flex-wrap">
+                    {/* This event's tickets grant group membership. Derived from
+                        the group's pointer, the single source of truth. */}
+                    {groupDetail.group_ticket_event_id === eventDetail.id &&
+                        <Badge variant='hosting' className="mr-1"
+                            title={lang['Group ticket event intro']}>
+                            {lang['Group ticket event']}
+                        </Badge>}
                     {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
                     {eventDetail.visibility === 'private' &&
                         <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}

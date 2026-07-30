@@ -579,6 +579,46 @@ export default function EventForm({
 
               {enableTicket && (
                 <>
+                  {/* Designating the group's ticket event changes GROUP state,
+                      so only owners/managers see it — and the API ignores the
+                      flag from anyone else regardless. */}
+                  {data.isGroupManager && (() => {
+                    const existingId = data.groupDetail.group_ticket_event_id
+                    const takenByAnother = !!existingId && existingId !== draft.id
+                    return (
+                      <div className="border border-gray-200 rounded-lg p-3 mb-3">
+                        <label
+                          className={`flex-row-item-center text-sm ${takenByAnother ? "opacity-60" : "cursor-pointer"}`}
+                        >
+                          <input
+                            type="checkbox"
+                            className="mr-2"
+                            disabled={takenByAnother}
+                            checked={!!draft.is_group_ticket_event}
+                            onChange={(e) =>
+                              setDraft({ ...draft, is_group_ticket_event: e.target.checked })
+                            }
+                          />
+                          <span className="font-semibold">{lang["Group ticket event"]}</span>
+                        </label>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {lang["Group ticket event intro"]}
+                        </div>
+                        {takenByAnother && (
+                          <div className="text-xs text-amber-600 mt-1">
+                            {lang["Group ticket event exists"]}{" "}
+                            <a
+                              className="underline"
+                              target="_blank"
+                              href={`/event/detail/${existingId}`}
+                            >
+                              {lang["View"]}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })()}
                   <TicketForm
                     timezone={draft.timezone || dayjs.tz.guess()}
                     currProfile={data.currProfile}

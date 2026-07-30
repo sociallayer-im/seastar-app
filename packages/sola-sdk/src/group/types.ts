@@ -31,6 +31,9 @@ export interface GroupDetail extends Group {
     can_publish_event: string
     can_join_event: string
     can_view_event: string
+    /** The one event whose tickets grant membership in this group; null until a
+     *  manager designates one. At most one per group. */
+    group_ticket_event_id: string | null
     memberships_count: number
     events_count: number
     parent_id: string | null

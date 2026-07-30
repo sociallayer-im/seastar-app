@@ -115,7 +115,12 @@ export default async function EditEventData({
 
   return {
     currProfile,
-    eventDraft: toEventDraft(eventDetail),
+    eventDraft: {
+      ...toEventDraft(eventDetail),
+      // Seeded from the group's pointer — the single source of truth — so the
+      // toggle reflects reality on an already-designated event.
+      is_group_ticket_event: groupDetail.group_ticket_event_id === eventDetail.id,
+    },
     recurring,
     groupDetail,
     memberships: groupDetail.memberships || [],

@@ -174,6 +174,9 @@ export interface EventDraftType {
     recurring_id?: string | null
     tickets: TicketDraft[]
     event_roles: EventRole[] | null
+    /** Designate this event as the group's ticket event (its tickets grant
+     *  membership). Group-manager only; leave undefined to keep as-is. */
+    is_group_ticket_event?: boolean
     // Flat location fields → resolvePlaceId
     location?: string | null
     formatted_address?: string | null

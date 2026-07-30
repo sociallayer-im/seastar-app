@@ -536,7 +536,12 @@ export const createEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
         body: {
             event: {...eventBody(params.eventDraft, placeId), group_id: params.eventDraft.group_id},
             ...(roles.length ? {event_roles: roles} : {}),
-            ...(tickets.length ? {tickets} : {})
+            ...(tickets.length ? {tickets} : {}),
+            // Group-level state, so the API gates it on group-manager rights
+            // and ignores it for anyone else. Omitted entirely when undefined
+            // so an ordinary save never clears an existing designation.
+            ...(params.eventDraft.is_group_ticket_event === undefined
+                ? {} : {is_group_ticket_event: params.eventDraft.is_group_ticket_event})
         },
         authToken: params.authToken,
         clientMode
@@ -554,7 +559,11 @@ export const updateEvent = async ({params, clientMode}: SolaSdkFunctionParams<{
 
     const event = await request<Event>(`/events/${params.eventDraft.id}`, {
         method: 'PATCH',
-        body: {event: eventBody(params.eventDraft, placeId)},
+        body: {
+            event: eventBody(params.eventDraft, placeId),
+            ...(params.eventDraft.is_group_ticket_event === undefined
+                ? {} : {is_group_ticket_event: params.eventDraft.is_group_ticket_event})
+        },
         authToken: params.authToken,
         clientMode
     })
