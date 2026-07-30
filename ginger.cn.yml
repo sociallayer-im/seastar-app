@@ -55,10 +55,16 @@ secrets:
 
 # NEXT_PUBLIC_* are inlined at `next build` from .env.production in the build
 # context. Swap in the CN values for the build, then restore the SG file.
+#
+# YATCH_TOKEN is filtered out of the copy: it is a registry credential ginger
+# reads from .env.cn.production, and the Dockerfile copies .env.production into
+# the runtime image — so an unfiltered copy would ship the registry token
+# inside the deployed app. Nothing in the app reads it.
+#
 # NOTE: if `build` fails, restore manually: mv .env.production.sgbak .env.production
 pipelines:
   deploy:
-    - hook: { run: '[ -f .env.production.sgbak ] || cp -f .env.production .env.production.sgbak; cp -f .env.cn.production .env.production', local: true }
+    - hook: { run: '[ -f .env.production.sgbak ] || cp -f .env.production .env.production.sgbak; grep -v "^YATCH_TOKEN" .env.cn.production > .env.production', local: true }
     - build
     - push
     - hook: { run: 'mv -f .env.production.sgbak .env.production 2>/dev/null || rm -f .env.production', local: true }
