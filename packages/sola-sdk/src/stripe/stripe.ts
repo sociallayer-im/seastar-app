@@ -30,6 +30,24 @@ export const getStripeSettings = async ({params, clientMode}: SolaSdkFunctionPar
     })
 }
 
+/**
+ * The EVENT OWNER's active keys (masked) — what the ticket-form picker must
+ * use when a co-host/manager edits someone else's event: money always lands
+ * in the owner's account, and the backend rejects any other key. Requires
+ * edit rights on the event.
+ */
+export const getEventStripeSettings = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken: string
+}>) => {
+    return await request<StripeSetting[]>('/stripe_settings/for_event', {
+        params: {event_id: params.eventId},
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
 export const createStripeSetting = async ({params, clientMode}: SolaSdkFunctionParams<{
     name: string,
     secretKey: string,

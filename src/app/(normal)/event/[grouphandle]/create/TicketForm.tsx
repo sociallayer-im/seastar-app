@@ -28,7 +28,7 @@ import {
 } from '@sola/sdk'
 import {cfImage, getAuth} from '@/utils'
 import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
-import {StripeSetting, getStripeSettings} from '@sola/sdk'
+import {StripeSetting, getStripeSettings, getEventStripeSettings} from '@sola/sdk'
 
 export interface TicketFormProps {
     state: { event: EventDraftType, setEvent: (event: EventDraftType) => void }
@@ -150,6 +150,7 @@ export default function TicketForm({
                     currProfile={currProfile}
                     key={index}
                     index={index + 1}
+                    eventId={event.id}
                     ticket={t}
                     tracks={tracks}
                     eventRoles={event.event_roles || []}
@@ -174,6 +175,7 @@ export interface TicketItemProps {
     index: number
     lang: Dictionary
     timezone: string
+    eventId?: string
     ticket: TicketDraft
     onChange: (ticket: TicketDraft) => void,
     onRemove: () => void,
@@ -194,7 +196,8 @@ function TicketItem({
                         currProfile,
                         lang,
                         eventRoles,
-                        timezone
+                        timezone,
+                        eventId
                     }: TicketItemProps) {
     const {selectBadgeClass} = useSelectBadgeClass()
     const {showLoading, closeModal} = useModal()
@@ -368,6 +371,7 @@ function TicketItem({
                 <PaymentMethodForm
                     errors={errors?.payment_methods}
                     lang={lang}
+                    eventId={eventId}
                     paymentMethods={ticket.payment_methods || []}
                     onChange={(paymentMethods) => setTicketDraft({...ticketDraft, payment_methods: paymentMethods})}
                 />
@@ -509,6 +513,7 @@ function TicketItem({
 export interface PaymentMethodForm {
     paymentMethods: PaymentMethod[]
     lang: Dictionary
+    eventId?: string
     onChange: (paymentMethods: PaymentMethod[]) => void
     checker?: { check: undefined | null | (() => boolean) }
     errors?: { price?: string, receiver_address?: string }[]
@@ -520,16 +525,20 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
     type PaymentMethodDraft = PaymentMethod & {chain_token_addresses?: Record<string, string>}
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethodDraft[]>(props.paymentMethods)
 
-    // The creator's Stripe keys, for card payment methods (SG only).
+    // Keys for card payment methods (SG only). Money always lands in the
+    // EVENT OWNER's account: when editing an existing event, list the owner's
+    // keys (co-hosts/managers select among them, never modify them); on the
+    // create flow the creator IS the future owner, so their own keys apply.
     const [stripeSettings, setStripeSettings] = useState<StripeSetting[]>([])
     useEffect(() => {
         if (!STRIPE_ENABLED) return
         const authToken = getAuth()
         if (!authToken) return
-        getStripeSettings({params: {authToken}, clientMode: CLIENT_MODE})
-            .then(setStripeSettings)
-            .catch(console.error)
-    }, [])
+        const load = props.eventId
+            ? getEventStripeSettings({params: {eventId: props.eventId, authToken}, clientMode: CLIENT_MODE})
+            : getStripeSettings({params: {authToken}, clientMode: CLIENT_MODE})
+        load.then(setStripeSettings).catch(console.error)
+    }, [props.eventId])
 
     const EVM_CHAINS = [...new Map(
         Payments.filter(c => c.chain !== 'stripe').map(c => [c.chain, c])
