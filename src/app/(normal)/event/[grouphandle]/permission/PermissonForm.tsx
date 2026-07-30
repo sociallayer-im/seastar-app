@@ -4,7 +4,7 @@ import {GroupDetail, updateGroup} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {Button} from '@/components/shadcn/Button'
 import {useState} from 'react'
-import {getAuth} from '@/utils'
+import {getAuth, normalizeGroupPermission} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -49,10 +49,10 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
             <div className="font-semibold mb-1">{lang['Who can create events']}</div>
             <Button variant={'secondary'}
                     className='w-full mb-3'
-                    onClick={() => setDraft({...draft, can_publish_event: 'all'})}>
+                    onClick={() => setDraft({...draft, can_publish_event: 'everyone'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>{lang['Everyone']}</div>
-                    {(draft.can_publish_event === 'all' || draft.can_publish_event === 'everyone' || !draft.can_publish_event)
+                    {(normalizeGroupPermission(draft.can_publish_event) === 'everyone')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -63,7 +63,7 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                     onClick={() => setDraft({...draft, can_publish_event: 'member'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>{lang['Member, Manager, Owner']}</div>
-                    {(draft.can_publish_event === 'member')
+                    {(normalizeGroupPermission(draft.can_publish_event) === 'member')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -73,7 +73,7 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                     onClick={() => setDraft({...draft, can_publish_event: 'manager'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>{lang['Manager, Owner']}</div>
-                    {(draft.can_publish_event === 'manager')
+                    {(normalizeGroupPermission(draft.can_publish_event) === 'manager')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -82,10 +82,10 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
 
             <div className="font-semibold mb-1 mt-4">{lang['Who can join events']}</div>
             <Button variant={'secondary'} className='w-full mb-3'
-                    onClick={() => setDraft({...draft, can_join_event: 'all'})}>
+                    onClick={() => setDraft({...draft, can_join_event: 'everyone'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>{lang['Everyone']}</div>
-                    {(draft.can_join_event === 'all' || draft.can_join_event === 'everyone' || !draft.can_join_event)
+                    {(normalizeGroupPermission(draft.can_join_event) === 'everyone')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -95,7 +95,7 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                     onClick={() => setDraft({...draft, can_join_event: 'member'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>{lang['Member, Manager, Owner']}</div>
-                    {(draft.can_join_event === 'member')
+                    {(normalizeGroupPermission(draft.can_join_event) === 'member')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -105,7 +105,7 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                     onClick={() => setDraft({...draft, can_join_event: 'manager'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>{lang['Manager, Owner']}</div>
-                    {(draft.can_join_event === 'manager')
+                    {(normalizeGroupPermission(draft.can_join_event) === 'manager')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -114,10 +114,10 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
 
             <div className="font-semibold mb-1 mt-4">{lang['Who can view events']}</div>
             <Button variant={'secondary'} className='w-full mb-3'
-                    onClick={() => setDraft({...draft, can_view_event: 'all'})}>
+                    onClick={() => setDraft({...draft, can_view_event: 'everyone'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>{lang['Everyone']}</div>
-                    {(draft.can_view_event === 'all' || draft.can_view_event === 'everyone' || !draft.can_view_event)
+                    {(normalizeGroupPermission(draft.can_view_event) === 'everyone')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -127,7 +127,7 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                     onClick={() => setDraft({...draft, can_view_event: 'member'})}>
                 <div className="flex-row-item-center justify-between w-full">
                     <div className='font-normal'>{lang['Member, Manager, Owner']}</div>
-                    {(draft.can_view_event === 'member')
+                    {(normalizeGroupPermission(draft.can_view_event) === 'member')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }
@@ -137,7 +137,7 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                 <div className="flex-row-item-center justify-between w-full"
                         onClick={() => setDraft({...draft, can_view_event: 'manager'})}>
                     <div className='font-normal'>{lang['Manager, Owner']}</div>
-                    {(draft.can_view_event === 'manager')
+                    {(normalizeGroupPermission(draft.can_view_event) === 'manager')
                         ? <i className="uil-check-circle text-green-400 text-2xl"/>
                         : <i className="uil-circle text-gray-500 text-2xl"/>
                     }

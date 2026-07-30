@@ -383,6 +383,31 @@ export const setEventIsOwnerStatus = ({
     })
 }
 
+/**
+ * Who a group's can_publish_event / can_join_event / can_view_event setting
+ * opens something up to.
+ */
+export type GroupPermissionScope = 'everyone' | 'member' | 'manager'
+
+/**
+ * The single place that decides what a stored permission value means.
+ *
+ * There used to be three answers to that question and they disagreed: the
+ * settings form wrote 'all', this file read 'all' | 'everyone' | empty as open,
+ * and soon's EventPolicy#create? accepted only 'everyone' — so every group set
+ * to "Everyone" was in fact manager-only on the backend, and the UI cheerfully
+ * showed a Create Event button that 403'd. 160 of 453 groups were in that state.
+ *
+ * 'everyone' is now the one written value (see PermissonForm) and the stored
+ * data has been normalized to match. 'all' and empty are still accepted here:
+ * legacy rows are what caused this, and silently reinterpreting an unknown value
+ * as manager-only would lock a group down rather than fail visibly.
+ */
+export const normalizeGroupPermission = (value?: string | null): GroupPermissionScope => {
+    if (value === 'member' || value === 'manager') return value
+    return 'everyone'
+}
+
 export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: GroupDetail, profile?: Profile | null) => {
     const owner = groupDetail.memberships.find(m => m.role === 'owner')!
     // soon roles: owner | manager | member ("issuer" is gone)
@@ -395,9 +420,10 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
     const isIssuer = false
     const isOwner = owner?.user?.name === profile?.name
 
-    const canPublishEvent = (!groupDetail.can_publish_event || groupDetail.can_publish_event === 'all' || groupDetail.can_publish_event === 'everyone')
-        || (groupDetail.can_publish_event === 'manager' && isManager)
-        || (groupDetail.can_publish_event === 'member' && isMember)
+    const publishScope = normalizeGroupPermission(groupDetail.can_publish_event)
+    const canPublishEvent = publishScope === 'everyone'
+        || (publishScope === 'manager' && isManager)
+        || (publishScope === 'member' && isMember)
 
     // soon has no group-level review_required field: members who cannot publish
     // directly submit events as status "pending" for manager approval.
@@ -405,13 +431,18 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
     // can submit (create) an event — either publishes directly or goes into pending review
     const canSubmitEvent = canPublishEvent || canSubmitForReview
 
-    const canJoinEvent = (!groupDetail.can_join_event || groupDetail.can_join_event === 'all' || groupDetail.can_join_event === 'everyone')
-        || (groupDetail.can_join_event === 'manager' && isManager)
-        || (groupDetail.can_join_event === 'member' && isMember)
+    // Gates the RSVP button (via checkEventPermissionsForProfile's canAccess and
+    // the event detail loader's) — a member-only group shows a "this event is
+    // only for members" line instead.
+    const joinScope = normalizeGroupPermission(groupDetail.can_join_event)
+    const canJoinEvent = joinScope === 'everyone'
+        || (joinScope === 'manager' && isManager)
+        || (joinScope === 'member' && isMember)
 
-    const canViewEvent = (!groupDetail.can_view_event || groupDetail.can_view_event === 'all' || groupDetail.can_view_event === 'everyone')
-        || (groupDetail.can_view_event === 'manager' && isManager)
-        || (groupDetail.can_view_event === 'member' && isMember)
+    const viewScope = normalizeGroupPermission(groupDetail.can_view_event)
+    const canViewEvent = viewScope === 'everyone'
+        || (viewScope === 'manager' && isManager)
+        || (viewScope === 'member' && isMember)
 
     return {
         owner,

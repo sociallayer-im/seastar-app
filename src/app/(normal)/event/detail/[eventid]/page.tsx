@@ -8,7 +8,7 @@ import {
     eventCoverTimeStr,
     genGoogleMapLink,
     getAvatar,
-    getEventDetailPageTimeStr, pickSearchParam, prefixUrl
+    getEventDetailPageTimeStr, normalizeGroupPermission, pickSearchParam, prefixUrl
 } from "@/utils"
 import { selectLang } from "@/app/actions"
 import { Button, buttonVariants } from "@/components/shadcn/Button"
@@ -199,8 +199,15 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             <div className="my-2">{lang['You have registered for the event.']}</div>}
                         {!currProfileAttended && canAccess &&
                             <div className="my-2">{lang['Welcome! To join the event, please register below.']}</div>}
-                        {!canAccess && <div
-                            className="my-2">{lang['This event is only for {}'].replace('{}', groupDetail.can_join_event === 'member' ? lang['members'] : lang['managers'])}</div>}
+                        {/* canAccess is false for two unrelated reasons — the
+                            group's join scope, or the event being closed or
+                            cancelled. Saying "only for managers" about a closed
+                            event that anyone could have joined is just wrong. */}
+                        {!canAccess && (normalizeGroupPermission(groupDetail.can_join_event) === 'everyone'
+                            ? <div className="my-2">{lang['Closed']}</div>
+                            : <div className="my-2">{lang['This event is only for {}']
+                                .replace('{}', normalizeGroupPermission(groupDetail.can_join_event) === 'member'
+                                    ? lang['members'] : lang['managers'])}</div>)}
 
                         <div className="flex-row-item-center">
                             <AddSingleEventToCalendarApp
