@@ -658,6 +658,8 @@ export const zh: Dictionary = {
   'Stripe keys intro': '添加你的 Stripe secret key 即可用银行卡售票，收入直接进入你的 Stripe 账户。建议使用带 charge/refund 权限的受限密钥（rk_live_…）而非完整密钥。',
   'Key Name': '密钥名称',
   'Secret Key': 'Secret Key',
+  'Secret key hint': 'Stripe Dashboard → Developers → API keys → Secret key（点 Reveal 显示）。不是 publishable key（pk_…），后者无法收款。',
+  'Publishable key error': '这是 publishable key（pk_…），无法用于收款。请使用 Secret key（sk_…）或受限密钥（rk_…）。',
   'Add Key': '添加密钥',
   'Remove Key': '删除密钥',
   'TEST MODE': '测试模式',

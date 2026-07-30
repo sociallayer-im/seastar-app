@@ -676,6 +676,8 @@ export const en = {
     'Stripe keys intro': 'Add your Stripe secret key to sell tickets by card. The money goes directly to your Stripe account. Restricted keys (rk_live_…) with charge/refund scopes are recommended over full secret keys.',
     'Key Name': 'Key Name',
     'Secret Key': 'Secret Key',
+    'Secret key hint': 'Stripe Dashboard → Developers → API keys → Secret key (Reveal). Not the publishable key (pk_…), which cannot charge cards.',
+    'Publishable key error': 'That is a publishable key (pk_…), which cannot charge cards. Use the Secret key (sk_…) or a Restricted key (rk_…).',
     'Add Key': 'Add Key',
     'Remove Key': 'Remove Key',
     'TEST MODE': 'TEST MODE',

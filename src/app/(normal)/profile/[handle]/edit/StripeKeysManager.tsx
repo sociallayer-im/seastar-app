@@ -47,6 +47,12 @@ export default function StripeKeysManager({lang}: { lang: Dictionary }) {
 
     const handleAdd = async () => {
         if (!name.trim() || !secretKey.trim()) return
+        // Pasting the publishable key here is the easiest mistake to make —
+        // it can't charge cards, and Stripe would just answer 401.
+        if (secretKey.trim().startsWith('pk_')) {
+            toast({description: lang['Publishable key error'], variant: 'destructive'})
+            return
+        }
         const authToken = getAuth()
         if (!authToken) return
         setBusy(true)
@@ -117,9 +123,10 @@ export default function StripeKeysManager({lang}: { lang: Dictionary }) {
                 <Input inputSize={'md'} className="w-full mb-2" value={name}
                     onChange={e => setName(e.target.value)}/>
                 <div className="text-sm mb-1">{lang['Secret Key']}</div>
-                <Input inputSize={'md'} className="w-full mb-3" value={secretKey}
+                <Input inputSize={'md'} className="w-full" value={secretKey}
                     placeholder="rk_live_… / sk_live_…"
                     onChange={e => setSecretKey(e.target.value)}/>
+                <div className="text-xs text-gray-400 mt-1 mb-3">{lang['Secret key hint']}</div>
                 <div className="flex-row-item-center">
                     <Button variant={'primary'} size={'sm'} disabled={busy} onClick={handleAdd}>
                         {lang['Add Key']}
