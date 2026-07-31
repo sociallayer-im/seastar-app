@@ -70,6 +70,12 @@ secrets:
     # CN (in-app sign-in; Google sign-in off), and ginger rejects an inject key
     # with no value. See ginger.yml — neither is read server-side.
     - NEXT_PUBLIC_THIRD_PARTY_LOGIN
+    # WeChat 服务号 sign-in, CN only. The APP_ID/APP_SECRET pair is deliberately
+    # not NEXT_PUBLIC_: the secret redeems authorization codes, and route
+    # handlers read both server-side (src/app/api/wechat/).
+    - NEXT_PUBLIC_WECHAT_LOGIN
+    - WECHAT_APP_ID
+    - WECHAT_APP_SECRET
     # Server-side only — see ginger.yml.
     - NEXT_TOKEN
 

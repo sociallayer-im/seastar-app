@@ -14,6 +14,13 @@ export const AUTH_HOST_SUBDOMAINS = ['auth', 'auth-beta']
 // the origin is registered in the Google console.
 export const THIRD_PARTY_LOGIN = process.env.NEXT_PUBLIC_THIRD_PARTY_LOGIN === 'true'
 
+// WeChat 服务号 sign-in, CN only: it needs an appid/secret and a 网页授权域名
+// verified in the 公众号 console, none of which exist for sola.day. Opt-in for
+// that reason — a deployment without the configuration should not show it.
+// The button additionally only renders inside the WeChat browser; see
+// signin/page.tsx.
+export const WECHAT_LOGIN = process.env.NEXT_PUBLIC_WECHAT_LOGIN === 'true'
+
 // Stripe card payments are SG-only (soon design/PAYMENTS_PLAN.md decision
 // #13): set in .env.production, absent in .env.cn.production. The backend's
 // STRIPE_ENABLED is authoritative — this flag only hides UI.

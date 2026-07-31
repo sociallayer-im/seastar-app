@@ -8,6 +8,8 @@ export const en = {
     "Should be equal or shorter than": "Should be at most this many characters:",
     "Ethereum Wallet": "Ethereum Wallet",
     "Google Auth": "Google Auth",
+    "Sign in with WeChat": "Sign in with WeChat",
+    "WeChat sign-in failed, please try again": "WeChat sign-in failed, please try again",
     "No Ethereum wallet found in this browser": "No Ethereum wallet found in this browser",
     "Social Layer": "Social Layer",
     "Sign In": "Sign In",

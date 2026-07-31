@@ -1,0 +1,91 @@
+import {NextRequest} from 'next/server'
+
+/**
+ * WeChat 服务号 网页授权 (OAuth2) — server-side half.
+ *
+ * Only ever imported by route handlers. WECHAT_APP_SECRET is deliberately NOT a
+ * NEXT_PUBLIC_ variable: it is the credential that turns an authorization code
+ * into a user identity, and anything NEXT_PUBLIC_ is inlined into the browser
+ * bundle at build time.
+ *
+ * Docs: https://developers.weixin.qq.com/doc/service/guide/h5/auth.html
+ */
+
+export const WECHAT_APP_ID = process.env.WECHAT_APP_ID
+export const WECHAT_APP_SECRET = process.env.WECHAT_APP_SECRET
+
+export const wechatConfigured = () => !!WECHAT_APP_ID && !!WECHAT_APP_SECRET
+
+/** Cookie holding the one-time `state`, checked on the way back (CSRF). */
+export const STATE_COOKIE = 'wechat_oauth_state'
+
+/**
+ * The origin WeChat must redirect back to. Taken from the forwarded headers
+ * rather than a config value because it has to match the host the user is
+ * actually on — and WeChat only accepts a redirect_uri under the 网页授权域名
+ * verified in the 公众号 console (www.juluo.xyz), so a mismatch fails with
+ * "redirect_uri 参数错误" rather than anything diagnosable.
+ */
+export const requestOrigin = (req: NextRequest): string => {
+    const host = req.headers.get('x-forwarded-host') ?? req.headers.get('host') ?? ''
+    const proto = req.headers.get('x-forwarded-proto') ?? 'https'
+    return `${proto}://${host}`
+}
+
+/**
+ * snsapi_userinfo, not snsapi_base. base is silent (no consent screen) but
+ * returns only an openid, and openid is per-appid: keying accounts on it alone
+ * would split the same person across a future mini program or desktop QR login
+ * with nothing to merge them by. userinfo returns the unionid, which is stable
+ * across every app under our 开放平台 account.
+ */
+export const authorizeUrl = (redirectUri: string, state: string): string => {
+    const params = new URLSearchParams({
+        appid: WECHAT_APP_ID!,
+        redirect_uri: redirectUri,
+        response_type: 'code',
+        scope: 'snsapi_userinfo',
+        state
+    })
+    // The #wechat_redirect fragment is required — without it the WeChat client
+    // refuses to open the page.
+    return `https://open.weixin.qq.com/connect/oauth2/authorize?${params}#wechat_redirect`
+}
+
+export interface WechatIdentity {
+    openid: string
+    unionid?: string
+}
+
+/**
+ * Redeems the authorization code. The code is single-use and expires in five
+ * minutes; WeChat answers 200 with an `errcode` body on failure rather than an
+ * HTTP error status, so the body has to be inspected either way.
+ */
+export const exchangeCode = async (code: string): Promise<WechatIdentity | null> => {
+    const params = new URLSearchParams({
+        appid: WECHAT_APP_ID!,
+        secret: WECHAT_APP_SECRET!,
+        code,
+        grant_type: 'authorization_code'
+    })
+
+    const res = await fetch(`https://api.weixin.qq.com/sns/oauth2/access_token?${params}`, {
+        cache: 'no-store'
+    })
+    const data = await res.json().catch(() => ({}))
+
+    if (!res.ok || data.errcode || !data.openid) {
+        console.error('wechat: code exchange failed', {errcode: data.errcode, errmsg: data.errmsg})
+        return null
+    }
+
+    // A 快照页 user has no real WeChat account behind the openid, so there is
+    // nothing durable to attach a session to.
+    if (data.is_snapshotuser) {
+        console.error('wechat: snapshot user rejected')
+        return null
+    }
+
+    return {openid: String(data.openid), unionid: data.unionid ? String(data.unionid) : undefined}
+}

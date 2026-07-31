@@ -116,19 +116,28 @@ export const bindEmail = async ({params, clientMode}: SolaSdkFunctionParams<{
 
 /**
  * Exchanges a server-verified identity for a session, gated by the NEXT_TOKEN
- * shared secret.
+ * shared secret. Exactly one identity is expected: an email (Google), or a
+ * WeChat openid/unionid pair (CN 网页授权).
  *
- * SERVER-SIDE ONLY. NEXT_TOKEN mints a session for any email it is given, so it
- * must never reach the browser — call this from a route handler that has already
- * verified the identity itself (see app/api/google-signin).
+ * SERVER-SIDE ONLY. NEXT_TOKEN mints a session for ANY identity it is given, so
+ * it must never reach the browser — call this from a route handler that has
+ * already verified the identity itself (see app/api/google-signin and
+ * app/api/wechat/callback).
  */
 export const trustedSignIn = async ({params, clientMode}: SolaSdkFunctionParams<{
-    email: string,
+    email?: string,
+    wechatOpenid?: string,
+    wechatUnionid?: string,
     nextToken: string
 }>) => {
     return await request<AuthResult>('/auth/trusted_signin', {
         method: 'POST',
         clientMode,
-        body: {email: params.email, next_token: params.nextToken}
+        body: {
+            email: params.email,
+            wechat_openid: params.wechatOpenid,
+            wechat_unionid: params.wechatUnionid,
+            next_token: params.nextToken
+        }
     })
 }

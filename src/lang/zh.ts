@@ -10,6 +10,8 @@ export const zh: Dictionary = {
   "Should be equal or shorter than": "长度不得超过：",
   "Ethereum Wallet": "以太坊钱包",
   "Google Auth": "Google 登录",
+  "Sign in with WeChat": "微信登录",
+  "WeChat sign-in failed, please try again": "微信登录失败，请重试",
   "No Ethereum wallet found in this browser": "未检测到以太坊钱包，请安装钱包扩展后重试",
   "Social Layer": "Social Layer",
   "Sign In": "登录",
