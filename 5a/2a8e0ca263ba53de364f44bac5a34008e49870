@@ -1,0 +1,41 @@
+ginger.cn.yml
+  s_e9ed806a3d225c::t_fad59c14686be7 73-78
+src/app/api/wechat/callback/route.ts
+  s_e9ed806a3d225c::t_fe27de668b2fdd 1-83
+packages/sola-sdk/src/auth/auth.ts
+  s_e9ed806a3d225c::t_3ebb5af6955eda 119-120,122-125,128-130,136-141
+src/app/api/wechat/signin/route.ts
+  s_e9ed806a3d225c::t_c5994a40346930 1-34
+src/app/(auth)/signin/page.tsx
+  s_e9ed806a3d225c::t_6511fed4f93b22 62-64
+  s_e9ed806a3d225c::t_0d720f030a0eec 31-41
+  s_e9ed806a3d225c::t_fd15f5cb436787 1,5,10
+  s_e9ed806a3d225c::t_b3df25d9bc74a8 17
+  s_e9ed806a3d225c::t_5db005043ab2ee 46-53
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_382efe5782c3b8 13-14
+src/lang/en.ts
+  s_e9ed806a3d225c::t_ca5b1f9977e435 11-12
+src/app/config.ts
+  s_e9ed806a3d225c::t_640f674c3dadea 17-23
+src/app/api/wechat/wechat.ts
+  s_e9ed806a3d225c::t_65a72ca3b9d215 1-91
+src/app/(auth)/signin/WechatSignIn.tsx
+  s_e9ed806a3d225c::t_474282853ca61f 1-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "5a2a8e0ca263ba53de364f44bac5a34008e49870",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
