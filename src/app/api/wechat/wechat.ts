@@ -20,15 +20,23 @@ export const wechatConfigured = () => !!WECHAT_APP_ID && !!WECHAT_APP_SECRET
 export const STATE_COOKIE = 'wechat_oauth_state'
 
 /**
- * The origin WeChat must redirect back to. Taken from the forwarded headers
- * rather than a config value because it has to match the host the user is
- * actually on — and WeChat only accepts a redirect_uri under the 网页授权域名
- * verified in the 公众号 console (www.juluo.xyz), so a mismatch fails with
+ * The public origin of this request — what WeChat must redirect back to, and
+ * what every redirect and cookie domain in this flow has to be built from.
+ *
+ * The forwarded headers are the ONLY correct source here. Behind Traefik,
+ * `req.url` / `req.nextUrl` / the Host header are the container's own
+ * `localhost:3000`; using them sent the post-login redirect to
+ * `https://localhost:3000/register` and derived the cookie domain from
+ * "localhost". WeChat also only accepts a redirect_uri under the 网页授权域名
+ * verified in the 公众号 console (www.juluo.xyz), so a wrong host fails with
  * "redirect_uri 参数错误" rather than anything diagnosable.
+ *
+ * The protocol falls back to the request's own rather than a hardcoded https,
+ * so `next dev` over http keeps working.
  */
 export const requestOrigin = (req: NextRequest): string => {
     const host = req.headers.get('x-forwarded-host') ?? req.headers.get('host') ?? ''
-    const proto = req.headers.get('x-forwarded-proto') ?? 'https'
+    const proto = req.headers.get('x-forwarded-proto') ?? req.nextUrl.protocol.replace(':', '')
     return `${proto}://${host}`
 }
 

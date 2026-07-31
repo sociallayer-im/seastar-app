@@ -11,7 +11,8 @@ import {STATE_COOKIE, authorizeUrl, requestOrigin, wechatConfigured} from '../we
 export async function GET(req: NextRequest) {
     if (!wechatConfigured()) {
         console.error('wechat/signin: WECHAT_APP_ID / WECHAT_APP_SECRET are not configured')
-        return NextResponse.redirect(new URL('/signin?error=wechat_unavailable', req.url))
+        // requestOrigin, not req.url — behind Traefik that is localhost:3000.
+        return NextResponse.redirect(new URL('/signin?error=wechat_unavailable', requestOrigin(req)))
     }
 
     // Random, single-use, and compared on the way back. Without it any page

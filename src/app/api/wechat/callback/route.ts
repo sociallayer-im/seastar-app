@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from 'next/server'
 import {getProfileDetailByAuth, trustedSignIn} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {AUTH_FIELD, authCookieDomain, sanitizeReturnTarget} from '@/utils'
-import {STATE_COOKIE, exchangeCode, wechatConfigured} from '../wechat'
+import {STATE_COOKIE, exchangeCode, requestOrigin, wechatConfigured} from '../wechat'
 
 /**
  * Where WeChat sends the user back with `?code=&state=`.
@@ -55,11 +55,18 @@ export async function GET(req: NextRequest) {
     // A WeChat-first account has no username until it registers one — the same
     // fork clientCheckUserLoggedInAndRedirect takes for the other providers.
     const profile = await getProfileDetailByAuth({params: {authToken: token}, clientMode: CLIENT_MODE})
+
+    // Everything host-derived comes from the FORWARDED origin, never
+    // req.nextUrl / the Host header: behind Traefik those are the container's
+    // own localhost:3000, so the redirect went to https://localhost:3000/...
+    // and the cookie domain was computed from "localhost".
+    const origin = requestOrigin(req)
+    const host = new URL(origin).hostname
     const target = profile && !profile.name
         ? '/register'
-        : sanitizeReturnTarget(req.cookies.get('return')?.value, req.headers.get('host'))
+        : sanitizeReturnTarget(req.cookies.get('return')?.value, host)
 
-    const response = NextResponse.redirect(new URL(target, req.nextUrl.origin))
+    const response = NextResponse.redirect(new URL(target, origin))
     // Deliberately NOT httpOnly: this is the same cookie setAuth() writes from
     // the browser, and client code reads it back with getAuth(). Scoped to the
     // registrable parent domain for the same reason setAuth is.
@@ -68,7 +75,7 @@ export async function GET(req: NextRequest) {
         secure: true,
         sameSite: 'lax',
         path: '/',
-        domain: authCookieDomain(req.nextUrl.hostname),
+        domain: authCookieDomain(host),
         maxAge: 365 * 24 * 60 * 60
     })
     response.cookies.delete(STATE_COOKIE)
@@ -77,7 +84,8 @@ export async function GET(req: NextRequest) {
 
 /** Back to the sign-in screen with a reason the page can show. */
 const failure = (req: NextRequest, reason: string) => {
-    const response = NextResponse.redirect(new URL(`/signin?error=${reason}`, req.nextUrl.origin))
+    // requestOrigin, not req.nextUrl.origin — see above.
+    const response = NextResponse.redirect(new URL(`/signin?error=${reason}`, requestOrigin(req)))
     response.cookies.delete(STATE_COOKIE)
     return response
 }
