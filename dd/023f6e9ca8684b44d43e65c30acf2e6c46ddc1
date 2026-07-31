@@ -1,0 +1,26 @@
+src/app/api/wechat/wechat.ts
+  s_e9ed806a3d225c::t_3732796cc1c68f 23-31,33-35,39
+src/app/api/wechat/signin/route.ts
+  s_e9ed806a3d225c::t_2895d6356cf933 14-15
+src/app/api/wechat/callback/route.ts
+  s_e9ed806a3d225c::t_cbd97296bcb90c 58-64,67,69
+  s_e9ed806a3d225c::t_a78d8b77cf244c 5
+  s_e9ed806a3d225c::t_73ab316393656a 78
+  s_e9ed806a3d225c::t_02c4b8981c42b6 87-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "dd023f6e9ca8684b44d43e65c30acf2e6c46ddc1",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
