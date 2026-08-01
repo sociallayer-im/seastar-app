@@ -1,18 +1,19 @@
 service: seastar-app
-image: ghcr.io/sociallayer-im/seastar-app
+image: home-registry.sola.day/sola/seastar-app
 
 runner: nomad
 egress: traefik
 
 servers:
   web:
-    hosts: [sg.sola.day]
+    hosts: [homepod.sola.day]
     primary: true
 
+# 自建 registry（yatch）。2026-08-02 起不再经 ghcr。
 registry:
-  server: ghcr.io
-  username: jiangplus
-  password: GHCR_TOKEN
+  server: home-registry.sola.day
+  username: sola
+  password: YATCH_TOKEN
 
 proxy:
   # auth.sola.day is served by this app now that the sign-in screens live here —
@@ -40,11 +41,11 @@ proxy:
   health_check_path: /api/health
 
 ssh:
-  user: root
+  user: ubuntu                # homepod 上 ubuntu 在 docker 组，且能直接调 Nomad
 
 builder:
   arch: amd64
-  remote: ssh://ubuntu@wamo.city
+  remote: ssh://ubuntu@homepod
   # ginger's default is mode=min, which exports only the FINAL stage to the
   # registry build cache. This Dockerfile is three-stage and the expensive step
   # — `bun install` — lives in the `build` stage, so min never cached it

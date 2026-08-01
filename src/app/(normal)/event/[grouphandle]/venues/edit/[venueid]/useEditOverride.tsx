@@ -35,8 +35,11 @@ export function DialogEditOverride({override, lang, onConfig, onCancel}: DialogE
     const [draft, setDraft] = useState<VenueOverride>(override)
 
     const handleConfirm = () => {
-        const errMsg = document.querySelector('.err-msg')
-        if (errMsg) {
+        // Check this dialog's own state, not `document.querySelector('.err-msg')`.
+        // The query is document-wide and this dialog is an overlay rendered over a
+        // still-mounted VenueForm, so any error left on the form behind it (e.g.
+        // "Please input location") used to block saving an override too.
+        if (inValidStartEndTime(draft.start_at, draft.end_at)) {
             scrollToErrMsg()
             return
         }

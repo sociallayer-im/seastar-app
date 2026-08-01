@@ -175,26 +175,31 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
     }
 
     const handleConfirm = () => {
-        const errMsg = document.querySelector('.err-msg')
-        if (errMsg) {
-            scrollToErrMsg()
-            return
-        }
+        // Validate from state, never from the DOM. This used to open with
+        // `document.querySelector('.err-msg')` and bail out whenever any error was
+        // on screen — but the two errors below are rendered with that same class
+        // and are set by this very function. So once either one appeared, every
+        // subsequent click hit the guard and returned *before* the re-validation
+        // that would have cleared it: the message stayed up with a perfectly valid
+        // address in the field, and saving silently did nothing until a reload.
+        const nameError = !draft.name ? 'Please input the name of venue' : ''
+        const addressError = !draft.formatted_address ? 'Please input location' : ''
+        setTitleError(nameError)
+        setLocationError(addressError)
 
-        if (!draft.name) {
-            setTitleError('Please input the name of venue')
-            scrollToErrMsg()
-            return
-        } else {
-            setTitleError('')
-        }
+        // The timeslot errors are the ones the old DOM guard was actually for.
+        // They're rendered directly from this state, so recompute them here rather
+        // than looking for the rendered nodes — and only when the weekly section is
+        // on, since that's the only time it renders or gets sent (toAvailabilities).
+        const hasTimeslotError = enableTimeslots
+            && Object.values(timeslots).some(slots =>
+                checkTimeSlotOverlapInWeekDay(slots)
+                || slots.some(slot => inValidStartEndTime(slot.start_at, slot.end_at))
+            )
 
-        if (!draft.formatted_address) {
-            setLocationError('Please input location')
+        if (nameError || addressError || hasTimeslotError) {
             scrollToErrMsg()
             return
-        } else {
-            setLocationError('')
         }
 
         !!onConfirm && onConfirm({
