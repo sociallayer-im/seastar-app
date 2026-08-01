@@ -1,0 +1,31 @@
+src/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/VenueForm.tsx
+  s_e9ed806a3d225c::t_6bc896421d3d58 178-200
+src/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/useEditOverride.tsx
+  s_e9ed806a3d225c::t_b9d0b3de6b9fc1 38-42
+ginger.yml
+  s_bdc4dc511a456f::t_a13d19db76829d 2,9,12,14-16,44,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "4ef0485c835bda4cb4864f88e5b67cf03ae4305e",
+  "prompts": {},
+  "sessions": {
+    "s_bdc4dc511a456f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "43420ee0-752e-475b-9503-bce65daeb49e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    },
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
