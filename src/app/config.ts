@@ -2,7 +2,11 @@ import {ClientMode} from '@sola/sdk'
 
 export const CLIENT_MODE = process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode
 
-export const SOLA_APP_SUBDOMAINS =  ['app', 'www', 'seastar-dev', 'auth', 'beta', 'auth-beta', 'dashboard']
+// Hosts where this app serves itself. Anything NOT listed here is read by
+// getGroupSubdomain as a group's vanity domain, so its '/' renders that group's
+// event home — and 404s when no such group exists. Add a subdomain here before
+// pointing a new app host at this deployment.
+export const SOLA_APP_SUBDOMAINS =  ['app', 'sola', 'www', 'seastar-dev', 'auth', 'beta', 'auth-beta', 'dashboard']
 
 // Length of the emailed sign-in / bind code. Must match what soon generates
 // (AuthController#generated_code) — the input's maxLength and the submit
