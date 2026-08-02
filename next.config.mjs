@@ -39,6 +39,7 @@ const nextConfig = {
             ['/.well-known/nodeinfo', '/.well-known/nodeinfo'],
             ['/nodeinfo/2.0', '/nodeinfo/2.0'],
             ['/actor', '/actor'],
+            ['/actor/outbox', '/actor/outbox'],
             ['/inbox', '/inbox'],
             ['/users/:handle', '/users/:handle'],
             ['/users/:handle/:collection(inbox|outbox|followers|following)', '/users/:handle/:collection'],
