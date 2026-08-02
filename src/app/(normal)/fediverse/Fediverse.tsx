@@ -109,7 +109,7 @@ export default function Fediverse({lang, events, following, signedIn, authToken}
     const handleJoin = async (event: FedEvent) => {
         if (!requireAuth()) return
         if (event.join_mode === 'external') {
-            window.open(event.external_participation_url || event.url || event.uri, '_blank')
+            window.open(event.external_participation_url || event.url || event.uri, '_blank', 'noopener,noreferrer')
             return
         }
         setBusy(true)

@@ -50,7 +50,7 @@ export default function FedEventDetail({lang, event, signedIn, authToken}: FedEv
 
     const handleJoin = () => act(async () => {
         if (event.join_mode === 'external') {
-            window.open(event.external_participation_url || originUrl, '_blank')
+            window.open(event.external_participation_url || originUrl, '_blank', 'noopener,noreferrer')
             return
         }
         const res = await joinFedEvent({
@@ -96,14 +96,14 @@ export default function FedEventDetail({lang, event, signedIn, authToken}: FedEv
             {!cancelled && event.join_mode !== 'invite' && <Button
                 variant={joined ? 'secondary' : 'primary'}
                 disabled={busy || status === 'rejected'}
-                onClick={joined && status === 'attending' ? handleLeave : handleJoin}>
+                onClick={joined ? handleLeave : handleJoin}>
                 {status === 'attending' ? lang['Leave']
                     : status === 'pending' ? lang['Requested']
                         : status === 'rejected' ? lang['Declined']
                             : event.join_mode === 'external' ? lang['Register on the origin site']
                                 : lang['Join']}
             </Button>}
-            <a href={originUrl} target="_blank" rel="noreferrer"
+            <a href={originUrl} target="_blank" rel="noopener noreferrer"
                className="text-sm underline text-secondary-foreground">
                 {lang['View on the origin server']}
             </a>
