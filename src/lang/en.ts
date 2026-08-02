@@ -953,6 +953,8 @@ export const en = {
     'Join': 'Join',
     'Leave': 'Leave',
     'Please sign in first': 'Please sign in first',
+    'View on the origin server': 'View on the origin server',
+    'Mine': 'Mine',
 }
 
 export type Dictionary = typeof en;

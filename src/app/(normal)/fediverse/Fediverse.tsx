@@ -32,6 +32,11 @@ export default function Fediverse({lang, events, signedIn, authToken}: Fediverse
     const [statuses, setStatuses] = useState<Record<string, string | null | undefined>>(
         Object.fromEntries(events.map(e => [e.id, e.my_status]))
     )
+    const [onlyMine, setOnlyMine] = useState(false)
+
+    const shown = onlyMine
+        ? events.filter(e => ['attending', 'pending'].includes(statuses[e.id] || ''))
+        : events
 
     const requireAuth = () => {
         if (!signedIn || !authToken) {
@@ -148,13 +153,21 @@ export default function Fediverse({lang, events, signedIn, authToken}: Fediverse
             </div>}
         </div>
 
-        <div className="font-semibold mb-2">{lang['Upcoming events']}</div>
-        {!events.length && <div className="text-sm text-secondary-foreground py-8 text-center">
+        <div className="flex-row-item-center justify-between mb-2">
+            <div className="font-semibold">{lang['Upcoming events']}</div>
+            {signedIn && <div className="flex-row-item-center gap-1 text-xs">
+                <button className={`px-2 py-1 rounded ${onlyMine ? '' : 'bg-secondary'}`}
+                        onClick={() => setOnlyMine(false)}>{lang['All']}</button>
+                <button className={`px-2 py-1 rounded ${onlyMine ? 'bg-secondary' : ''}`}
+                        onClick={() => setOnlyMine(true)}>{lang['Mine']}</button>
+            </div>}
+        </div>
+        {!shown.length && <div className="text-sm text-secondary-foreground py-8 text-center">
             {lang['No remote events yet — follow a community to see its events here']}
         </div>}
 
         <div className="grid gap-3">
-            {events.map(event => <FedEventCard
+            {shown.map(event => <FedEventCard
                 key={event.id}
                 lang={lang}
                 event={event}

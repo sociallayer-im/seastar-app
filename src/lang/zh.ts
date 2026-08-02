@@ -931,4 +931,6 @@ export const zh: Dictionary = {
   'Join': '报名',
   'Leave': '取消报名',
   'Please sign in first': '请先登录',
+  'View on the origin server': '在源服务器查看',
+  'Mine': '我的',
 }

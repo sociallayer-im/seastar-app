@@ -131,8 +131,24 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
             {comments.map((comment, index) => {
                 return <div key={index} className='w-full'>
                     <div className="flex-row-item-center  text-sm">
-                        <Avatar profile={comment.user} size={28} className="mr-2 border"/>
-                       <span className="font-semibold">{displayProfileName(comment.user)}</span>
+                        {comment.remote_author
+                            ? <>
+                                {/* a federated comment: no local profile, and the
+                                    server it came from has to be visible */}
+                                <img src={comment.remote_author.image_url || '/images/default_avatar/avatar_0.png'}
+                                     alt="" width={28} height={28}
+                                     className="mr-2 border rounded-full w-7 h-7 object-cover"/>
+                                <span className="font-semibold">
+                                    {comment.remote_author.name || comment.remote_author.acct}
+                                </span>
+                                <span className="ml-1 text-xs text-secondary-foreground">
+                                    @{comment.remote_author.acct}
+                                </span>
+                            </>
+                            : <>
+                                <Avatar profile={comment.user} size={28} className="mr-2 border"/>
+                                <span className="font-semibold">{displayProfileName(comment.user)}</span>
+                            </>}
 
                         <div className="ml-2 text-xs"><DisplayDateTime
                             dataTimeStr={comment.created_at}/></div>
