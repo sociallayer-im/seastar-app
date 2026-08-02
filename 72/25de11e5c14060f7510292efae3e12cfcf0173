@@ -1,0 +1,28 @@
+src/app/(normal)/fediverse/Fediverse.tsx
+  s_e9ed806a3d225c::t_2de1cf1ca122fb 6-7,18,28,37,82-101,178-196
+  s_e9ed806a3d225c::t_418990ef0f27df 197
+src/app/(normal)/fediverse/page.tsx
+  s_e9ed806a3d225c::t_2de1cf1ca122fb 11,13-14
+src/app/(normal)/fediverse/data.ts
+  s_e9ed806a3d225c::t_2de1cf1ca122fb 1,7,9-13,15
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_2de1cf1ca122fb 717-718
+src/lang/en.ts
+  s_e9ed806a3d225c::t_2de1cf1ca122fb 735-736
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "7225de11e5c14060f7510292efae3e12cfcf0173",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
