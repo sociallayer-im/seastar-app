@@ -45,6 +45,10 @@ const nextConfig = {
             ['/groups/:handle', '/groups/:handle'],
             ['/groups/:handle/:collection(inbox|outbox|followers|following)', '/groups/:handle/:collection'],
             ['/events/:id', '/events/:id'],
+            // Peers dereference a note's id when resolving a thread, so the
+            // comment objects our Create activities publish must resolve here
+            // too — not only on the API host.
+            ['/comments/:id', '/comments/:id'],
         ]
         return pairs.map(([source, destination]) => ({
             source,
