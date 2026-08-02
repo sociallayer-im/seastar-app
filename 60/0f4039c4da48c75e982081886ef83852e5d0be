@@ -1,0 +1,21 @@
+src/app/(normal)/fediverse/[fedeventid]/FedEventDetail.tsx
+  s_e9ed806a3d225c::t_20f503e5bdf187 53,99,106
+src/app/(normal)/fediverse/Fediverse.tsx
+  s_e9ed806a3d225c::t_20f503e5bdf187 112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "600f4039c4da48c75e982081886ef83852e5d0be",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
