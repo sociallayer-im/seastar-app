@@ -1,6 +1,6 @@
-import {getCurrProfile} from '@/app/actions'
+import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {redirect} from 'next/navigation'
-import {getProfileEventByName} from '@sola/sdk'
+import {getFedEvents, getProfileEventByName} from '@sola/sdk'
 import {setEventAttendedStatus} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 
@@ -11,10 +11,14 @@ export default async function MyEventsAttendedPageData() {
         redirect('/404')
     }
 
-    const profileEvents = await getProfileEventByName({
-        params: {name: currProfile.name},
-        clientMode: CLIENT_MODE
-    })
+    const authToken = await getServerSideAuth()
+    const [profileEvents, allRemote] = await Promise.all([
+        getProfileEventByName({params: {name: currProfile.name}, clientMode: CLIENT_MODE}),
+        // a failure here must not take down the page: remote events are extra
+        getFedEvents({params: {authToken}, clientMode: CLIENT_MODE}).catch(() => [])
+    ])
+    const remoteEvents = allRemote.filter(e =>
+        e.my_status === 'attending' || e.my_status === 'pending')
 
     const attends = setEventAttendedStatus({
         events: profileEvents.attends,
@@ -25,6 +29,7 @@ export default async function MyEventsAttendedPageData() {
 
     return {
         currProfile,
-        attends
+        attends,
+        remoteEvents
     }
 }

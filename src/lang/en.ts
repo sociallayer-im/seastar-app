@@ -955,6 +955,7 @@ export const en = {
     'Please sign in first': 'Please sign in first',
     'View on the origin server': 'View on the origin server',
     'Mine': 'Mine',
+    'From other servers': 'From other servers',
 }
 
 export type Dictionary = typeof en;
