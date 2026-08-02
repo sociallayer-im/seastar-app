@@ -956,6 +956,8 @@ export const en = {
     'View on the origin server': 'View on the origin server',
     'Mine': 'Mine',
     'From other servers': 'From other servers',
+    'Communities you follow': 'Communities you follow',
+    'Unfollow': 'Unfollow',
 }
 
 export type Dictionary = typeof en;

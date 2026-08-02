@@ -934,4 +934,6 @@ export const zh: Dictionary = {
   'View on the origin server': '在源服务器查看',
   'Mine': '我的',
   'From other servers': '来自其他服务器',
+  'Communities you follow': '已关注的社区',
+  'Unfollow': '取消关注',
 }

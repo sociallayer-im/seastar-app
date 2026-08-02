@@ -3,8 +3,8 @@
 import {useState} from 'react'
 import {Dictionary} from '@/lang'
 import {
-    FedActor, FedEvent, FedJoinMode,
-    followFedActor, joinFedEvent, leaveFedEvent, resolveFedActor
+    FedActor, FedEvent, FedFollowing, FedJoinMode,
+    followFedActor, joinFedEvent, leaveFedEvent, resolveFedActor, unfollowFedActor
 } from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {Input} from '@/components/shadcn/Input'
@@ -15,6 +15,7 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 export interface FediverseProps {
     lang: Dictionary
     events: FedEvent[]
+    following: FedFollowing[]
     signedIn: boolean
     authToken?: string
 }
@@ -24,7 +25,7 @@ export interface FediverseProps {
  * owns the record, so joining is a request that only it can grant — the UI
  * says "requested" until an Accept comes back rather than claiming a seat.
  */
-export default function Fediverse({lang, events, signedIn, authToken}: FediverseProps) {
+export default function Fediverse({lang, events, following, signedIn, authToken}: FediverseProps) {
     const {toast} = useToast()
     const [handle, setHandle] = useState('')
     const [resolved, setResolved] = useState<FedActor | null>(null)
@@ -33,6 +34,7 @@ export default function Fediverse({lang, events, signedIn, authToken}: Fediverse
         Object.fromEntries(events.map(e => [e.id, e.my_status]))
     )
     const [onlyMine, setOnlyMine] = useState(false)
+    const [followed, setFollowed] = useState<FedFollowing[]>(following)
 
     const shown = onlyMine
         ? events.filter(e => ['attending', 'pending'].includes(statuses[e.id] || ''))
@@ -77,6 +79,26 @@ export default function Fediverse({lang, events, signedIn, authToken}: Fediverse
                     ? lang['Following']
                     : lang['Follow requested']
             })
+            setFollowed(list => [
+                ...list.filter(f => f.uri !== resolved.uri),
+                {...resolved, state: res.state as FedFollowing['state']}
+            ])
+        } catch (e: unknown) {
+            toast({title: (e as Error).message})
+        } finally {
+            setBusy(false)
+        }
+    }
+
+    const handleUnfollow = async (actor: FedFollowing) => {
+        if (!requireAuth()) return
+        setBusy(true)
+        try {
+            await unfollowFedActor({
+                params: {uri: actor.uri, authToken: authToken!},
+                clientMode: CLIENT_MODE
+            })
+            setFollowed(list => list.filter(f => f.uri !== actor.uri))
         } catch (e: unknown) {
             toast({title: (e as Error).message})
         } finally {
@@ -152,6 +174,26 @@ export default function Fediverse({lang, events, signedIn, authToken}: Fediverse
                 </Button>
             </div>}
         </div>
+
+        {!!followed.length && <div className="mb-8">
+            <div className="font-semibold mb-2">{lang['Communities you follow']}</div>
+            <div className="grid gap-2">
+                {followed.map(actor => <div key={actor.uri}
+                                            className="border rounded-lg p-3 flex-row-item-center justify-between">
+                    <div className="min-w-0">
+                        <div className="font-semibold truncate">{actor.name || actor.acct}</div>
+                        <div className="text-sm text-secondary-foreground truncate">
+                            @{actor.acct}
+                            {/* a follow the other server has not answered yet is not a follow */}
+                            {actor.state !== 'accepted' && ` · ${lang['Requested']}`}
+                        </div>
+                    </div>
+                    <Button variant="secondary" disabled={busy} onClick={() => handleUnfollow(actor)}>
+                        {lang['Unfollow']}
+                    </Button>
+                </div>)}
+            </div>
+        </div>}
 
         <div className="flex-row-item-center justify-between mb-2">
             <div className="font-semibold">{lang['Upcoming events']}</div>

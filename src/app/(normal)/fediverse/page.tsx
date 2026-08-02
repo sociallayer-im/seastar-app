@@ -8,7 +8,8 @@ export async function generateMetadata() {
 }
 
 export default async function FediversePage() {
-    const {events, currProfile, authToken} = await FediversePageData()
+    const {events, currProfile, following, authToken} = await FediversePageData()
     const {lang} = await selectLang()
-    return <Fediverse lang={lang} events={events} signedIn={!!currProfile} authToken={authToken}/>
+    return <Fediverse lang={lang} events={events} following={following}
+                      signedIn={!!currProfile} authToken={authToken}/>
 }
