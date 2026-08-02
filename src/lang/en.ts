@@ -936,6 +936,23 @@ export const en = {
     'Show publicly': 'Show publicly',
     'Owner only': 'owner only',
     'Remove this person from the group?': 'Remove this person from the group? They keep nothing — teams, roles and access all go with the membership.',
+    'Fediverse': 'Fediverse',
+    'Events from other servers in the fediverse': 'Events published by communities on other servers.',
+    'Find a community on another server': 'Find a community on another server',
+    'No remote events yet — follow a community to see its events here': 'No remote events yet — follow a community to see its events here.',
+    'Upcoming events': 'Upcoming events',
+    'Follow requested': 'Follow requested — the other server decides.',
+    'Join requested': 'Join requested — the hosting server will confirm.',
+    'Requested': 'Requested',
+    'Going': 'Going',
+    'Declined': 'Declined',
+    'Invite only': 'Invite only',
+    'Register on the origin site': 'Register on origin site',
+    'from': 'from',
+    'Follow': 'Follow',
+    'Join': 'Join',
+    'Leave': 'Leave',
+    'Please sign in first': 'Please sign in first',
 }
 
 export type Dictionary = typeof en;

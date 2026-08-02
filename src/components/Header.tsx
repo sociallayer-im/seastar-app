@@ -36,6 +36,10 @@ export default async function Header({sticky = true}:{sticky?: boolean}) {
                                  className={`ml-3 text-xs font-semibold ${currentPath?.startsWith('/forms') ? 'text-primary-foreground' : ''}`}>
                     {lang['Forms']}
                 </a>}
+                <a href="/fediverse"
+                   className={`ml-3 text-xs font-semibold ${currentPath?.includes('fediverse') ? 'text-primary-foreground' : ''}`}>
+                    {lang['Fediverse']}
+                </a>
             </div>
             <div className="flex-row-item-center text-xs relative">
                 <HeaderSearchBar lang={lang} />
