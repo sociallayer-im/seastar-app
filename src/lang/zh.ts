@@ -30,6 +30,7 @@ export const zh: Dictionary = {
   "Your username": "您的用户名",
   Confirm: "确认",
   "Bind Email": "绑定邮箱",
+  "Signed in to your existing account": "该邮箱已有账号，已为你登录该账号。",
   "Please enter your email address so that you can log in and receive important notifications via email.":
     "请输入您的电子邮件地址，以便您可以通过电子邮件登录并接收重要通知。",
   "Your email": "您的邮箱",

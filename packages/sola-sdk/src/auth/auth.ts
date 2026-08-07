@@ -101,12 +101,36 @@ export const signInWithWallet = async ({params, clientMode}: SolaSdkFunctionPara
  * login identity, so the backend only allows it once and never to an address
  * that already belongs to someone else.
  */
+/**
+ * Result of binding an address that already belonged to another account: the
+ * two were merged, and the caller is now signed in AS that other account. The
+ * token replaces the one that was sent — the account it authenticated is gone.
+ */
+export interface BindEmailMerged {
+    merged: true
+    token: string
+    user: {id: string, email: string | null, name: string | null}
+}
+
+export type BindEmailResult = ProfileDetail | BindEmailMerged
+
+export const isBindEmailMerged = (result: BindEmailResult): result is BindEmailMerged =>
+    (result as BindEmailMerged).merged === true
+
+/**
+ * Attaches a verified email to an account that signed in by wallet or WeChat.
+ *
+ * If the address already has an account, the backend MERGES this one into it
+ * rather than failing — but only while this account is still unregistered
+ * (no username yet). Check the result with isBindEmailMerged: on a merge you
+ * must store the returned token, because the session you sent is now invalid.
+ */
 export const bindEmail = async ({params, clientMode}: SolaSdkFunctionParams<{
     email: string,
     code: string,
     authToken: string
 }>) => {
-    return await request<ProfileDetail>('/auth/bind_email', {
+    return await request<BindEmailResult>('/auth/bind_email', {
         method: 'POST',
         clientMode,
         authToken: params.authToken,

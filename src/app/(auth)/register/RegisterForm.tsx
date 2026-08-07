@@ -55,16 +55,13 @@ export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill
             }
 
             await updateProfile({params: {profile: {name}, authToken}, clientMode: CLIENT_MODE})
-            const profile = await getProfileDetailByAuth({params: {authToken}, clientMode: CLIENT_MODE})
 
-            // A wallet-first account has no email yet, and email is how sign-in
-            // and notifications work — send them on to bind one. Email sign-ups
-            // already have theirs and are done.
-            if (profile?.email) {
-                clientRedirectToReturn()
-            } else {
-                window.location.href = '/bind-email'
-            }
+            // Registration is the LAST onboarding step — /bind-email runs before
+            // this one now, because binding an already-registered address merges
+            // the accounts and soon only allows that while the name is still
+            // blank. Sending an account back to /bind-email from here would
+            // offer a merge that can no longer happen.
+            clientRedirectToReturn()
         } catch (e: unknown) {
             toast({
                 title: lang['Confirm'],

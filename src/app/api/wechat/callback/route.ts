@@ -52,8 +52,10 @@ export async function GET(req: NextRequest) {
         return failure(req, 'wechat_failed')
     }
 
-    // A WeChat-first account has no username until it registers one — the same
-    // fork clientCheckUserLoggedInAndRedirect takes for the other providers.
+    // A WeChat-first account arrives with neither an email nor a username, so
+    // it has onboarding left — the same fork clientCheckUserLoggedInAndRedirect
+    // takes for the other providers, resolved here because this leg is a
+    // server-side redirect.
     const profile = await getProfileDetailByAuth({params: {authToken: token}, clientMode: CLIENT_MODE})
 
     // Everything host-derived comes from the FORWARDED origin, never
@@ -62,9 +64,14 @@ export async function GET(req: NextRequest) {
     // and the cookie domain was computed from "localhost".
     const origin = requestOrigin(req)
     const host = new URL(origin).hostname
-    const target = profile && !profile.name
-        ? '/register'
-        : sanitizeReturnTarget(req.cookies.get('return')?.value, host)
+    // Mirrors onboardingTarget(): email first, then username. A WeChat account
+    // can only be merged into an existing email account while it is still
+    // unregistered, so the email question has to come before the username.
+    const target = profile && !profile.email
+        ? '/bind-email'
+        : profile && !profile.name
+            ? '/register'
+            : sanitizeReturnTarget(req.cookies.get('return')?.value, host)
 
     const response = NextResponse.redirect(new URL(target, origin))
     // Deliberately NOT httpOnly: this is the same cookie setAuth() writes from

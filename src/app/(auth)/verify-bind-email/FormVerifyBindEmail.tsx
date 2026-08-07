@@ -2,13 +2,13 @@
 
 import {useState} from 'react'
 import {Dictionary} from '@/lang'
-import {bindEmail, requestEmailCode} from '@sola/sdk'
+import {bindEmail, getProfileDetailByAuth, isBindEmailMerged, requestEmailCode} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
-import {clientRedirectToReturn, getAuth} from '@/utils'
+import {clientRedirectToReturn, getAuth, returnTarget, setAuth} from '@/utils'
 
 export default function FormVerifyBindEmail({lang, email}: {lang: Dictionary, email: string}) {
     const [code, setCode] = useState('')
@@ -24,11 +24,29 @@ export default function FormVerifyBindEmail({lang, email}: {lang: Dictionary, em
 
         const loading = showLoading()
         try {
-            await bindEmail({
+            const result = await bindEmail({
                 params: {email, code: code.trim().toUpperCase(), authToken},
                 clientMode: CLIENT_MODE
             })
-            clientRedirectToReturn()
+
+            if (isBindEmailMerged(result)) {
+                // The address already had an account and this one was merged
+                // into it. The token we authenticated with belongs to an
+                // account that no longer exists, so it MUST be replaced before
+                // anything else runs.
+                setAuth(result.token)
+                toast({title: lang['Bind Email'], description: lang['Signed in to your existing account']})
+                // The surviving account is normally already registered, but an
+                // email account without a username is possible — and landing
+                // there would look signed-out everywhere.
+                window.location.href = result.user.name ? returnTarget() : '/register'
+                return
+            }
+
+            // Plain bind: this step now runs before /register, so an account
+            // with no username still has that left to do.
+            const profile = await getProfileDetailByAuth({params: {authToken}, clientMode: CLIENT_MODE})
+            window.location.href = profile && !profile.name ? '/register' : returnTarget()
         } catch (e: unknown) {
             toast({
                 title: lang['Bind Email'],

@@ -2,13 +2,13 @@
 
 import {useRef, useState} from 'react'
 import {Dictionary} from '@/lang'
-import {requestEmailCode} from '@sola/sdk'
+import {getProfileDetailByAuth, requestEmailCode} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
-import {clientRedirectToReturn} from '@/utils'
+import {clientRedirectToReturn, getAuth, returnTarget} from '@/utils'
 
 const EMAIL_RE = /^[\w.+-]+@([\w-]+\.)+[\w-]{2,63}$/
 
@@ -18,6 +18,19 @@ export default function BindEmailForm({lang}: {lang: Dictionary}) {
     const submitting = useRef(false)
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
+
+    // This step now runs BEFORE /register, so skipping it can't just go to the
+    // return target: an account with no username reads as signed-out
+    // everywhere, and the user would land on a page that ignores their session.
+    const skip = async () => {
+        const authToken = getAuth()
+        if (!authToken) {
+            clientRedirectToReturn()
+            return
+        }
+        const profile = await getProfileDetailByAuth({params: {authToken}, clientMode: CLIENT_MODE})
+        window.location.href = profile && !profile.name ? '/register' : returnTarget()
+    }
 
     const submit = async () => {
         const address = email.toLowerCase().trim()
@@ -70,9 +83,9 @@ export default function BindEmailForm({lang}: {lang: Dictionary}) {
         <div className="text-red-400 text-sm min-h-6 my-1">{error}</div>
 
         <Button variant="special" className="w-full" onClick={submit}>{lang['Continue']}</Button>
-        {/* Binding is optional — a wallet account works without an email, it
-            just can't sign in by email or receive notifications. */}
-        <Button variant="ghost" className="w-full mt-2" onClick={clientRedirectToReturn}>
+        {/* Binding is optional — a wallet or WeChat account works without an
+            email, it just can't sign in by email or receive notifications. */}
+        <Button variant="ghost" className="w-full mt-2" onClick={skip}>
             {lang['Skip']}
         </Button>
     </div>

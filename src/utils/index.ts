@@ -146,6 +146,32 @@ export const clientRedirectToReturn = () => {
 }
 
 /**
+ * Where a freshly signed-in account still has to go before it can be used.
+ *
+ * Email comes BEFORE username, and that order is load-bearing. Binding an
+ * address that already has an account merges the two, and soon only permits
+ * that while this account is still unregistered (blank name) — see
+ * AuthController#mergeable?. Asking for the username first would close the
+ * merge window and leave the person holding two accounts, which is the whole
+ * thing we're trying to avoid for WeChat sign-ins.
+ *
+ * Accounts that arrive with an email (code login, Google) skip straight to the
+ * username step, and `/bind-email` is skippable, so nobody is forced through a
+ * step that doesn't apply to them.
+ */
+export const onboardingTarget = (
+    profile: {email?: string | null, name?: string | null} | null,
+    prefillUsername?: string
+) => {
+    if (!profile) return returnTarget()
+    if (!profile.email) return '/bind-email'
+    if (!profile.name) {
+        return prefillUsername ? `/register?username=${encodeURIComponent(prefillUsername)}` : '/register'
+    }
+    return returnTarget()
+}
+
+/**
  * Post-sign-in routing. An account with no username yet has to finish at
  * /register before anything else — getCurrProfile reports a nameless account as
  * signed-out, so skipping this step would drop the user back on a page that
@@ -153,14 +179,7 @@ export const clientRedirectToReturn = () => {
  */
 export const clientCheckUserLoggedInAndRedirect = async (auth_token: string, prefillUsername?: string) => {
     const profile = await getProfileDetailByAuth({params: {authToken: auth_token}, clientMode: CLIENT_MODE})
-
-    if (profile && !profile.name) {
-        window.location.href = prefillUsername
-            ? `/register?username=${encodeURIComponent(prefillUsername)}`
-            : '/register'
-    } else {
-        clientRedirectToReturn()
-    }
+    window.location.href = onboardingTarget(profile, prefillUsername)
 }
 
 export const checkProcess = (startTime: string, endTime: string) => {

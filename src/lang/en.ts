@@ -29,6 +29,7 @@ export const en = {
     "Your username": "Your username",
     Confirm: "Confirm",
     "Bind Email": "Bind Email",
+    "Signed in to your existing account": "This email already had an account — you are now signed in to it.",
     "Please enter your email address so that you can log in and receive important notifications via email.":
         "Please enter your email address so that you can log in and receive important notifications via email.",
     "Your email": "Your email",
