@@ -414,26 +414,46 @@ export function isEventTimeSuitable(
     return ''
 }
 
+/**
+ * What a ticket costs, in the units it is actually priced in.
+ *
+ * The unit used to be the literal string "USD" for everything, which was
+ * survivable while USD was the only fiat currency and every crypto token was a
+ * dollar stablecoin. A ¥1 WeChat ticket rendered as "1 USD" — a price tag that
+ * is wrong by ~7x, on the screen where the buyer decides.
+ *
+ * Prices in different units are never mixed into one range: a ticket payable
+ * as ¥1 or 5 USDT is two offers, not a spread, and averaging them would invent
+ * an exchange rate we do not have.
+ */
 export function displayTicketPrice(ticket: Ticket) {
-    const paymentMethods = ticket.payment_methods || []
+    const paymentMethods = (ticket.payment_methods || []).filter(item => !item._destroy)
     if (paymentMethods.length === 0) {
         return 'Free'
     }
 
-    const prices = paymentMethods
-        .filter(item => !item._destroy)
-        .map(item => {
-            const targetToken = findMethodToken(item)
-            if (!targetToken) return null
-            return BigNumber(item.price).dividedBy(BigNumber(10).pow(targetToken.decimals)).toNumber()
+    // Insertion-ordered, so the organizer's own ordering of methods is kept.
+    const byUnit = new Map<string, {values: number[], symbol?: string}>()
+    paymentMethods.forEach(method => {
+        const amount = methodAmount(method)
+        if (!amount || isNaN(amount.value)) return
+
+        const bucket = byUnit.get(amount.unit) || {values: [], symbol: amount.symbol}
+        bucket.values.push(amount.value)
+        byUnit.set(amount.unit, bucket)
+    })
+
+    if (byUnit.size === 0) return ''
+
+    return Array.from(byUnit.entries())
+        .map(([unit, {values, symbol}]) => {
+            const min = Math.min(...values)
+            const max = Math.max(...values)
+            const range = min === max ? `${min}` : `${min}-${max}`
+            // Fiat reads as ¥1; a token has no symbol, so it stays "1 USDT".
+            return symbol ? `${symbol}${range}` : `${range} ${unit}`
         })
-        .filter((p): p is number => p !== null && !isNaN(p))
-
-    if (prices.length === 0) return ''
-    const maxPrice = Math.max(...prices)
-    const minPrice = Math.min(...prices)
-
-    return maxPrice === minPrice ? `${minPrice} USD` : `${minPrice}-${maxPrice} USD`
+        .join(' / ')
 }
 
 export function getEventDetailPageTimeStr(event: Event) {
@@ -997,11 +1017,40 @@ export const findMethodToken = (payment: PaymentMethod) =>
 export const getPaymentMethodChainIcons = (payment: PaymentMethod): string[] =>
     effectiveChains(payment).map(getChainIcon)
 
-export const displayMethodPrice = (payment: PaymentMethod) => {
+// Fiat prices are stored in minor units on every rail — cents, 分 — so the
+// scale is fixed and does not depend on finding a token entry.
+const FIAT_DECIMALS = 2
+const FIAT_SYMBOL: Record<string, string> = {usd: '$', cny: '¥'}
+
+/**
+ * A payment method's price, with the unit it is actually denominated in.
+ *
+ * `currency` is the authority when present: it is what the backend charged and
+ * what a refund goes out in. Only crypto methods fall through to the token,
+ * whose name IS the unit there. Reading the unit off the token for fiat too
+ * would work by accident today and break the moment a rail's token entry is
+ * missing — the backend never requires token_name.
+ */
+export const methodAmount = (payment: PaymentMethod): {value: number, unit: string, symbol?: string} | null => {
+    if (payment.currency) {
+        const code = payment.currency.toLowerCase()
+        return {
+            value: BigNumber(payment.price).dividedBy(BigNumber(10).pow(FIAT_DECIMALS)).toNumber(),
+            unit: code.toUpperCase(),
+            symbol: FIAT_SYMBOL[code]
+        }
+    }
+
     const targetToken = findMethodToken(payment)
-    if (!targetToken) return 'Unknown'
-    return BigNumber(payment.price).dividedBy(BigNumber(10).pow(targetToken.decimals)).toNumber()
+    if (!targetToken) return null
+    return {
+        value: BigNumber(payment.price).dividedBy(BigNumber(10).pow(targetToken.decimals)).toNumber(),
+        unit: targetToken.name
+    }
 }
+
+export const displayMethodPrice = (payment: PaymentMethod) =>
+    methodAmount(payment)?.value ?? 'Unknown'
 
 export const prefixUrl = (url: string) => {
     if (!url) return undefined

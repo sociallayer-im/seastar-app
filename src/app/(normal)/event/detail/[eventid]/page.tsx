@@ -26,6 +26,7 @@ import removeMarkdown from 'markdown-to-text'
 import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
 import PaymentReturn from '@/app/(normal)/event/detail/[eventid]/PaymentReturn'
+import JoinTicketEventBtn from '@/app/(normal)/event/detail/[eventid]/JoinTicketEventBtn'
 import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
@@ -230,10 +231,11 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
                         {isTicketEvent && !currProfileAttended && canAccess && !currProfilePaymentPending &&
                             <div className="flex-row-item-center mt-2">
-                                <a href={`/event/detail/${eventDetail.id}?tab=tickets`}
-                                    className={`${buttonVariants({ variant: 'special' })} text-xs flex-1`}>
-                                    {lang['Join Event(RSVP)']} 1
-                                </a>
+                                <JoinTicketEventBtn
+                                    eventDetail={eventDetail}
+                                    lang={lang}
+                                    currProfile={currProfile}
+                                    className="text-xs flex-1" />
                             </div>
                         }
 
