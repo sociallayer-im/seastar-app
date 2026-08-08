@@ -1,0 +1,68 @@
+src/lang/zh.ts
+  s_448695a5d036bc::t_2109094f5c2c4c 697-702
+packages/sola-sdk/src/index.ts
+  s_448695a5d036bc::t_8310c3ec3dd03b 19
+src/app/api/wechat/bind-openid/route.ts
+  s_448695a5d036bc::t_66709522e66ea2 1-50
+src/app/api/wechat/bind-openid/callback/route.ts
+  s_448695a5d036bc::t_08a4d2acc441e9 1-76
+src/app/(normal)/event/detail/[eventid]/PaymentReturn.tsx
+  s_448695a5d036bc::t_86542957f56fa5 10-16
+  s_448695a5d036bc::t_6632686f6c1caf 1-9,17-70
+src/components/client/DialogTicket.tsx
+  s_448695a5d036bc::t_c5bf39abb00c15 26,28
+  s_448695a5d036bc::t_4d1f3b7ff7b94e 10,12
+  s_448695a5d036bc::t_13b10e6fafd73a 33
+  s_448695a5d036bc::t_ced51cba991cb1 127,129-133
+  s_448695a5d036bc::t_1e65720eb852b5 276-331
+  s_448695a5d036bc::t_50021dcd68096a 352-366
+packages/sola-sdk/src/wechat/index.ts
+  s_448695a5d036bc::t_d0f68a31cd7f9e 1
+public/images/payment_icon/wechat_pay.svg
+  s_448695a5d036bc::t_9a17916f367196 1-7
+src/app/config.ts
+  s_448695a5d036bc::t_d686a6bed617a7 54-59
+  s_448695a5d036bc::t_99524522194ab0 35-39
+src/app/api/wechat/wechat.ts
+  s_448695a5d036bc::t_842a640583257a 23-29
+  s_448695a5d036bc::t_be6bdf1e907b1d 58-67,72
+  s_448695a5d036bc::t_3a89788540f2ae 22
+src/utils/payment_setting.ts
+  s_448695a5d036bc::t_1090a6f43460ce 583-604,608-616
+  s_448695a5d036bc::t_cb07cf12402aea 617
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_448695a5d036bc::t_6632686f6c1caf 28,277
+packages/sola-sdk/src/request.ts
+  s_448695a5d036bc::t_65d8af8f948e2f 10-16,18,22
+  s_448695a5d036bc::t_ef2048b3d573bc 75-79
+src/utils/wechat_pay.ts
+  s_448695a5d036bc::t_7769ea3ece3e91 1-71
+packages/sola-sdk/src/wechat/wechat.ts
+  s_448695a5d036bc::t_b55410cbe2956a 1-74
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_448695a5d036bc::t_7381a8ab95be76 18
+  s_448695a5d036bc::t_72fc3926a16bdd 111-120
+  s_448695a5d036bc::t_8b907e91c05fb7 767-798
+  s_448695a5d036bc::t_1031a0e44f8d7d 895-900
+  s_448695a5d036bc::t_add7638e03dfdb 675-691
+  s_448695a5d036bc::t_5420e6f45baa1d 573-576,578
+  s_448695a5d036bc::t_ca87fc6984992b 30
+src/lang/en.ts
+  s_448695a5d036bc::t_0234f5418f94e3 715-720
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "54ac99dd63334a2e41a8a13e8ea173931be2352e",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
