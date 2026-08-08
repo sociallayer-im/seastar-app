@@ -3,7 +3,7 @@
 import {useState} from 'react'
 import {Dictionary} from '@/lang'
 import {bindEmail, getProfileDetailByAuth, isBindEmailMerged, requestEmailCode} from '@sola/sdk'
-import {CLIENT_MODE} from '@/app/config'
+import {CLIENT_MODE, CODE_LENGTH} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
@@ -25,7 +25,7 @@ export default function FormVerifyBindEmail({lang, email}: {lang: Dictionary, em
         const loading = showLoading()
         try {
             const result = await bindEmail({
-                params: {email, code: code.trim().toUpperCase(), authToken},
+                params: {email, code: code.trim(), authToken},
                 clientMode: CLIENT_MODE
             })
 
@@ -82,18 +82,18 @@ export default function FormVerifyBindEmail({lang, email}: {lang: Dictionary, em
 
         <Input
             variant="textCenter"
-            className="w-full shadow-sm tracking-[0.3em] uppercase mb-4"
-            inputMode="text"
+            className="w-full shadow-sm tracking-[0.3em] mb-4"
+            inputMode="numeric"
             autoComplete="one-time-code"
             autoFocus
-            maxLength={6}
+            maxLength={CODE_LENGTH}
             value={code}
             onChange={e => setCode(e.target.value)}
             onKeyDown={e => {
-                if (e.key === 'Enter' && code.trim().length >= 6) confirm()
+                if (e.key === 'Enter' && code.trim().length >= CODE_LENGTH) confirm()
             }}/>
 
-        <Button variant="special" className="w-full" onClick={confirm} disabled={code.trim().length < 6}>
+        <Button variant="special" className="w-full" onClick={confirm} disabled={code.trim().length < CODE_LENGTH}>
             {lang['Confirm']}
         </Button>
         <div className="flex flex-row justify-between mt-3">

@@ -3,7 +3,7 @@
 import {useState} from 'react'
 import {Dictionary} from '@/lang'
 import {requestEmailCode, verifyEmailCode} from '@sola/sdk'
-import {CLIENT_MODE} from '@/app/config'
+import {CLIENT_MODE, CODE_LENGTH} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
@@ -19,7 +19,7 @@ export default function FormVerifyEmail({lang, email}: {lang: Dictionary, email:
         const loading = showLoading()
         try {
             const {token, user} = await verifyEmailCode({
-                params: {email, code: code.trim().toUpperCase()},
+                params: {email, code: code.trim()},
                 clientMode: CLIENT_MODE
             })
             setAuth(token)
@@ -63,18 +63,18 @@ export default function FormVerifyEmail({lang, email}: {lang: Dictionary, email:
 
         <Input
             variant="textCenter"
-            className="w-full shadow-sm tracking-[0.3em] uppercase mb-4"
-            inputMode="text"
+            className="w-full shadow-sm tracking-[0.3em] mb-4"
+            inputMode="numeric"
             autoComplete="one-time-code"
             autoFocus
-            maxLength={6}
+            maxLength={CODE_LENGTH}
             value={code}
             onChange={e => setCode(e.target.value)}
             onKeyDown={e => {
-                if (e.key === 'Enter' && code.trim().length >= 6) verify()
+                if (e.key === 'Enter' && code.trim().length >= CODE_LENGTH) verify()
             }}/>
 
-        <Button variant="special" className="w-full" onClick={verify} disabled={code.trim().length < 6}>
+        <Button variant="special" className="w-full" onClick={verify} disabled={code.trim().length < CODE_LENGTH}>
             {lang['Confirm']}
         </Button>
         <div className="flex flex-row justify-between mt-3">

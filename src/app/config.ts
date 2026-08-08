@@ -4,6 +4,12 @@ export const CLIENT_MODE = process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode
 
 export const SOLA_APP_SUBDOMAINS =  ['app', 'www', 'seastar-dev', 'auth', 'beta', 'auth-beta', 'dashboard']
 
+// Length of the emailed sign-in / bind code. Must match what soon generates
+// (AuthController#generated_code) — the input's maxLength and the submit
+// button's enable threshold both key off it, so a mismatch either truncates a
+// valid code or leaves Confirm permanently disabled.
+export const CODE_LENGTH = 6
+
 // Subdomains that used to be the standalone auth app. This app now serves them,
 // and middleware rewrites their '/' to /signin so the sign-in URLs already in
 // circulation keep landing on the sign-in screen. Must stay a subset of
