@@ -87,8 +87,27 @@ export interface TicketItemRefund {
     updated_at: string
 }
 
+/** One entry in an order's recorded history (TicketingActivityBlueprint). */
+export interface TicketingActivity {
+    id: string
+    /** See soon's Ticketing::Activity::ACTIONS. Wider than the status machine:
+     *  retries, rejected callbacks and lost disputes change no status. */
+    action: string
+    from_status: string | null
+    to_status: string | null
+    /** api | webhook | sweeper | reconciliation | system | backfill.
+     *  'backfill' means reconstructed from timestamps, not observed. */
+    source: string
+    reason: string | null
+    actor_user_id: string | null
+    metadata: Record<string, unknown>
+    created_at: string
+}
+
 /** TicketItemBlueprint :order_detail — the organizer's view of an order. */
 export interface TicketItemOrder extends TicketItem {
+    /** Oldest first. Absent for a non-manager caller. */
+    activities?: TicketingActivity[]
     payment_provider?: string | null
     provider_ref?: string | null
     paid_at?: string | null

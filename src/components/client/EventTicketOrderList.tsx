@@ -36,6 +36,47 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
     cancelled: 'Cancelled'
 }
 
+// Ticketing::Activity::ACTIONS → dictionary key. An action with no entry falls
+// back to its own name, so a new backend action shows up as a readable slug
+// rather than vanishing from the timeline.
+const ACTIVITY_LABEL: Record<string, string> = {
+    order_placed: 'Order placed',
+    prepay_created: 'Payment started',
+    checkout_session_created: 'Payment started',
+    payment_confirmed: 'Order paid',
+    payment_failed: 'Payment failed',
+    payment_retried: 'Payment retried',
+    callback_rejected: 'Payment notice rejected',
+    order_expired: 'Order expired',
+    order_cancelled: 'Order cancelled',
+    inventory_released: 'Seat released',
+    refund_requested: 'Refund requested',
+    refund_succeeded: 'Refunded',
+    refund_failed: 'Refund failed',
+    dispute_opened: 'Dispute opened',
+    dispute_won: 'Dispute won',
+    dispute_lost: 'Dispute lost',
+    coupon_redeemed: 'Coupon used',
+    ticket_granted: 'Ticket granted',
+    status_changed: 'Status changed'
+}
+
+const ACTIVITY_TONE: Record<string, string> = {
+    payment_confirmed: 'text-green-600',
+    dispute_won: 'text-green-600',
+    refund_requested: 'text-amber-600',
+    payment_retried: 'text-amber-600',
+    refund_succeeded: 'text-red-500',
+    refund_failed: 'text-red-500',
+    payment_failed: 'text-red-500',
+    callback_rejected: 'text-red-500',
+    dispute_lost: 'text-red-500',
+    dispute_opened: 'text-amber-600'
+}
+
+// Where the row's own amount is the point, rather than a repeat of the order's.
+const MONEY_ACTIONS = ['refund_requested', 'refund_succeeded', 'refund_failed']
+
 const STATUS_TONE: Record<string, string> = {
     succeeded: 'bg-green-50 text-green-700',
     pending: 'bg-blue-50 text-blue-700',
@@ -90,58 +131,34 @@ export default function EventTicketOrderList({
     }
 
     /**
-     * What happened to an order, oldest first.
+     * What happened to an order, oldest first — read from the recorded
+     * history, not derived from timestamps.
      *
-     * Derived, not stored: there is no transitions log, so this is built from
-     * the timestamps each transition writes plus the refund rows. That covers
-     * ordering, payment and every refund with its outcome. It does NOT show
-     * why an order expired or was cancelled — those leave only a terminal
-     * status and an updated_at, so they appear as a single closing line.
+     * The derivation this replaces could not see a retry or a rejected
+     * callback (neither changes status), could not tell a voluntary refund
+     * from a lost dispute (both land on `refunded`), and dated closures by
+     * `updated_at`, which is the last write of any kind rather than the moment
+     * of the transition.
      */
-    const orderHistory = (order: TicketItemOrder) => {
-        const entries: Array<{at: string, label: string, note?: string, tone?: string}> = []
-
-        if (order.created_at) entries.push({at: order.created_at, label: lang['Order placed']})
-        if (order.paid_at) entries.push({at: order.paid_at, label: lang['Order paid'], tone: 'text-green-600'})
-
-        ;(order.refunds || []).forEach(refund => {
-            const money = formatOrderAmount(refund.amount, refund.currency)
-            const scope = refund.full_refund ? lang['Full refund'] : lang['Partial refund']
-            if (refund.status === 'succeeded') {
-                entries.push({
-                    at: refund.updated_at || refund.created_at,
-                    label: `${lang['Refunded']} ${money}`,
-                    note: [scope, refund.reason].filter(Boolean).join(' · '),
-                    tone: 'text-red-500'
-                })
-            } else if (refund.status === 'failed') {
-                entries.push({
-                    at: refund.updated_at || refund.created_at,
-                    label: `${lang['Refund failed']} ${money}`,
-                    note: refund.error || undefined,
-                    tone: 'text-red-500'
-                })
-            } else {
-                entries.push({
-                    at: refund.created_at,
-                    label: `${lang['Refund requested']} ${money}`,
-                    note: [scope, refund.reason].filter(Boolean).join(' · '),
-                    tone: 'text-amber-600'
-                })
+    const orderHistory = (order: TicketItemOrder) =>
+        (order.activities || []).map(activity => {
+            const money = formatOrderAmount(
+                activity.metadata?.amount as number | undefined,
+                (activity.metadata?.currency as string | undefined) ?? order.currency
+            )
+            return {
+                at: activity.created_at,
+                label: lang[ACTIVITY_LABEL[activity.action] as keyof typeof lang] || activity.action,
+                // Money is only worth repeating where it differs from the
+                // order's own amount — a partial refund, say.
+                amount: MONEY_ACTIONS.includes(activity.action) ? money : '',
+                note: activity.reason || undefined,
+                tone: ACTIVITY_TONE[activity.action] || 'text-gray-500',
+                // A reconstructed row is not evidence, and the UI should not
+                // let it look like one.
+                derived: activity.source === 'backfill'
             }
         })
-
-        // A terminal state with no timestamp of its own beyond updated_at.
-        if ((order.status === 'timeout' || order.status === 'cancelled') && order.updated_at) {
-            entries.push({
-                at: order.updated_at,
-                label: order.status === 'timeout' ? lang['Order expired'] : lang['Order cancelled'],
-                tone: 'text-gray-400'
-            })
-        }
-
-        return entries.sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
-    }
 
     const downloadCSV = () => {
         const title = ['Username', 'Nickname', 'Email', 'Payment wallet address', 'Status', 'Create time', 'Ticket Type']
@@ -222,12 +239,18 @@ export default function EventTicketOrderList({
                             status alone never answers it. */}
                         {history.length > 1 &&
                             <div className="mt-3 pl-10 text-xs text-gray-500 grid grid-cols-1 gap-1">
-                                {history.map((entry, i) =>
-                                    <div key={i} className="flex-row-item-center">
+                                {history.map(entry =>
+                                    <div key={entry.at + entry.label} className="flex-row-item-center flex-wrap">
                                         <span className="text-gray-300 mr-2">·</span>
-                                        <span className={`mr-2 ${entry.tone || ''}`}>{entry.label}</span>
+                                        <span className={`mr-2 ${entry.tone}`}>{entry.label}</span>
+                                        {!!entry.amount && <span className="mr-2 font-semibold">{entry.amount}</span>}
                                         <span className="text-gray-400"><DisplayDateTime dataTimeStr={entry.at}/></span>
                                         {!!entry.note && <span className="ml-2 text-gray-400">{entry.note}</span>}
+                                        {entry.derived &&
+                                            <span className="ml-2 text-gray-300" title={lang['Reconstructed entry']}>
+                                                ({lang['estimated']})
+                                            </span>
+                                        }
                                     </div>
                                 )}
                             </div>
