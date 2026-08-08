@@ -1,0 +1,27 @@
+src/lang/en.ts
+  s_448695a5d036bc::t_1b370403e6b87a 731-742
+src/lang/zh.ts
+  s_448695a5d036bc::t_1b370403e6b87a 713-724
+src/components/client/EventTicketOrderList.tsx
+  s_448695a5d036bc::t_87bdf82a89b17f 242-243,245-246,249-253
+  s_448695a5d036bc::t_2ce7425cca14e0 39-79
+  s_448695a5d036bc::t_927ef8f08499e7 134-135,137-141,143-159
+packages/sola-sdk/src/event/ticket.ts
+  s_448695a5d036bc::t_139b68a90ae59e 90-106,109-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c95ab9fb6180130f11692452d84cb7d15e2f86e5",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
