@@ -718,6 +718,7 @@ export const en = {
     'WeChat price minimum': 'WeChat Pay price must be at least ¥0.01',
     'Open in WeChat to pay': 'WeChat Pay only works inside WeChat. Open this page in the WeChat app to pay.',
     'Payment failed, please try again': 'Payment did not complete. If money was deducted, your ticket will appear shortly — do not pay twice.',
+    'Payment confirming slowly': 'Payment received — confirmation is taking longer than usual. Your ticket will appear on this page shortly; please do not pay again.',
 }
 
 export type Dictionary = typeof en;

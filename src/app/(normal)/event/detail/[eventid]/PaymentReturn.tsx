@@ -7,13 +7,16 @@ import {CLIENT_MODE} from '@/app/config'
 import {getAuth} from '@/utils'
 
 /**
- * Shown when the buyer comes back from paying (?payment=success&ticket_item=…)
- * — from Stripe Checkout's redirect, or from the WeChat payment sheet, which
- * navigates here itself since it never leaves the page.
+ * Shown when the buyer comes back from Stripe Checkout
+ * (?payment=success&ticket_item=…), which is a real redirect off-site and back.
  *
- * The browser never decides payment state. Both rails hand back a client-side
- * "success" that proves nothing, so this only POLLS until the callback (or the
- * sweeper) has confirmed the order server-side, then reloads.
+ * WeChat does NOT come through here: its sheet is drawn over our own page, so
+ * the dialog waits for confirmation in place and soft-refreshes rather than
+ * navigating twice (see DialogTicket#settleInPlace).
+ *
+ * The browser never decides payment state — a client-side "success" proves
+ * nothing on either rail — so this only POLLS until the callback (or the
+ * sweeper) has confirmed the order server-side.
  */
 export default function PaymentReturn({lang, eventId, profileName, result}: {
     lang: Dictionary

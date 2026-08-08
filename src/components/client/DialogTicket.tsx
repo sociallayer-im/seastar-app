@@ -9,6 +9,7 @@ import {
     createStripeCheckoutSession,
     createWechatPrepay,
     getBadgeClassDetailByBadgeClassId,
+    getPurchasedTicketItemsByProfileNameAndEventId,
     SolaApiError,
     submitPaymentTxHash,
     validateCoupon
@@ -23,6 +24,7 @@ import {
     shortWalletAddress
 } from '@/utils'
 import {useEffect, useMemo, useState} from 'react'
+import {useRouter} from 'next/navigation'
 import {isFiatChain, Payments, PaymentSettingToken, PaymentsType} from '@/utils/payment_setting'
 import {executePayHubPayment, PAYMENT_STEP_LABEL, PaymentStep, resolveTokenAddress, tsidToBigInt} from '@/utils/evm_payment'
 import {invokeWechatPay, isWechatBrowser} from '@/utils/wechat_pay'
@@ -53,6 +55,56 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
     const [pendingTicketItem, setPendingTicketItem] = useState<TicketItem | null>(null)
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle')
+    /** Money has left; we are waiting for the server to agree. */
+    const [confirming, setConfirming] = useState<boolean>(false)
+    const router = useRouter()
+
+    /**
+     * Ends a successful purchase without a document navigation.
+     *
+     * router.refresh() re-runs the page's server components in place, so the
+     * ticket list and the RSVP state update while the modal, the scroll
+     * position and — inside WeChat — the webview's own history all survive.
+     *
+     * The flow this replaces did two full page loads after the money had
+     * already moved: one to add ?payment=success, another to strip it again
+     * once polling finished. In the in-app browser that reads as the page
+     * flickering twice at the exact moment a buyer most wants reassurance.
+     */
+    const settleInPlace = () => {
+        toast({description: lang['Purchase Successful'], variant: 'success'})
+        router.refresh()
+        setTimeout(() => close(), 1200)
+    }
+
+    /**
+     * Polls until the order is confirmed SERVER-side. Both fiat rails hand
+     * back a client-side "success" that proves nothing — only the provider's
+     * callback (or the sweeper) settles an order — so this is what the buyer
+     * actually waits on.
+     *
+     * Returns false on timeout, which is not a failure: the callback may still
+     * be in flight and the sweeper will settle it either way. Nothing is
+     * cancelled on that path.
+     */
+    const waitForConfirmation = async (ticketItemId: string, attempts = 40) => {
+        if (!currProfile) return false
+
+        for (let i = 0; i < attempts; i++) {
+            await new Promise(resolve => setTimeout(resolve, 3000))
+            try {
+                const items = await getPurchasedTicketItemsByProfileNameAndEventId({
+                    params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: getAuth()!},
+                    clientMode: CLIENT_MODE
+                })
+                if (items.some(item => item.id === ticketItemId)) return true
+            } catch (e) {
+                // A dropped poll is not an answer — keep asking.
+                console.error(e)
+            }
+        }
+        return false
+    }
 
     const [enablePromoCode, setEnablePromoCode] = useState<boolean>(false)
     const [promoCode, setPromoCode] = useState<string>('')
@@ -191,13 +243,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 clientMode: CLIENT_MODE
             })
 
-            toast({
-                description: lang['Purchase Successful'],
-                variant: 'success'
-            })
-            setTimeout(() => {
-                window.location.reload()
-            }, 2000)
+            settleInPlace()
         } catch (e: unknown) {
             console.error(e)
             setBuying(false)
@@ -264,8 +310,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 clientMode: CLIENT_MODE
             })
             setPaymentStep('done')
-            toast({description: lang['Purchase Successful'], variant: 'success'})
-            setTimeout(() => window.location.reload(), 2000)
+            settleInPlace()
         } catch (e: unknown) {
             console.error(e)
             setPaymentError(e instanceof Error ? e.message : 'Payment failed')
@@ -323,10 +368,22 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             return
         }
 
-        const url = new URL(window.location.href)
-        url.searchParams.set('payment', 'success')
-        url.searchParams.set('ticket_item', ticketItem.id)
-        window.location.href = url.toString()
+        // 'ok' only means the sheet closed cleanly — it is the browser's word,
+        // and it races the callback either way. So wait for the server here
+        // rather than navigating anywhere and claiming success.
+        setConfirming(true)
+        const confirmed = await waitForConfirmation(ticketItem.id)
+        setConfirming(false)
+
+        if (confirmed) {
+            settleInPlace()
+            return
+        }
+        // Slow, not lost. The callback may still land, and the sweeper
+        // reconciles against WeChat regardless — so the one thing not to
+        // suggest is paying again.
+        setPaymentError(lang['Payment confirming slowly'])
+        setBuying(false)
     }
 
     const handlePay = async () => {
@@ -352,15 +409,19 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             // A 100% coupon can make any fiat order free-and-confirmed with
             // nothing left to pay — treat like the free path.
             if (isFiatChain(selectedPaymentType?.chain) && ticketItem.status === 'succeeded') {
-                toast({description: lang['Purchase Successful'], variant: 'success'})
                 closeModal(loading)
-                setTimeout(() => window.location.reload(), 2000)
+                settleInPlace()
                 return
             }
 
             if (selectedPaymentType?.chain === 'wechat') {
-                await payWithWechat(ticketItem)
+                // Drop the loading overlay BEFORE the sheet opens: everything
+                // after this point — the sheet itself, then the confirmation
+                // wait — reports progress inside the dialog, and an overlay
+                // sitting on top of it for up to two minutes would hide
+                // exactly the reassurance the buyer is waiting for.
                 closeModal(loading)
+                await payWithWechat(ticketItem)
                 return
             }
 
@@ -576,7 +637,17 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                     className="text-sm w-full">{lang['Purchase for Free']}</Button>
         }
 
-        {!!ticket.payment_methods?.length && !!currProfile && !soldOut && !stopSelling && !pendingTicketItem &&
+        {/* The money is gone and the server has not caught up yet. Showing this
+            in place of the Pay button is the point: a second press here would
+            create a second order for a seat already paid for. */}
+        {confirming &&
+            <div className="flex items-center justify-center gap-2 text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+                <span className="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full"/>
+                {lang['Payment processing']}
+            </div>
+        }
+
+        {!!ticket.payment_methods?.length && !!currProfile && !soldOut && !stopSelling && !pendingTicketItem && !confirming &&
             <Button variant={'special'}
                     disabled={!badgeCollected || checkingBadgeCollected || buying || !selectedMethod}
                     onClick={handlePay}

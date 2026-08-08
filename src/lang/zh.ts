@@ -700,4 +700,5 @@ export const zh: Dictionary = {
   'WeChat price minimum': '微信支付价格不能低于 ¥0.01',
   'Open in WeChat to pay': '微信支付只能在微信内使用，请在微信中打开此页面完成支付。',
   'Payment failed, please try again': '支付未完成。如果已经扣款，你的票会稍后出现，请不要重复支付。',
+  'Payment confirming slowly': '已收到支付，确认比平时慢一些。你的票稍后会出现在本页，请不要重复支付。',
 }
