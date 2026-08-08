@@ -233,8 +233,11 @@ wrong "the button is rendering" conclusion once during verification.
   `NEXT_PUBLIC_SIGN_IN_URL` that selects the in-app screens.
 
   CN also compiles out Google sign-in, Ethereum sign-in, Stripe and on-chain
-  payments — leaving email codes as the only way in and free as the only kind
-  of ticket. See `juluo.xyz_deploy.md`.
+  payments — leaving free as the only kind of ticket. See `juluo.xyz_deploy.md`.
+  (This originally said email codes were the only way in; **WeChat sign-in
+  shipped to CN on 2026-07-31** and is now the primary one — it renders only
+  inside the WeChat browser, gated on `WECHAT_LOGIN && inWechat`, where
+  `inWechat` tests the server-side `User-Agent` for `MicroMessenger`.)
 - **The backend does not enforce `can_join_event`.**
   `ParticipantsController#create` checks required form fields, duplicate joins
   and capacity — never the group's join scope. Hiding the RSVP button is a UI
@@ -250,3 +253,125 @@ wrong "the button is rendering" conclusion once during verification.
   `cd sails && ginger deploy --skip-push`; image
   `ghcr.io/sociallayer-im/sails:d71c53e`. Its data is untouched in
   `sola_sails_db`, a different database from `soon`'s `sola_soon_db`.
+
+---
+
+## 6. Follow-up: onboarding order and account merge (2026-08-08)
+
+Deployed to CN: `soon` `54eb622`, `seastar-app` `dc325c3`. Not deployed to SG —
+there is no WeChat sign-in there, so the merge path is unreachable.
+
+### The order of the onboarding steps is load-bearing
+
+Onboarding ran `/register` (username) then `/bind-email`. It now runs
+**`/bind-email` then `/register`**, and that is not a preference.
+
+Binding an address that already has an account merges the two, and `soon` only
+permits that while the account is still unregistered — `name` blank is the
+window marker (`AuthController#mergeable?`, and see
+`soon/design/WECHAT_INTEGRATION.md` §1.6 for why it is not "the account has no
+data"). Picking a username first closes the window, so under the old order the
+merge path was unreachable and a WeChat user with a pre-existing email account
+was stuck with two accounts.
+
+`onboardingTarget()` in `src/utils/index.ts` is the single place that decides:
+email → username → return target. Accounts that arrive with an email (code
+login, Google) skip straight to the username step, and the email step is still
+skippable, so the only flows that changed are the ones with no email: **WeChat
+and wallet**. The WeChat callback resolves the same fork server-side because it
+is a redirect, not a client-side hop.
+
+### Two traps this reordering created
+
+**Skipping could no longer fall through to the return target.** At the email
+step the account may still have no username, and `getCurrProfile` reports a
+nameless account as signed-out — so the user would land on a page that ignores
+their session. Both Skip and a plain (non-merging) bind now continue to
+`/register` when the name is missing.
+
+**A merge returns a token for a *different* account.** The token the client
+authenticated with belongs to a row the merge deleted, so it must be replaced
+before anything else runs. `bindEmail` therefore returns a union type;
+`isBindEmailMerged()` narrows it, and on a merge the client calls `setAuth()`
+with the new token. The surviving account's `name` then decides whether
+onboarding is over — an email account without a username is possible and would
+otherwise look signed-out.
+
+### Not verified
+
+The full WeChat path — authorize → `/bind-email` → merge → land in the existing
+account — **has not been exercised against a real WeChat authorization**. It
+cannot be: `/bind-email` and `/register` 307 back to `/signin` without a
+session, and a session requires a real 网页授权 round-trip. Backend logic is
+covered by tests in `soon` (`wallet_auth_test.rb`), including an end-to-end one
+asserting that after a merge the same WeChat identity signs back into the merged
+account with `User.count` unchanged. The redirect legs are not.
+
+What was verified on CN after deploy: `/api/wechat/signin` 307s to
+`open.weixin.qq.com` with the right appid, `redirect_uri` and
+`scope=snsapi_userinfo`; and the WeChat button renders under a `MicroMessenger`
+User-Agent but not otherwise.
+
+### CN state at the time of writing
+
+The CN user table was **emptied on 2026-08-08** for testing (2 rows, both WeChat,
+no email, no associated data — one of them a deploy probe). Groups and events
+were already 0.
+
+One finding worth carrying forward: the only real WeChat account had **no
+unionid**, suggesting the 服务号 is not bound to a 微信开放平台 account. openid is
+per-appid, so adding a mini program or desktop QR login before that binding
+exists would hand the same person a second account with nothing to merge on —
+the same duplication problem in another form. `AuthController#wechat_user`
+back-fills a unionid on the first sign-in that carries one, which limits the
+damage but does not remove the need to bind.
+
+---
+
+## 7. The stale host-only cookie that made sign-in unrecoverable (2026-08-08)
+
+Reported as "correct code, then it bounces back to the sign-in page". The
+backend was fine throughout — the account was created and `last_signin_at`
+updated on every attempt.
+
+**`setAuth` wrote a second cookie instead of replacing the first.** Builds
+before `5207d3e` wrote `solar_auth` with no `Domain` attribute; since
+`5207d3e` it carries `Domain=<registrable domain>`. A host-only cookie and a
+domain-scoped cookie of the same name are **two distinct cookies** — writing one
+does not overwrite the other. The browser sends both, and RFC 6265 orders
+equal-path cookies oldest-first, so the server reads the *stale* one.
+
+While that stale token pointed at a live account nothing looked wrong. Once the
+account it referenced was deleted, `/users/me` 401'd,
+`getProfileDetailByAuth` swallowed the error and returned `null`, and every page
+that resolves a profile hit `if (!profile) redirect('/signin')`. Signing in again
+could not fix it: signing in is precisely what writes the cookie that the stale
+one shadows. **Unrecoverable without clearing cookies by hand.**
+
+`signOut` had removed both variants for exactly this reason since the
+integration; only the write path was asymmetric. `setAuth` now does the same
+`Cookies.remove(AUTH_FIELD)` before writing.
+
+Second layer, independent of the first: `clientCheckUserLoggedInAndRedirect`
+now treats "the token I just received resolves to no account" as a dead session
+— it clears the cookie and goes to `/signin` instead of continuing into a page
+that will bounce with the dead cookie still in place.
+
+### How it was isolated
+
+Each layer was tested separately against CN production rather than reasoned
+about, which is what ruled out the more obvious suspects:
+
+| checked | result |
+|---|---|
+| account creation, `last_signin_at` | ✅ both attempts succeeded |
+| `/users/me` with a fresh token | ✅ 200 |
+| CORS preflight with `Authorization` | ✅ allowed |
+| inlined `NEXT_PUBLIC_*` in the shipped bundle | ✅ `api.juluo.xyz`, `solar_auth` |
+| `/register` **with** a fresh cookie | ✅ 200, renders the username form |
+| `/register` with a **deleted account's** token | ❌ 307 → `/signin` — reproduced |
+
+The last row is the whole bug. Note the fourth: `NEXT_PUBLIC_*` are inlined at
+**build** time while ginger injects secrets at **runtime**, so client and server
+can disagree about the same variable — worth checking whenever a value looks
+right in `ginger.yml` but wrong in the browser.

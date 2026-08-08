@@ -66,6 +66,18 @@ export const authCookieDomain = (hostname?: string): string | undefined => {
 // expires is what makes this a persistent cookie rather than a session one, so
 // closing the tab doesn't sign the user out. Matches what seastar-auth set.
 export const setAuth = (token: string) => {
+    // Remove the host-only cookie FIRST. Builds before 5207d3e wrote this name
+    // with no Domain attribute, which the browser stores as a *different*
+    // cookie from the domain-scoped one below — writing one does not overwrite
+    // the other. The browser then sends both, and per RFC 6265 equal-path
+    // cookies go oldest-first, so the server reads the stale one.
+    //
+    // When that stale token points at a deleted or rotated account, /users/me
+    // 401s, every page that resolves a profile bounces to /signin, and signing
+    // in AGAIN cannot fix it — signing in is what writes the shadowed cookie.
+    // That deadlock is what this line breaks. signOut has always removed both
+    // for the same reason; the write path has to be symmetric with it.
+    Cookies.remove(AUTH_FIELD)
     Cookies.set(AUTH_FIELD, token, {expires: 365, domain: authCookieDomain()})
 }
 
@@ -179,6 +191,15 @@ export const onboardingTarget = (
  */
 export const clientCheckUserLoggedInAndRedirect = async (auth_token: string, prefillUsername?: string) => {
     const profile = await getProfileDetailByAuth({params: {authToken: auth_token}, clientMode: CLIENT_MODE})
+    if (!profile) {
+        // The token we JUST received resolves to no account — it was revoked,
+        // or the account is gone. Carrying on would land the user on a page
+        // that bounces them to /signin with the dead cookie still in place, so
+        // clear it and send them to sign in cleanly rather than into a loop.
+        signOut()
+        window.location.href = '/signin'
+        return
+    }
     window.location.href = onboardingTarget(profile, prefillUsername)
 }
 
