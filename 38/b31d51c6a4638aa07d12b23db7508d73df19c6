@@ -1,0 +1,26 @@
+src/app/(auth)/verify-email/FormVerifyEmail.tsx
+  s_448695a5d036bc::t_4423a2f3281548 6,22
+  s_448695a5d036bc::t_daee700527c62e 66-67,70,74,77
+src/app/config.ts
+  s_448695a5d036bc::t_72b37142c80782 7-10,12
+  s_448695a5d036bc::t_3a6853a9e96b22 11
+src/app/(auth)/verify-bind-email/FormVerifyBindEmail.tsx
+  s_448695a5d036bc::t_4423a2f3281548 6,28
+  s_448695a5d036bc::t_daee700527c62e 85-86,89,93,96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "38b31d51c6a4638aa07d12b23db7508d73df19c6",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
