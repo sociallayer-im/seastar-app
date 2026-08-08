@@ -1,0 +1,73 @@
+src/app/(normal)/event/detail/[eventid]/EventParticipantTab.tsx
+  s_448695a5d036bc::t_244b14271a088c 90-97,99,102-103,106
+  s_448695a5d036bc::t_08fe725717eb04 4-12,15-16,26-35,45-89,98,104-105,108,110-127,130-155
+src/app/(normal)/event/detail/[eventid]/EventTabs.tsx
+  s_448695a5d036bc::t_9f0ae50ccdbcb7 112
+  s_448695a5d036bc::t_c46133c1f3c627 3,6-19
+  s_448695a5d036bc::t_4f564ec66496df 1-2,4-5,20-70,84-88,92,99-104,106-111,113-134
+  s_448695a5d036bc::t_53c9deaaacbb59 71-83,89-91,93-98
+  s_448695a5d036bc::t_13a63926d2cb85 105
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_448695a5d036bc::t_4920cd62431f18 147
+  s_448695a5d036bc::t_e855eeff754758 33-36,38-40,42
+  s_448695a5d036bc::t_fafe71b5f3a964 75-77
+  s_448695a5d036bc::t_dd3d428cd5b36b 11
+  s_448695a5d036bc::t_5d9017ebb86158 41
+src/app/(normal)/event/checkin/[eventid]/data.ts
+  s_448695a5d036bc::t_b7937b2d1a45b2 2-4,17-26
+packages/sola-sdk/src/event/types.ts
+  s_448695a5d036bc::t_92890b8d5f7c01 63-69
+src/lang/en.ts
+  s_448695a5d036bc::t_e029e08f339b50 712-714
+src/app/(normal)/event/detail/[eventid]/JoinTicketEventBtn.tsx
+  s_448695a5d036bc::t_6fea8cc50c1c02 8
+  s_448695a5d036bc::t_2c6fc5db67c794 38-40
+src/components/client/EventTicketOrderList.tsx
+  s_448695a5d036bc::t_ad3162c50beeab 89
+  s_448695a5d036bc::t_c3df07782cf9a4 108
+  s_448695a5d036bc::t_7faab94f5c8c3a 91-99,105-106
+  s_448695a5d036bc::t_53ae91db40aff5 123-125
+  s_448695a5d036bc::t_0f73bf5afae1f5 168,177,193,204
+  s_448695a5d036bc::t_5ab3a27669688c 199-201
+  s_448695a5d036bc::t_3b7111c6348df7 207-215,222-225,228,232,238
+packages/sola-sdk/src/event/event.ts
+  s_448695a5d036bc::t_4b43dd3948bf6f 109,111-113,119-121
+  s_448695a5d036bc::t_f44eef9edcf800 95,98-102,104-108,110,114-118
+  s_448695a5d036bc::t_58d088d02f6b86 14
+src/app/(normal)/event/checkin/[eventid]/page.tsx
+  s_448695a5d036bc::t_03f25149259485 9,23,25
+src/components/client/CommentPanel.tsx
+  s_448695a5d036bc::t_dc1254049d0b1f 90-94
+  s_448695a5d036bc::t_70ae57b1717da2 62-65
+src/lang/zh.ts
+  s_448695a5d036bc::t_df63d14520ded1 694-696
+src/app/(normal)/event/checkin-for-participants/[eventid]/data.ts
+  s_448695a5d036bc::t_0f95df2773bc11 2-4,17-25
+src/app/(normal)/event/checkin-for-participants/[eventid]/page.tsx
+  s_448695a5d036bc::t_03f25149259485 10,42,44
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_448695a5d036bc::t_eea362d392a203 526-552,554-561,563-564,567-575,578-592,596-605
+  s_448695a5d036bc::t_ccfad3dfdd0605 35
+  s_448695a5d036bc::t_8738255cb0ad92 593-595
+src/components/client/EventParticipantList.tsx
+  s_448695a5d036bc::t_96bac7b1906175 55
+  s_448695a5d036bc::t_a77199683eeae5 19-28,37-38,47-54,56-57
+  s_448695a5d036bc::t_874b824c9c160d 77,99,125,160,238,256,293,332,348
+  s_448695a5d036bc::t_1a226a77e30e9e 58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "d18799a9e89c13db471f02eb87f776adb27f84b1",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
