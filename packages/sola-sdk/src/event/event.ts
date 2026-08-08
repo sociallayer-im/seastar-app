@@ -411,6 +411,7 @@ const ticketBody = (t: TicketDraft, groupId: string | null) => ({
         price: pm.price,
         protocol: pm.protocol,
         chains: pm.chains,
+        currency: pm.currency,
         stripe_setting_id: pm.stripe_setting_id
     }))
 })

@@ -651,6 +651,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             chain: 'stripe',
             kind: 'fiat',
             token_name: 'USD',
+            currency: 'usd',
             price: 400,
             stripe_setting_id: stripeSettings.length === 1 ? stripeSettings[0].id : null
         }])
@@ -674,7 +675,10 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                     <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">{lang['TEST MODE']}</span>}
                             </div>
                             <div className="flex-row-item-center text-sm mb-3 whitespace-nowrap">
-                                <div>{lang['Price']} (USD)</div>
+                                {/* From the method, not hardcoded: a fiat rail
+                                    settles in its own currency and the amount
+                                    below is minor units of THAT one. */}
+                                <div>{lang['Price']} ({(p.currency || 'usd').toUpperCase()})</div>
                                 <Input type="number"
                                        value={!!p.price || Number(p.price) === 0 ? p.price / 100 : ''}
                                        onWheel={e => e.currentTarget.blur()}

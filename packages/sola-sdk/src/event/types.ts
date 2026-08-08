@@ -96,6 +96,9 @@ export interface PaymentMethod {
     price: number
     protocol: string | null
     chains?: string[]
+    /** 'usd' | 'cny' on fiat rails; null on crypto, whose unit is token_name.
+     *  Set by the backend from the rail, so it never has to be sent on create. */
+    currency?: string | null
     /** Which of the owner's Stripe keys this method charges to (chain 'stripe' only). */
     stripe_setting_id?: string | null
     _destroy?: string
