@@ -1052,6 +1052,23 @@ export const methodAmount = (payment: PaymentMethod): {value: number, unit: stri
 export const displayMethodPrice = (payment: PaymentMethod) =>
     methodAmount(payment)?.value ?? 'Unknown'
 
+/**
+ * An order's amount, which is stored in minor units on fiat rails.
+ *
+ * A crypto order carries no currency — its amount is scaled by a token's
+ * decimals that the order row alone does not name — so it is shown raw rather
+ * than divided by a factor we would be guessing at.
+ */
+export const formatOrderAmount = (minor?: number | null, currency?: string | null) => {
+    if (minor === null || minor === undefined) return ''
+    if (!currency) return `${minor}`
+
+    const code = currency.toLowerCase()
+    const value = BigNumber(minor).dividedBy(BigNumber(10).pow(FIAT_DECIMALS)).toNumber()
+    const symbol = FIAT_SYMBOL[code]
+    return symbol ? `${symbol}${value}` : `${value} ${code.toUpperCase()}`
+}
+
 export const prefixUrl = (url: string) => {
     if (!url) return undefined
 

@@ -71,6 +71,59 @@ export const cancelUnpaidItem = async ({params, clientMode}: SolaSdkFunctionPara
     return data.ticket_item
 }
 
+/** One refund against an order (RefundBlueprint). Settles asynchronously, so
+ *  `pending` is a normal steady state, not a transient one. */
+export interface TicketItemRefund {
+    id: string
+    amount: number
+    currency: string
+    status: 'pending' | 'succeeded' | 'failed'
+    full_refund: boolean
+    reason: string | null
+    /** The provider's own message when status is 'failed'. */
+    error: string | null
+    requested_by_user_id: string
+    created_at: string
+    updated_at: string
+}
+
+/** TicketItemBlueprint :order_detail — the organizer's view of an order. */
+export interface TicketItemOrder extends TicketItem {
+    payment_provider?: string | null
+    provider_ref?: string | null
+    paid_at?: string | null
+    released_at?: string | null
+    reserved_until?: string | null
+    updated_at?: string | null
+    ticket?: {id: string, title: string | null, ticket_type: string | null} | null
+    /** Oldest first. Absent for a non-manager caller. */
+    refunds?: TicketItemRefund[]
+}
+
+/**
+ * Every order on an event — managers only; the backend 403s otherwise.
+ *
+ * Returns the :order_detail shape (refunds + timestamps) for a manager, which
+ * is what the Orders tab reconstructs each order's history from.
+ */
+export const getEventTicketItems = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken: string
+}>) => {
+    try {
+        return await request<TicketItemOrder[]>('/tickets/list', {
+            params: {event_id: params.eventId},
+            authToken: params.authToken,
+            clientMode,
+            noCache: true
+        })
+    } catch {
+        // Not a manager, or the event has no orders — an empty tab is the
+        // right outcome either way, and the page must still render.
+        return [] as TicketItemOrder[]
+    }
+}
+
 export const getPurchasedTicketItemsByProfileNameAndEventId = async ({params, clientMode}: SolaSdkFunctionParams<{
     profileName: string,
     eventId: string,

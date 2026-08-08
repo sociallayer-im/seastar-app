@@ -1,12 +1,14 @@
 'use client'
 
-import {displayProfileName, getAuth} from '@/utils'
+import {displayProfileName, formatOrderAmount} from '@/utils'
 import {Dictionary} from '@/lang'
-import {EventDetail, TicketItem, Ticket, Profile, refundTicketItem} from '@sola/sdk'
+import {EventDetail, TicketItemOrder} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import dynamic from 'next/dynamic'
 import {Button} from '@/components/shadcn/Button'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import useModal from '@/components/client/Modal/useModal'
+import DialogRefund from '@/components/client/DialogRefund'
 import {CLIENT_MODE, STRIPE_ENABLED, WECHAT_PAY_ENABLED} from '@/app/config'
 import {useRouter} from 'next/navigation'
 
@@ -21,12 +23,34 @@ const REFUNDABLE_RAILS: Record<string, boolean> = {
     wechat: WECHAT_PAY_ENABLED
 }
 
+// The wire keeps the legacy status names (pending == awaiting payment,
+// succeeded == paid, timeout == expired) because the deployed clients match on
+// those strings — see soon's TicketItem. Only the label is translated.
+const ORDER_STATUS_LABEL: Record<string, string> = {
+    pending: 'Awaiting payment',
+    succeeded: 'Paid',
+    refunded: 'Refunded',
+    partially_refunded: 'Partially refunded',
+    disputed: 'Disputed',
+    timeout: 'Expired',
+    cancelled: 'Cancelled'
+}
+
+const STATUS_TONE: Record<string, string> = {
+    succeeded: 'bg-green-50 text-green-700',
+    pending: 'bg-blue-50 text-blue-700',
+    refunded: 'bg-red-50 text-red-600',
+    partially_refunded: 'bg-amber-50 text-amber-700',
+    disputed: 'bg-amber-50 text-amber-700'
+}
+
 const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTime'))
 
-// soon's EventDetail doesn't embed ticket_items — the page layer supplies
-// them (GET /tickets/list?event_id=) alongside the event.
+// soon's EventDetail doesn't embed ticket_items — the page layer fetches them
+// (GET /tickets/list?event_id=) and attaches them. Nothing did that until
+// 2026-08-08, which is why this tab had always rendered empty.
 type EventDetailWithOrders = EventDetail & {
-    ticket_items?: Array<TicketItem & {user?: Profile | null, ticket?: Ticket | null}>
+    ticket_items?: TicketItemOrder[]
 }
 
 export interface EventParticipantListProps {
@@ -41,27 +65,82 @@ export default function EventTicketOrderList({
                                                  isEventOperator
                                              }: EventParticipantListProps) {
     const {toast} = useToast()
+    const {openModal} = useModal()
     const router = useRouter()
 
-    // Full refund only in v1 (PAYMENTS_PLAN decision #11). The backend
-    // authorizes (owner/co-host; group owner for group tickets) and the
-    // refund finalizes asynchronously via the provider's callback — so what
-    // comes back here is "submitted", never "refunded".
-    const handleRefund = async (ticketItemId: string) => {
-        if (!window.confirm(lang['Refund this order'])) return
-        try {
-            const authToken = getAuth()
-            await refundTicketItem({params: {ticketItemId, authToken: authToken!}, clientMode: CLIENT_MODE})
-            toast({description: lang['Refund submitted'], variant: 'success'})
-            // Soft refresh: the row's status is server-rendered, and a full
-            // reload would throw away the operator's place in a long list.
-            router.refresh()
-        } catch (e: unknown) {
-            toast({
-                description: e instanceof Error ? e.message : 'Refund failed',
-                variant: 'destructive'
+    // The backend authorizes (owner/co-host; group owner for group tickets)
+    // and the refund finalizes asynchronously via the provider's callback —
+    // so what comes back is "submitted", never "refunded".
+    const handleRefund = (order: TicketItemOrder) => {
+        openModal({
+            content: (close) => <DialogRefund
+                order={order}
+                lang={lang}
+                close={close!}
+                onDone={() => {
+                    toast({description: lang['Refund submitted'], variant: 'success'})
+                    // Soft refresh: the row is server-rendered, and a full
+                    // reload would throw away the operator's place in a long
+                    // list.
+                    router.refresh()
+                }}
+            />,
+            clickOutsideToClose: true
+        })
+    }
+
+    /**
+     * What happened to an order, oldest first.
+     *
+     * Derived, not stored: there is no transitions log, so this is built from
+     * the timestamps each transition writes plus the refund rows. That covers
+     * ordering, payment and every refund with its outcome. It does NOT show
+     * why an order expired or was cancelled — those leave only a terminal
+     * status and an updated_at, so they appear as a single closing line.
+     */
+    const orderHistory = (order: TicketItemOrder) => {
+        const entries: Array<{at: string, label: string, note?: string, tone?: string}> = []
+
+        if (order.created_at) entries.push({at: order.created_at, label: lang['Order placed']})
+        if (order.paid_at) entries.push({at: order.paid_at, label: lang['Order paid'], tone: 'text-green-600'})
+
+        ;(order.refunds || []).forEach(refund => {
+            const money = formatOrderAmount(refund.amount, refund.currency)
+            const scope = refund.full_refund ? lang['Full refund'] : lang['Partial refund']
+            if (refund.status === 'succeeded') {
+                entries.push({
+                    at: refund.updated_at || refund.created_at,
+                    label: `${lang['Refunded']} ${money}`,
+                    note: [scope, refund.reason].filter(Boolean).join(' · '),
+                    tone: 'text-red-500'
+                })
+            } else if (refund.status === 'failed') {
+                entries.push({
+                    at: refund.updated_at || refund.created_at,
+                    label: `${lang['Refund failed']} ${money}`,
+                    note: refund.error || undefined,
+                    tone: 'text-red-500'
+                })
+            } else {
+                entries.push({
+                    at: refund.created_at,
+                    label: `${lang['Refund requested']} ${money}`,
+                    note: [scope, refund.reason].filter(Boolean).join(' · '),
+                    tone: 'text-amber-600'
+                })
+            }
+        })
+
+        // A terminal state with no timestamp of its own beyond updated_at.
+        if ((order.status === 'timeout' || order.status === 'cancelled') && order.updated_at) {
+            entries.push({
+                at: order.updated_at,
+                label: order.status === 'timeout' ? lang['Order expired'] : lang['Order cancelled'],
+                tone: 'text-gray-400'
             })
         }
+
+        return entries.sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
     }
 
     const downloadCSV = () => {
@@ -99,39 +178,60 @@ export default function EventTicketOrderList({
             </div>}
         <div>
             {
-                eventDetail.ticket_items?.map(participant => {
-                    return <div key={participant.id}
-                                className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
-                        <a className="flex-row-item-center" href={`/profile/${participant.user?.name}`}>
-                            <Avatar profile={participant.user || {id: participant.id, name: '', nickname: null, image_url: null}} className="mr-2" size={32}/>
-                            <div className="text-xs">
-                                <div>{participant.user ? displayProfileName(participant.user) : ''}</div>
-                                <div
-                                    className="text-gray-400">
-                                    <DisplayDateTime dataTimeStr={participant.created_at!} />
+                eventDetail.ticket_items?.map(order => {
+                    const history = orderHistory(order)
+                    return <div key={order.id} className="border-b-[1px] border-gray-200 py-4">
+                        <div className="flex flex-row justify-between items-center">
+                            <a className="flex-row-item-center" href={`/profile/${order.user?.name}`}>
+                                <Avatar profile={order.user || {id: order.id, name: '', nickname: null, image_url: null}} className="mr-2" size={32}/>
+                                <div className="text-xs">
+                                    <div>{order.user ? displayProfileName(order.user) : ''}</div>
+                                    <div className="text-gray-400">
+                                        <DisplayDateTime dataTimeStr={order.created_at!} />
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
 
-                        <div className="flex-row-item-center">
-                            <div className="text-sm font-semibold flex-row-item-center">
-                                <i className="uil-ticket text-base mr-1" />
-                                {participant.ticket?.title}
-                            </div>
-                            {['refunded', 'partially_refunded', 'disputed'].includes(participant.status || '') &&
-                                <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">
-                                    {participant.status}
+                            <div className="flex-row-item-center">
+                                <div className="text-sm font-semibold flex-row-item-center">
+                                    <i className="uil-ticket text-base mr-1" />
+                                    {order.ticket?.title}
+                                </div>
+                                {!!order.amount &&
+                                    <div className="ml-2 text-sm font-semibold">
+                                        {formatOrderAmount(order.amount, order.currency)}
+                                    </div>
+                                }
+                                <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${STATUS_TONE[order.status || ''] || 'bg-gray-100 text-gray-500'}`}>
+                                    {lang[ORDER_STATUS_LABEL[order.status || ''] as keyof typeof lang] || order.status}
                                 </span>
-                            }
-                            {isEventOperator && !!REFUNDABLE_RAILS[participant.chain || ''] &&
-                                (participant.status === 'succeeded' || participant.status === 'partially_refunded') &&
-                                !!participant.amount &&
-                                <Button variant={'ghost'} size={'sm'} className="ml-2 text-red-400"
-                                    onClick={() => handleRefund(participant.id)}>
-                                    {lang['Refund']}
-                                </Button>
-                            }
+                                {isEventOperator && !!REFUNDABLE_RAILS[order.chain || ''] &&
+                                    (order.status === 'succeeded' || order.status === 'partially_refunded') &&
+                                    !!order.amount &&
+                                    <Button variant={'ghost'} size={'sm'} className="ml-2 text-red-400"
+                                        onClick={() => handleRefund(order)}>
+                                        {lang['Refund']}
+                                    </Button>
+                                }
+                            </div>
                         </div>
+
+                        {/* Why this is here rather than behind a click: the
+                            question an organizer opens this tab with is
+                            usually "what happened to THIS order", and a
+                            status alone never answers it. */}
+                        {history.length > 1 &&
+                            <div className="mt-3 pl-10 text-xs text-gray-500 grid grid-cols-1 gap-1">
+                                {history.map((entry, i) =>
+                                    <div key={i} className="flex-row-item-center">
+                                        <span className="text-gray-300 mr-2">·</span>
+                                        <span className={`mr-2 ${entry.tone || ''}`}>{entry.label}</span>
+                                        <span className="text-gray-400"><DisplayDateTime dataTimeStr={entry.at}/></span>
+                                        {!!entry.note && <span className="ml-2 text-gray-400">{entry.note}</span>}
+                                    </div>
+                                )}
+                            </div>
+                        }
                     </div>
                 })
             }

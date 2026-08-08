@@ -7,9 +7,10 @@ import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
     getEventDetailById,
     getEventForm,
+    getEventTicketItems,
     getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId, getRecurringById,
     Participant,
-    Recurring, Ticket
+    Recurring, Ticket, TicketItemOrder
 } from '@sola/sdk'
 import {AVNeeds, SeatingStyle, ExternalCatering} from '@/app/configForSpecifyGroup'
 import {CLIENT_MODE} from '@/app/config'
@@ -136,6 +137,22 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         })
     }
 
+    // Every order on the event, for the organizer's Orders tab.
+    //
+    // EventDetail does not embed these — the tab has always read
+    // `eventDetail.ticket_items`, and nothing ever set it, so the tab rendered
+    // empty on every deployment and the refund button inside it was
+    // unreachable. Managers only: the endpoint 403s for anyone else and the
+    // SDK turns that into an empty list.
+    let ticketItems: TicketItemOrder[] = []
+    if (isEventOperator && !!eventDetail.tickets?.length) {
+        const token = await getServerSideAuth()
+        ticketItems = await getEventTicketItems({
+            params: {eventId: eventDetail.id, authToken: token!},
+            clientMode: CLIENT_MODE
+        })
+    }
+
     // eventDetail was fetched with the viewer's authToken (see getEventDetailById
     // above), so the backend already annotated it with is_starred for them.
     const currProfileStarred = !!currProfile && !!(eventDetail as unknown as {is_starred?: boolean}).is_starred
@@ -147,7 +164,8 @@ export default async function EventDetailPage(eventid: string, tab='content'){
 
     return {
         currProfile,
-        eventDetail,
+        // The Orders tab reads them off the event; empty for non-managers.
+        eventDetail: {...eventDetail, ticket_items: ticketItems},
         groupDetail,
         recurring,
         form,

@@ -225,6 +225,10 @@ export interface TicketItem {
     original_price: number | null,
     protocol: string | null,
     created_at: string | null,
+    /** As charged: 'usd' | 'cny' on fiat rails, null on crypto (whose amount is
+     *  scaled by the token's decimals, not by 100). An order keeps the currency
+     *  it was taken in even if the rail's default later changes. */
+    currency?: string | null,
     user?: Profile,
 }
 
