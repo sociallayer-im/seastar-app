@@ -689,7 +689,7 @@ export const zh: Dictionary = {
   'Card price minimum': '银行卡支付价格不能低于 $4，更低金额请使用加密货币支付',
   'Stripe key required': '请为银行卡支付方式选择一个 Stripe 密钥',
   'Refund': '退款',
-  'Refund this order': '全额退款该订单？座位将被释放，买家将通过 Stripe 收到退款。',
+  'Refund this order': '全额退款该订单？座位将被释放，买家将通过原支付方式收到退款。',
   'Refund submitted': '退款已提交，稍后完成',
   'Payment processing': '已收到支付，正在确认你的票…',
   'Payment confirmed': '支付成功！你的票已就绪。',

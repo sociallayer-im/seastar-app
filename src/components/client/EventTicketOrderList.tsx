@@ -7,7 +7,19 @@ import Avatar from '@/components/Avatar'
 import dynamic from 'next/dynamic'
 import {Button} from '@/components/shadcn/Button'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
-import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
+import {CLIENT_MODE, STRIPE_ENABLED, WECHAT_PAY_ENABLED} from '@/app/config'
+import {useRouter} from 'next/navigation'
+
+// Which fiat rails this deployment can refund through. Refunding needs the
+// rail's own API, so the button has to follow the deployment, not just the
+// order: SG can refund cards, CN can refund WeChat, neither can do the other.
+// Written as a map because the previous `chain === 'stripe'` test silently
+// hid the button for every WeChat order on CN — the backend has dispatched
+// refunds by provider since day one, so this was the only thing missing.
+const REFUNDABLE_RAILS: Record<string, boolean> = {
+    stripe: STRIPE_ENABLED,
+    wechat: WECHAT_PAY_ENABLED
+}
 
 const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTime'))
 
@@ -29,17 +41,21 @@ export default function EventTicketOrderList({
                                                  isEventOperator
                                              }: EventParticipantListProps) {
     const {toast} = useToast()
+    const router = useRouter()
 
     // Full refund only in v1 (PAYMENTS_PLAN decision #11). The backend
     // authorizes (owner/co-host; group owner for group tickets) and the
-    // refund finalizes asynchronously via Stripe's webhook.
+    // refund finalizes asynchronously via the provider's callback — so what
+    // comes back here is "submitted", never "refunded".
     const handleRefund = async (ticketItemId: string) => {
         if (!window.confirm(lang['Refund this order'])) return
         try {
             const authToken = getAuth()
             await refundTicketItem({params: {ticketItemId, authToken: authToken!}, clientMode: CLIENT_MODE})
             toast({description: lang['Refund submitted'], variant: 'success'})
-            setTimeout(() => window.location.reload(), 1500)
+            // Soft refresh: the row's status is server-rendered, and a full
+            // reload would throw away the operator's place in a long list.
+            router.refresh()
         } catch (e: unknown) {
             toast({
                 description: e instanceof Error ? e.message : 'Refund failed',
@@ -107,7 +123,7 @@ export default function EventTicketOrderList({
                                     {participant.status}
                                 </span>
                             }
-                            {STRIPE_ENABLED && isEventOperator && participant.chain === 'stripe' &&
+                            {isEventOperator && !!REFUNDABLE_RAILS[participant.chain || ''] &&
                                 (participant.status === 'succeeded' || participant.status === 'partially_refunded') &&
                                 !!participant.amount &&
                                 <Button variant={'ghost'} size={'sm'} className="ml-2 text-red-400"

@@ -707,7 +707,7 @@ export const en = {
     'Card price minimum': 'Card payment price must be at least $4 — use crypto payment for smaller amounts',
     'Stripe key required': 'Select a Stripe key for the card payment method',
     'Refund': 'Refund',
-    'Refund this order': 'Refund this order in full? The seat will be released and the buyer refunded via Stripe.',
+    'Refund this order': 'Refund this order in full? The seat will be released and the buyer refunded through the original payment method.',
     'Refund submitted': 'Refund submitted — it may take a moment to finalize',
     'Payment processing': 'Payment received — confirming your ticket…',
     'Payment confirmed': 'Payment confirmed! Your ticket is ready.',
