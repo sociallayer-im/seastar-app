@@ -1,0 +1,24 @@
+packages/sola-sdk/src/event/event.ts
+  s_448695a5d036bc::t_6e577d05b91aac 414
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_448695a5d036bc::t_122af0a864b58b 678-681
+  s_448695a5d036bc::t_cfe0705a3b9589 654
+packages/sola-sdk/src/event/types.ts
+  s_448695a5d036bc::t_d4d2bda1ed29a7 99-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "aab20b186d9bd761651c071fa1513c98c42b3baf",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
