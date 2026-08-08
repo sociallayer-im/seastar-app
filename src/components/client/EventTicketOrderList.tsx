@@ -153,6 +153,10 @@ export default function EventTicketOrderList({
                 // order's own amount — a partial refund, say.
                 amount: MONEY_ACTIONS.includes(activity.action) ? money : '',
                 note: activity.reason || undefined,
+                // Accountability: a refund moves money out, so the manager who
+                // ordered it is named. Nobody is named for a callback or the
+                // sweeper, and that blank is the record of "not a person".
+                actor: activity.actor?.nickname || activity.actor?.name || '',
                 tone: ACTIVITY_TONE[activity.action] || 'text-gray-500',
                 // A reconstructed row is not evidence, and the UI should not
                 // let it look like one.
@@ -245,6 +249,11 @@ export default function EventTicketOrderList({
                                         <span className={`mr-2 ${entry.tone}`}>{entry.label}</span>
                                         {!!entry.amount && <span className="mr-2 font-semibold">{entry.amount}</span>}
                                         <span className="text-gray-400"><DisplayDateTime dataTimeStr={entry.at}/></span>
+                                        {!!entry.actor &&
+                                            <span className="ml-2 text-gray-500">
+                                                <i className="uil-user text-sm mr-0.5"/>{entry.actor}
+                                            </span>
+                                        }
                                         {!!entry.note && <span className="ml-2 text-gray-400">{entry.note}</span>}
                                         {entry.derived &&
                                             <span className="ml-2 text-gray-300" title={lang['Reconstructed entry']}>

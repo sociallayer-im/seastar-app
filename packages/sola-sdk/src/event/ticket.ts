@@ -1,6 +1,7 @@
 import {SolaSdkFunctionParams} from '../types'
 import {request} from '../request'
 import {Coupon, DiscountType, Participant, Ticket, TicketItem} from './types'
+import {Profile} from '../profile/types'
 
 export interface TicketPayment {
     authToken: string,
@@ -83,6 +84,8 @@ export interface TicketItemRefund {
     /** The provider's own message when status is 'failed'. */
     error: string | null
     requested_by_user_id: string
+    /** The manager who ordered it. */
+    requested_by: Profile | null
     created_at: string
     updated_at: string
 }
@@ -100,6 +103,9 @@ export interface TicketingActivity {
     source: string
     reason: string | null
     actor_user_id: string | null
+    /** The person who did it — null for anything a person did not do (a
+     *  callback, the sweeper). That absence is information, not a gap. */
+    actor: Profile | null
     metadata: Record<string, unknown>
     created_at: string
 }
