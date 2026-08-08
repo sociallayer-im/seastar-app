@@ -60,7 +60,13 @@ export interface EventWithJoinStatus extends Event {
 export interface EventDetail extends Event {
     content: string | null
     event_roles: EventRole[] | null
-    participants: Participant[] | null
+    /** Absent when the event was fetched with `includeParticipants: false` —
+     *  fetch the list with getEventParticipants instead. */
+    participants?: Participant[] | null
+    /** The viewer's own RSVP, or null if they haven't joined. Emitted whenever
+     *  the request carried a token, so it survives `participants` being left
+     *  out. Undefined for an anonymous request. */
+    current_participant?: Participant | null
     tickets: Ticket[] | null
 }
 

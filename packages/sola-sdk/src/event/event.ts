@@ -11,7 +11,7 @@ import {
     TicketDraft
 } from './types'
 import {getSdkConfig} from '../client'
-import {request, requestOrNull, Paginated} from '../request'
+import {request, requestOrNull, requestAllPages, Paginated} from '../request'
 import {SolaSdkFunctionParams} from '../types'
 import {resolvePlaceId} from '../place'
 
@@ -92,11 +92,33 @@ export const getEvents = async ({params: {filters, authToken, limit}, clientMode
     return res.data
 }
 
-export const getEventDetailById = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+export const getEventDetailById = async ({params: {eventId, authToken, includeParticipants}, clientMode}: SolaSdkFunctionParams<{
     eventId: string,
     authToken?: string
+    /** Pass false to leave the attendee array out of the response. It grows
+     *  with every RSVP and the detail page keeps it behind a tab, so the page
+     *  asks for it separately via getEventParticipants. `current_participant`
+     *  comes back either way. */
+    includeParticipants?: boolean
 }>) => {
-    return await requestOrNull<EventDetail>(`/events/${eventId}`, {authToken, clientMode, noCache: true})
+    const query = includeParticipants === false ? '?include_participants=false' : ''
+    return await requestOrNull<EventDetail>(`/events/${eventId}${query}`, {authToken, clientMode, noCache: true})
+}
+
+/**
+ * The attendee list.
+ *
+ * Paged through to the end: the embedded array this replaces was
+ * unpaginated, so stopping at the first page would quietly shorten the list
+ * for exactly the large events where fetching it separately is worth doing.
+ */
+export const getEventParticipants = async ({params: {eventId, authToken}, clientMode}: SolaSdkFunctionParams<{
+    eventId: string
+    authToken?: string
+}>) => {
+    return await requestAllPages<Participant>(`/events/${eventId}/participants`, {
+        authToken, clientMode, noCache: true
+    })
 }
 
 /** Events pending the caller's review (manager dashboard inbox). */

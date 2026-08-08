@@ -10,7 +10,6 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useModal from '@/components/client/Modal/useModal'
 import DialogRefund from '@/components/client/DialogRefund'
 import {CLIENT_MODE, STRIPE_ENABLED, WECHAT_PAY_ENABLED} from '@/app/config'
-import {useRouter} from 'next/navigation'
 
 // Which fiat rails this deployment can refund through. Refunding needs the
 // rail's own API, so the button has to follow the deployment, not just the
@@ -87,27 +86,28 @@ const STATUS_TONE: Record<string, string> = {
 
 const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTime'))
 
-// soon's EventDetail doesn't embed ticket_items — the page layer fetches them
-// (GET /tickets/list?event_id=) and attaches them. Nothing did that until
-// 2026-08-08, which is why this tab had always rendered empty.
-type EventDetailWithOrders = EventDetail & {
-    ticket_items?: TicketItemOrder[]
-}
-
-export interface EventParticipantListProps {
+export interface EventTicketOrderListProps {
     lang: Dictionary
-    eventDetail: EventDetailWithOrders
+    /** Orders on this event (GET /tickets/list?event_id=). soon's EventDetail
+     *  doesn't embed them; this tab used to read `eventDetail.ticket_items`,
+     *  which nothing ever set, so it rendered empty on every deployment and
+     *  the refund button inside it was unreachable. Now the caller fetches
+     *  them when the tab is opened. */
+    orders: TicketItemOrder[]
+    /** Reload the orders after a refund, so the row's new status and its new
+     *  history entry appear without a page navigation. */
+    onChanged?: () => void | Promise<void>
     isEventOperator?: boolean
 }
 
 export default function EventTicketOrderList({
                                                  lang,
-                                                 eventDetail,
+                                                 orders,
+                                                 onChanged,
                                                  isEventOperator
-                                             }: EventParticipantListProps) {
+                                             }: EventTicketOrderListProps) {
     const {toast} = useToast()
     const {openModal} = useModal()
-    const router = useRouter()
 
     // The backend authorizes (owner/co-host; group owner for group tickets)
     // and the refund finalizes asynchronously via the provider's callback —
@@ -120,10 +120,9 @@ export default function EventTicketOrderList({
                 close={close!}
                 onDone={() => {
                     toast({description: lang['Refund submitted'], variant: 'success'})
-                    // Soft refresh: the row is server-rendered, and a full
-                    // reload would throw away the operator's place in a long
-                    // list.
-                    router.refresh()
+                    // Re-fetch just this list. Nothing else on the page changed,
+                    // and the operator keeps their place in it.
+                    void onChanged?.()
                 }}
             />,
             clickOutsideToClose: true
@@ -166,7 +165,7 @@ export default function EventTicketOrderList({
 
     const downloadCSV = () => {
         const title = ['Username', 'Nickname', 'Email', 'Payment wallet address', 'Status', 'Create time', 'Ticket Type']
-        const rows = eventDetail.ticket_items?.map((item) => {
+        const rows = orders.map((item) => {
             return [item.user?.name || '',
                 item.user?.nickname || '',
                 item.user?.email || '',
@@ -175,7 +174,7 @@ export default function EventTicketOrderList({
                 item.created_at || '',
                 item.ticket?.title || ''
             ]
-        }) || []
+        })
 
         const csvContent = "data:text/csv;charset=utf-8,"
             + title.join(",") + "\n" + rows.map(e => e.join(",")).join("\n")
@@ -191,45 +190,52 @@ export default function EventTicketOrderList({
     }
 
     return <div>
-        {!!eventDetail && !!eventDetail.ticket_items?.length && isEventOperator &&
+        {!!orders.length && isEventOperator &&
             <div onClick={downloadCSV}
                  className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
                 <i className="uil-download-alt text-lg mr-1"/>
                 <span>{lang['Download the list of order']}</span>
             </div>}
+        {!orders.length &&
+            <div className="py-8 text-center text-sm text-gray-400">{lang['No orders yet']}</div>
+        }
         <div>
             {
-                eventDetail.ticket_items?.map(order => {
+                orders.map(order => {
                     const history = orderHistory(order)
                     return <div key={order.id} className="border-b-[1px] border-gray-200 py-4">
-                        <div className="flex flex-row justify-between items-center">
-                            <a className="flex-row-item-center" href={`/profile/${order.user?.name}`}>
-                                <Avatar profile={order.user || {id: order.id, name: '', nickname: null, image_url: null}} className="mr-2" size={32}/>
-                                <div className="text-xs">
-                                    <div>{order.user ? displayProfileName(order.user) : ''}</div>
+                        {/* Stacked on a phone: the meta side alone is a ticket
+                            title, an amount, a status and a refund button, which
+                            never fit beside an avatar at 390px — they used to
+                            simply run off the edge. */}
+                        <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center sm:gap-0">
+                            <a className="flex-row-item-center min-w-0" href={`/profile/${order.user?.name}`}>
+                                <Avatar profile={order.user || {id: order.id, name: '', nickname: null, image_url: null}} className="mr-2 shrink-0" size={32}/>
+                                <div className="text-xs min-w-0">
+                                    <div className="truncate">{order.user ? displayProfileName(order.user) : ''}</div>
                                     <div className="text-gray-400">
                                         <DisplayDateTime dataTimeStr={order.created_at!} />
                                     </div>
                                 </div>
                             </a>
 
-                            <div className="flex-row-item-center">
-                                <div className="text-sm font-semibold flex-row-item-center">
-                                    <i className="uil-ticket text-base mr-1" />
-                                    {order.ticket?.title}
+                            <div className="flex flex-row items-center flex-wrap gap-x-2 gap-y-1 pl-10 sm:pl-0 sm:justify-end">
+                                <div className="text-sm font-semibold flex-row-item-center min-w-0">
+                                    <i className="uil-ticket text-base mr-1 shrink-0" />
+                                    <span className="truncate">{order.ticket?.title}</span>
                                 </div>
                                 {!!order.amount &&
-                                    <div className="ml-2 text-sm font-semibold">
+                                    <div className="text-sm font-semibold">
                                         {formatOrderAmount(order.amount, order.currency)}
                                     </div>
                                 }
-                                <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${STATUS_TONE[order.status || ''] || 'bg-gray-100 text-gray-500'}`}>
+                                <span className={`text-xs px-1.5 py-0.5 rounded whitespace-nowrap ${STATUS_TONE[order.status || ''] || 'bg-gray-100 text-gray-500'}`}>
                                     {lang[ORDER_STATUS_LABEL[order.status || ''] as keyof typeof lang] || order.status}
                                 </span>
                                 {isEventOperator && !!REFUNDABLE_RAILS[order.chain || ''] &&
                                     (order.status === 'succeeded' || order.status === 'partially_refunded') &&
                                     !!order.amount &&
-                                    <Button variant={'ghost'} size={'sm'} className="ml-2 text-red-400"
+                                    <Button variant={'ghost'} size={'sm'} className="text-red-400 h-auto py-1 px-2"
                                         onClick={() => handleRefund(order)}>
                                         {lang['Refund']}
                                     </Button>

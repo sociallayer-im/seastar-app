@@ -5,6 +5,7 @@ import {Dictionary} from '@/lang'
 import {Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
 import DialogTicket from '@/components/client/DialogTicket'
+import {goToEventTab} from '@/app/(normal)/event/detail/[eventid]/EventTabs'
 
 /**
  * "Join Event (RSVP)" for a ticketed event.
@@ -34,7 +35,9 @@ export default function JoinTicketEventBtn({eventDetail, lang, currProfile, clas
 
     const onClick = () => {
         if (tickets.length !== 1) {
-            window.location.href = `/event/detail/${eventDetail.id}?tab=tickets`
+            // Same page — switch the tab and scroll to it rather than
+            // navigating to a URL that differs only by a query parameter.
+            goToEventTab('tickets')
             return
         }
 

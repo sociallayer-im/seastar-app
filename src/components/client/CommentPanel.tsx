@@ -59,6 +59,10 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
                 title: lang['Comment sent'],
                 variant: 'success',
             })
+            // The poll used to be what made a just-sent comment appear; with it
+            // gone this is the only thing that shows the sender their own
+            // comment.
+            await getComments()
         } catch (e: unknown) {
             console.error(e)
             toast({
@@ -83,14 +87,13 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
         setLoading(false)
     }
 
+    // Fetched once. This used to poll every 5 seconds for as long as the page
+    // was open — a request per visitor per 5s on every event page, forever,
+    // to catch a comment that almost never arrives while anyone is watching.
+    // The list is refreshed after sending one, which is the case that
+    // actually needs to be current.
     useEffect(() => {
         getComments()
-
-        const interval = window.setInterval(getComments, 5000)
-
-        return () => {
-            window.clearInterval(interval)
-        }
     }, [])
 
     return <div>

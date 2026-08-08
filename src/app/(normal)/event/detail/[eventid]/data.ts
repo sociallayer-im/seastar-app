@@ -7,10 +7,8 @@ import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
     getEventDetailById,
     getEventForm,
-    getEventTicketItems,
     getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId, getRecurringById,
-    Participant,
-    Recurring, Ticket, TicketItemOrder
+    Recurring, Ticket
 } from '@sola/sdk'
 import {AVNeeds, SeatingStyle, ExternalCatering} from '@/app/configForSpecifyGroup'
 import {CLIENT_MODE} from '@/app/config'
@@ -32,8 +30,16 @@ export interface EventDetailDataProps {
 export default async function EventDetailPage(eventid: string, tab='content'){
     const currProfile = await getCurrProfile()
 
+    // The attendee array is the one part of this response that grows with the
+    // event, and the detail page keeps it behind a tab that fetches its own
+    // data (EventParticipantTab). `current_participant` comes back either way,
+    // which is all this function needs to decide the RSVP state.
     const eventDetail = await getEventDetailById({
-        params: {eventId: eventid, authToken: await getServerSideAuth()},
+        params: {
+            eventId: eventid,
+            authToken: await getServerSideAuth(),
+            includeParticipants: false
+        },
         clientMode: CLIENT_MODE
     })
     if (!eventDetail) {
@@ -66,19 +72,9 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const groupHost = eventDetail.event_roles?.find(r => r.role === 'group_host')
     const customHost = eventDetail.event_roles?.find(r => r.role === 'custom_host')
 
-    let filteredParticipants: Participant[]
-    if (!eventDetail?.tickets?.length) {
-        filteredParticipants = eventDetail.participants || []
-    } else {
-        // soon's ParticipantBlueprint doesn't expose ticket_id — a paid RSVP is
-        // reflected in payment_status. Hide unpaid pending purchases.
-        filteredParticipants = eventDetail.participants?.filter(participant =>
-            !participant.payment_status || participant.payment_status === 'succeeded'
-        ) || []
-    }
-
-    const currProfileParticipant = eventDetail.participants?.find((item: Participant) =>
-        item.user.id === currProfile?.id)
+    // The viewer's own RSVP, straight from the backend rather than searched for
+    // in a list this page no longer downloads.
+    const currProfileParticipant = eventDetail.current_participant
 
     const currProfileAttended = !!currProfileParticipant
         && ['attending', 'pending'].includes(currProfileParticipant.status || '')
@@ -137,22 +133,6 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         })
     }
 
-    // Every order on the event, for the organizer's Orders tab.
-    //
-    // EventDetail does not embed these — the tab has always read
-    // `eventDetail.ticket_items`, and nothing ever set it, so the tab rendered
-    // empty on every deployment and the refund button inside it was
-    // unreachable. Managers only: the endpoint 403s for anyone else and the
-    // SDK turns that into an empty list.
-    let ticketItems: TicketItemOrder[] = []
-    if (isEventOperator && !!eventDetail.tickets?.length) {
-        const token = await getServerSideAuth()
-        ticketItems = await getEventTicketItems({
-            params: {eventId: eventDetail.id, authToken: token!},
-            clientMode: CLIENT_MODE
-        })
-    }
-
     // eventDetail was fetched with the viewer's authToken (see getEventDetailById
     // above), so the backend already annotated it with is_starred for them.
     const currProfileStarred = !!currProfile && !!(eventDetail as unknown as {is_starred?: boolean}).is_starred
@@ -164,8 +144,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
 
     return {
         currProfile,
-        // The Orders tab reads them off the event; empty for non-managers.
-        eventDetail: {...eventDetail, ticket_items: ticketItems},
+        eventDetail,
         groupDetail,
         recurring,
         form,
@@ -186,7 +165,6 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         groupHost,
         customHost,
         tab,
-        participants: filteredParticipants,
         showParticipants,
         canAccess,
         canPublishEvent: !!currProfile && canSubmitEvent,

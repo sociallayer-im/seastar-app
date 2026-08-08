@@ -16,6 +16,16 @@ const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTim
 export interface EventParticipantListProps {
     lang: Dictionary
     eventDetail: EventDetail
+    /** The attendee list. Pass it when the caller fetched it separately (the
+     *  event detail page does — see EventParticipantTab); otherwise it falls
+     *  back to the array embedded in the event, which is how the check-in
+     *  pages still get it. */
+    participants?: Participant[] | null
+    /** How to reload the list after a check-in/approval/rejection. Callers
+     *  that own the data pass this and the list refreshes in place; without
+     *  it the component falls back to reloading the document, which is what
+     *  every one of these actions used to do. */
+    onChanged?: () => void | Promise<void>
     currProfile?: ProfileDetail | null
     isEventOperator?: boolean
     canViewAllSubmissions?: boolean
@@ -24,6 +34,8 @@ export interface EventParticipantListProps {
 export default function EventParticipantList({
                                                  lang,
                                                  eventDetail,
+                                                 participants: participantsProp,
+                                                 onChanged,
                                                  currProfile,
                                                  isEventOperator,
                                                  canViewAllSubmissions
@@ -31,6 +43,18 @@ export default function EventParticipantList({
     const {showLoading, closeModal, openModal} = useModal()
     const {showConfirmDialog} = useConfirmDialog()
     const {toast} = useToast()
+
+    const participants = participantsProp ?? eventDetail.participants ?? []
+
+    // The delay was there so the toast could be read before the page went
+    // white. Refreshing in place needs no such apology.
+    const refresh = () => {
+        if (onChanged) {
+            void onChanged()
+        } else {
+            setTimeout(() => window.location.reload(), 1500)
+        }
+    }
 
     const handleCancelParticipation = async () => {
         showConfirmDialog({
@@ -50,9 +74,7 @@ export default function EventParticipantList({
                         description: lang['Participation cancelled'],
                         variant: 'success'
                     })
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 2000)
+                    refresh()
                 } catch (e: unknown) {
                     toast({
                         description: e instanceof Error ? e.message : 'Failed to cancel participation',
@@ -74,7 +96,7 @@ export default function EventParticipantList({
                 clientMode: CLIENT_MODE
             })
             toast({description: 'Participant approved', variant: 'success'})
-            setTimeout(() => window.location.reload(), 1500)
+            refresh()
         } catch (e: unknown) {
             toast({
                 description: e instanceof Error ? e.message : 'Failed to approve',
@@ -100,7 +122,7 @@ export default function EventParticipantList({
                         clientMode: CLIENT_MODE
                     })
                     toast({description: 'Participant rejected', variant: 'success'})
-                    setTimeout(() => window.location.reload(), 1500)
+                    refresh()
                 } catch (e: unknown) {
                     toast({
                         description: e instanceof Error ? e.message : 'Failed to reject',
@@ -135,9 +157,7 @@ export default function EventParticipantList({
                         description: lang['Check in successful'],
                         variant: 'success'
                     })
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 2000)
+                    refresh()
                 } catch (e: unknown) {
                     toast({
                         description: e instanceof Error ? e.message : 'Failed to check in',
@@ -215,7 +235,7 @@ export default function EventParticipantList({
                                     clientMode: CLIENT_MODE
                                 })
                                 toast({description: lang['Application submitted, pending approval'], variant: 'success'})
-                                setTimeout(() => window.location.reload(), 1500)
+                                refresh()
                             } catch (e: unknown) {
                                 toast({description: e instanceof Error ? e.message : 'Failed to update', variant: 'destructive'})
                             } finally {
@@ -233,7 +253,7 @@ export default function EventParticipantList({
 
     const downloadCSV = () => {
         const title = ['Username', 'Nickname', 'Email', 'Status', 'Register time']
-        const rows = eventDetail.participants?.map((item, index) => {
+        const rows = participants.map((item) => {
             return [item.user.name,
                 item.user.nickname || '',
                 item.user.email || '',
@@ -270,7 +290,7 @@ export default function EventParticipantList({
             if (!form) return
             const fields = [...form.fields].sort((a, b) => a.position - b.position)
             const emailByUserId = new Map<string, string>()
-            eventDetail.participants?.forEach(p => {
+            participants.forEach(p => {
                 emailByUserId.set(p.user.id, p.user.email || '')
             })
 
@@ -309,7 +329,7 @@ export default function EventParticipantList({
     }
 
     return <div>
-        {!!eventDetail.participants && eventDetail.participants.length > 0 && isEventOperator &&
+        {participants.length > 0 && isEventOperator &&
             <div onClick={downloadCSV}
                  className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">
                 <i className="uil-download-alt text-lg mr-1"/>
@@ -325,7 +345,7 @@ export default function EventParticipantList({
 
         <div>
             {
-                eventDetail.participants?.map(participant => {
+                participants.map(participant => {
                     return <div key={participant.id}
                                 className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
                         <a className="flex-row-item-center" href={`/profile/${participant.user.name}`}>

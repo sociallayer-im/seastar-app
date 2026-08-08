@@ -6,7 +6,7 @@ import {headers} from 'next/headers'
 import QrCode from '@/components/client/QRcode'
 
 export default async function Checkin(props: EventDetailDataProps) {
-    const {eventDetail, isEventOperator, currProfile} = await CheckInData(props)
+    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(props)
     const {lang} = await selectLang()
 
     const currPath = headers().get('x-current-path')
@@ -20,8 +20,9 @@ export default async function Checkin(props: EventDetailDataProps) {
         </div>
 
         <div className="font-semibold text-lg"> {lang['Participants']} <span
-            className="text-sm">({eventDetail.participants?.length})</span></div>
+            className="text-sm">({participants.length})</span></div>
         <EventParticipantList
+            participants={participants}
             lang={lang}
             isEventOperator={isEventOperator}
             currProfile={currProfile}
