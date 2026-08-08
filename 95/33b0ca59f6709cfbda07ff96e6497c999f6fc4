@@ -1,0 +1,33 @@
+src/lang/en.ts
+  s_448695a5d036bc::t_f96a90506f83fa 721
+src/lang/zh.ts
+  s_448695a5d036bc::t_d1b89b549c2741 703
+src/app/(normal)/event/detail/[eventid]/PaymentReturn.tsx
+  s_448695a5d036bc::t_808551507c79c6 10-11,13-19
+src/components/client/DialogTicket.tsx
+  s_448695a5d036bc::t_2debdb9aebcac2 27
+  s_448695a5d036bc::t_e2a933a476df0d 12
+  s_448695a5d036bc::t_1fe31757690350 313
+  s_448695a5d036bc::t_4491f892abe889 413
+  s_448695a5d036bc::t_d226d75d5c95bf 58-107
+  s_448695a5d036bc::t_022ac6e747cb57 246
+  s_448695a5d036bc::t_9a96ed3ae4737b 371-386
+  s_448695a5d036bc::t_56b3357fdfa44d 640-650
+  s_448695a5d036bc::t_e9c813ee43b3a4 418-422,424
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "9533b0ca59f6709cfbda07ff96e6497c999f6fc4",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
