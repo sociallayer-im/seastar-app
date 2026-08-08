@@ -25,7 +25,7 @@ import ClickToCopy from '@/components/client/ClickToCopy'
 import removeMarkdown from 'markdown-to-text'
 import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
-import StripePaymentReturn from '@/app/(normal)/event/detail/[eventid]/StripePaymentReturn'
+import PaymentReturn from '@/app/(normal)/event/detail/[eventid]/PaymentReturn'
 import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
@@ -274,7 +274,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
                         {(paymentReturn === 'success' || paymentReturn === 'cancelled') && !!currProfile &&
                             <div className="mt-3">
-                                <StripePaymentReturn
+                                <PaymentReturn
                                     lang={lang}
                                     eventId={eventDetail.id}
                                     profileName={currProfile.name}

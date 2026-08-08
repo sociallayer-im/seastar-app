@@ -694,4 +694,10 @@ export const zh: Dictionary = {
   'Payment processing': '已收到支付，正在确认你的票…',
   'Payment confirmed': '支付成功！你的票已就绪。',
   'Payment cancelled': '支付已取消，未支付的预留将在稍后过期。',
+  'WeChat Pay': '微信支付',
+  'Add WeChat payment': '添加微信支付',
+  'WeChat Pay intro': '买家在微信内完成支付。款项由平台商户号收取后与你另行结算，你无需自己申请商户号。',
+  'WeChat price minimum': '微信支付价格不能低于 ¥0.01',
+  'Open in WeChat to pay': '微信支付只能在微信内使用，请在微信中打开此页面完成支付。',
+  'Payment failed, please try again': '支付未完成。如果已经扣款，你的票会稍后出现，请不要重复支付。',
 }

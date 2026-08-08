@@ -580,6 +580,38 @@ export const Payments: PaymentsType[] = [
                 decimals: 2
             }
         ]
+    },
+    {
+        label: 'WeChat Pay',
+        chain: 'wechat',
+        id: 'wechat',
+        protocol: null,
+        chainId: 0,
+        protocolIcon: '/images/payment_icon/wechat_pay.svg',
+        chainIcon: '/images/payment_icon/wechat_pay.svg',
+        payHub: '',
+        tokenList: [
+            {
+                name: 'CNY',
+                id: 'cny',
+                contract: '',
+                // 分, exactly like Stripe's cents — the backend stores minor
+                // units for every fiat rail, so displayMethodPrice divides by
+                // 10^2 here for the same reason it does for USD.
+                decimals: 2,
+                icon: '/images/payment_icon/wechat_pay.svg'
+            }
+        ]
     }
 ]
+
+/**
+ * Rails whose price is a fiat minor-unit integer rather than a token amount,
+ * mirroring PaymentMethod::FIAT_CHAINS on the backend. Anything that means
+ * "the crypto ones" must subtract this rather than test `!== 'stripe'`, or the
+ * next fiat rail silently shows up in the wallet/token pickers.
+ */
+export const FIAT_CHAINS = ['stripe', 'wechat']
+
+export const isFiatChain = (chain?: string | null) => !!chain && FIAT_CHAINS.includes(chain)
 

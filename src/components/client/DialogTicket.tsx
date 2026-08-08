@@ -7,7 +7,9 @@ import {
     checkBadgeOwnership,
     createTicketPayment,
     createStripeCheckoutSession,
+    createWechatPrepay,
     getBadgeClassDetailByBadgeClassId,
+    SolaApiError,
     submitPaymentTxHash,
     validateCoupon
 } from '@sola/sdk'
@@ -21,13 +23,14 @@ import {
     shortWalletAddress
 } from '@/utils'
 import {useEffect, useMemo, useState} from 'react'
-import {Payments, PaymentSettingToken, PaymentsType} from '@/utils/payment_setting'
+import {isFiatChain, Payments, PaymentSettingToken, PaymentsType} from '@/utils/payment_setting'
 import {executePayHubPayment, PAYMENT_STEP_LABEL, PaymentStep, resolveTokenAddress, tsidToBigInt} from '@/utils/evm_payment'
+import {invokeWechatPay, isWechatBrowser} from '@/utils/wechat_pay'
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
-import {CLIENT_MODE, CRYPTO_PAYMENT_ENABLED, STRIPE_ENABLED} from '@/app/config'
+import {CLIENT_MODE, CRYPTO_PAYMENT_ENABLED, STRIPE_ENABLED, WECHAT_PAY_ENABLED} from '@/app/config'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Switch} from '@/components/shadcn/Switch'
 
@@ -121,10 +124,13 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             const effectiveChains = method.chains?.length ? method.chains : (method.chain ? [method.chain] : [])
             effectiveChains.forEach(chain => {
                 if (seen.has(chain)) return
-                // Card payments only exist on STRIPE_ENABLED deployments.
+                // Card payments only exist on STRIPE_ENABLED deployments (SG).
                 if (chain === 'stripe' && !STRIPE_ENABLED) return
-                // Every other chain is an on-chain EVM payment, off on CN.
-                if (chain !== 'stripe' && !CRYPTO_PAYMENT_ENABLED) return
+                // WeChat Pay is the mirror image: CN only.
+                if (chain === 'wechat' && !WECHAT_PAY_ENABLED) return
+                // Everything that is not a fiat rail is an on-chain EVM
+                // payment, off on CN.
+                if (!isFiatChain(chain) && !CRYPTO_PAYMENT_ENABLED) return
                 const type = Payments.find(p => p.chain === chain)
                 if (type) { seen.add(chain); result.push(type) }
             })
@@ -267,6 +273,62 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         }
     }
 
+    /**
+     * WeChat Pay, which unlike Stripe never leaves the page: the payment sheet
+     * is drawn over it by the WeChat client and hands control straight back.
+     *
+     * Whatever it reports, the browser does not decide payment state — on 'ok'
+     * this navigates to the event page's ?payment=success return, which polls
+     * the server until the callback (or the sweeper) has confirmed. And on
+     * 'fail' it cancels nothing: a failed sheet is not proof no money moved.
+     */
+    const payWithWechat = async (ticketItem: TicketItem) => {
+        if (!isWechatBrowser()) {
+            setPaymentError(lang['Open in WeChat to pay'])
+            setBuying(false)
+            return
+        }
+
+        let payParams
+        try {
+            const res = await createWechatPrepay({
+                params: {ticketItemId: ticketItem.id, authToken: getAuth()!},
+                clientMode: CLIENT_MODE
+            })
+            payParams = res.pay_params
+        } catch (e: unknown) {
+            // Recoverable, and the only failure here that is: the buyer signed
+            // in by email, so the account has no openid and JSAPI cannot place
+            // an order. A silent snsapi_base authorize fills it in and returns
+            // them here to try again.
+            if (e instanceof SolaApiError && e.code === 'OPENID_REQUIRED') {
+                const back = encodeURIComponent(window.location.pathname + window.location.search)
+                window.location.href = `/api/wechat/bind-openid?return=${back}`
+                return
+            }
+            throw e
+        }
+
+        const outcome = await invokeWechatPay(payParams)
+        if (outcome === 'cancel') {
+            setPaymentError(lang['Payment cancelled'])
+            setBuying(false)
+            return
+        }
+        if (outcome === 'unavailable' || outcome === 'fail') {
+            // Deliberately does NOT cancel the order: the sheet may have failed
+            // after the money moved. The sweeper closes and expires it if not.
+            setPaymentError(lang['Payment failed, please try again'])
+            setBuying(false)
+            return
+        }
+
+        const url = new URL(window.location.href)
+        url.searchParams.set('payment', 'success')
+        url.searchParams.set('ticket_item', ticketItem.id)
+        window.location.href = url.toString()
+    }
+
     const handlePay = async () => {
         if (!currProfile || !selectedMethod) return
         setPaymentError('')
@@ -287,15 +349,22 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             })
             setPendingTicketItem(ticketItem)
 
+            // A 100% coupon can make any fiat order free-and-confirmed with
+            // nothing left to pay — treat like the free path.
+            if (isFiatChain(selectedPaymentType?.chain) && ticketItem.status === 'succeeded') {
+                toast({description: lang['Purchase Successful'], variant: 'success'})
+                closeModal(loading)
+                setTimeout(() => window.location.reload(), 2000)
+                return
+            }
+
+            if (selectedPaymentType?.chain === 'wechat') {
+                await payWithWechat(ticketItem)
+                closeModal(loading)
+                return
+            }
+
             if (selectedPaymentType?.chain === 'stripe') {
-                // A 100% coupon can make the order free-and-confirmed with no
-                // session to pay — treat like the free path.
-                if (ticketItem.status === 'succeeded') {
-                    toast({description: lang['Purchase Successful'], variant: 'success'})
-                    closeModal(loading)
-                    setTimeout(() => window.location.reload(), 2000)
-                    return
-                }
                 // Everything else happens on Stripe's hosted page; the return
                 // URL lands back on the event page, which polls until the
                 // webhook confirms. Never mark paid client-side.

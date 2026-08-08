@@ -7,11 +7,19 @@ import {getSdkConfig, ClientMode} from './client'
  */
 export class SolaApiError extends Error {
     status: number
+    /**
+     * Machine-readable discriminator, when the endpoint sends one alongside
+     * `error`. Only a few do — it is for failures the caller can act on rather
+     * than only display (e.g. OPENID_REQUIRED, which is recoverable by sending
+     * the buyer through a silent WeChat authorize).
+     */
+    code?: string
 
-    constructor(message: string, status: number) {
+    constructor(message: string, status: number, code?: string) {
         super(message)
         this.name = 'SolaApiError'
         this.status = status
+        this.code = code
     }
 }
 
@@ -64,7 +72,11 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
 
     const data = await resp.json().catch(() => ({}))
     if (!resp.ok) {
-        throw new SolaApiError((data as any).error || `Request failed (${resp.status})`, resp.status)
+        throw new SolaApiError(
+            (data as any).error || `Request failed (${resp.status})`,
+            resp.status,
+            (data as any).code
+        )
     }
     return data as T
 }

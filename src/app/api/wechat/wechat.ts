@@ -20,6 +20,14 @@ export const wechatConfigured = () => !!WECHAT_APP_ID && !!WECHAT_APP_SECRET
 export const STATE_COOKIE = 'wechat_oauth_state'
 
 /**
+ * Where to send the buyer back after the openid backfill. A separate cookie
+ * from the sign-in flow's `return`: this leg happens to someone already signed
+ * in and mid-checkout, and must not disturb wherever they were headed after
+ * login.
+ */
+export const BIND_RETURN_COOKIE = 'wechat_bind_return'
+
+/**
  * The public origin of this request — what WeChat must redirect back to, and
  * what every redirect and cookie domain in this flow has to be built from.
  *
@@ -47,12 +55,21 @@ export const requestOrigin = (req: NextRequest): string => {
  * with nothing to merge them by. userinfo returns the unionid, which is stable
  * across every app under our 开放平台 account.
  */
-export const authorizeUrl = (redirectUri: string, state: string): string => {
+export const authorizeUrl = (
+    redirectUri: string,
+    state: string,
+    // snsapi_base is right for exactly one case: the payment openid backfill,
+    // where the person is already signed in, the account is already identified,
+    // and the only missing fact is the openid. Showing a consent screen there
+    // would interrupt a checkout to ask permission for something already
+    // granted at sign-in.
+    scope: 'snsapi_userinfo' | 'snsapi_base' = 'snsapi_userinfo'
+): string => {
     const params = new URLSearchParams({
         appid: WECHAT_APP_ID!,
         redirect_uri: redirectUri,
         response_type: 'code',
-        scope: 'snsapi_userinfo',
+        scope,
         state
     })
     // The #wechat_redirect fragment is required — without it the WeChat client

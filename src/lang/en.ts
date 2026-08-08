@@ -712,6 +712,12 @@ export const en = {
     'Payment processing': 'Payment received — confirming your ticket…',
     'Payment confirmed': 'Payment confirmed! Your ticket is ready.',
     'Payment cancelled': 'Payment cancelled — your reservation will expire shortly if unpaid.',
+    'WeChat Pay': 'WeChat Pay',
+    'Add WeChat payment': 'Add WeChat Pay',
+    'WeChat Pay intro': 'Buyers pay inside WeChat. Collected by the platform merchant and settled to you separately — no merchant account of your own is needed.',
+    'WeChat price minimum': 'WeChat Pay price must be at least ¥0.01',
+    'Open in WeChat to pay': 'WeChat Pay only works inside WeChat. Open this page in the WeChat app to pay.',
+    'Payment failed, please try again': 'Payment did not complete. If money was deducted, your ticket will appear shortly — do not pay twice.',
 }
 
 export type Dictionary = typeof en;

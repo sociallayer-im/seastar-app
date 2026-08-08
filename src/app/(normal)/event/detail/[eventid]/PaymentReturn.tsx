@@ -7,12 +7,15 @@ import {CLIENT_MODE} from '@/app/config'
 import {getAuth} from '@/utils'
 
 /**
- * Shown when the buyer lands back from Stripe Checkout
- * (?payment=success&ticket_item=…). The browser never decides payment state —
- * this only POLLS until the webhook (or sweeper) has confirmed the order,
- * then reloads so the server-rendered page shows the ticket.
+ * Shown when the buyer comes back from paying (?payment=success&ticket_item=…)
+ * — from Stripe Checkout's redirect, or from the WeChat payment sheet, which
+ * navigates here itself since it never leaves the page.
+ *
+ * The browser never decides payment state. Both rails hand back a client-side
+ * "success" that proves nothing, so this only POLLS until the callback (or the
+ * sweeper) has confirmed the order server-side, then reloads.
  */
-export default function StripePaymentReturn({lang, eventId, profileName, result}: {
+export default function PaymentReturn({lang, eventId, profileName, result}: {
     lang: Dictionary
     eventId: string
     profileName: string
