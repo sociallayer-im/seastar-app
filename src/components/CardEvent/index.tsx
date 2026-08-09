@@ -3,12 +3,11 @@
 import { getLabelColor } from "@/utils/label_color"
 import { cfImage, checkProcess, eventCoverTimeStr } from "@/utils"
 import { Badge } from "@/components/shadcn/Badge"
-import { CSSProperties, ReactElement, useState, type MouseEvent } from "react"
+import { CSSProperties, ReactElement, useState } from "react"
 import dynamic from 'next/dynamic'
 import { Dictionary } from '@/lang'
 import { EventWithJoinStatus, EventRole } from '@sola/sdk'
 import EventKindLabel from "@/components/EventKind"
-import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), { ssr: false })
@@ -27,7 +26,6 @@ export default function CardEvent({ event, className, id, style, lang, highlight
     const eventProcess = checkProcess(event.start_time, event.end_time)
     const status = event.status
     const [highlighted, setHighlighted] = useState(highlight)
-    const { showPopup } = useScheduleEventPopup()
 
     // event_roles only arrive on the detail payload; list cards fall back to the owner
     const eventRoles = (event as EventWithJoinStatus & {event_roles?: EventRole[]}).event_roles
@@ -41,19 +39,14 @@ export default function CardEvent({ event, className, id, style, lang, highlight
         background: highlighted ? '#fff7e9' : '#fff',
     }
 
-    const handleShowPopup = (e: MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault()
-        showPopup(event.id,
-            (event.group?.id || ''),
-            event.is_starred,
-            lang,
-            (highlighted) => {
-                setHighlighted(highlighted)
-            })
-    }
-
+    // The card goes straight to the event page. It used to intercept the click
+    // and open a modal instead, which meant waiting on the event detail, the
+    // group detail and the viewer's profile before anything appeared — three
+    // requests to show a preview of the page the link already pointed at. The
+    // schedule views still use the popup: there a card is a block in a grid the
+    // reader is scanning, and leaving the grid to check one event loses their
+    // place. A list has no such geometry to preserve.
     return <a href={`/event/detail/${event.id}`}
-        onClick={handleShowPopup}
         id={id}
         style={customStyle}
         className={`overflow-hidden relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
