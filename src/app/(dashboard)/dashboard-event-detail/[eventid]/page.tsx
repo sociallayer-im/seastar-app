@@ -30,6 +30,7 @@ import CommentPanel from '@/components/client/CommentPanel'
 import Image from 'next/image'
 import { cache } from 'react'
 import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventParticipantTab'
+import EventTabs from '@/app/(normal)/event/detail/[eventid]/EventTabs'
 import VenueDetailBtn from '@/components/client/VenueDetailBtn'
 import { getLabelColor } from '@/utils/label_color'
 
@@ -356,104 +357,80 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
                 </div>
 
-                <div className="grid sm:flex grid-cols-2 font-semibold mt-6">
-                    <a href={'?tab=content'}
-                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 relative">
-                        <span className="z-10">{lang['Content']}</span>
-                        {(tab === 'content' || tab === '') &&
-                            <img width={90} height={12}
-                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
-                                 src="/images/tab_bg.png" alt="" />
-                        }
-                    </a>
-                    {isTicketEvent && <a href={'?tab=tickets'}
-                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2  mr-0 relative border-l-[1px] border-gray-200">
-                        <div className="z-10">
-                            {lang['Tickets']}
-                            <span className="text-xs">({eventDetail.tickets?.length})</span>
-                        </div>
-                        {tab === 'tickets' &&
-                            <img width={90} height={12}
-                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
-                                 src="/images/tab_bg.png" alt="" />
-                        }
-                    </a>
-                    }
+                {/* Same tab bar as the public event page, and the same
+                    treatment — see EventTabs. This copy had the identical
+                    mobile wrap bug and the identical full-reload navigation. */}
+                <EventTabs
+                    initialTab={tab}
+                    tabs={[
+                        {
+                            key: 'content',
+                            label: lang['Content'],
+                            panel: <div>
+                                {!!seatingStyle?.length && isEventOperator &&
+                                    <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
+                                        <div className="font-semibold">
+                                            {lang['Seating Arrangement Style']}
+                                        </div>
+                                        <div>{seatingStyle.join(', ')}</div>
+                                    </div>
+                                }
+                                {!!avNeeds?.length && isEventOperator &&
+                                    <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
+                                        <div className="font-semibold">
+                                            {lang['AV Needed']}
+                                        </div>
+                                        <div>{avNeeds.join(', ')}</div>
+                                    </div>
+                                }
 
-                    {showParticipants && <a href={'?tab=participants'}
-                        className="flex-1 text-center cursor-pointer text-sm sm:text-base py-1 px-2 sm:mr-3 mr-0 relative border-l-[1px] border-gray-200">
-                        <div className="z-10">
-                            {lang['Participants']}
-                        </div>
-                        {tab === 'participants' &&
-                            <img width={90} height={12}
-                                 className="w-[80px]  absolute left-2/4 bottom-0 ml-[-40px]"
-                                 src="/images/tab_bg.png" alt="" />
-                        }
-                    </a>
-                    }
-                </div>
+                                {!!externalCatering?.length && isEventOperator &&
+                                    <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
+                                        <div className="font-semibold">
+                                            External Catering
+                                        </div>
+                                        <div>{externalCatering.join(', ')}</div>
+                                    </div>
+                                }
 
-                {!tab || tab === "content" &&
-                    <div>
-                        {!!seatingStyle?.length && isEventOperator && isEventOperator &&
-                            <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
-                                <div className="font-semibold">
-                                    {lang['Seating Arrangement Style']}
+                                <div className="editor-wrapper display my-3">
+                                    <RichTextDisplayer markdownStr={eventDetail.content || ''} />
                                 </div>
-                                <div>{seatingStyle.join(', ')}</div>
-                            </div>
-                        }
-                        {!!avNeeds?.length && isEventOperator && isEventOperator &&
-                            <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
-                                <div className="font-semibold">
-                                    {lang['AV Needed']}
+
+                                <div>
+                                    <div className="font-semibold">{lang['Comments']}</div>
+                                    <div className="py-4">
+                                        <CommentPanel lang={lang}
+                                            currProfile={currProfile}
+                                            itemType={'Event'}
+                                            commentType={'comment'}
+                                            itemId={eventDetail.id} />
+                                    </div>
                                 </div>
-                                <div>{avNeeds.join(', ')}</div>
                             </div>
-                        }
-
-                        {!!externalCatering?.length && isEventOperator &&
-                            <div className="my-3 text-sm bg-gray-100 p-3 rounded-lg">
-                                <div className="font-semibold">
-                                    External Catering
-                                </div>
-                                <div>{externalCatering.join(', ')}</div>
-                            </div>
-                        }
-
-                        <div className="editor-wrapper display my-3">
-                            <RichTextDisplayer markdownStr={eventDetail.content || ''} />
-                        </div>
-
-                        <div>
-                            <div className="font-semibold">{lang['Comments']}</div>
-                            <div className="py-4">
-                                <CommentPanel lang={lang}
-                                    currProfile={currProfile}
-                                    itemType={'Event'}
-                                    commentType={'comment'}
-                                    itemId={eventDetail.id} />
-                            </div>
-                        </div>
-                    </div>
-                }
-
-                {tab === 'participants' &&
-                    <EventParticipantTab
-                        lang={lang}
-                        eventDetail={eventDetail}
-                        currProfile={currProfile}
-                        isEventOperator={isEventOperator}
-                    />
-                }
-
-                {tab === 'tickets' &&
-                    <TicketList
-                        eventDetail={eventDetail}
-                        lang={lang}
-                        currProfile={currProfile} />
-                }
+                        },
+                        ...(isTicketEvent ? [{
+                            key: 'tickets' as const,
+                            label: lang['Tickets'],
+                            count: eventDetail.tickets?.length,
+                            panel: <TicketList
+                                eventDetail={eventDetail}
+                                lang={lang}
+                                currProfile={currProfile} />
+                        }] : []),
+                        ...(showParticipants ? [{
+                            key: 'participants' as const,
+                            label: lang['Participants'],
+                            count: eventDetail.participant_count || undefined,
+                            panel: <EventParticipantTab
+                                lang={lang}
+                                eventDetail={eventDetail}
+                                currProfile={currProfile}
+                                isEventOperator={isEventOperator}
+                            />
+                        }] : [])
+                    ]}
+                />
 
 
 

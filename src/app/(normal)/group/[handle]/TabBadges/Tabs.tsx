@@ -1,7 +1,7 @@
 'use client'
 
-import {useState} from "react"
 import {Button, buttonVariants} from "@/components/shadcn/Button"
+import useTabParam from '@/hooks/useTabParam'
 import type {Dictionary} from "@/lang"
 import NoData from "@/components/NoData"
 import {cfImage, getAvatar, getAuth} from "@/utils"
@@ -24,7 +24,8 @@ export interface TabBadgesProps {
 }
 
 export default function Tabs({created, lang, isManager, inviting, isIssuer, group, isMember, currProfile}: TabBadgesProps) {
-    const [tab, setTab] = useState<'created' | 'inviting'>('created')
+    // Linkable, and free to switch — both lists are already here.
+    const [tab, setTab] = useTabParam('list', ['created', 'inviting'] as const)
     const {openModal} = useModal()
 
     const handleShowInvite = async(invite: Invite) => {

@@ -10,6 +10,7 @@ import {
     TicketItemOrder
 } from '@sola/sdk'
 import {useCallback, useEffect, useState} from 'react'
+import useTabParam from '@/hooks/useTabParam'
 import EventParticipantList from '@/components/client/EventParticipantList'
 import EventTicketOrderList from '@/components/client/EventTicketOrderList'
 import {CLIENT_MODE} from '@/app/config'
@@ -40,7 +41,9 @@ export default function EventParticipantTab({
                                                 canViewAllSubmissions,
                                                 currProfile
                                             }: EventParticipantTabProps) {
-    const [tab, setTab] = useState<'participants' | 'orders'>('participants')
+    // `list`, so an organizer can link straight to the orders of an event —
+    // ?tab=participants&list=orders. The page's own tabs use `tab`.
+    const [tab, setTab] = useTabParam('list', ['participants', 'orders'] as const)
 
     // `null` means "not fetched yet", which is what separates the spinner from
     // a genuinely empty list.
