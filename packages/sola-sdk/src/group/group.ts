@@ -160,6 +160,30 @@ export const addManager = async ({params, clientMode}: SolaSdkFunctionParams<{pr
     })
 }
 
+/**
+ * Turn the "someone submitted an event to your group" email on or off for one
+ * owner/manager membership.
+ *
+ * Keyed by membership id, not user id, because the caller already has the row
+ * from the roster — going through findMembership would re-fetch every
+ * membership in the group to toggle a checkbox. The backend authorizes this
+ * separately from the role field: your own row needs nothing but membership,
+ * someone else's needs manage rights.
+ */
+export const setAdminNotification = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string,
+    membershipId: string,
+    adminNotification: boolean,
+    authToken: string
+}>) => {
+    return await request<Membership>(`/groups/${params.groupId}/memberships/${params.membershipId}`, {
+        method: 'PATCH',
+        clientMode,
+        authToken: params.authToken,
+        body: {membership: {admin_notification: params.adminNotification}}
+    })
+}
+
 /** Transfer ownership: grant the owner role to another user (owner-only op). */
 export const transferGroup = async ({params, clientMode}: SolaSdkFunctionParams<{groupId: string, newOwnerId: string, authToken: string}>) => {
     await request(`/groups/${params.groupId}/memberships`, {

@@ -48,6 +48,12 @@ export interface Membership {
     id: string
     role: string
     active: boolean
+    /**
+     * Whether this owner/manager gets emailed when someone who isn't a group
+     * admin creates an event in the group. Meaningless on a plain member row —
+     * the backend refuses to set it there. Defaults to true.
+     */
+    admin_notification: boolean
     created_at: string
     user: Profile
 }

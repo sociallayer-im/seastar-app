@@ -72,7 +72,8 @@ export const createPopupCity = async ({params, clientMode}: SolaSdkFunctionParam
 /**
  * Platform-admin curation: replace a popup city's group_tags (e.g. add/remove
  * "featured"/"top"). Privileged tags only pass through for platform admins
- * (users.permissions includes "admin") — the backend strips them otherwise.
+ * (users.admin, or the older users.permissions containing "admin") — the
+ * backend strips them otherwise.
  */
 export const updatePopupCityGroupTags = async ({params, clientMode}: SolaSdkFunctionParams<{
     popupCity: PopupCity,

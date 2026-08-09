@@ -2,7 +2,7 @@ import { getCurrProfile, selectLang } from '@/app/actions'
 import { getPopupCities } from '@sola/sdk'
 import Image from 'next/image'
 import Avatar from '@/components/Avatar'
-import { cfImage, displayProfileName, getAvatar } from '@/utils'
+import { cfImage, displayProfileName, getAvatar, isPlatformAdmin } from '@/utils'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import ManagActions from '@/components/client/ManagActions'
 import { CLIENT_MODE } from '@/app/config'
@@ -72,7 +72,7 @@ export default async function PopupCityListPage() {
                             {lang['View events']}
                         </div>
                     </div>
-                    {!!currProfile && currProfile.permissions?.includes('admin') &&
+                    {isPlatformAdmin(currProfile) &&
                         <ManagActions popupCity={popupCity} lang={lang}/>}
                 </a>
             })

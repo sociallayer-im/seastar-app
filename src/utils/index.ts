@@ -11,6 +11,7 @@ import {
     GroupDetail,
     PaymentMethod,
     Profile,
+    ProfileDetail,
     Ticket,
     Track,
     VenueDetail,
@@ -484,6 +485,22 @@ export function shortWalletAddress(address: string) {
 
 export function displayProfileName(profile: Profile) {
     return profile.nickname || profile.name
+}
+
+/**
+ * Platform administrator — someone who curates cross-group content (homepage
+ * featured/top tags, popup-city removal).
+ *
+ * Two markers, because the API answers to both: the `admin` column and the
+ * older `permissions: ['admin']` array. Server-side authorization treats them
+ * as equivalent, so any UI gate that checks only one would disagree with what
+ * the backend actually allows.
+ *
+ * Only meaningful for the signed-in user's own record — neither field appears
+ * on anyone else's profile.
+ */
+export function isPlatformAdmin(profile?: ProfileDetail | null) {
+    return !!profile && (profile.admin === true || !!profile.permissions?.includes('admin'))
 }
 
 /**

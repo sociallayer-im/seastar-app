@@ -16,8 +16,8 @@ interface ManagActionsProps {
 
 // Platform-admin curation for popup cities: toggle the "top" (homepage) and
 // "featured" (carousel) group tags, or delete the popup city. Rendered only
-// for platform admins (profile.permissions includes "admin") — the backend
-// enforces the same rule.
+// for platform admins (see isPlatformAdmin — either the `admin` flag or the
+// older permissions array) — the backend enforces the same rule.
 const ManagActions = ({popupCity, lang}: ManagActionsProps) => {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()

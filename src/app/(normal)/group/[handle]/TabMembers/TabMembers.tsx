@@ -10,6 +10,7 @@ import {Input} from "@/components/shadcn/Input"
 import DropdownMenu from "@/components/client/DropdownMenu"
 import {Group, Membership, Profile} from '@sola/sdk'
 import LeaveGroupBtn from '@/app/(normal)/group/[handle]/TabMembers/LeaveGroupBtn'
+import AdminNotificationToggle from '@/app/(normal)/group/[handle]/TabMembers/AdminNotificationToggle'
 
 export interface TabMembersProps {
     members: Membership[]
@@ -50,6 +51,14 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
     }
 
     const showManagement = isManager || isParentManager
+
+    // The event-submission email only goes to owners and managers, so only
+    // their rows carry the switch — the backend rejects it on a plain member.
+    // You can always set your own; setting someone else's needs manage rights,
+    // which is what lets an owner mute a manager who asked to be muted.
+    const canSetNotification = (member: Membership) =>
+        (member.role === 'owner' || member.role === 'manager') &&
+        (currProfile?.id === member.user.id || isManager)
 
     const memberList = useMemo(() => {
         const keyword = searchKeyword.toLowerCase().trim()
@@ -135,6 +144,12 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                         }
                         {currProfile?.name === member.user.name &&
                             <Badge variant={"upcoming"} className="ml-2 capitalize">You</Badge>
+                        }
+                        {canSetNotification(member) &&
+                            <AdminNotificationToggle
+                                lang={lang}
+                                groupId={group.id}
+                                membership={member}/>
                         }
                     </a>
                 })

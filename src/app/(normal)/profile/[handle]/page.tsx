@@ -17,7 +17,8 @@ import CopyText from "@/components/client/CopyText"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
-import {displayProfileName, getAvatar, pickSearchParam} from '@/utils'
+import {displayProfileName, getAvatar, isPlatformAdmin, pickSearchParam} from '@/utils'
+import {Badge} from '@/components/shadcn/Badge'
 import ClickToCopy from '@/components/client/ClickToCopy'
 import {cache} from 'react'
 
@@ -72,6 +73,12 @@ export default async function Profile({params: {handle}, searchParams: {tab: _ta
                         <Avatar profile={profile} size={60}/>
                         <div className="flex-row-item-center my-2">
                             <div className="font-semibold text-5">{profile.nickname || profile.name}</div>
+                            {/* Platform-admin status is only ever knowable about
+                                yourself: `admin` lives in the API's :self view,
+                                so someone else's profile never carries it. */}
+                            {isSelf && isPlatformAdmin(currProfile) &&
+                                <Badge variant="hosting" className="ml-2">{lang['Admin']}</Badge>
+                            }
                             {isSelf &&
                                 <>
                                     {!!currProfile!.eth &&
