@@ -1,0 +1,46 @@
+src/app/(normal)/group/[handle]/TabMembers/TabMembers.tsx
+  s_448695a5d036bc::t_cfe3029d53844c 55-62
+  s_448695a5d036bc::t_c9660da9ee5083 148-153
+  s_448695a5d036bc::t_4df743d8db27a5 13
+packages/sola-sdk/src/popup_city/popup_city.ts
+  s_448695a5d036bc::t_c1c127abcc9f26 75-76
+packages/sola-sdk/src/group/group.ts
+  s_448695a5d036bc::t_2185adc7325165 163-186
+packages/sola-sdk/src/group/types.ts
+  s_448695a5d036bc::t_4df59a3bd8da92 51-56
+packages/sola-sdk/src/profile/types.ts
+  s_448695a5d036bc::t_f36b84b42741d4 20-30
+src/components/client/ManagActions.tsx
+  s_448695a5d036bc::t_6241a1e1283792 19-20
+src/lang/en.ts
+  s_448695a5d036bc::t_ad247466faba38 75-78
+src/app/(normal)/group/[handle]/TabMembers/AdminNotificationToggle.tsx
+  s_448695a5d036bc::t_19878b9747119e 1-70
+src/app/(normal)/popup-city/page.tsx
+  s_448695a5d036bc::t_5853b7057b8a5e 5,75
+src/app/(normal)/profile/[handle]/page.tsx
+  s_448695a5d036bc::t_9680c68d52870a 76-81
+  s_448695a5d036bc::t_aa01376529dbcc 20-21
+src/utils/index.ts
+  s_448695a5d036bc::t_5686b0a9accc89 14
+  s_448695a5d036bc::t_be6bad6359166e 491-505
+  s_448695a5d036bc::t_ef4597b1ae003c 490
+src/lang/zh.ts
+  s_448695a5d036bc::t_affd667cd66587 76-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "58b0429fa5061ed51dba9af645402848eaefd92d",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
