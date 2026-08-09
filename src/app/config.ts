@@ -32,6 +32,11 @@ export const WECHAT_LOGIN = process.env.NEXT_PUBLIC_WECHAT_LOGIN === 'true'
 // STRIPE_ENABLED is authoritative — this flag only hides UI.
 export const STRIPE_ENABLED = process.env.NEXT_PUBLIC_STRIPE_ENABLED === 'true'
 
+// WeChat Pay is the mirror image: CN only, set in .env.cn.production and
+// absent from .env.production. The backend's WECHAT_PAY_ENABLED plus an
+// actually-installed merchant are authoritative; this only hides UI.
+export const WECHAT_PAY_ENABLED = process.env.NEXT_PUBLIC_WECHAT_PAY_ENABLED === 'true'
+
 // The next two are opt-OUT, unlike the flags above. Both features have always
 // been unconditionally on, and .env.production is gitignored — an opt-in flag
 // would make them vanish from SG the first time someone builds without that
@@ -46,4 +51,9 @@ export const CRYPTO_PAYMENT_ENABLED = process.env.NEXT_PUBLIC_CRYPTO_PAYMENT_ENA
 
 // Whether any payment rail exists at all. With none, a ticket can only be free,
 // so the price UI has nothing to offer.
-export const PAYMENTS_ENABLED = CRYPTO_PAYMENT_ENABLED || STRIPE_ENABLED
+//
+// WeChat Pay must be in this disjunction: CN has crypto and Stripe both off,
+// so leaving it out hides every price control on the deployment the rail was
+// built for, and the symptom is "WeChat Pay does nothing" rather than
+// anything pointing here.
+export const PAYMENTS_ENABLED = CRYPTO_PAYMENT_ENABLED || STRIPE_ENABLED || WECHAT_PAY_ENABLED

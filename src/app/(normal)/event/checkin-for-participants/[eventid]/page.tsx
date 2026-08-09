@@ -7,7 +7,7 @@ import CheckinBtn from '@/app/(normal)/event/checkin-for-participants/[eventid]/
 import QrCode from '@/components/client/QRcode'
 
 export default async function CheckinForParticipants(props: EventDetailDataProps) {
-    const {eventDetail, isEventOperator, currProfile} = await CheckInData(props)
+    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(props)
     const {lang} = await selectLang()
 
     return <div className="page-width-sm !pt-3 !pb-12">
@@ -39,8 +39,9 @@ export default async function CheckinForParticipants(props: EventDetailDataProps
         </div>
 
         <div className="font-semibold text-lg"> {lang['Participants']} <span
-            className="text-sm">({eventDetail.participants?.length})</span></div>
+            className="text-sm">({participants.length})</span></div>
         <EventParticipantList
+            participants={participants}
             lang={lang}
             isEventOperator={isEventOperator}
             currProfile={currProfile}

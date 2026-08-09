@@ -1,6 +1,7 @@
 import {SolaSdkFunctionParams} from '../types'
 import {request} from '../request'
 import {Coupon, DiscountType, Participant, Ticket, TicketItem} from './types'
+import {Profile} from '../profile/types'
 
 export interface TicketPayment {
     authToken: string,
@@ -69,6 +70,83 @@ export const cancelUnpaidItem = async ({params, clientMode}: SolaSdkFunctionPara
         clientMode
     })
     return data.ticket_item
+}
+
+/** One refund against an order (RefundBlueprint). Settles asynchronously, so
+ *  `pending` is a normal steady state, not a transient one. */
+export interface TicketItemRefund {
+    id: string
+    amount: number
+    currency: string
+    status: 'pending' | 'succeeded' | 'failed'
+    full_refund: boolean
+    reason: string | null
+    /** The provider's own message when status is 'failed'. */
+    error: string | null
+    requested_by_user_id: string
+    /** The manager who ordered it. */
+    requested_by: Profile | null
+    created_at: string
+    updated_at: string
+}
+
+/** One entry in an order's recorded history (TicketingActivityBlueprint). */
+export interface TicketingActivity {
+    id: string
+    /** See soon's Ticketing::Activity::ACTIONS. Wider than the status machine:
+     *  retries, rejected callbacks and lost disputes change no status. */
+    action: string
+    from_status: string | null
+    to_status: string | null
+    /** api | webhook | sweeper | reconciliation | system | backfill.
+     *  'backfill' means reconstructed from timestamps, not observed. */
+    source: string
+    reason: string | null
+    actor_user_id: string | null
+    /** The person who did it — null for anything a person did not do (a
+     *  callback, the sweeper). That absence is information, not a gap. */
+    actor: Profile | null
+    metadata: Record<string, unknown>
+    created_at: string
+}
+
+/** TicketItemBlueprint :order_detail — the organizer's view of an order. */
+export interface TicketItemOrder extends TicketItem {
+    /** Oldest first. Absent for a non-manager caller. */
+    activities?: TicketingActivity[]
+    payment_provider?: string | null
+    provider_ref?: string | null
+    paid_at?: string | null
+    released_at?: string | null
+    reserved_until?: string | null
+    updated_at?: string | null
+    ticket?: {id: string, title: string | null, ticket_type: string | null} | null
+    /** Oldest first. Absent for a non-manager caller. */
+    refunds?: TicketItemRefund[]
+}
+
+/**
+ * Every order on an event — managers only; the backend 403s otherwise.
+ *
+ * Returns the :order_detail shape (refunds + timestamps) for a manager, which
+ * is what the Orders tab reconstructs each order's history from.
+ */
+export const getEventTicketItems = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken: string
+}>) => {
+    try {
+        return await request<TicketItemOrder[]>('/tickets/list', {
+            params: {event_id: params.eventId},
+            authToken: params.authToken,
+            clientMode,
+            noCache: true
+        })
+    } catch {
+        // Not a manager, or the event has no orders — an empty tab is the
+        // right outcome either way, and the page must still render.
+        return [] as TicketItemOrder[]
+    }
 }
 
 export const getPurchasedTicketItemsByProfileNameAndEventId = async ({params, clientMode}: SolaSdkFunctionParams<{

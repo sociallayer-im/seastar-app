@@ -8,7 +8,6 @@ import {
     getEventDetailById,
     getEventForm,
     getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId, getRecurringById,
-    Participant,
     Recurring, Ticket
 } from '@sola/sdk'
 import {AVNeeds, SeatingStyle, ExternalCatering} from '@/app/configForSpecifyGroup'
@@ -31,8 +30,16 @@ export interface EventDetailDataProps {
 export default async function EventDetailPage(eventid: string, tab='content'){
     const currProfile = await getCurrProfile()
 
+    // The attendee array is the one part of this response that grows with the
+    // event, and the detail page keeps it behind a tab that fetches its own
+    // data (EventParticipantTab). `current_participant` comes back either way,
+    // which is all this function needs to decide the RSVP state.
     const eventDetail = await getEventDetailById({
-        params: {eventId: eventid, authToken: await getServerSideAuth()},
+        params: {
+            eventId: eventid,
+            authToken: await getServerSideAuth(),
+            includeParticipants: false
+        },
         clientMode: CLIENT_MODE
     })
     if (!eventDetail) {
@@ -65,19 +72,9 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const groupHost = eventDetail.event_roles?.find(r => r.role === 'group_host')
     const customHost = eventDetail.event_roles?.find(r => r.role === 'custom_host')
 
-    let filteredParticipants: Participant[]
-    if (!eventDetail?.tickets?.length) {
-        filteredParticipants = eventDetail.participants || []
-    } else {
-        // soon's ParticipantBlueprint doesn't expose ticket_id — a paid RSVP is
-        // reflected in payment_status. Hide unpaid pending purchases.
-        filteredParticipants = eventDetail.participants?.filter(participant =>
-            !participant.payment_status || participant.payment_status === 'succeeded'
-        ) || []
-    }
-
-    const currProfileParticipant = eventDetail.participants?.find((item: Participant) =>
-        item.user.id === currProfile?.id)
+    // The viewer's own RSVP, straight from the backend rather than searched for
+    // in a list this page no longer downloads.
+    const currProfileParticipant = eventDetail.current_participant
 
     const currProfileAttended = !!currProfileParticipant
         && ['attending', 'pending'].includes(currProfileParticipant.status || '')
@@ -168,7 +165,6 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         groupHost,
         customHost,
         tab,
-        participants: filteredParticipants,
         showParticipants,
         canAccess,
         canPublishEvent: !!currProfile && canSubmitEvent,

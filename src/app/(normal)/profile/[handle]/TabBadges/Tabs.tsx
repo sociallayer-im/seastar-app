@@ -1,8 +1,8 @@
 'use client'
 
 import {Button} from "@/components/shadcn/Button"
-import {useState} from "react"
 import {type Badge, type BadgeClass} from "@sola/sdk"
+import useTabParam from '@/hooks/useTabParam'
 import NoData from "@/components/NoData"
 import Image from 'next/image'
 
@@ -13,7 +13,9 @@ export default function Tabs({labels, created, owned, isSelf}: {
     isSelf: boolean,
     labels?: { created?: string, collected?: string }
 }) {
-    const [tab, setTab] = useState('collected')
+    // Both lists come down together, so this is only about making the choice
+    // linkable. `list`, not `tab` — the profile page's own tabs own that one.
+    const [tab, setTab] = useTabParam('list', ['collected', 'created'] as const)
 
     return <div className="py-4">
         <div className="flex flex-row-item-center">
@@ -30,7 +32,10 @@ export default function Tabs({labels, created, owned, isSelf}: {
             </Button>
         </div>
 
-        {(tab=== 'collected' && !owned.length) || (tab === 'created' && !created.length) && <NoData />}
+        {/* Parenthesised: `&&` binds tighter than `||`, so the original read as
+            `(collected && empty) || (created && empty && <NoData/>)` and the
+            empty state never appeared on the Collected tab. */}
+        {((tab === 'collected' && !owned.length) || (tab === 'created' && !created.length)) && <NoData />}
 
         {tab === 'collected' &&
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 py-4">

@@ -4,7 +4,6 @@ import {Badge} from "@/components/shadcn/Badge"
 import BtnGroupQrcode from "@/app/(normal)/group/[handle]/BtnGroupQrcode"
 import {Media_Meta} from "@/utils/social_media_meta"
 import CopyText from "@/components/client/CopyText"
-import {buttonVariants} from "@/components/shadcn/Button"
 import {selectLang} from "@/app/actions"
 import TabEvents from './TabEvents/TabEvents'
 import TabBadges from "@/app/(normal)/group/[handle]/TabBadges/TabBadges"
@@ -14,6 +13,7 @@ import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import ClickToCopy from '@/components/client/ClickToCopy'
 import CommentPanel from '@/components/client/CommentPanel'
+import NavTabs from '@/components/client/NavTabs'
 import { cache} from 'react'
 
 export const dynamic = 'force-dynamic'
@@ -140,71 +140,55 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                     </div>
                 }
                 <div className="flex flex-col items-start flex-1 min-w-0">
-                <div className="tab-titles w-full flex-row-item-center overflow-auto">
-                    <a className={`${buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                       href={`/group/${group.name}?tab=events`}>
-                        <span className="font-normal">{lang['Events']}</span>
-                    </a>
-                    <a className={`${buttonVariants({variant: tab === 'badges' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                       href={`/group/${group.name}?tab=badges`}>
-                        <span className="font-normal"> {lang['Badges']}</span>
-                    </a>
-                    {(currUserIsManager || currUserIsIssuer) &&
-                        <a className={`${buttonVariants({variant: tab === 'sending' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                           href={`/group/${group.name}?tab=sending`}>
-                            <span className="font-normal">{lang['Sending']}</span>
-                        </a>
-                    }
-                    <a className={`${buttonVariants({variant: tab === 'commend' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                       href={`/group/${group.name}?tab=commend`}>
-                        <span className="font-normal">{lang['Comments']}</span>
-                    </a>
-                    <a className={`${buttonVariants({variant: tab === 'members' ? 'normal' : 'ghost'})} flex-1 mr-3`}
-                       href={`/group/${group.name}?tab=members`}>
-                        <span className="font-normal">{lang['Members']}</span>
-                    </a>
-                </div>
-
-
-                {
-                    tab === 'events' && <div className="grid grid-cols-1 gap-3 w-full">
+                {/* Soft navigation, and the server builds only the tab that
+                    was asked for — a group's badge or member list is not
+                    something to fetch on the chance someone clicks. */}
+                <NavTabs
+                    className="w-full"
+                    current={tab}
+                    basePath={`/group/${group.name}`}
+                    tabs={[
+                        {key: 'events', label: lang['Events']},
+                        {key: 'badges', label: lang['Badges']},
+                        ...((currUserIsManager || currUserIsIssuer) ? [{key: 'sending', label: lang['Sending']}] : []),
+                        {key: 'commend', label: lang['Comments']},
+                        {key: 'members', label: lang['Members']}
+                    ]}>
+                    {tab === 'events' && <div className="grid grid-cols-1 gap-3 w-full">
                         <TabEvents handle={group.name}
                                    canPublishEvent={canSubmitEvent}
                                    currProfile={currProfile}/>
                     </div>
-                }
+                    }
 
-                {
-                    tab === 'badges' && <div className="grid grid-cols-1 gap-3 w-full">
+                    {tab === 'badges' && <div className="grid grid-cols-1 gap-3 w-full">
                         <TabBadges
                             handle={group.name}
                             isMember={currUserIsMember}
                             isIssuer={currUserIsIssuer}
                             isManager={currUserIsManager}/>
                     </div>
-                }
+                    }
 
-                {tab === 'members' && <div className="grid grid-cols-1 gap-3 w-full">
-                    <TabMembers
-                        group={group}
-                        currProfile={currProfile}
-                        lang={lang}
-                        members={members}
-                        isOwner={currUserIsOwner}
-                        isMember={currUserIsMember}
-                        isManager={currUserIsManager}
-                        isParentManager={currUserIsParentManager}/>
-                </div>
-                }
+                    {tab === 'members' && <div className="grid grid-cols-1 gap-3 w-full">
+                        <TabMembers
+                            group={group}
+                            currProfile={currProfile}
+                            lang={lang}
+                            members={members}
+                            isOwner={currUserIsOwner}
+                            isMember={currUserIsMember}
+                            isManager={currUserIsManager}
+                            isParentManager={currUserIsParentManager}/>
+                    </div>
+                    }
 
-                {
-                    tab === 'sending' && <div className="grid grid-cols-1 gap-3 w-full">
+                    {tab === 'sending' && <div className="grid grid-cols-1 gap-3 w-full">
                         <TabVouchers handle={group.name}/>
                     </div>
-                }
+                    }
 
-                {
-                    tab === 'commend' && <div className="py-4 w-full">
+                    {tab === 'commend' && <div className="py-4 w-full">
                         <CommentPanel
                             lang={lang}
                             currProfile={currProfile}
@@ -213,7 +197,8 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                             commentType={'comment'}
                         />
                     </div>
-                }
+                    }
+                </NavTabs>
                 </div>
             </div>
         </div>

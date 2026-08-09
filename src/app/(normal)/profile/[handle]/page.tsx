@@ -11,6 +11,7 @@ import TabGroups from "@/app/(normal)/profile/[handle]/TabGroups/TabGroups"
 import TabEvents from "@/app/(normal)/profile/[handle]/TabEvents/TabEvents"
 import TabBadges from "@/app/(normal)/profile/[handle]/TabBadges/TabBadges"
 import TabVouchers from "@/app/(normal)/profile/[handle]/TabVouchers/TabVouchers"
+import NavTabs from "@/components/client/NavTabs"
 import {Media_Meta} from "@/utils/social_media_meta"
 import CopyText from "@/components/client/CopyText"
 import {SocialMedia} from '@sola/sdk'
@@ -150,38 +151,30 @@ export default async function Profile({params: {handle}, searchParams: {tab: _ta
                 </div>
 
                 <div className="flex-1 sm:ml-6 px-3 w-full">
-                    <div className="tab-titles flex-row-item-center overflow-auto">
-                        <a className={`${buttonVariants({variant: tab === 'events' ? 'normal' : 'ghost'})} mr-3`}
-                           href={`/profile/${profile.name}?tab=events`}>
-                            <span className="font-normal"> {lang['Events']}</span>
-                        </a>
-                        <a className={`${buttonVariants({variant: tab === 'groups' ? 'normal' : 'ghost'})} mr-3`}
-                           href={`/profile/${profile.name}?tab=groups`}>
-                            <span className="font-normal">{lang['Groups']}</span>
-                        </a>
-                        <a className={`${buttonVariants({variant: tab === 'badges' ? 'normal' : 'ghost'})} mr-3`}
-                           href={`/profile/${profile.name}?tab=badges`}>
-                            <span className="font-normal">{lang['Badges']}</span>
-                        </a>
-                        {isSelf &&
-                            <a className={`${buttonVariants({variant: tab === 'sending' ? 'normal' : 'ghost'})}`}
-                               href={`/profile/${profile.name}?tab=sending`}>
-                                <span className="font-normal"> {lang['Sending']}</span>
-                            </a>
-                        }
-                    </div>
+                    {/* Only the selected tab's panel is built, so switching
+                        never pays for a list nobody asked to see — and it's a
+                        soft navigation, so the page isn't reloaded to do it. */}
+                    <NavTabs
+                        current={tab}
+                        basePath={`/profile/${profile.name}`}
+                        tabs={[
+                            {key: 'events', label: lang['Events']},
+                            {key: 'groups', label: lang['Groups']},
+                            {key: 'badges', label: lang['Badges']},
+                            ...(isSelf ? [{key: 'sending', label: lang['Sending']}] : [])
+                        ]}>
+                        <div className="tab-contents">
+                            {tab === 'groups' && <TabGroups profile={profile}/>}
 
-                    <div className="tab-contents">
-                        {tab === 'groups' && <TabGroups profile={profile}/>}
+                            {tab === 'events' && <TabEvents name={profile.name} currProfile={currProfile}/>}
 
-                        {tab === 'events' && <TabEvents name={profile.name} currProfile={currProfile}/>}
+                            {tab === 'badges' && <TabBadges name={profile.name}
+                                                            isSelf={isSelf}/>
+                            }
 
-                        {tab === 'badges' && <TabBadges name={profile.name}
-                                                        isSelf={isSelf}/>
-                        }
-
-                        {tab === 'sending' && <TabVouchers name={profile.name}/>}
-                    </div>
+                            {tab === 'sending' && <TabVouchers name={profile.name}/>}
+                        </div>
+                    </NavTabs>
                 </div>
             </div>
         </div>

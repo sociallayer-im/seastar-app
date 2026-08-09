@@ -15,7 +15,7 @@ import dayjs from "@/libs/dayjs"
 import useSelectBadgeClass from "@/hooks/useSelectBadgeClass"
 import useModal from "@/components/client/Modal/useModal"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
-import {Payments, PaymentSettingToken, PaymentsType} from "@/utils/payment_setting"
+import {isFiatChain, Payments, PaymentSettingToken, PaymentsType} from "@/utils/payment_setting"
 import DropdownMenu from "@/components/client/DropdownMenu"
 import {
     Track,
@@ -27,7 +27,7 @@ import {
     getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerName, getBadgeClassDetailByBadgeClassId
 } from '@sola/sdk'
 import {cfImage, getAuth} from '@/utils'
-import {CLIENT_MODE, CRYPTO_PAYMENT_ENABLED, PAYMENTS_ENABLED, STRIPE_ENABLED} from '@/app/config'
+import {CLIENT_MODE, CRYPTO_PAYMENT_ENABLED, PAYMENTS_ENABLED, STRIPE_ENABLED, WECHAT_PAY_ENABLED} from '@/app/config'
 import {StripeSetting, getStripeSettings, getEventStripeSettings} from '@sola/sdk'
 
 export interface TicketFormProps {
@@ -105,6 +105,16 @@ export default function TicketForm({
                         if (!p.stripe_setting_id) {
                             allTicketValid = false
                             errMsg.receiver_address = lang['Stripe key required']
+                        }
+                        return errMsg
+                    }
+                    if (p.chain === 'wechat') {
+                        // No wallet, no chains, and no merchant to pick — the
+                        // backend attaches the one CN merchant. Only the 1分
+                        // floor is left to mirror.
+                        if (!p.price || p.price < 1) {
+                            allTicketValid = false
+                            errMsg.price = lang['WeChat price minimum']
                         }
                         return errMsg
                     }
@@ -560,8 +570,12 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             : prev)
     }, [stripeSettings])
 
+    // Everything that is NOT a fiat rail. Written as a subtraction rather than
+    // `!== 'stripe'` so a newly added fiat rail cannot leak into the token and
+    // wallet pickers, whose price unit is a token's decimals rather than
+    // minor units.
     const EVM_CHAINS = [...new Map(
-        Payments.filter(c => c.chain !== 'stripe').map(c => [c.chain, c])
+        Payments.filter(c => !isFiatChain(c.chain)).map(c => [c.chain, c])
     ).values()]
 
     const ALL_TOKENS = [...new Map(
@@ -651,11 +665,29 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             chain: 'stripe',
             kind: 'fiat',
             token_name: 'USD',
+            currency: 'usd',
             price: 400,
             stripe_setting_id: stripeSettings.length === 1 ? stripeSettings[0].id : null
         }])
     }
     const hasStripeMethod = paymentMethods.some(p => p.chain === 'stripe' && !p._destroy)
+
+    // Its own entry too, for the same reason the card one is: the price is 分,
+    // which cannot share a row with a token amount. No merchant picker — CN
+    // has exactly one and the backend attaches it.
+    const addWechatPaymentMethod = () => {
+        setPaymentMethods([...paymentMethods, {
+            ...emptyPaymentMethod,
+            chain: 'wechat',
+            kind: 'fiat',
+            token_name: 'CNY',
+            currency: 'cny',
+            // ¥1. WeChat has no fixed per-charge fee, so unlike the card rail
+            // there is no floor to respect beyond 1分.
+            price: 100
+        }])
+    }
+    const hasWechatMethod = paymentMethods.some(p => p.chain === 'wechat' && !p._destroy)
 
     return <div>
         {
@@ -674,7 +706,10 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                     <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">{lang['TEST MODE']}</span>}
                             </div>
                             <div className="flex-row-item-center text-sm mb-3 whitespace-nowrap">
-                                <div>{lang['Price']} (USD)</div>
+                                {/* From the method, not hardcoded: a fiat rail
+                                    settles in its own currency and the amount
+                                    below is minor units of THAT one. */}
+                                <div>{lang['Price']} ({(p.currency || 'usd').toUpperCase()})</div>
                                 <Input type="number"
                                        value={!!p.price || Number(p.price) === 0 ? p.price / 100 : ''}
                                        onWheel={e => e.currentTarget.blur()}
@@ -726,6 +761,38 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                             {!stripeSettings.length &&
                                 <div className="text-xs text-gray-500 mt-2">{lang['Stripe keys intro']}</div>
                             }
+                        </div>
+                    }
+
+                    if (p.chain === 'wechat') {
+                        // Simpler than the card block by one control: there is
+                        // no merchant to choose. CN collects to a single
+                        // platform merchant, which the backend attaches.
+                        return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
+                            <div className="mb-2 text-sm font-semibold flex-row-item-center">
+                                <img src="/images/payment_icon/wechat_pay.svg" className="w-5 h-5 rounded mr-2" alt=""/>
+                                {lang['WeChat Pay']}
+                            </div>
+                            <div className="flex-row-item-center text-sm">
+                                <div>{lang['Price']} (CNY)</div>
+                                <Input type="number"
+                                       value={!!p.price || Number(p.price) === 0 ? p.price / 100 : ''}
+                                       onWheel={e => e.currentTarget.blur()}
+                                       inputSize={'md'}
+                                       onChange={e => setPaymentMethods(paymentMethods.map((pm, i) => i === index ? {
+                                           ...pm,
+                                           // Stored in 分, shown in 元 — the same
+                                           // minor-unit convention as the card rail.
+                                           price: Math.round(parseFloat(e.target.value) * 100) || 0
+                                       } : pm))}
+                                       className="ml-2"/>
+                                <i onClick={() => handleRemovePaymentMethod(index)}
+                                   className="uil-minus-circle text-2xl text-gray-500 cursor-pointer ml-2"/>
+                            </div>
+                            {!!props.errors?.[index]?.price &&
+                                <div className="err-msg text-red-400 mt-2 text-xs">{props.errors?.[index]?.price}</div>
+                            }
+                            <div className="text-xs text-gray-500 mt-2">{lang['WeChat Pay intro']}</div>
                         </div>
                     }
 
@@ -823,6 +890,12 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
             <Button variant={'secondary'} size={'sm'} onClick={addStripePaymentMethod}>
                 <img src="/images/payment_icon/stripe.png" className="w-4 h-4 rounded-full mr-1" alt=""/>
                 {lang['Add card payment']}
+            </Button>
+        }
+        {WECHAT_PAY_ENABLED && !hasWechatMethod &&
+            <Button variant={'secondary'} size={'sm'} onClick={addWechatPaymentMethod}>
+                <img src="/images/payment_icon/wechat_pay.svg" className="w-4 h-4 rounded mr-1" alt=""/>
+                {lang['Add WeChat payment']}
             </Button>
         }
     </div>

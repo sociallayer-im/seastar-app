@@ -1,12 +1,11 @@
 'use client'
 
-import {useState} from "react"
 import {Button} from "@/components/shadcn/Button"
 import CardEvent from "@/components/CardEvent"
 import NoData from "@/components/NoData"
 import {EventWithJoinStatus} from '@sola/sdk'
 import {Dictionary} from '@/lang'
-
+import useTabParam from '@/hooks/useTabParam'
 
 export interface EventTabProps {
     lang: Dictionary,
@@ -17,92 +16,39 @@ export interface EventTabProps {
 }
 
 export default function Tabs({attends, hosting, stared, coHosting, lang}: EventTabProps) {
-    const [tab, setTab] = useState<'attended' | 'created' | 'star' | 'cohosting'>('attended')
+    // All four lists arrive together from the server, so switching is free —
+    // it just needs to be linkable. `list` rather than `tab`, which the page's
+    // own tabs own.
+    const lists = [
+        {key: 'attended', label: lang['Attended'], events: attends},
+        {key: 'created', label: lang['Hosting'], events: hosting},
+        {key: 'cohosting', label: lang['Co-hosting'], events: coHosting},
+        ...(stared.length ? [{key: 'star', label: lang['Starred'], events: stared}] : [])
+    ]
+
+    const [tab, setTab] = useTabParam('list', lists.map(l => l.key))
+    const current = lists.find(l => l.key === tab) || lists[0]
+
     return <div className="py-4">
         <div className="flex flex-row-item-center">
-            <Button variant={tab === 'attended' ? 'outline' : 'ghost'}
-                size={'sm'}
-                onClick={() => setTab('attended')}>
-                <span className="font-normal text-sm">{lang['Attended']}</span>
-            </Button>
-            <Button variant={tab === 'created' ? 'outline' : 'ghost'}
-                className={'font-normal'}
-                size={'sm'}
-                onClick={() => setTab('created')}>
-                <span className="font-normal text-sm">{lang['Hosting']}</span>
-            </Button>
-            <Button variant={tab === 'cohosting' ? 'outline' : 'ghost'}
+            {lists.map(l =>
+                <Button key={l.key}
+                    variant={current.key === l.key ? 'outline' : 'ghost'}
                     className={'font-normal'}
                     size={'sm'}
-                    onClick={() => setTab('cohosting')}>
-                <span className="font-normal text-sm">{lang['Co-hosting']}</span>
-            </Button>
-            {!!stared.length &&
-                <Button variant={tab === 'star' ? 'outline' : 'ghost'}
-                    className={'font-normal'}
-                    size={'sm'}
-                    onClick={() => setTab('star')}>
-                    <span className="font-normal text-sm">{lang['Starred']}</span>
+                    onClick={() => setTab(l.key)}>
+                    <span className="font-normal text-sm">{l.label}</span>
                 </Button>
-            }
+            )}
         </div>
 
-        { tab === 'attended' &&
-            <div className="grid grid-cols-1 gap-3 py-4">
-                {
-                    attends.map((event, i) => {
-                        return <CardEvent key={i} event={event} lang={lang} />
-                    })
-                }
-            </div>
-        }
+        <div className="grid grid-cols-1 gap-3 py-4">
+            {current.events.map((event, i) => <CardEvent key={i} event={event} lang={lang}/>)}
+        </div>
 
-        { tab === 'created' &&
-            <div className="grid grid-cols-1 gap-3 py-4">
-                {
-                    hosting.map((event, i) => {
-                        return <CardEvent key={i} event={event} lang={lang} />
-                    })
-                }
-            </div>
-        }
-
-        { tab === 'star' &&
-            <div className="grid grid-cols-1 gap-3 py-4">
-                {
-                    stared.map((event, i) => {
-                        return <CardEvent key={i} event={event} lang={lang} />
-                    })
-                }
-            </div>
-        }
-
-        { tab === 'star' &&
-            <div className="grid grid-cols-1 gap-3 py-4">
-                {
-                    stared.map((event, i) => {
-                        return <CardEvent key={i} event={event} lang={lang} />
-                    })
-                }
-            </div>
-        }
-
-        { tab === 'cohosting' &&
-            <div className="grid grid-cols-1 gap-3 py-4">
-                {
-                    coHosting.map((event, i) => {
-                        return <CardEvent key={i} event={event} lang={lang} />
-                    })
-                }
-            </div>
-        }
-
-
-        {
-            ((!attends.length && tab === 'attended') ||
-                (!hosting.length && tab === 'created') ||
-                (!hosting.length && tab === 'cohosting') ||
-                (!stared.length && tab === 'star')) && <NoData />
-        }
+        {/* Checked against the list being shown. The old version tested
+            `hosting` for the co-hosting tab, so an empty co-hosting list said
+            nothing at all whenever the user happened to host something. */}
+        {!current.events.length && <NoData/>}
     </div>
 }

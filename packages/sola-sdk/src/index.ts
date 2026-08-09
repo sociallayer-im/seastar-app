@@ -16,3 +16,4 @@ export * from './remember'
 export * from './place'
 
 export * from './stripe'
+export * from './wechat'

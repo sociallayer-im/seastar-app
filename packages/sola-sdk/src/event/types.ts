@@ -60,7 +60,13 @@ export interface EventWithJoinStatus extends Event {
 export interface EventDetail extends Event {
     content: string | null
     event_roles: EventRole[] | null
-    participants: Participant[] | null
+    /** Absent when the event was fetched with `includeParticipants: false` —
+     *  fetch the list with getEventParticipants instead. */
+    participants?: Participant[] | null
+    /** The viewer's own RSVP, or null if they haven't joined. Emitted whenever
+     *  the request carried a token, so it survives `participants` being left
+     *  out. Undefined for an anonymous request. */
+    current_participant?: Participant | null
     tickets: Ticket[] | null
 }
 
@@ -96,6 +102,9 @@ export interface PaymentMethod {
     price: number
     protocol: string | null
     chains?: string[]
+    /** 'usd' | 'cny' on fiat rails; null on crypto, whose unit is token_name.
+     *  Set by the backend from the rail, so it never has to be sent on create. */
+    currency?: string | null
     /** Which of the owner's Stripe keys this method charges to (chain 'stripe' only). */
     stripe_setting_id?: string | null
     _destroy?: string
@@ -222,6 +231,10 @@ export interface TicketItem {
     original_price: number | null,
     protocol: string | null,
     created_at: string | null,
+    /** As charged: 'usd' | 'cny' on fiat rails, null on crypto (whose amount is
+     *  scaled by the token's decimals, not by 100). An order keeps the currency
+     *  it was taken in even if the rail's default later changes. */
+    currency?: string | null,
     user?: Profile,
 }
 

@@ -7,12 +7,18 @@ import {CLIENT_MODE} from '@/app/config'
 import {getAuth} from '@/utils'
 
 /**
- * Shown when the buyer lands back from Stripe Checkout
- * (?payment=success&ticket_item=…). The browser never decides payment state —
- * this only POLLS until the webhook (or sweeper) has confirmed the order,
- * then reloads so the server-rendered page shows the ticket.
+ * Shown when the buyer comes back from Stripe Checkout
+ * (?payment=success&ticket_item=…), which is a real redirect off-site and back.
+ *
+ * WeChat does NOT come through here: its sheet is drawn over our own page, so
+ * the dialog waits for confirmation in place and soft-refreshes rather than
+ * navigating twice (see DialogTicket#settleInPlace).
+ *
+ * The browser never decides payment state — a client-side "success" proves
+ * nothing on either rail — so this only POLLS until the callback (or the
+ * sweeper) has confirmed the order server-side.
  */
-export default function StripePaymentReturn({lang, eventId, profileName, result}: {
+export default function PaymentReturn({lang, eventId, profileName, result}: {
     lang: Dictionary
     eventId: string
     profileName: string
