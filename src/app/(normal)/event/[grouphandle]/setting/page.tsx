@@ -18,6 +18,20 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
         <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Group Event Setting']}</div>
             <div className="flex flex-col max-w-[800px] mx-auto">
+                {/* The group's own profile (name, avatar, bio, links). Lives on
+                    the /group route rather than /event, so it was reachable
+                    only by typing the URL — every other setting on this page
+                    had an entry point and this one did not. */}
+                <a href={`/group/${groupDetail.name}/edit`}
+                    className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
+                    <div className="flex-row-item-center w-full justify-between">
+                        <div>{lang['Group Profile']}</div>
+                        <div className="font-normal flex-row-item-center">
+                            <i className="uil-arrow-right text-2xl" />
+                        </div>
+                    </div>
+                </a>
+
                 <a href={`/event/${groupDetail.name}/venues`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">

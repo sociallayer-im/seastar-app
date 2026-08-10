@@ -44,6 +44,20 @@ export interface GroupDetail extends Group {
     memberships: Membership[]
 }
 
+/**
+ * A group as the homepage community list renders it — the API's `:card` view.
+ * Narrower than GroupDetail (no memberships/tracks/venues sub-resources) but
+ * wider than Group, which lacks the two counts the card puts on screen.
+ */
+export interface Community extends Group {
+    bio: string | null
+    location: string | null
+    active: boolean
+    memberships_count: number
+    events_count: number
+    parent_id: string | null
+}
+
 export interface Membership {
     id: string
     role: string

@@ -7,6 +7,7 @@ import PopupCityMap from './PopupCityMap'
 import ToCreatePopupCity from '@/app/(normal)/discover/ToCreatePopupCity'
 import PopupCities from '@/components/client/PopupCities'
 import Features from '@/components/client/Features'
+import CommunityList from '@/components/CommunityList'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -23,7 +24,7 @@ export async function generateMetadata() {
 }
 
 export default async function DiscoverPage() {
-    const { eventGroups, popupCities, currProfile, enableGoogleMap, featuredPopupCities } = await DiscoverPageData()
+    const { communities, popupCities, currProfile, enableGoogleMap, featuredPopupCities } = await DiscoverPageData()
     const { lang, type } = await selectLang()
 
     // popup-city map pins should come from the cities' own coordinates, but the
@@ -41,6 +42,19 @@ export default async function DiscoverPage() {
         <ToCreatePopupCity lang={lang} />
 
         <PopupCities popupCities={popupCities} lang={lang} />
+
+        {/* Every active community, not the tag-curated slice above it — a group
+            belongs here by existing, which is why this reads `communities` and
+            not `eventGroups`. */}
+        {communities.length > 0 &&
+            <div className="mt-8">
+                <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
+                    <div>{lang['Communities']}</div>
+                </h2>
+
+                <CommunityList communities={communities} lang={lang} />
+            </div>
+        }
 
         <div className="mt-8">
             <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">

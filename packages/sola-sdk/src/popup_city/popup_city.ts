@@ -3,11 +3,13 @@ import {request} from '../request'
 import {PopupCity, PopupCityDraft} from './types'
 import {SolaSdkFunctionParams} from '../types'
 import {Event} from '../event'
-import {Group} from '../group'
+import {Community, Group} from '../group'
 
 // GET /discover payload
 interface DiscoverPayload {
     groups: Group[]
+    /** Every active group, tagged or not — the homepage's community list. */
+    communities: Community[]
     popup_cities: any[]
     events: Event[]
 }
@@ -40,7 +42,11 @@ export const discoverData = async ({clientMode}: { clientMode: ClientMode }) => 
         p.group_tags?.includes('featured') || p.group_tags?.includes(':featured'))
 
     return {
+        // eventGroups is the CURATED slice (featured/top tagged); communities
+        // is every active group. They answer different questions, so a plain
+        // untagged group appears only in the second.
         eventGroups: (data.groups || []) as Group[],
+        communities: (data.communities || []) as Community[],
         popupCities,
         featuredPopupCities,
         events: (data.events || []) as Event[],

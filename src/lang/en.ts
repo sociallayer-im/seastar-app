@@ -72,6 +72,7 @@ export const en = {
     Chat: "Chat",
     Votes: "Votes",
     Members: "Members",
+    "Group Profile": "Group Profile",
     Admin: "Admin",
     "Please login first": "Please login first",
     "Email me when a member submits an event": "Email me when a member submits an event",
