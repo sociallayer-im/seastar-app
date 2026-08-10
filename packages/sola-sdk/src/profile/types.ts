@@ -15,6 +15,17 @@ export interface ProfileDetail extends Profile {
     eth: string | null
     social_links: SocialMedia | null
     email?: string | null
+    /**
+     * Canonical E.164 (+8613800138000), only on /users/me (:self view) — PII on
+     * the same footing as email. Only ever set on CN, where SMS sign-in exists.
+     */
+    phone?: string | null
+    /**
+     * Whether this account signed in through WeChat. Only on the :self view,
+     * and deliberately a boolean rather than the openid — binding a phone is
+     * required for WeChat accounts and only those (see onboardingTarget).
+     */
+    wechat?: boolean
     /** Only on /users/me (:self view). "admin" marks a platform administrator. */
     permissions?: string[]
     /**

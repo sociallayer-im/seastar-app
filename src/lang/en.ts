@@ -33,6 +33,17 @@ export const en = {
     "Please enter your email address so that you can log in and receive important notifications via email.":
         "Please enter your email address so that you can log in and receive important notifications via email.",
     "Your email": "Your email",
+    // SMS sign-in and the required bind-phone step. CN only — the strings are
+    // still added to both dictionaries, because the English build compiles them
+    // whether or not NEXT_PUBLIC_PHONE_LOGIN renders them.
+    "Phone number": "Phone number",
+    "Invalid phone number": "Please enter a valid mainland mobile number",
+    "Check your messages": "Check your messages",
+    "Bind Phone Number": "Bind Phone Number",
+    "Please verify your mobile number to finish setting up your account.":
+        "Please verify your mobile number to finish setting up your account.",
+    "Signed in to the account for this number":
+        "This number already had an account — you are now signed in to it.",
     Continue: "Continue",
     Skip: "Skip",
     "Event Schedule": "Event Schedule",

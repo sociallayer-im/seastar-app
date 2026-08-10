@@ -27,6 +27,16 @@ export const THIRD_PARTY_LOGIN = process.env.NEXT_PUBLIC_THIRD_PARTY_LOGIN === '
 // signin/page.tsx.
 export const WECHAT_LOGIN = process.env.NEXT_PUBLIC_WECHAT_LOGIN === 'true'
 
+// SMS sign-in, CN only and +86 only: the Aliyun 签名 and 模板 belong to a
+// domestic company and can only deliver to mainland numbers. Opt-in for the
+// same reason as WECHAT_LOGIN — soon's own PHONE_LOGIN_ENABLED is
+// authoritative (the endpoints 404 without it) and this only hides UI.
+//
+// It also switches on the REQUIRED bind-phone step for WeChat accounts; see
+// onboardingTarget. Turning it off leaves that step out entirely rather than
+// stranding people on a page whose endpoints don't exist.
+export const PHONE_LOGIN = process.env.NEXT_PUBLIC_PHONE_LOGIN === 'true'
+
 // Stripe card payments are SG-only (soon design/PAYMENTS_PLAN.md decision
 // #13): set in .env.production, absent in .env.cn.production. The backend's
 // STRIPE_ENABLED is authoritative — this flag only hides UI.

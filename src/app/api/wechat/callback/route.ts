@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server'
 import {getProfileDetailByAuth, trustedSignIn} from '@sola/sdk'
-import {CLIENT_MODE} from '@/app/config'
+import {CLIENT_MODE, PHONE_LOGIN} from '@/app/config'
 import {AUTH_FIELD, authCookieDomain, sanitizeReturnTarget} from '@/utils'
 import {STATE_COOKIE, exchangeCode, requestOrigin, wechatConfigured} from '../wechat'
 
@@ -52,10 +52,10 @@ export async function GET(req: NextRequest) {
         return failure(req, 'wechat_failed')
     }
 
-    // A WeChat-first account arrives with neither an email nor a username, so
-    // it has onboarding left — the same fork clientCheckUserLoggedInAndRedirect
-    // takes for the other providers, resolved here because this leg is a
-    // server-side redirect.
+    // A WeChat-first account arrives with no phone, no email and no username,
+    // so it has onboarding left — the same fork
+    // clientCheckUserLoggedInAndRedirect takes for the other providers,
+    // resolved here because this leg is a server-side redirect.
     const profile = await getProfileDetailByAuth({params: {authToken: token}, clientMode: CLIENT_MODE})
 
     // Everything host-derived comes from the FORWARDED origin, never
@@ -64,14 +64,21 @@ export async function GET(req: NextRequest) {
     // and the cookie domain was computed from "localhost".
     const origin = requestOrigin(req)
     const host = new URL(origin).hostname
-    // Mirrors onboardingTarget(): email first, then username. A WeChat account
-    // can only be merged into an existing email account while it is still
-    // unregistered, so the email question has to come before the username.
-    const target = profile && !profile.email
-        ? '/bind-email'
-        : profile && !profile.name
-            ? '/register'
-            : sanitizeReturnTarget(req.cookies.get('return')?.value, host)
+    // Mirrors onboardingTarget(): phone, then email, then username. A WeChat
+    // account can only be merged into an existing one while it is still
+    // unregistered, so both identity questions have to come before the
+    // username. The phone step is not optional here and applies to every
+    // account down this path by definition — everything arriving at this route
+    // signed in through WeChat.
+    const target = !profile
+        ? sanitizeReturnTarget(req.cookies.get('return')?.value, host)
+        : PHONE_LOGIN && !profile.phone
+            ? '/bind-phone'
+            : !profile.email
+                ? '/bind-email'
+                : !profile.name
+                    ? '/register'
+                    : sanitizeReturnTarget(req.cookies.get('return')?.value, host)
 
     const response = NextResponse.redirect(new URL(target, origin))
     // Deliberately NOT httpOnly: this is the same cookie setAuth() writes from

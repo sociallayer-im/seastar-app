@@ -34,6 +34,13 @@ export const zh: Dictionary = {
   "Please enter your email address so that you can log in and receive important notifications via email.":
     "请输入您的电子邮件地址，以便您可以通过电子邮件登录并接收重要通知。",
   "Your email": "您的邮箱",
+  "Phone number": "手机号",
+  "Invalid phone number": "请输入正确的中国大陆手机号",
+  "Check your messages": "查看短信",
+  "Bind Phone Number": "绑定手机号",
+  "Please verify your mobile number to finish setting up your account.":
+    "请验证您的手机号，以完成账号设置。",
+  "Signed in to the account for this number": "该手机号已有账号，已为你登录该账号。",
   Continue: "继续",
   Skip: "跳过",
   "Event Schedule": "活动日程",

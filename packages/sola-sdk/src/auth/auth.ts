@@ -138,6 +138,68 @@ export const bindEmail = async ({params, clientMode}: SolaSdkFunctionParams<{
     })
 }
 
+/* --- SMS sign-in (CN only) ------------------------------------------------
+ *
+ * All three 404 unless the backend has PHONE_LOGIN_ENABLED=true, which only CN
+ * sets: the Aliyun 签名 and 模板 are a domestic company's and can only deliver
+ * to +86 numbers. Gate the UI on NEXT_PUBLIC_PHONE_LOGIN rather than calling
+ * and handling the 404.
+ *
+ * `phone` is sent as typed — "13800138000", "+86 138 0013 8000" and
+ * "8613800138000" are all accepted and normalised server-side to one canonical
+ * +86… string. Don't try to normalise it here: the backend's version is the one
+ * that has to match, and doing it twice invites the two from drifting.
+ */
+
+/** Texts a one-time code. An unknown number signs UP on verify. */
+export const requestPhoneCode = async ({params, clientMode}: SolaSdkFunctionParams<{
+    phone: string,
+    /** Omit for sign-in; 'bind_phone' mints a code for the bind flow instead. */
+    context?: 'bind_phone'
+}>): Promise<void> => {
+    await request('/auth/request_phone_code', {
+        method: 'POST',
+        clientMode,
+        body: {phone: params.phone, context: params.context}
+    })
+}
+
+/** Verifies a sign-in code, creating the account on first use. */
+export const verifyPhoneCode = async ({params, clientMode}: SolaSdkFunctionParams<{
+    phone: string,
+    code: string
+}>) => {
+    return await request<AuthResult>('/auth/verify_phone_code', {
+        method: 'POST',
+        clientMode,
+        body: {phone: params.phone, code: params.code}
+    })
+}
+
+/**
+ * Attaches a verified number to the account already signed in — the required
+ * step after a WeChat sign-in.
+ *
+ * Merges on the same terms as bindEmail: a number that already has its own
+ * account (from an earlier SMS sign-in) absorbs this one rather than failing,
+ * because this step cannot be skipped and a hard error would leave the user
+ * with nowhere to go. The response shape is the same one bindEmail returns —
+ * check it with isBindEmailMerged, and on a merge store the returned token,
+ * since the session you sent belonged to an account that no longer exists.
+ */
+export const bindPhone = async ({params, clientMode}: SolaSdkFunctionParams<{
+    phone: string,
+    code: string,
+    authToken: string
+}>) => {
+    return await request<BindEmailResult>('/auth/bind_phone', {
+        method: 'POST',
+        clientMode,
+        authToken: params.authToken,
+        body: {phone: params.phone, code: params.code}
+    })
+}
+
 /**
  * Exchanges a server-verified identity for a session, gated by the NEXT_TOKEN
  * shared secret. Exactly one identity is expected: an email (Google), or a

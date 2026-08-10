@@ -41,7 +41,7 @@ export interface VenueTimeslot {
 }
 import domtoimage from 'dom-to-image'
 import { Dictionary } from '@/lang'
-import {CLIENT_MODE, SOLA_APP_SUBDOMAINS} from '@/app/config'
+import {CLIENT_MODE, PHONE_LOGIN, SOLA_APP_SUBDOMAINS} from '@/app/config'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
 
@@ -161,22 +161,25 @@ export const clientRedirectToReturn = () => {
 /**
  * Where a freshly signed-in account still has to go before it can be used.
  *
- * Email comes BEFORE username, and that order is load-bearing. Binding an
- * address that already has an account merges the two, and soon only permits
- * that while this account is still unregistered (blank name) — see
+ * The order is phone → email → username, and it is load-bearing. Binding an
+ * address or a number that already has an account merges the two, and soon only
+ * permits that while this account is still unregistered (blank name) — see
  * AuthController#mergeable?. Asking for the username first would close the
  * merge window and leave the person holding two accounts, which is the whole
  * thing we're trying to avoid for WeChat sign-ins.
  *
- * Accounts that arrive with an email (code login, Google) skip straight to the
- * username step, and `/bind-email` is skippable, so nobody is forced through a
- * step that doesn't apply to them.
+ * Only the phone step is mandatory, and only for WeChat accounts on CN: someone
+ * who signed in through a 服务号 is by definition a mainland user and has a
+ * mobile number, which is not true of anyone else. Everything else is skippable
+ * or already satisfied — accounts that arrive with an email (code login,
+ * Google) go straight to the username step.
  */
 export const onboardingTarget = (
-    profile: {email?: string | null, name?: string | null} | null,
+    profile: {email?: string | null, phone?: string | null, wechat?: boolean, name?: string | null} | null,
     prefillUsername?: string
 ) => {
     if (!profile) return returnTarget()
+    if (PHONE_LOGIN && profile.wechat && !profile.phone) return '/bind-phone'
     if (!profile.email) return '/bind-email'
     if (!profile.name) {
         return prefillUsername ? `/register?username=${encodeURIComponent(prefillUsername)}` : '/register'
