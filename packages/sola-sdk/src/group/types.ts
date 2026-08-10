@@ -56,6 +56,8 @@ export interface Community extends Group {
     memberships_count: number
     events_count: number
     parent_id: string | null
+    /** Curation tags (pin/top/featured) — what the admin controls read and write. */
+    group_tags: string[] | null
 }
 
 export interface Membership {

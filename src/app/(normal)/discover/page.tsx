@@ -43,13 +43,17 @@ export default async function DiscoverPage() {
 
         <PopupCities popupCities={popupCities} lang={lang} />
 
-        {/* Every active community, not the tag-curated slice above it — a group
-            belongs here by existing, which is why this reads `communities` and
-            not `eventGroups`. */}
+        {/* The pin-curated slice, capped server-side at 40. The full list is
+            /communities, which is also where an admin pins from — a group with
+            no tag yet appears in no homepage list by definition. */}
         {communities.length > 0 &&
             <div className="mt-8">
                 <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
                     <div>{lang['Communities']}</div>
+                    <a href="/communities" className="flex-row-item-center text-sm">
+                        <span>{lang['See all Communities']}</span>
+                        <i className="uil-arrow-right text-2xl ml-1"/>
+                    </a>
                 </h2>
 
                 <CommunityList communities={communities} lang={lang} />

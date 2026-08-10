@@ -73,7 +73,7 @@ export default async function PopupCityListPage() {
                         </div>
                     </div>
                     {isPlatformAdmin(currProfile) &&
-                        <ManagActions popupCity={popupCity} lang={lang}/>}
+                        <ManagActions group={popupCity} popupCity={popupCity} lang={lang}/>}
                 </a>
             })
             }

@@ -14,6 +14,10 @@ import { cfImage, displayProfileName } from "@/utils"
 
 
 export default function Features(props: { featuredPopupCities: PopupCity[] }) {
+    // With nothing featured this rendered an empty bordered, shadowed box —
+    // same defect as the pop-up city section below it, and just as visible.
+    if (!props.featuredPopupCities.length) return null
+
     return <div className="w-full mb-8 overflow-hidden rounded-lg border-gray-200 shadow">
         <Carousel opts={{
             loop: true

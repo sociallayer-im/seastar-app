@@ -1,6 +1,6 @@
 import {ClientMode} from '../client'
 import {request, requestOrNull, requestAllPages} from '../request'
-import {Group, GroupDetail, GroupWithOwner, Membership, MembershipDetail} from './types'
+import {Community, Group, GroupDetail, GroupWithOwner, Membership, MembershipDetail} from './types'
 import {InviteDetail} from '../badge/types'
 import {SolaSdkFunctionParams} from '../types'
 
@@ -157,6 +157,41 @@ export const addManager = async ({params, clientMode}: SolaSdkFunctionParams<{pr
         clientMode,
         authToken: params.authToken,
         body: {membership: {role: 'manager'}}
+    })
+}
+
+/** The tags platform admins use to curate the homepage. */
+export type CurationTag = 'pin' | 'top' | 'featured'
+
+/**
+ * Every active group, paginated — the public browse-all list behind
+ * /communities.
+ *
+ * Distinct from the discover payload's `communities`, which is only the
+ * pin-tagged homepage slice. An admin needs this one to reach a group that
+ * carries no tag yet; the homepage list by definition never contains those.
+ */
+export const getGroupDirectory = async ({clientMode}: {clientMode: ClientMode}) => {
+    return await requestAllPages<Community>('/groups/directory', {clientMode, noCache: true})
+}
+
+/**
+ * Platform-admin curation: replace a group's `group_tags`.
+ *
+ * The backend strips pin/top/featured from anyone who is not a platform admin
+ * (GroupsController::PRIVILEGED_TAGS), so this is safe to call optimistically —
+ * a non-admin's request succeeds but changes nothing privileged.
+ */
+export const updateGroupTags = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string,
+    groupTags: string[],
+    authToken: string
+}>) => {
+    await request(`/groups/${params.groupId}`, {
+        method: 'PATCH',
+        body: {group: {group_tags: params.groupTags}},
+        authToken: params.authToken,
+        clientMode
     })
 }
 

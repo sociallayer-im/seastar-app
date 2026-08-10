@@ -38,6 +38,12 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
 
     const filteredCities = filterPopupCities(popupCities)
 
+    // Nothing curated as a pop-up city: hide the whole section — heading,
+    // filter buttons and all — rather than show a titled empty box. Keyed on
+    // the input rather than `filteredCities`, so a filter that happens to
+    // match nothing still leaves the controls on screen to undo it.
+    if (!popupCities.length) return null
+
     return (
         <div>
             <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
