@@ -1,0 +1,35 @@
+src/components/client/Features.tsx
+  s_448695a5d036bc::t_64119afaadcfae 14,27-28,35,56-59,61
+src/components/Avatar.tsx
+  s_448695a5d036bc::t_c52b4ec461247a 3,11-12,14-21,25,29
+src/components/CardEvent/index.tsx
+  s_448695a5d036bc::t_ddd28b3707fee6 11,145
+src/app/(normal)/event/[grouphandle]/venues/components/VenueCard.tsx
+  s_448695a5d036bc::t_a8538f6424965f 5
+  s_448695a5d036bc::t_ddd28b3707fee6 59
+src/components/client/PopupCities.tsx
+  s_448695a5d036bc::t_ddd28b3707fee6 5,101
+src/app/(normal)/popup-city/page.tsx
+  s_448695a5d036bc::t_ddd28b3707fee6 4,45
+src/app/(normal)/event/[grouphandle]/GroupEventHome.tsx
+  s_448695a5d036bc::t_a8538f6424965f 8
+  s_448695a5d036bc::t_ddd28b3707fee6 149,167
+src/components/Img.tsx
+  s_448695a5d036bc::t_9a0b313f97fd3a 1-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "d73f948fad3b9743e15c8a2d9dd2d8c38f621d33",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
