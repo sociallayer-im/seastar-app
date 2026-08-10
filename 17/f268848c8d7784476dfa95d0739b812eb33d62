@@ -1,0 +1,36 @@
+src/components/client/Features.tsx
+  s_448695a5d036bc::t_f94991a87c412e 17-20
+src/components/client/PopupCities.tsx
+  s_448695a5d036bc::t_5f468397d72f3e 41-46
+src/components/CommunityList.tsx
+  s_448695a5d036bc::t_a0c0c8c2b25f8f 4,10-16,24,29-32,44-45
+src/app/(normal)/popup-city/page.tsx
+  s_448695a5d036bc::t_c2f14848d5044e 76
+src/components/client/ManagActions.tsx
+  s_448695a5d036bc::t_fc3741333a4342 3,11-18,20,22-35,38-42,47-49,54-59,66,86,106-120
+packages/sola-sdk/src/group/types.ts
+  s_448695a5d036bc::t_7f33fa754fceb0 59-60
+src/app/(normal)/discover/page.tsx
+  s_448695a5d036bc::t_fb6158ff902ce6 46-48,53-56
+packages/sola-sdk/src/group/group.ts
+  s_448695a5d036bc::t_d25ec4fe7134a8 3
+  s_448695a5d036bc::t_414035881e0fa6 163-197
+src/app/(normal)/communities/page.tsx
+  s_448695a5d036bc::t_0ffe0955f316b6 3-6,8-15,18-22,27-28,31-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "17f268848c8d7784476dfa95d0739b812eb33d62",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
