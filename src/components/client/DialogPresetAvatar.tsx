@@ -1,6 +1,5 @@
 import {Dictionary} from '@/lang'
 import useUploadAvatar from '@/hooks/useUploadAvatar'
-import Image from 'next/image'
 
 export interface DialogPresetAvatarProps {
     lang: Dictionary

@@ -8,7 +8,6 @@ import {Button,} from '@/components/shadcn/Button'
 import CardEvent from '@/components/CardEvent'
 import {cfImage, displayProfileName} from '@/utils'
 import Avatar from '@/components/Avatar'
-import Image from 'next/image'
 
 export interface SearchPageProps {
     lang: Dictionary,

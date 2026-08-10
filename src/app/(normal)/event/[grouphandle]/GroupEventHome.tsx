@@ -5,6 +5,7 @@ import GroupEventHomeData from '@/app/(normal)/event/[grouphandle]/data'
 import { cfImage, displayProfileName, getAuth, prefixUrl } from '@/utils'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import SignInPanel from '@/components/SignInPanel'
+import Img from '@/components/Img'
 import EventHomeFilter from '@/components/client/EventHomeFilter'
 import EventListGroupedByDate from '@/components/EventListGroupedByDate'
 import EventHomeMap from '@/app/(normal)/event/[grouphandle]/EventHomeMap'
@@ -145,7 +146,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                 <a className="flex-row-item-center justify-between  p-3 rounded-lg mb-3"
                     href={`/group/${groupDetail.name}?tab=members`}>
                     <div className="flex-row-item-center">
-                        <img src={cfImage((groupDetail.image_url && groupDetail.image_url != "") ? groupDetail.image_url : "/images/default_avatar/avatar_1.png", { width: 32, height: 32, fit: 'cover' })}
+                        <Img src={cfImage((groupDetail.image_url && groupDetail.image_url != "") ? groupDetail.image_url : "/images/default_avatar/avatar_1.png", { width: 32, height: 32, fit: 'cover' })}
                             className="w-4 h-4 rounded-full mr-2" alt="" />
                         <span
                             className="font-semibold text-xs whitespace-nowrap max-w-[150px] overflow-hidden overflow-ellipsis">
@@ -163,7 +164,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
 
                 {!!groupDetail.banner_image_url &&
                     <a href={groupDetail.banner_link_url ? prefixUrl(groupDetail.banner_link_url) : '/'} className="mt-3">
-                        <img className="w-full h-auto"
+                        <Img className="w-full h-auto"
                             src={cfImage(groupDetail.banner_image_url, { width: 656, format: 'auto', quality: 85 })} alt="" />
                     </a>
                 }

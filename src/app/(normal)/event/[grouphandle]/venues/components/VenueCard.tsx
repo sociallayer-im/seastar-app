@@ -2,6 +2,7 @@
 
 import {Dictionary} from '@/lang'
 import {Venue} from '@sola/sdk'
+import Img from '@/components/Img'
 
 // Group detail embeds the light Venue view; images/availabilities are optional extras.
 type VenueCardVenue = Venue & {image_urls?: string[], availabilities?: unknown[]}
@@ -55,7 +56,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
                 </div>
                 {!!venue.image_urls?.length &&
                     <div className="w-[140px] h-[140px] rounded-lg overflow-hidden flex-shrink-0  order-1 sm:order-2">
-                        <img
+                        <Img
                             src={cfImage(venue.image_urls[0], { width: 400, height: 300, fit: 'cover' })}
                             alt={venue.name}
                             className="w-full h-full object-cover"

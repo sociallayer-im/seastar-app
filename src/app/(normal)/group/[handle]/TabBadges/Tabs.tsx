@@ -7,7 +7,6 @@ import NoData from "@/components/NoData"
 import {cfImage, getAvatar, getAuth} from "@/utils"
 import {Invite, BadgeClass, ProfileDetail, Group, getInviteDetailByInviteId} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
-import Image from 'next/image'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
 import useModal from '@/components/client/Modal/useModal'
 import DialogInviteDetail from '@/components/client/DialogInviteDetail'

@@ -1,6 +1,5 @@
 import {Dictionary} from "@/lang"
 import useModal from "@/components/client/Modal/useModal"
-import Image from 'next/image'
 import {BadgeClass, Group} from '@sola/sdk'
 
 export interface DialogSelectedBadgeProps {

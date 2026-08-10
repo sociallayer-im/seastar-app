@@ -4,7 +4,6 @@ import {Button} from "@/components/shadcn/Button"
 import {type Badge, type BadgeClass} from "@sola/sdk"
 import useTabParam from '@/hooks/useTabParam'
 import NoData from "@/components/NoData"
-import Image from 'next/image'
 
 export default function Tabs({labels, created, owned, isSelf}: {
     owned: Badge[],

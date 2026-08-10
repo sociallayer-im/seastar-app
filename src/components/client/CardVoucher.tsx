@@ -2,7 +2,6 @@
 
 import {Voucher} from '@sola/sdk'
 import {Dictionary} from '@/lang'
-import Image from 'next/image'
 import useShowVoucher from '@/hooks/useShowVoucher'
 import {cfImage} from '@/utils'
 

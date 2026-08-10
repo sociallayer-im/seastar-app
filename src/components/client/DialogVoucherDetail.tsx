@@ -1,7 +1,6 @@
 'use client'
 
 import { VoucherDetail, Profile, useVoucher as _useVoucher, getVoucherCode, rejectVoucher } from '@sola/sdk'
-import Image from 'next/image'
 import { Button, buttonVariants } from '@/components/shadcn/Button'
 import { Dictionary } from '@/lang'
 import dynamic from 'next/dynamic'

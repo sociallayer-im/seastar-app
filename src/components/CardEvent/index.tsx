@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 import { Dictionary } from '@/lang'
 import { EventWithJoinStatus, EventRole } from '@sola/sdk'
 import EventKindLabel from "@/components/EventKind"
+import Img from '@/components/Img'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), { ssr: false })
@@ -141,7 +142,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
         {
             !!event.image_url ?
                 <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
-                    <img className="w-full h-full object-cover" src={cfImage(event.image_url, { width: 280, height: 280, fit: 'cover' })} alt="" />
+                    <Img className="w-full h-full object-cover" src={cfImage(event.image_url, { width: 280, height: 280, fit: 'cover' })} alt="" />
                 </div>
                 : <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
                     <div className="default-cover w-[452px] h-[452px] sm:scale-[0.309] scale-[0.22]">

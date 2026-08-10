@@ -2,7 +2,6 @@ import BadgePageData, {BadgePageDataProps} from "@/app/(normal)/badge/[badgeid]/
 import {cfImage, displayProfileName, getAvatar} from "@/utils"
 import {Button} from "@/components/shadcn/Button"
 import dynamic from "next/dynamic"
-import Image from 'next/image'
 import Avatar from '@/components/Avatar'
 import {selectLang} from '@/app/actions'
 import NoData from '@/components/NoData'

@@ -1,7 +1,7 @@
 import { getCurrProfile, selectLang } from '@/app/actions'
 import { getPopupCities } from '@sola/sdk'
-import Image from 'next/image'
 import Avatar from '@/components/Avatar'
+import Img from '@/components/Img'
 import { cfImage, displayProfileName, getAvatar, isPlatformAdmin } from '@/utils'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import ManagActions from '@/components/client/ManagActions'
@@ -42,7 +42,7 @@ export default async function PopupCityListPage() {
                     className="h-[292px] rounded shadow p-3 duration-200 hover:translate-y-[-6px] relative">
                     
                     <div className="rounded h-[148px] mb-3 overflow-hidden bg-gray-100">
-                        <img className="object-cover w-full h-full rounded"
+                        <Img className="object-cover w-full h-full rounded"
                             width={227} height={148}
                             src={cfImage(popupCity.image_url || popupCity.banner_image_url || getAvatar(popupCity.id), { width: 454, height: 296, fit: 'cover' })} alt="" />
                     </div>

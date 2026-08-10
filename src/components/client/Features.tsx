@@ -11,6 +11,7 @@ import { useEffect, useState } from "react"
 import DisplayDateTime from "./DisplayDateTime"
 import Avatar from "../Avatar"
 import { cfImage, displayProfileName } from "@/utils"
+import Img from "@/components/Img"
 
 
 export default function Features(props: { featuredPopupCities: PopupCity[] }) {
@@ -23,15 +24,15 @@ export default function Features(props: { featuredPopupCities: PopupCity[] }) {
             loop: true
         }} plugins={[Autoplay({ delay: 5000 })]}>
             <CarouselContent>
-                {props.featuredPopupCities.map((popupCity) => <CarouselItem key={popupCity.id}>
-                    <FeatureItem popupCity={popupCity} />
+                {props.featuredPopupCities.map((popupCity, index) => <CarouselItem key={popupCity.id}>
+                    <FeatureItem popupCity={popupCity} priority={index === 0} />
                 </CarouselItem>)}
             </CarouselContent>
         </Carousel>
     </div>
 }
 
-function FeatureItem(props: { popupCity: PopupCity }) {
+function FeatureItem(props: { popupCity: PopupCity, priority?: boolean }) {
     const [dominantColor, setDominantColor] = useState<string>('rgba(0,0,0,0)')
     const [textColor, setTextColor] = useState<string>('#333')
     useEffect(() => {
@@ -52,8 +53,12 @@ function FeatureItem(props: { popupCity: PopupCity }) {
     // object-cover 填充——这也是 a0cfb65 之前的做法。
     return <a className='relative block h-[300px]' href={`/event/${props.popupCity.group.name}`}>
         {props.popupCity.image_url &&
-            <img src={cfImage(props.popupCity.image_url, { width: 900, fit: 'scale-down' })}
+            // Only the first slide is visible on arrival, and it is the page's
+            // LCP element — it loads eagerly at high priority. The other 20 are
+            // 900px images nobody has scrolled to yet, so they wait.
+            <Img src={cfImage(props.popupCity.image_url, { width: 900, fit: 'scale-down' })}
                 alt={props.popupCity.title}
+                priority={props.priority}
                 className='w-full h-full object-cover' />
         }
         <div className='hidden absolute bottom-0 left-0 right-0 sm:pt-[140px] pt-[100px] px-6 h-[250px]' style={{ background: dominantColor }}>

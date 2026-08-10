@@ -1,6 +1,5 @@
 import NoData from "@/components/NoData"
 import GroupVouchersData from "@/app/(normal)/group/[handle]/TabVouchers/data"
-import Image from 'next/image'
 import {cfImage} from '@/utils'
 
 export default async function TabVouchers(props: {handle: string}) {
