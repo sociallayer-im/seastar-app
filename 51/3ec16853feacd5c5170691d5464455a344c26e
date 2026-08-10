@@ -1,0 +1,57 @@
+src/app/config.ts
+  s_448695a5d036bc::t_86a05884e68aac 30-39
+src/app/(auth)/verify-bind-phone/FormVerifyBindPhone.tsx
+  s_448695a5d036bc::t_e416615b397c5a 1-39,41-111
+  s_448695a5d036bc::t_ec4891eba7cb82 40
+src/app/(auth)/verify-bind-phone/page.tsx
+  s_448695a5d036bc::t_efb215305f4d65 1-31
+src/app/(auth)/bind-phone/BindPhoneForm.tsx
+  s_448695a5d036bc::t_b61e4d8e1df470 1-67
+src/components/client/PhoneNumberInput.tsx
+  s_448695a5d036bc::t_a20952c3f2d1a2 1-52
+src/app/(auth)/verify-phone/page.tsx
+  s_448695a5d036bc::t_01a42286b9fa62 1-26
+src/app/(auth)/bind-phone/page.tsx
+  s_448695a5d036bc::t_fffcd0b4ec2ea2 1-35
+packages/sola-sdk/src/profile/types.ts
+  s_448695a5d036bc::t_2a4a492c3df8b1 18-28
+src/app/(auth)/signin/PhoneSignIn.tsx
+  s_448695a5d036bc::t_d0da59172e85dd 1-68
+src/app/api/wechat/callback/route.ts
+  s_448695a5d036bc::t_4d2167cf4383c0 55-58
+  s_448695a5d036bc::t_1e392975ff6e2b 67-81
+  s_448695a5d036bc::t_83f1284d99f1ab 3
+src/app/(auth)/signin/page.tsx
+  s_448695a5d036bc::t_0435e3bbb8a7f1 5,8
+  s_448695a5d036bc::t_dfe4f9953749ff 55-58
+src/utils/index.ts
+  s_448695a5d036bc::t_48ffef0153f44a 44
+  s_448695a5d036bc::t_ed361bb5eecc18 164-166,171-175,178,182
+src/app/(auth)/verify-phone/FormVerifyPhone.tsx
+  s_448695a5d036bc::t_672e1d12979376 1-91
+src/app/(auth)/signin/PhoneOrEmailSignIn.tsx
+  s_448695a5d036bc::t_012ce6f7aeb020 1-41
+packages/sola-sdk/src/auth/auth.ts
+  s_448695a5d036bc::t_d22e79307e09df 141-185,189-202
+  s_448695a5d036bc::t_4fa73aa8d6181e 186-188
+src/lang/en.ts
+  s_448695a5d036bc::t_eeb0c5196b8dd1 36-46
+src/lang/zh.ts
+  s_448695a5d036bc::t_e136a78e63f476 37-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "513ec16853feacd5c5170691d5464455a344c26e",
+  "prompts": {},
+  "sessions": {
+    "s_448695a5d036bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2a66dea1-2099-416a-bee2-5d54030fb07f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
