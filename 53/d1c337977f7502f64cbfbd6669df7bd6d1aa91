@@ -1,0 +1,23 @@
+src/components/client/CommentPanel.tsx
+  s_e9ed806a3d225c::t_136e1a6199ccb4 3-6
+package.json
+  s_e9ed806a3d225c::t_b2fe04ebd34922 24,34
+bun.lock
+  s_e9ed806a3d225c::t_8e21078e17ef95 16,26,297-298,823
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "53d1c337977f7502f64cbfbd6669df7bd6d1aa91",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
