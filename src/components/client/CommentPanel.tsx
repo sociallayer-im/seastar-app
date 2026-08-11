@@ -1,5 +1,6 @@
 'use client'
 
+import DOMPurify from 'isomorphic-dompurify'
 import {Dictionary} from '@/lang'
 import {
     CommentItemType,
@@ -153,7 +154,19 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
                         <div className="ml-2 text-xs"><DisplayDateTime
                             dataTimeStr={comment.created_at}/></div>
                     </div>
-                    <div className="ml-9 mt-1">{comment.content}</div>
+                    {comment.content_type === 'html'
+                        ? <div className="ml-9 mt-1 [&_a]:text-primary [&_a]:underline [&_p]:inline"
+                            dangerouslySetInnerHTML={{
+                                // The backend sanitizes federated HTML on ingest;
+                                // sanitize again at the render boundary so a stored
+                                // payload can never reach the DOM unfiltered.
+                                __html: DOMPurify.sanitize(comment.content || '', {
+                                    ALLOWED_TAGS: ['p', 'br', 'a', 'span', 'strong', 'em',
+                                        'b', 'i', 'u', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li'],
+                                    ALLOWED_ATTR: ['href', 'title', 'class']
+                                })
+                            }}/>
+                        : <div className="ml-9 mt-1">{comment.content}</div>}
                 </div>
             })}
 
