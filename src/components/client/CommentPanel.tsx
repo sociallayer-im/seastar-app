@@ -1,6 +1,9 @@
 'use client'
 
-import DOMPurify from 'isomorphic-dompurify'
+// plain dompurify (browser-only) is safe here: comments are fetched in an
+// effect, so their HTML never renders during SSR. The isomorphic variant
+// drags jsdom into the server bundle, which breaks under Next's bundling.
+import DOMPurify from 'dompurify'
 import {Dictionary} from '@/lang'
 import {
     CommentItemType,
