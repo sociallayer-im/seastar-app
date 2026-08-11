@@ -1,0 +1,42 @@
+src/app/(normal)/event/[grouphandle]/setting/domain/GroupDomainForm.tsx
+  s_e9ed806a3d225c::t_f5a892326e1546 1-152
+src/app/(normal)/profile/[handle]/edit/EditProfile.tsx
+  s_e9ed806a3d225c::t_4bbb1d7c1c0a8f 17,136
+src/lang/en.ts
+  s_e9ed806a3d225c::t_74e9f258d28c12 737-774
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_74e9f258d28c12 719-756
+src/app/(normal)/event/[grouphandle]/setting/migrate/GroupMigrateForm.tsx
+  s_e9ed806a3d225c::t_7f36fa471d6315 1-160
+src/app/(normal)/event/[grouphandle]/setting/page.tsx
+  s_e9ed806a3d225c::t_ebfca2848ecb65 103-105,107-123
+  s_e9ed806a3d225c::t_f333518e7992c6 106
+src/app/(normal)/event/[grouphandle]/setting/migrate/page.tsx
+  s_e9ed806a3d225c::t_b7fe721d1f33ab 1-33
+packages/sola-sdk/src/federation/federation.ts
+  s_e9ed806a3d225c::t_7632982da67c8d 4,117-275
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_04beef3f0fe046 16-17
+src/app/(normal)/event/[grouphandle]/setting/domain/page.tsx
+  s_e9ed806a3d225c::t_3f34a13aea8f49 1-37
+src/app/(normal)/profile/[handle]/edit/FedAliasManager.tsx
+  s_e9ed806a3d225c::t_9b6c152aa7ca12 1-94
+packages/sola-sdk/src/federation/types.ts
+  s_e9ed806a3d225c::t_86271e331b6bf2 68-105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "97e889bf842775904adecaa6bdb986d3a0084a81",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
