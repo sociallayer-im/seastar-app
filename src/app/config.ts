@@ -6,7 +6,7 @@ export const CLIENT_MODE = process.env.NEXT_PUBLIC_CLIENT_MODE! as ClientMode
 // getGroupSubdomain as a group's vanity domain, so its '/' renders that group's
 // event home — and 404s when no such group exists. Add a subdomain here before
 // pointing a new app host at this deployment.
-export const SOLA_APP_SUBDOMAINS =  ['app', 'sola', 'www', 'seastar-dev', 'auth', 'beta', 'auth-beta', 'dashboard']
+export const SOLA_APP_SUBDOMAINS =  ['app', 'sola', 'www', 'seastar-dev', 'auth', 'beta', 'auth-beta', 'dashboard', 'appb']
 
 // Length of the emailed sign-in / bind code. Must match what soon generates
 // (AuthController#generated_code) — the input's maxLength and the submit
