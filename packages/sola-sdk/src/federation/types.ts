@@ -65,3 +65,41 @@ export interface FedEvent {
     /** present when the caller is signed in */
     my_status?: FedParticipationStatus | null
 }
+
+/** DNS record a group must publish to prove it controls a custom domain. */
+export interface FedDnsRecord {
+    type: string
+    name: string
+    value: string
+}
+
+/**
+ * A group's custom domain (PLAN §9.4). The domain carries the *acct* only —
+ * the actor id never moves onto it — so binding and unbinding are both
+ * lossless for followers.
+ *
+ * state: none — nothing claimed; pending — claimed, DNS challenge outstanding;
+ * bound — verified and serving.
+ */
+export interface FedDomainStatus {
+    state: 'none' | 'pending' | 'bound'
+    domain: string | null
+    verified_at: string | null
+    /** what people type to find this group today */
+    acct: string
+    /** what they type when no domain is bound */
+    canonical_acct: string
+    actor_uri: string
+    pending_domain?: string
+    dns_challenge?: FedDnsRecord
+    dns_routing?: FedDnsRecord
+    note?: string
+}
+
+/** alsoKnownAs: identities this actor claims as its former selves. */
+export interface FedAliases {
+    also_known_as: string[]
+    actor_uri: string
+    /** set once this actor has announced a Move away */
+    moved_to: string | null
+}

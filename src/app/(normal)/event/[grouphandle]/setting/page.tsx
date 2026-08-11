@@ -128,6 +128,27 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>}
 
+                {isManagerOrOwner && <a href={`/event/${groupDetail.name}/setting/domain`}
+                    className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
+                    <div className="flex-row-item-center w-full justify-between">
+                        <div>{lang['Custom Domain']}</div>
+                        <div className="font-normal flex-row-item-center">
+                            <div className="text-xs text-gray-400 mr-1">{groupDetail.custom_domain || ''}</div>
+                            <i className="uil-arrow-right text-2xl" />
+                        </div>
+                    </div>
+                </a>}
+
+                {isManagerOrOwner && <a href={`/event/${groupDetail.name}/setting/migrate`}
+                    className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
+                    <div className="flex-row-item-center w-full justify-between">
+                        <div>{lang['Move Group']}</div>
+                        <div className="font-normal flex-row-item-center">
+                            <i className="uil-arrow-right text-2xl" />
+                        </div>
+                    </div>
+                </a>}
+
                 <div className="flex sm:flex-row flex-col items-center justify-end gap-3">
                     <ExportGroupEventBtn lang={lang} groupId={groupDetail.id} />
                     <ExportEventParticipantBtn lang={lang} groupId={groupDetail.id} />

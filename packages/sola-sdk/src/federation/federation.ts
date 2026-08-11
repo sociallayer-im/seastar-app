@@ -1,7 +1,7 @@
 import {request} from '../request'
 import {SolaSdkFunctionParams} from '../types'
 import {ClientMode} from '../client'
-import {FedActor, FedEvent, FedFollowing} from './types'
+import {FedActor, FedAliases, FedDomainStatus, FedEvent, FedFollowing} from './types'
 
 /**
  * Look up an account on another instance. Accepts what a person would type
@@ -108,6 +108,165 @@ export const leaveFedEvent = async ({params, clientMode}: SolaSdkFunctionParams<
     authToken: string
 }>) => {
     await request(`/federation/events/${params.eventId}/join`, {
+        method: 'DELETE',
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+// --- custom domain (group settings) ------------------------------------------
+
+export const getGroupFedDomain = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string
+    authToken: string
+}>) => {
+    return await request<FedDomainStatus>(`/federation/groups/${encodeURIComponent(params.groupId)}/domain`, {
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+/**
+ * Step 1: claim a domain. Returns the TXT record to publish — nothing is bound
+ * until verifyGroupFedDomain succeeds, so this is safe to call speculatively.
+ * Re-claiming the same domain returns the same challenge.
+ */
+export const claimGroupFedDomain = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string
+    domain: string
+    authToken: string
+}>) => {
+    return await request<FedDomainStatus>(`/federation/groups/${encodeURIComponent(params.groupId)}/domain`, {
+        method: 'POST',
+        body: {domain: params.domain},
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+/** Step 2: check the TXT record and bind. 422 while DNS has not propagated. */
+export const verifyGroupFedDomain = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string
+    authToken: string
+}>) => {
+    return await request<FedDomainStatus>(`/federation/groups/${encodeURIComponent(params.groupId)}/domain/verify`, {
+        method: 'POST',
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+export const unbindGroupFedDomain = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string
+    authToken: string
+}>) => {
+    return await request<FedDomainStatus>(`/federation/groups/${encodeURIComponent(params.groupId)}/domain`, {
+        method: 'DELETE',
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+// --- aliases and migration ---------------------------------------------------
+
+export const getGroupFedAliases = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string
+    authToken: string
+}>) => {
+    return await request<FedAliases>(`/federation/groups/${encodeURIComponent(params.groupId)}/aliases`, {
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+/**
+ * Declare a former identity. This is the *receiving* half of a migration: the
+ * old actor's Move is only honoured by peers if the new actor independently
+ * claims it here.
+ */
+export const addGroupFedAlias = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string
+    uri: string
+    authToken: string
+}>) => {
+    return await request<FedAliases>(`/federation/groups/${encodeURIComponent(params.groupId)}/aliases`, {
+        method: 'POST',
+        body: {uri: params.uri},
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+export const removeGroupFedAlias = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string
+    uri: string
+    authToken: string
+}>) => {
+    return await request<FedAliases>(
+        `/federation/groups/${encodeURIComponent(params.groupId)}/aliases?uri=${encodeURIComponent(params.uri)}`, {
+            method: 'DELETE',
+            authToken: params.authToken,
+            clientMode,
+            noCache: true
+        })
+}
+
+/**
+ * Announce the move. Fails with 422 unless the target actor already lists this
+ * group in its alsoKnownAs — mutual attestation is what stops a hijack, so the
+ * destination has to be prepared first.
+ */
+export const moveGroupFedActor = async ({params, clientMode}: SolaSdkFunctionParams<{
+    groupId: string
+    target: string
+    authToken: string
+}>) => {
+    return await request<{moved_to: string}>(`/federation/groups/${encodeURIComponent(params.groupId)}/move`, {
+        method: 'POST',
+        body: {target: params.target},
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+// --- the signed-in user's own aliases ----------------------------------------
+
+export const getMyFedAliases = async ({params, clientMode}: SolaSdkFunctionParams<{
+    authToken: string
+}>) => {
+    return await request<FedAliases>('/federation/profile/aliases', {
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+export const addMyFedAlias = async ({params, clientMode}: SolaSdkFunctionParams<{
+    uri: string
+    authToken: string
+}>) => {
+    return await request<FedAliases>('/federation/profile/aliases', {
+        method: 'POST',
+        body: {uri: params.uri},
+        authToken: params.authToken,
+        clientMode,
+        noCache: true
+    })
+}
+
+export const removeMyFedAlias = async ({params, clientMode}: SolaSdkFunctionParams<{
+    uri: string
+    authToken: string
+}>) => {
+    return await request<FedAliases>(`/federation/profile/aliases?uri=${encodeURIComponent(params.uri)}`, {
         method: 'DELETE',
         authToken: params.authToken,
         clientMode,

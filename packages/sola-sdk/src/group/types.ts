@@ -14,6 +14,8 @@ export interface Group {
  * The :detail view — the full group-page payload.
  */
 export interface GroupDetail extends Group {
+    /** vanity domain this group's handle answers on, if one is bound */
+    custom_domain?: string | null
     bio: string | null
     location: string | null
     timezone: string | null
