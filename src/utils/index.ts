@@ -55,7 +55,7 @@ export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
  * for a single-label host, and browsers drop the whole Set-Cookie when one is
  * sent, which would silently break sign-in in local dev.
  */
-export const authCookieDomain = (hostname?: string): string | undefined => {
+const registrableParent = (hostname?: string): string | undefined => {
     const host = hostname ?? (typeof window === 'undefined' ? '' : window.location.hostname)
     if (!host) return undefined
     if (/^(\d{1,3}\.){3}\d{1,3}$/.test(host)) return undefined
@@ -64,9 +64,30 @@ export const authCookieDomain = (hostname?: string): string | undefined => {
     return labels.slice(-2).join('.')
 }
 
+/**
+ * NEXT_PUBLIC_AUTH_COOKIE_DOMAIN overrides the derivation: a domain value pins
+ * it, the sentinel "host" makes the cookie host-only. Required wherever two
+ * deployments share a registrable domain (the fedlab instances both live under
+ * seven.fan): a parent-domain cookie there is one cookie for every sibling
+ * host — the instances clobber each other's sessions on login, and the JWT is
+ * sent to hosts that were never part of this app.
+ */
+export const authCookieDomain = (hostname?: string): string | undefined => {
+    const configured = process.env.NEXT_PUBLIC_AUTH_COOKIE_DOMAIN
+    if (configured === 'host') return undefined
+    if (configured) return configured
+    return registrableParent(hostname)
+}
+
 // expires is what makes this a persistent cookie rather than a session one, so
 // closing the tab doesn't sign the user out. Matches what seastar-auth set.
 export const setAuth = (token: string) => {
+    const domain = authCookieDomain()
+
+    // Two different shadowing cookies have to be evicted, and neither eviction
+    // covers the other — they are stored under different keys and the browser
+    // sends all of them.
+    //
     // Remove the host-only cookie FIRST. Builds before 5207d3e wrote this name
     // with no Domain attribute, which the browser stores as a *different*
     // cookie from the domain-scoped one below — writing one does not overwrite
@@ -79,7 +100,17 @@ export const setAuth = (token: string) => {
     // That deadlock is what this line breaks. signOut has always removed both
     // for the same reason; the write path has to be symmetric with it.
     Cookies.remove(AUTH_FIELD)
-    Cookies.set(AUTH_FIELD, token, {expires: 365, domain: authCookieDomain()})
+
+    // And the one an earlier build may have left on the parent domain. In
+    // host-only mode (NEXT_PUBLIC_AUTH_COOKIE_DOMAIN) `domain` is narrower
+    // than the registrable parent, so the wider cookie outlives it and wins
+    // the same RFC 6265 ordering.
+    const parent = registrableParent()
+    if (parent && parent !== domain) {
+        Cookies.remove(AUTH_FIELD, {domain: parent})
+    }
+
+    Cookies.set(AUTH_FIELD, token, {expires: 365, domain})
 }
 
 export const getAuth = () => {
@@ -97,6 +128,11 @@ export const getAuth = () => {
 export const signOut = () => {
     Cookies.remove(AUTH_FIELD, {domain: authCookieDomain()})
     Cookies.remove(AUTH_FIELD)
+    // and the parent-domain variant an earlier build may have written
+    const parent = registrableParent()
+    if (parent && parent !== authCookieDomain()) {
+        Cookies.remove(AUTH_FIELD, {domain: parent})
+    }
 }
 
 export const pickSearchParam = (param?: string | string[]): string | undefined => {
