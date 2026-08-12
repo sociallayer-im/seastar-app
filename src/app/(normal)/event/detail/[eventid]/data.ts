@@ -77,7 +77,15 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const currProfileParticipant = eventDetail.current_participant
 
     const currProfileAttended = !!currProfileParticipant
-        && ['attending', 'pending'].includes(currProfileParticipant.status || '')
+        && currProfileParticipant.status === 'attending'
+        && currProfileParticipant.payment_status !== 'pending'
+
+    // Applied, but the organizer has not decided yet (require_approval or an
+    // application form). Not "attended": no seat is held, check-in must not
+    // be offered, and the page has to say "under review" rather than
+    // "registered".
+    const currProfilePending = !!currProfileParticipant
+        && currProfileParticipant.status === 'pending'
         && currProfileParticipant.payment_status !== 'pending'
 
     // An order of theirs is awaiting payment or awaiting the webhook's
@@ -158,6 +166,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         eventProcess: checkProcess(eventDetail.start_time, eventDetail.end_time),
         isTicketEvent: !!eventDetail.tickets?.length,
         currProfileAttended,
+        currProfilePending,
         currProfilePaymentPending,
         currProfileCheckedIn,
         currProfileStarred,

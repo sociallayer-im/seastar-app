@@ -496,6 +496,36 @@ export default function EventForm({
                     setDraft({ ...draft, notes: md })
                   }}
                 />
+                <div className="mt-3">
+                  {!!draft.image_note && (
+                    <div className="relative inline-block">
+                      <img
+                        src={cfImage(draft.image_note, { width: 400, format: 'auto' })}
+                        alt=""
+                        className="max-w-[240px] h-auto rounded-lg border border-gray-200"
+                      />
+                      <button
+                        className="absolute top-1 right-1 text-white bg-black/50 rounded-full w-6 h-6 flex items-center justify-center"
+                        onClick={() => setDraft({ ...draft, image_note: null })}
+                      >
+                        <i className="uil-times" />
+                      </button>
+                    </div>
+                  )}
+                  <Button
+                    onClick={async () => {
+                      const picUrl = await uploadImage()
+                      setDraft({ ...draft, image_note: picUrl })
+                    }}
+                    variant={"secondary"}
+                    className="block mt-2"
+                  >
+                    {lang["Upload Note Image"]}
+                  </Button>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {lang["Note image hint"]}
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -102,6 +102,8 @@ export const en = {
     "Event Description": "Event Description",
     "Event Note": "Event Note",
     "Display after confirming attendance": "Display after confirming attendance",
+    "Upload Note Image": "Upload Note Image",
+    "Note image hint": "Shown only to confirmed attendees — a group chat QR code, for example.",
     "Custom Location Name": "Custom Location Name",
     "Input address or geo point eg. 4071.1,-74.06":
         "Input address or geo point eg. 4071.1,-74.06",
@@ -202,6 +204,8 @@ export const en = {
     "Invite Speakers": "Invite Speakers",
     Share: "Share",
     "You have registered for the event.": "You have registered for the event.",
+    "Your registration is under review.": "Your registration is under review. The organizer will confirm it soon.",
+    "Under Review": "Under Review",
     "Welcome! To join the event, please register below.":
         "Welcome! To join the event, please register below.",
     "Add to Calendar": "Add to Calendar",

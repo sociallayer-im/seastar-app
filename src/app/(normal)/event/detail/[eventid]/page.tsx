@@ -13,6 +13,7 @@ import {
 import { selectLang } from "@/app/actions"
 import { Button, buttonVariants } from "@/components/shadcn/Button"
 import RichTextDisplayer from "@/components/client/Editor/Displayer"
+import Img from "@/components/Img"
 import Avatar from '@/components/Avatar'
 import AddSingleEventToCalendarApp from '@/components/client/AddSingleEventToCalendarAppBtn'
 import EventFeedbackBtn from '@/components/EventFeedbackBtn'
@@ -77,6 +78,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
         isEventOperator,
         canAccess,
         currProfileAttended,
+        currProfilePending,
         currProfilePaymentPending,
         currProfileCheckedIn,
         isTicketEvent,
@@ -198,7 +200,18 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
                         {currProfileAttended &&
                             <div className="my-2">{lang['You have registered for the event.']}</div>}
-                        {!currProfileAttended && canAccess &&
+                        {/* The API only includes image_note for the organizer
+                            and settled attendees, so presence == permission —
+                            no client-side gating to get wrong. */}
+                        {currProfileAttended && !!eventDetail.image_note &&
+                            <div className="my-2">
+                                <div className="text-xs text-gray-500 mb-1">{lang['Event Note']}</div>
+                                <Img src={eventDetail.image_note} width={480} height={480}
+                                    alt="" className="w-full max-w-[240px] h-auto rounded-lg" />
+                            </div>}
+                        {currProfilePending &&
+                            <div className="my-2">{lang['Your registration is under review.']}</div>}
+                        {!currProfileAttended && !currProfilePending && canAccess &&
                             <div className="my-2">{lang['Welcome! To join the event, please register below.']}</div>}
                         {/* canAccess is false for two unrelated reasons — the
                             group's join scope, or the event being closed or
@@ -220,7 +233,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                 className="text-xs flex-1 ml-2" />
                         </div>
 
-                        {!isTicketEvent && !currProfileAttended && canAccess &&
+                        {!isTicketEvent && !currProfileAttended && !currProfilePending && canAccess &&
                             <div className="flex-row-item-center mt-2">
                                 <AttendEventBtn eventId={eventDetail.id} lang={lang}
                                     form={form}
@@ -229,7 +242,17 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                             </div>
                         }
 
-                        {isTicketEvent && !currProfileAttended && canAccess && !currProfilePaymentPending &&
+                        {/* Applied, not decided: the button's job is to say so,
+                            not to offer a second application. */}
+                        {currProfilePending &&
+                            <div className="flex-row-item-center mt-2">
+                                <Button disabled={true} variant={'secondary'} className="text-xs flex-1">
+                                    {lang['Under Review']}
+                                </Button>
+                            </div>
+                        }
+
+                        {isTicketEvent && !currProfileAttended && !currProfilePending && canAccess && !currProfilePaymentPending &&
                             <div className="flex-row-item-center mt-2">
                                 <JoinTicketEventBtn
                                     eventDetail={eventDetail}
@@ -339,6 +362,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
 
                     {isEventCreator && <Badge variant='hosting' className="mr-1">{lang['Hosting']}</Badge>}
                     {currProfileAttended && <Badge variant='joining' className="mr-1">{lang['Attended']}</Badge>}
+                    {currProfilePending && <Badge variant='pending' className="mr-1">{lang['Under Review']}</Badge>}
 
 
                     {
@@ -583,7 +607,7 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                 eventDetail={eventDetail}
                                 lang={lang}
                                 currProfile={currProfile}
-                                attended={currProfileAttended}
+                                attended={currProfileAttended || currProfilePending}
                                 paymentPending={currProfilePaymentPending} />
                         }] : []),
                         ...(showParticipants ? [{

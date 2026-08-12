@@ -40,6 +40,9 @@ export interface Event {
     require_approval: boolean | null,
     image_url: string | null,
     notes: string | null,
+    /** Confirmed-attendees-only image (group QR code); the API omits it unless
+     *  the viewer is the organizer or a settled attendee. */
+    image_note?: string | null,
     recurring_id: string | null,
     form_id: string | null,
     created_at: string,
@@ -180,6 +183,7 @@ export interface EventDraftType {
     requirement_tags?: string[] | null
     pinned?: boolean
     image_url?: string | null
+    image_note?: string | null
     recurring_id?: string | null
     tickets: TicketDraft[]
     event_roles: EventRole[] | null

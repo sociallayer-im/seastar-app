@@ -99,6 +99,8 @@ export const zh: Dictionary = {
   "Event Description": "描述",
   "Event Note": "活动备注",
   "Display after confirming attendance": "确认参加后显示",
+  "Upload Note Image": "上传备注图片",
+  "Note image hint": "仅确认参加的用户可见，例如群聊二维码。",
   "Custom Location Name": "自定义地点名",
   "Input address or geo point eg. 4071.1,-74.06":
     "输入地址或者经纬度，例如：4071.1,-74.06",
@@ -198,6 +200,8 @@ export const zh: Dictionary = {
   "Invite Speakers": "邀请演讲者",
   Share: "分享",
   "You have registered for the event.": "您已注册该活动。",
+  "Your registration is under review.": "您的报名正在审核中，主办方确认后会通知您。",
+  "Under Review": "审核中",
   "Welcome! To join the event, please register below.":
     "欢迎！要加入活动，请在下方注册。",
   "Add to Calendar": "添加到日历",

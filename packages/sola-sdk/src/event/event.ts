@@ -368,6 +368,7 @@ const eventBody = (draft: EventDraftType, placeId: string | null) => ({
     content: draft.content,
     notes: draft.notes,
     image_url: draft.image_url,
+    image_note: draft.image_note,
     pinned: draft.pinned,
     start_time: draft.start_time,
     end_time: draft.end_time,
