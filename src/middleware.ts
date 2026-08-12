@@ -17,9 +17,20 @@ const isAuthHost = (host?: string | null) => {
 
 export function middleware(request: NextRequest) {
     const headers = new Headers(request.headers)
-    const host = headers.get('host')
+    // Behind Traefik the Node server sees itself as the request target, so
+    // request.url reads https://localhost:3000/... — which then ends up in
+    // every consumer of x-current-path (the share page QR code, most
+    // visibly). The forwarded headers carry the URL the visitor typed.
+    const host = headers.get('x-forwarded-host')?.split(',')[0].trim() || headers.get('host')
     const groupHandle = getGroupSubdomain(host)
-    headers.set("x-current-path", request.url)
+    const requestUrl = new URL(request.url)
+    if (host) {
+        requestUrl.port = '' // else the upstream :3000 survives a port-less host
+        requestUrl.host = host
+        const proto = headers.get('x-forwarded-proto')?.split(',')[0].trim()
+        if (proto) requestUrl.protocol = proto
+    }
+    headers.set("x-current-path", requestUrl.toString())
     !!groupHandle && headers.set("x-event-home", groupHandle)
 
     const url = new URL(request.url)
