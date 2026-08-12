@@ -1,0 +1,32 @@
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_e9ed806a3d225c::t_992b0147b4a02b 80
+src/components/client/EventParticipantList.tsx
+  s_e9ed806a3d225c::t_89fbd3b962c565 123,155,188,238-240,275,332-341,343-351,365,386,392,398,522,525-526
+packages/sola-sdk/src/comment/types.ts
+  s_e9ed806a3d225c::t_073f296658752b 1,18-19,24
+src/utils/index.ts
+  s_e9ed806a3d225c::t_992b0147b4a02b 638,644
+src/components/client/CommentPanel.tsx
+  s_e9ed806a3d225c::t_673f35ea9cad41 149
+packages/sola-sdk/src/profile/types.ts
+  s_e9ed806a3d225c::t_7bf5c200227d1b 1-14
+packages/sola-sdk/src/event/types.ts
+  s_e9ed806a3d225c::t_c3c635d3cea05f 118-121
+  s_e9ed806a3d225c::t_073f296658752b 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3637cdbfd04f2366a71902e4a24f86173bd64211",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
