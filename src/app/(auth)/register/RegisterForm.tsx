@@ -10,10 +10,10 @@ import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
 import {clientRedirectToReturn, getAuth} from '@/utils'
 
-// soon's rule, verbatim: /\A[a-z0-9_]{3,30}\z/ (app/models/user.rb). Kept in
+// soon's rule, verbatim: /\A[a-z0-9_]{6,30}\z/ (app/models/user.rb). Kept in
 // sync deliberately — a mismatch here just means a confusing 422 from the API.
 const USERNAME_RE = /^[a-z0-9_]+$/
-const MIN_LENGTH = 3
+const MIN_LENGTH = 6
 const MAX_LENGTH = 30
 
 export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill?: string}) {
