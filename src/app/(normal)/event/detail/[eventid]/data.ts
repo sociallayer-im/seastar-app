@@ -74,7 +74,9 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const customHost = eventDetail.event_roles?.find(r => r.role === 'custom_host')
 
     // The viewer's own RSVP, straight from the backend rather than searched for
-    // in a list this page no longer downloads.
+    // in a list this page no longer downloads. (The federation branch used to
+    // build a `filteredParticipants` here to hide unpaid pending purchases;
+    // nothing ever read it, and the list it filtered is no longer fetched.)
     const currProfileParticipant = eventDetail.current_participant
 
     const currProfileAttended = !!currProfileParticipant

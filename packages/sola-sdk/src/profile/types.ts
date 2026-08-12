@@ -1,3 +1,17 @@
+/**
+ * Someone on another server. Rendered wherever a payload can carry either a
+ * local `user` or a federated identity — comments and participants both do.
+ * `acct` (name@server) is what a reader needs: a remote display name on its
+ * own is indistinguishable from a local one.
+ */
+export interface RemoteAuthor {
+    acct: string
+    domain: string
+    name: string | null
+    image_url: string | null
+    url: string
+}
+
 export interface Profile {
     id: string
     name: string

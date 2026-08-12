@@ -143,6 +143,7 @@ export default function EventParticipantList({
             type: 'info',
             content: lang['Are you sure you want to check in for this participant?'],
             onConfig: async () => {
+                if (!participant.user) return
                 const loading = showLoading()
                 try {
                     const authToken = getAuth()
@@ -172,7 +173,7 @@ export default function EventParticipantList({
     }
 
     const handleViewApplication = async (participant: Participant) => {
-        if (!eventDetail.form_id) return
+        if (!eventDetail.form_id || !participant.user) return
         const authToken = getAuth()
         const loading = showLoading()
         try {
@@ -205,7 +206,7 @@ export default function EventParticipantList({
     }
 
     const handleViewMyApplication = async (participant: Participant) => {
-        if (!eventDetail.form_id) return
+        if (!eventDetail.form_id || !participant.user) return
         const authToken = getAuth()
         const loading = showLoading()
         try {
@@ -259,9 +260,12 @@ export default function EventParticipantList({
     const downloadCSV = () => {
         const title = ['Username', 'Nickname', 'Email', 'Status', 'Register time']
         const rows = participants.map((item) => {
-            return [item.user.name,
-                item.user.nickname || '',
-                item.user.email || '',
+            // A federated participant has no local user — acct and name come
+            // from the remote actor instead, and reading item.user.name
+            // straight off would throw on the whole export.
+            return [item.user?.name || item.remote_author?.acct || '',
+                item.user?.nickname || item.remote_author?.name || '',
+                item.user?.email || '',
                 item.status,
                 item.created_at || ''
             ]
@@ -296,7 +300,7 @@ export default function EventParticipantList({
             const fields = [...form.fields].sort((a, b) => a.position - b.position)
             const emailByUserId = new Map<string, string>()
             participants.forEach(p => {
-                emailByUserId.set(p.user.id, p.user.email || '')
+                if (p.user) emailByUserId.set(p.user.id, p.user.email || '')
             })
 
             const header = ['Username', 'Nickname', 'Email', 'Status', 'Submitted at', ...fields.map(f => f.label)]
@@ -353,10 +357,26 @@ export default function EventParticipantList({
                 participants.map(participant => {
                     return <div key={participant.id}
                                 className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
-                        <a className="flex-row-item-center" href={`/profile/${participant.user.name}`}>
-                            <Avatar profile={participant.user} className="mr-2" size={32}/>
+                        <a className="flex-row-item-center"
+                            href={participant.user
+                                ? `/profile/${participant.user.name}`
+                                : participant.remote_author?.url || '#'}
+                            {...(participant.user ? {} : {target: '_blank', rel: 'noreferrer'})}>
+                            {participant.user
+                                ? <Avatar profile={participant.user} className="mr-2" size={32}/>
+                                : <img className="w-8 h-8 rounded-full object-cover mr-2 border"
+                                    src={participant.remote_author?.image_url || '/images/default_avatar/avatar_0.png'}
+                                    alt=""/>}
                             <div className="text-xs">
-                                <div>{participant.user.nickname || participant.user.name}</div>
+                                <div>
+                                    {participant.user
+                                        ? (participant.user.nickname || participant.user.name)
+                                        : (participant.remote_author?.name || participant.remote_author?.acct)}
+                                    {/* Federated RSVP: the server is part of the identity —
+                                        a remote display name alone reads as local. */}
+                                    {!!participant.remote_author &&
+                                        <span className="ml-1 text-gray-400">@{participant.remote_author.acct}</span>}
+                                </div>
                                 {/* When they signed up — distinct from checked_in_at, shown
                                     on the Checked badge. Only operators need it. */}
                                 {isEventOperator && !!participant.registered_at &&
@@ -370,7 +390,7 @@ export default function EventParticipantList({
 
                         <div className="flex-row-item-center">
                             <div className="flex-col sm:flex-row items-end flex">
-                                {isEventOperator && canViewAllSubmissions && eventDetail.form_id && participant.user.id !== currProfile?.id && (
+                                {isEventOperator && canViewAllSubmissions && eventDetail.form_id && participant.user?.id !== currProfile?.id && (
                                     <div onClick={() => handleViewApplication(participant)}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-blue-200 flex flex-row-item-center text-xs text-blue-500 bg-blue-50">
                                         {lang['View Application']}
@@ -391,19 +411,19 @@ export default function EventParticipantList({
                                         {lang['Pending']}
                                     </div>
                                 }
-                                {participant.user.id === currProfile?.id && eventDetail.form_id && participant.status !== 'declined' &&
+                                {participant.user?.id === currProfile?.id && eventDetail.form_id && participant.status !== 'declined' &&
                                     <div onClick={() => handleViewMyApplication(participant)}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-blue-200 flex flex-row-item-center text-xs text-blue-500 bg-blue-50">
                                         {participant.status === 'pending' ? lang['Edit Application'] : lang['View Application']}
                                     </div>
                                 }
-                                {participant.user.id === currProfile?.id && participant.status !== 'pending' && participant.status !== 'declined' &&
+                                {participant.user?.id === currProfile?.id && participant.status !== 'pending' && participant.status !== 'declined' &&
                                     <div onClick={handleCancelParticipation}
                                          className="sm:mb-0 mb-1 cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-red-400">
                                         {lang['Cancel Participation']}
                                     </div>
                                 }
-                                {isEventOperator && !participant.checked_in_at && participant.status !== 'pending' && participant.status !== 'declined' &&
+                                {isEventOperator && !!participant.user && !participant.checked_in_at && participant.status !== 'pending' && participant.status !== 'declined' &&
                                     <div onClick={() => handleCheckInForParticipant(participant)}
                                          className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">
                                         {lang['Check In']}
@@ -522,11 +542,11 @@ function ApplicationAnswersDialog({lang, close, submission, form, participant, o
         <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow p-5 max-h-[80vh] flex flex-col">
             <div className="flex-row-item-center justify-between mb-4">
                 <div className="flex-row-item-center gap-2">
-                    <img src={participant.user.image_url || '/images/default_avatar.png'}
+                    <img src={participant.user?.image_url || '/images/default_avatar.png'}
                          className="w-8 h-8 rounded-full object-cover" alt=""/>
                     <div>
-                        <div className="font-semibold text-sm">{participant.user.nickname || participant.user.name}</div>
-                        <div className="text-xs text-gray-400">@{participant.user.name}</div>
+                        <div className="font-semibold text-sm">{participant.user?.nickname || participant.user?.name}</div>
+                        <div className="text-xs text-gray-400">@{participant.user?.name}</div>
                     </div>
                 </div>
                 <i className="uil-times-circle text-xl text-gray-400 cursor-pointer" onClick={close}/>

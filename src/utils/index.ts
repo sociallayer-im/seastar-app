@@ -724,13 +724,13 @@ export const checkEventPermissionsForProfile = (eventDetail: EventDetail, groupD
     // tickets are only attending once payment_status succeeds; check-in is the
     // checked_in_at stamp (registered_at is the RSVP time).
     const attended = !!eventDetail.participants?.find((item: Participant) => {
-        if (item.user.id !== profile?.id) return false
+        if (item.user?.id !== profile?.id) return false
         if (item.status !== 'attending' && item.status !== 'pending') return false
         return !item.payment_status || item.payment_status.includes('succe') || item.payment_status === 'pending'
     })
 
     const checkedIn = eventDetail.participants?.find((item: Participant) => {
-        return item.user.id === profile?.id && !!item.checked_in_at
+        return item.user?.id === profile?.id && !!item.checked_in_at
     })
 
     return {

@@ -1,4 +1,4 @@
-import {Profile} from '../profile/types'
+import {Profile, RemoteAuthor} from '../profile/types'
 
 export type CommentItemType = 'Event' | 'Group'
 export type CommentType = 'comment' | 'feedback' | 'star' | 'checkin' | 'chat'
@@ -15,17 +15,11 @@ export interface Comment {
     content_type: string,
     icon_url: string | null,
     created_at: string,
-    /** null when the comment arrived over federation */
-    user: Profile,
+    /** null when the comment arrived over federation — see `remote_author`. */
+    user: Profile | null,
     /**
      * Set instead of `user` for a federated comment. `acct` (name@server) is
      * what a reader needs — a remote display name alone looks local.
      */
-    remote_author?: {
-        acct: string
-        domain: string
-        name: string | null
-        image_url: string | null
-        url: string
-    } | null,
+    remote_author?: RemoteAuthor | null,
 }

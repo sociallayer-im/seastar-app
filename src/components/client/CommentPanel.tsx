@@ -149,7 +149,7 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
                                     @{comment.remote_author.acct}
                                 </span>
                             </>
-                            : <>
+                            : comment.user && <>
                                 <Avatar profile={comment.user} size={28} className="mr-2 border"/>
                                 <span className="font-semibold">{displayProfileName(comment.user)}</span>
                             </>}

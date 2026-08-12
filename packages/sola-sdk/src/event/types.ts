@@ -1,4 +1,4 @@
-import {Profile} from '../profile'
+import {Profile, RemoteAuthor} from '../profile'
 import {Group, Track, VenueDetail} from '../group'
 import {Place} from '../place'
 
@@ -129,7 +129,10 @@ export interface Participant {
     /** When a manager scanned them at the door; null until then. */
     checked_in_at: string | null,
     created_at: string | null,
-    user: Profile,
+    /** null when the RSVP arrived over federation — see `remote_author`. */
+    user: Profile | null,
+    /** Set instead of `user` for a federated RSVP. */
+    remote_author?: RemoteAuthor | null,
 }
 
 export type EventRoleType = 'speaker' | 'co_host' | 'group_host' | 'custom_host' | 'member' | 'manager'
