@@ -5,7 +5,7 @@ import { IframeSchedulePageDataType } from "@/app/(iframe)/schedule/utils"
 import { Dictionary } from "@/lang"
 import { IframeSchedulePageDataEventDetail, calculateGridPosition } from "./data"
 import dayjs from "@/libs/dayjs"
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import VenueViewEventItem from "./VenueViewEventItem"
 import DatePicker from "@/components/client/DatePicker"
 import { Input } from "@/components/shadcn/Input"
@@ -199,30 +199,30 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
                     gridTemplateRows: `repeat(${timeLabels.length}, ${timeHeight * 4}px)`,
                 }}>
 
-                    {timeLabels.map((time, timeIndex) => (
-                        <Fragment key={`time-${time}`}>
-                            <div key={`time-${time}`}
-                                style={{
-                                    gridRow: timeIndex + 1,
-                                    gridColumn: 1,
-                                }}
-                                className="sticky left-0 z-10 border-r border-b-dashed border-gray-200 bg-gray-50 text-sm text-gray-500 flex items-center justify-center">
-                                {time !== '00:00' && <span className="text-xs -translate-y-[18px]">{time}</span>}
-                            </div>
+                    {/* Grid lines for the venue area, drawn as one CSS background instead
+                        of a border-having <div> per hour x venue cell (24 x venues.length,
+                        purely decorative). Same 1px #e5e7eb (gray-200) lines, right/bottom
+                        edges of each cell, just not one DOM node per cell. */}
+                    <div
+                        className="absolute pointer-events-none"
+                        style={{
+                            top: 0,
+                            left: timeWidth,
+                            width: venues.length * venueWidth,
+                            height: timeLabels.length * timeHeight * 4,
+                            backgroundImage: `repeating-linear-gradient(to right, transparent 0, transparent ${venueWidth - 1}px, #e5e7eb ${venueWidth - 1}px, #e5e7eb ${venueWidth}px), repeating-linear-gradient(to bottom, transparent 0, transparent ${timeHeight * 4 - 1}px, #e5e7eb ${timeHeight * 4 - 1}px, #e5e7eb ${timeHeight * 4}px)`,
+                        }}
+                    />
 
-                            {venues.map((venue, venueIndex) => {
-                                return (
-                                    <div
-                                        key={`empty-${venueIndex}`}
-                                        className="border-r border-b border-gray-200"
-                                        style={{
-                                            gridRow: timeIndex + 1,
-                                            gridColumn: venueIndex + 2,
-                                        }}
-                                    />
-                                )
-                            })}
-                        </Fragment>
+                    {timeLabels.map((time, timeIndex) => (
+                        <div key={`time-${time}`}
+                            style={{
+                                gridRow: timeIndex + 1,
+                                gridColumn: 1,
+                            }}
+                            className="sticky left-0 z-10 border-r border-b-dashed border-gray-200 bg-gray-50 text-sm text-gray-500 flex items-center justify-center">
+                            {time !== '00:00' && <span className="text-xs -translate-y-[18px]">{time}</span>}
+                        </div>
                     ))}
 
                     {renderedEvents}
