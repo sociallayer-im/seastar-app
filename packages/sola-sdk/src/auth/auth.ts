@@ -201,17 +201,32 @@ export const bindPhone = async ({params, clientMode}: SolaSdkFunctionParams<{
 }
 
 /**
- * Exchanges a server-verified identity for a session, gated by the NEXT_TOKEN
- * shared secret. Exactly one identity is expected: an email (Google), or a
- * WeChat openid/unionid pair (CN 网页授权).
+ * Google sign-in. Send the OAuth access token straight from the browser — the
+ * backend verifies it against Google's userinfo endpoint itself and signs in
+ * only the email Google vouches for. (This replaced the /api/google-signin
+ * route handler and the trustedSignIn email branch, which needed a shared
+ * secret able to mint a session for any email.)
+ */
+export const signInWithGoogle = async ({params, clientMode}: SolaSdkFunctionParams<{
+    accessToken: string
+}>) => {
+    return await request<AuthResult>('/auth/verify_google', {
+        method: 'POST',
+        clientMode,
+        body: {access_token: params.accessToken}
+    })
+}
+
+/**
+ * Exchanges a server-verified WeChat identity for a session, gated by the
+ * NEXT_TOKEN shared secret. WeChat-only by design — the backend rejects any
+ * other identity, so this secret cannot mint a session for an email.
  *
- * SERVER-SIDE ONLY. NEXT_TOKEN mints a session for ANY identity it is given, so
- * it must never reach the browser — call this from a route handler that has
- * already verified the identity itself (see app/api/google-signin and
- * app/api/wechat/callback).
+ * SERVER-SIDE ONLY. NEXT_TOKEN must never reach the browser — call this from a
+ * route handler that has already redeemed the WeChat code with the app secret
+ * (see app/api/wechat/callback).
  */
 export const trustedSignIn = async ({params, clientMode}: SolaSdkFunctionParams<{
-    email?: string,
     wechatOpenid?: string,
     wechatUnionid?: string,
     nextToken: string
@@ -220,7 +235,6 @@ export const trustedSignIn = async ({params, clientMode}: SolaSdkFunctionParams<
         method: 'POST',
         clientMode,
         body: {
-            email: params.email,
             wechat_openid: params.wechatOpenid,
             wechat_unionid: params.wechatUnionid,
             next_token: params.nextToken

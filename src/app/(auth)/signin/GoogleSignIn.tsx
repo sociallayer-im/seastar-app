@@ -1,6 +1,8 @@
 'use client'
 
 import {GoogleOAuthProvider, useGoogleLogin} from '@react-oauth/google'
+import {signInWithGoogle} from '@sola/sdk'
+import {CLIENT_MODE} from '@/app/config'
 import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -8,10 +10,9 @@ import {Button} from '@/components/shadcn/Button'
 import {clientCheckUserLoggedInAndRedirect, setAuth} from '@/utils'
 
 /**
- * Google sign-in. The access token is exchanged for a session by our own route
- * handler (/api/google-signin), never here: that exchange needs NEXT_TOKEN, a
- * backend shared secret that mints a session for any email it is handed, so it
- * must stay server-side.
+ * Google sign-in. The access token goes straight to the backend, which
+ * verifies it against Google's userinfo endpoint itself — no intermediary and
+ * no shared secret (the old /api/google-signin route handler is gone).
  *
  * NOTE: Google validates the JavaScript origin against the OAuth client's
  * registered list. app.sola.day has to be added there before this works on the
@@ -32,18 +33,13 @@ function GoogleButton({lang}: {lang: Dictionary}) {
         onSuccess: async ({access_token}) => {
             const loading = showLoading()
             try {
-                const res = await fetch('/api/google-signin', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({access_token})
+                const {token} = await signInWithGoogle({
+                    params: {accessToken: access_token},
+                    clientMode: CLIENT_MODE
                 })
-                const data = await res.json()
-                if (!res.ok || !data.token) {
-                    throw new Error(data.message || res.statusText)
-                }
 
-                setAuth(data.token)
-                await clientCheckUserLoggedInAndRedirect(data.token)
+                setAuth(token)
+                await clientCheckUserLoggedInAndRedirect(token)
             } catch (e: unknown) {
                 toast({
                     title: lang['Sign In'],
