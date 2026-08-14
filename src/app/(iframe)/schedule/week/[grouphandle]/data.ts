@@ -14,15 +14,18 @@ interface CalculateGridPositionProps {
     searchParams: IframeSchedulePageSearchParams,
     currPath: string,
     authToken: string | null | undefined
+    /** Pass false only from a browser-side call — see compact's data.ts. */
+    noCache?: boolean
 }
 
 export async function calculateGridPosition({
     groupDetail,
     searchParams,
     currPath,
-    authToken
+    authToken,
+    noCache
 }: CalculateGridPositionProps) {
-    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'week'})
+    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'week', noCache})
     const timezone = groupDetail.timezone || 'UTC'
 
     const startDate = pickSearchParam(searchParams.start_date)

@@ -4,12 +4,12 @@ import OuterLink from "@/app/(iframe)/schedule/OuterLink"
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"
-import {useEffect, useState} from "react"
+import {memo, useEffect, useState} from "react"
 import {cfImage, genGoogleMapLink, getAvatar} from "@/utils"
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 import {Dictionary} from '@/lang'
 
-export default function WeeklyViewEventItem({event, timezone, lang}: {event: IframeSchedulePageDataEventDetail, timezone: string, lang: Dictionary}) {
+function WeeklyViewEventItem({event, timezone, lang}: {event: IframeSchedulePageDataEventDetail, timezone: string, lang: Dictionary}) {
     const {showPopup} = useScheduleEventPopup()
 
     const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
@@ -124,3 +124,8 @@ export default function WeeklyViewEventItem({event, timezone, lang}: {event: Ifr
         </div>
     </div>
 }
+
+// Filter/date changes re-set the whole `events` array from ScheduleWeekView's
+// top-level state — memoize so one item's highlight toggle doesn't re-render
+// the full week grid.
+export default memo(WeeklyViewEventItem)

@@ -5,9 +5,9 @@ import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 import { Dictionary } from "@/lang"
 import Avatar from "@/components/Avatar"
 import { displayProfileName } from "@/utils"
-import { useState } from "react"
+import { memo, useState } from "react"
 
-export default function VenueViewEventItem({ event, height, top, left, lang, width , log}: {
+function VenueViewEventItem({ event, height, top, left, lang, width , log}: {
     event: IframeSchedulePageDataEventDetail,
     height: string,
     top: string,
@@ -62,3 +62,10 @@ export default function VenueViewEventItem({ event, height, top, left, lang, wid
         </div>
     )
 }
+
+// ScheduleVenueView re-renders every 60s (the "now" cursor tick) — position
+// props are computed from events/venues only, not `now`, so a memoized item
+// list (see the useMemo around this map in ScheduleVenueView) plus this memo
+// means the ~event count of items skip re-rendering on every tick, not just
+// the cursor line that actually changes.
+export default memo(VenueViewEventItem)

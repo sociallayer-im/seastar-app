@@ -51,7 +51,10 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
                 searchParams,
                 groupDetail,
                 authToken: getAuth(),
-                currPath: window.location.pathname
+                currPath: window.location.pathname,
+                // Browser-side fetch, never touched by Next.js's server fetch
+                // cache — safe to let soon's own Cache-Control govern.
+                noCache: false
             })
             setData(data)
             setEvents(events)

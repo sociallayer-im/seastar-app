@@ -61,6 +61,33 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
         return now.isSame(dayjs.tz(data.currDate, groupDetail.timezone!), 'date')
     }, [now, data.currDate, groupDetail.timezone])
 
+    // Position math doesn't depend on `now` — only recompute when the events/
+    // venues actually change, not on every 60s cursor tick.
+    const renderedEvents = useMemo(() => events.map((event, eventIndex) => {
+        if (!event.venue) {
+            return null
+        }
+
+        const startTime = dayjs.tz(new Date(event.start_time), groupDetail.timezone || 'UTC')
+        const endTime = dayjs.tz(new Date(event.end_time), groupDetail.timezone || 'UTC')
+        const duration = endTime.diff(startTime, 'minutes')
+        const venueIndex = venues.findIndex(v => v.id === event.venue?.id)
+
+        const x = venueIndex + 1
+        const y = (startTime.hour() * 60 + startTime.minute()) / timeStep * timeHeight
+        const height = duration / timeStep * timeHeight
+
+        return <VenueViewEventItem
+            key={`event-${eventIndex}`}
+            width={venueWidth}
+            lang={lang}
+            event={event}
+            height={`${height}px`}
+            top={`${y}px`}
+            left={`${x * venueWidth - (venueWidth - timeWidth)}px`}
+        />
+    }), [events, venues, groupDetail.timezone, lang, venueWidth, timeWidth, timeStep, timeHeight])
+
     useLayoutEffect(() => {
         const scrollContainer = scrollContainerRef.current
         if (!scrollContainer) {
@@ -102,7 +129,10 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
                 searchParams,
                 groupDetail,
                 authToken: getAuth(),
-                currPath: window.location.pathname
+                currPath: window.location.pathname,
+                // Browser-side fetch, never touched by Next.js's server fetch
+                // cache — safe to let soon's own Cache-Control govern.
+                noCache: false
             })
             setData(data)
             setEvents(events)
@@ -195,32 +225,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
                         </Fragment>
                     ))}
 
-                    {
-                        events.map((event, eventIndex) => {
-                            if (!event.venue) {
-                                return null
-                            }
-
-                            const startTime = dayjs.tz(new Date(event.start_time), groupDetail.timezone || 'UTC')
-                            const endTime = dayjs.tz(new Date(event.end_time), groupDetail.timezone || 'UTC')
-                            const duration = endTime.diff(startTime, 'minutes')
-                            const venueIndex = venues.findIndex(v => v.id === event.venue?.id)
-
-                            const x = venueIndex + 1
-                            const y = (startTime.hour() * 60 + startTime.minute()) / timeStep * timeHeight
-                            const height = duration / timeStep * timeHeight
-
-                            return <VenueViewEventItem
-                                key={`event-${eventIndex}`}
-                                width={venueWidth}
-                                lang={lang}
-                                event={event}
-                                height={`${height}px`}
-                                top={`${y}px`}
-                                left={`${x * venueWidth - (venueWidth - timeWidth)}px`}
-                            />
-                        })
-                    }
+                    {renderedEvents}
 
                     {
                         showCursor && (

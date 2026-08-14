@@ -13,16 +13,19 @@ interface ListViewDataProps {
     groupDetail: GroupDetail,
     currPath: string,
     authToken: string | null | undefined
+    /** Pass false only from a browser-side call — see compact's data.ts. */
+    noCache?: boolean
 }
 
 export async function ListViewData({
     searchParams,
     groupDetail,
     currPath,
-    authToken
+    authToken,
+    noCache
 }: ListViewDataProps) {
-    
-    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'list'})
+
+    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'list', noCache})
     const timezone = groupDetail.timezone || 'UTC'
     
     const dayEvents = [] as IframeSchedulePageDataEventDetail[]

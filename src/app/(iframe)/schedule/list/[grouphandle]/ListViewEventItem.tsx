@@ -3,7 +3,7 @@
 import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dynamic from "next/dynamic"
-import {useEffect, useState} from "react"
+import {memo, useEffect, useState} from "react"
 import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
@@ -11,7 +11,7 @@ import {Dictionary} from '@/lang'
 
 const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), {ssr: false})
 
-export default function ListViewEventItem({event, timezone, lang}: {
+function ListViewEventItem({event, timezone, lang}: {
     event: IframeSchedulePageDataEventDetail,
     timezone: string,
     lang: Dictionary,
@@ -92,3 +92,6 @@ export default function ListViewEventItem({event, timezone, lang}: {
         </div>
     </div>
 }
+
+// See WeeklyViewEventItem — same top-level state / per-item highlight pattern.
+export default memo(ListViewEventItem)
