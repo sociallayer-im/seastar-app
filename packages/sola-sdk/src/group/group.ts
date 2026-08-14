@@ -7,12 +7,15 @@ import {SolaSdkFunctionParams} from '../types'
 /**
  * Get group detail by name or id (public, :detail view)
  */
-export const getGroupDetailByName = async ({params: {groupName}, clientMode}: SolaSdkFunctionParams<{groupName: string}>) => {
-    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupName)}`, {clientMode, noCache: true})
+// noCache defaults true (always fresh — most callers read this right after
+// an edit). Pass false to allow soon's own Cache-Control (this response never
+// personalizes) to govern via the standard fetch cache, not Next.js's.
+export const getGroupDetailByName = async ({params: {groupName, noCache}, clientMode}: SolaSdkFunctionParams<{groupName: string, noCache?: boolean}>) => {
+    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupName)}`, {clientMode, noCache: noCache ?? true})
 }
 
-export const getGroupDetailById = async ({params: {groupId}, clientMode}: SolaSdkFunctionParams<{groupId: string}>) => {
-    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupId)}`, {clientMode, noCache: true})
+export const getGroupDetailById = async ({params: {groupId, noCache}, clientMode}: SolaSdkFunctionParams<{groupId: string, noCache?: boolean}>) => {
+    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupId)}`, {clientMode, noCache: noCache ?? true})
 }
 
 /**

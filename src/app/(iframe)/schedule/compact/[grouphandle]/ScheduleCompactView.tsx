@@ -51,7 +51,11 @@ export default function ScheduleCompactView({data: initialData, groupDetail, eve
                 searchParams,
                 groupDetail,
                 authToken: getAuth(),
-                currPath: window.location.pathname
+                currPath: window.location.pathname,
+                // Runs in the browser — a plain fetch, never touched by
+                // Next.js's server fetch cache — so it's safe to let soon's
+                // own Cache-Control (standard HTTP caching) govern here.
+                noCache: false
             })
             setData(data)
             setEvents(events)

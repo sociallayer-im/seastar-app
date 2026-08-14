@@ -78,16 +78,21 @@ export type EventListFilterProps = {
  * Browse/schedule listing. Public; pass authToken to get
  * is_attending/is_starred/is_owner flags on each event.
  */
-export const getEvents = async ({params: {filters, authToken, limit}, clientMode}: SolaSdkFunctionParams<{
+export const getEvents = async ({params: {filters, authToken, limit, noCache}, clientMode}: SolaSdkFunctionParams<{
     filters: EventListFilterProps,
     authToken?: string,
     limit?: number
+    /** Defaults true (always fresh). Pass false to allow soon's own
+     *  Cache-Control (public, anonymous-only) to govern via the standard
+     *  fetch cache — not Next.js's fetch cache — for high-traffic public
+     *  reads like the schedule views. */
+    noCache?: boolean
 }>) => {
     const res = await request<Paginated<EventWithJoinStatus>>('/events', {
         params: {...filters, limit: limit || 100},
         authToken,
         clientMode,
-        noCache: true
+        noCache: noCache ?? true
     })
     return res.data
 }

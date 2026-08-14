@@ -101,6 +101,9 @@ export interface IframeSchedulePageDataProps {
     view: 'week' | 'day' | 'list' | 'compact' | 'venue',
     authToken: string | null | undefined,
     currPath: string | null | undefined
+    /** See CalculateGridPositionProps.noCache — only pass false from a
+     *  browser-side call. */
+    noCache?: boolean
 }
 
 function searchParamsToString(searchParams: IframeSchedulePageSearchParams, exclude: string[] = []): string {
@@ -127,7 +130,8 @@ export async function IframeSchedulePageData({   searchParams,
                                                  groupDetail,
                                                  view,
                                                  authToken,
-                                                 currPath
+                                                 currPath,
+                                                 noCache
                                              }: IframeSchedulePageDataProps): Promise<IframeSchedulePageDataType> {
     const groupName = groupDetail.name
     const filters: Filter = {
@@ -154,7 +158,8 @@ export async function IframeSchedulePageData({   searchParams,
                 skip_recurring: filters.skipRecurring ? 1 : undefined,
             },
             authToken: authToken || undefined,
-            limit: 400
+            limit: 400,
+            noCache
         },
         clientMode: CLIENT_MODE
     })
@@ -236,6 +241,9 @@ export async function IframeSchedulePageData({   searchParams,
 
         if (events.length === 0 && !startDate) {
            const now = dayjs.tz(new Date().getTime(), groupDetail.timezone || 'UTC').format('YYYY-MM-DD')
+           // Only the first upcoming event's start_time is used (to build the
+           // redirect URL) — limit: 1 instead of the default page size so this
+           // unavoidably-sequential fallback query is as cheap as possible.
            const upcomingEvents = await getEvents({
             params: {
                 filters: {
@@ -243,6 +251,7 @@ export async function IframeSchedulePageData({   searchParams,
                     timezone: groupDetail.timezone || undefined,
                     collection: 'upcoming',
                 },
+                limit: 1
             }, clientMode: CLIENT_MODE
            })
            if (upcomingEvents.length > 0) {

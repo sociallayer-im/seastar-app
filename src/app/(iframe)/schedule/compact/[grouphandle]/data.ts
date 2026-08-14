@@ -15,15 +15,21 @@ interface CalculateGridPositionProps {
     searchParams: IframeSchedulePageSearchParams,
     currPath: string,
     authToken: string | null | undefined
+    /** Only meaningful client-side (a browser fetch, never touched by
+     *  Next.js's server fetch cache) — pass false from a filter change to let
+     *  soon's own Cache-Control govern via standard HTTP caching. Leave
+     *  default (true) for the server-rendered initial load. */
+    noCache?: boolean
 }
 
 export async function calculateGridPosition({
     groupDetail,
     searchParams,
     currPath,
-    authToken
+    authToken,
+    noCache
 }: CalculateGridPositionProps) {
-    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'compact'})
+    const data = await IframeSchedulePageData({searchParams, groupDetail, authToken, currPath, view: 'compact', noCache})
     const timezone = groupDetail.timezone || 'UTC'
 
     let dayEvents = [] as IframeSchedulePageDataEventDetail[]

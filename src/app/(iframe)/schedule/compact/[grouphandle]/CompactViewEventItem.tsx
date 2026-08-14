@@ -6,9 +6,9 @@ import Avatar from '@/components/Avatar'
 import {displayProfileName} from '@/utils'
 import {Dictionary} from '@/lang'
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
-import {useEffect, useState} from 'react'
+import {memo, useEffect, useState} from 'react'
 
-export default function CompactViewEventItem({event, timezone, lang, lastEvent}: {
+function CompactViewEventItem({event, timezone, lang, lastEvent}: {
     event: IframeSchedulePageDataEventDetail,
     lastEvent?: IframeSchedulePageDataEventDetail,
     lang: Dictionary,
@@ -92,3 +92,8 @@ export default function CompactViewEventItem({event, timezone, lang, lastEvent}:
         </div>
     </div>
 }
+
+// The list re-renders on every filter change / highlight toggle from
+// ScheduleCompactView's top-level state — memoize so a single item's
+// `highlighted` change doesn't re-render the whole (up to 400-event) list.
+export default memo(CompactViewEventItem)
