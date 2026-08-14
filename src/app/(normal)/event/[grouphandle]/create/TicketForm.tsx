@@ -24,7 +24,8 @@ import {
     TicketDraft,
     PaymentMethod,
     EventRole,
-    getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerName, getBadgeClassDetailByBadgeClassId
+    getBadgeClassByGroupId, ProfileDetail, getBadgeAndBadgeClassByOwnerName, getBadgeClassDetailByBadgeClassId,
+    Group, getProfileGroup
 } from '@sola/sdk'
 import {cfImage, getAuth} from '@/utils'
 import {CLIENT_MODE, CRYPTO_PAYMENT_ENABLED, PAYMENTS_ENABLED, STRIPE_ENABLED, WECHAT_PAY_ENABLED} from '@/app/config'
@@ -227,6 +228,16 @@ function TicketItem({
     const [enableQuantity, setEnableQuantity] = useState(!!ticket.quantity)
     const [enableEndTime, setEnableEndTime] = useState(!!ticket.end_time)
     const [badgeClass, setBadgeClass] = useState<BadgeClass | null>(null)
+    // Groups the creator belongs to — the candidates for the member gate. A
+    // gate id set by someone else stays in check_group_ids untouched; the
+    // chips only ever toggle the caller's own groups in and out.
+    const [myGroups, setMyGroups] = useState<Group[]>([])
+
+    useEffect(() => {
+        getProfileGroup({params: {profileName: currProfile.name}, clientMode: CLIENT_MODE})
+            .then(gs => setMyGroups(gs || []))
+            .catch(console.error)
+    }, [currProfile.name])
 
     useEffect(() => {
         ;(async () => {
@@ -502,6 +513,40 @@ function TicketItem({
                         }}/>
                 </div>
             }
+        </div>
+        <div className="my-3">
+            <div className="flex-row-item-center cursor-pointer"
+                 onClick={() => setTicketDraft({...ticketDraft, need_approval: !ticketDraft.need_approval})}>
+                <div className="text-sm mr-6">{lang['Require Approval (Optional)']}</div>
+                {ticketDraft.need_approval
+                    ? <i className="uil-check-circle text-2xl text-green-500"/>
+                    : <i className="uil-circle text-2xl text-gray-500"/>}
+            </div>
+            <div className="text-xs text-gray-500">{lang['Ticket approval hint']}</div>
+        </div>
+        <div className="my-3">
+            <div className="text-sm mb-1">{lang['Members Only (Optional)']}</div>
+            <div className="text-xs text-gray-500 mb-3">{lang['Members only ticket hint']}</div>
+            <div className="flex-row flex flex-wrap items-center">
+                {myGroups.map(g => {
+                    const selected = ticketDraft.check_group_ids?.includes(g.id)
+                    const color = getLabelColor(g.name)
+                    return <Button
+                        onClick={() => {
+                            const ids = ticketDraft.check_group_ids || []
+                            setTicketDraft({
+                                ...ticketDraft,
+                                check_group_ids: selected ? ids.filter(id => id !== g.id) : [...ids, g.id]
+                            })
+                        }}
+                        variant="outline"
+                        className="mr-2 mb-2"
+                        style={selected ? {color, borderColor: color} : {borderColor: '#ededed'}}
+                        key={g.id}>
+                        <div className="text-xs font-semibold">{g.nickname || g.name}</div>
+                    </Button>
+                })}
+            </div>
         </div>
         <div className="my-3">
             <div className="text-sm mr-6">{lang['Qualification']}</div>

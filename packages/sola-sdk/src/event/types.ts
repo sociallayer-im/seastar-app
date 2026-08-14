@@ -80,6 +80,8 @@ export interface Ticket {
     content: string | null,
     event_id: string,
     check_badge_class_id: string | null,
+    /** Membership gate: only members of ANY of these groups may claim. Empty/null = open. */
+    check_group_ids: string[] | null,
     quantity: number | null,
     end_time: string | null,
     need_approval: boolean | null,
@@ -149,6 +151,7 @@ export interface TicketDraft extends Pick<Ticket, 'title' | 'content' | 'check_b
     id?: string
     payment_methods: PaymentMethod[]
     need_approval?: boolean | null
+    check_group_ids?: string[] | null
     status?: string | null
     start_date?: string | null
     end_date?: string | null

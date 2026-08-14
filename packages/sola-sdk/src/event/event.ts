@@ -413,6 +413,7 @@ const ticketBody = (t: TicketDraft, groupId: string | null) => ({
     title: t.title,
     content: t.content,
     check_badge_class_id: t.check_badge_class_id,
+    check_group_ids: t.check_group_ids || [],
     quantity: t.quantity,
     end_time: t.end_time,
     need_approval: t.need_approval,

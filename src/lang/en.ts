@@ -353,7 +353,7 @@ export const en = {
     Issuer: "Issuer",
     "Invite you to become [1] [2]": "Invite you to become [1] [2]",
     "Input the username or email of the people can receive the invite.":
-        "Input the username or email of the people can receive the invite.",
+        "Input the username, email or phone number of the people can receive the invite.",
     "Download CSV Template": "Download CSV Template",
     "Import From CSV File": "Import From CSV File",
     "Send Invite": "Send Invite",
@@ -775,6 +775,12 @@ export const en = {
     'Partially refunded': 'Partially refunded',
     'Disputed': 'Disputed',
     'Expired': 'Expired',
+    'Ticket approval hint': 'Registrations with this ticket must be approved by an organizer before they are confirmed.',
+    'Members Only (Optional)': 'Members Only (Optional)',
+    'Members only ticket hint': 'Only members of the selected communities can get this ticket. Leave unselected to keep it open to everyone.',
+    'Members Only': 'Members Only',
+    'You are a member': 'You are a member',
+    'Members only ticket notice': 'This ticket is limited to members of these communities.',
 }
 
 export type Dictionary = typeof en;

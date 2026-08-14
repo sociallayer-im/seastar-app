@@ -90,6 +90,7 @@ export const emptyTicket: TicketDraft = {
   title: "",
   content: "",
   check_badge_class_id: null,
+  check_group_ids: [],
   quantity: null,
   end_time: null,
   payment_methods: [],

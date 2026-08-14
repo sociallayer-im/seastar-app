@@ -9,7 +9,10 @@ import {
     createStripeCheckoutSession,
     createWechatPrepay,
     getBadgeClassDetailByBadgeClassId,
+    getGroupDetailById,
+    getProfileGroup,
     getPurchasedTicketItemsByProfileNameAndEventId,
+    Group,
     SolaApiError,
     submitPaymentTxHash,
     validateCoupon
@@ -160,6 +163,29 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             }
         })()
     }, [ticket.check_badge_class_id, currProfile])
+
+    // Membership gate: eligible when the ticket lists no groups, or the signed-in
+    // profile belongs to ANY of them. The server enforces this on rsvp too —
+    // this is display only.
+    const gated = !!ticket.check_group_ids?.length
+    const [memberEligible, setMemberEligible] = useState<boolean>(!gated)
+    const [gateGroups, setGateGroups] = useState<Group[]>([])
+    useEffect(() => {
+        ;(async () => {
+            if (!gated) return
+            try {
+                const details = await Promise.all(ticket.check_group_ids!.map(groupId =>
+                    getGroupDetailById({params: {groupId}, clientMode: CLIENT_MODE}).catch(() => null)))
+                setGateGroups(details.filter(g => !!g) as Group[])
+                if (currProfile) {
+                    const mine = await getProfileGroup({params: {profileName: currProfile.name}, clientMode: CLIENT_MODE})
+                    setMemberEligible((mine || []).some(g => ticket.check_group_ids!.includes(g.id)))
+                }
+            } catch (e: unknown) {
+                console.error(e)
+            }
+        })()
+    }, [ticket.check_group_ids, currProfile])
 
     const soldOut = ticket.quantity === 0
 
@@ -531,6 +557,25 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             </div>
         }
 
+        {gated &&
+            <div className="my-3 border-t pt-2">
+                <div className="font-semibold mb-2">{lang['Members Only']}</div>
+                <div className="text-sm mb-1">
+                    {gateGroups.map(g => g.nickname || g.name).join(' / ')}
+                </div>
+                {memberEligible
+                    ? <div className="text-sm text-green-500 flex-row-item-center">
+                        <i className="uil-check-circle text-lg mr-1"/>
+                        <div>{lang['You are a member']}</div>
+                    </div>
+                    : <div className="text-sm text-red-400 flex-row-item-center">
+                        <i className="uil-info-circle text-lg mr-1"/>
+                        <div>{lang['Members only ticket notice']}</div>
+                    </div>
+                }
+            </div>
+        }
+
         {!!paymentTypes.length && !!selectedPaymentType && !!selectedToken &&
             <div className="my-3 border-t pt-2">
                 <div className="font-semibold mb-1">{lang['Payment Methods']}</div>
@@ -632,7 +677,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
         {!ticket.payment_methods?.length && !!currProfile && !soldOut && !stopSelling &&
             <Button variant={'special'}
-                    disabled={!badgeCollected || checkingBadgeCollected || buying}
+                    disabled={!badgeCollected || !memberEligible || checkingBadgeCollected || buying}
                     onClick={() => handlePurchaseForFree()}
                     className="text-sm w-full">{lang['Purchase for Free']}</Button>
         }
@@ -649,7 +694,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
         {!!ticket.payment_methods?.length && !!currProfile && !soldOut && !stopSelling && !pendingTicketItem && !confirming &&
             <Button variant={'special'}
-                    disabled={!badgeCollected || checkingBadgeCollected || buying || !selectedMethod}
+                    disabled={!badgeCollected || !memberEligible || checkingBadgeCollected || buying || !selectedMethod}
                     onClick={handlePay}
                     className="text-sm w-full">Pay</Button>
         }

@@ -347,7 +347,7 @@ export const zh: Dictionary = {
   Issuer: "颁发者",
   "Invite you to become [1] [2]": "邀请您成为 [1] 的 [2]",
   "Input the username or email of the people can receive the invite.":
-    "输入接收邀请者的用户名或电子邮件。",
+    "输入接收邀请者的用户名、电子邮件或手机号。",
   "Download CSV Template": "下载 CSV 模板",
   "Import From CSV File": "从 CSV 文件导入",
   "Send Invite": "发送邀请",
@@ -753,4 +753,10 @@ export const zh: Dictionary = {
   'Partially refunded': '部分退款',
   'Disputed': '争议中',
   'Expired': '已超时',
+  'Ticket approval hint': '使用此票报名需要主办方审核通过后才算报名成功。',
+  'Members Only (Optional)': '仅限成员（可选）',
+  'Members only ticket hint': '只有所选社区的成员才能领取此票。不选择则对所有人开放。',
+  'Members Only': '仅限成员',
+  'You are a member': '你是成员',
+  'Members only ticket notice': '此票仅限以下社区的成员领取。',
 }
