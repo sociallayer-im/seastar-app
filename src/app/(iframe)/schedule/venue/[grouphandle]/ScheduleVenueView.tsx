@@ -35,18 +35,35 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
     // 获取所有唯一的场馆
     const venues = useMemo(() => {
         const groupVenues = groupDetail.venues || []
+        // An event's venue isn't guaranteed to be in this group's own venue
+        // list (e.g. ethchiangmai2025's events reference 4Seas Nimman venues
+        // that were never added to ethchiangmai2025's own `venues`). Without
+        // this, that venue has no column below (findIndex returns -1), so the
+        // event renders at a negative `left` and is invisible even though it
+        // loaded fine — same data, only the venue-grid column lookup fails.
+        const knownIds = new Set(groupVenues.map(v => v.id))
+        const extraVenues: VenueDetail[] = []
+        events.forEach(event => {
+            const v = event.venue
+            if (v && !knownIds.has(v.id)) {
+                knownIds.add(v.id)
+                extraVenues.push({ id: v.id, name: v.name, image_urls: [] } as unknown as VenueDetail)
+            }
+        })
+        const allVenues = groupVenues.concat(extraVenues)
+
         const minVenueLengt = 20
-        if (groupVenues.length < minVenueLengt) {
+        if (allVenues.length < minVenueLengt) {
             const PlaceholderVenue = {
                 id: 0,
                 title: '',
                 image_urls: [],
             } as unknown as VenueDetail
-            return groupVenues.concat(PlaceholderVenue).concat(Array(minVenueLengt - groupVenues.length).fill(PlaceholderVenue))
+            return allVenues.concat(PlaceholderVenue).concat(Array(minVenueLengt - allVenues.length).fill(PlaceholderVenue))
         } else {
-            return groupVenues
+            return allVenues
         }
-    }, [groupDetail.venues])
+    }, [groupDetail.venues, events])
 
     const venueWidth = 150
     const venueHeight = 110
