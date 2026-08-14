@@ -1,0 +1,33 @@
+src/app/(iframe)/schedule/compact/[grouphandle]/data.ts
+  s_e9ed806a3d225c::t_aa45af46802027 18-22,29-30,32
+src/app/(iframe)/schedule/compact/[grouphandle]/ScheduleCompactView.tsx
+  s_e9ed806a3d225c::t_a0856f249c450f 54-58
+src/app/(iframe)/schedule/utils.ts
+  s_e9ed806a3d225c::t_86c280ed982b9f 104-106
+  s_e9ed806a3d225c::t_8ace7e6b4df58e 161-162
+  s_e9ed806a3d225c::t_e4b537fa53c0a0 133-134
+  s_e9ed806a3d225c::t_e92ea216cf0600 244-246,254
+packages/sola-sdk/src/event/event.ts
+  s_e9ed806a3d225c::t_67f9e2ed4f69af 81,85-89,95
+packages/sola-sdk/src/group/group.ts
+  s_e9ed806a3d225c::t_d4d1fc2ba79156 10-14,17-18
+src/app/(iframe)/schedule/compact/[grouphandle]/CompactViewEventItem.tsx
+  s_e9ed806a3d225c::t_f575c57123c0a4 9,11
+  s_e9ed806a3d225c::t_2f89343c00ac8a 95-99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "13636a92ff9144ebfc23c3637a93176d37d41f9a",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
