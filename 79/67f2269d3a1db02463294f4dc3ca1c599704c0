@@ -1,0 +1,41 @@
+src/app/(normal)/group/[handle]/page.tsx
+  s_e9ed806a3d225c::t_1043159be67ee7 34
+  s_e9ed806a3d225c::t_98ba75747fde64 1
+src/middleware.ts
+  s_e9ed806a3d225c::t_3436c499d348f4 25-46
+  s_e9ed806a3d225c::t_5bae75ef2155cf 4
+src/app/config.ts
+  s_e9ed806a3d225c::t_adf5c294ee0df3 19-42
+.env
+  s_e9ed806a3d225c::t_6986efe052a24d 26-32
+src/app/(dashboard)/dashboard-event-detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_98ba75747fde64 1
+  s_e9ed806a3d225c::t_bfdffba6e13d9d 54
+src/app/(normal)/layout.tsx
+  s_e9ed806a3d225c::t_71564618675ec1 38-46
+ginger.yml
+  s_e9ed806a3d225c::t_fb42ffaf14a439 38-55
+  s_e9ed806a3d225c::t_a5f6d1d6cb17c9 98-104
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_98ba75747fde64 1
+  s_e9ed806a3d225c::t_a8dac65a28abcb 59
+src/app/(normal)/profile/[handle]/page.tsx
+  s_e9ed806a3d225c::t_79cd0fa5d8b962 41
+  s_e9ed806a3d225c::t_98ba75747fde64 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "7967f2269d3a1db02463294f4dc3ca1c599704c0",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
