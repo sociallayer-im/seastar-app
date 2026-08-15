@@ -43,6 +43,14 @@ function Footer({lang}: {lang: Dictionary}) {
                 <a href={'mailto:hi@sola.day'}  className="ml-3">{lang['Contact us']}</a>
                 <a href={'https://github.com/sociallayer-im/seastar-app/issues'}  className="ml-3">{lang['Feedback']}</a>
             </div>
+            {/* OAuth entry points. Both require a session and bounce through
+                /signin with a return target, so they are safe to show signed
+                out — the alternative, hiding them, means nobody discovers the
+                developer portal exists. */}
+            <div className="flex-row-item-center justify-center sm:justify-start mt-2 text-sm">
+                <a href={'/oauth/apps'}>{lang['Developer']}</a>
+                <a href={'/oauth/grants'} className="ml-3">{lang['Authorized Applications']}</a>
+            </div>
             {!!process.env.NEXT_PUBLIC_ICP_LICENSE &&
                 <div className="mb-2 text-sm mt-3 sm:text-left text-center">{process.env.NEXT_PUBLIC_ICP_LICENSE}</div>
             }

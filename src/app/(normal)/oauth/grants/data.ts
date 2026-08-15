@@ -10,7 +10,10 @@ export interface OauthGrantsDataProps {
 export default async function OauthGrantsData(): Promise<OauthGrantsDataProps> {
     const authToken = await getServerSideAuth()
     const currProfile = await getCurrProfile()
-    if (!authToken || !currProfile) redirect('/signin')
+    // Carry the destination through sign-in — middleware turns ?return=
+    // into the cookie the auth screens read, so the user lands back here
+    // instead of on the homepage.
+    if (!authToken || !currProfile) redirect('/signin?return=/oauth/grants')
 
     return {
         grants: await getMyOauthGrants({params: {authToken}, clientMode: CLIENT_MODE})
