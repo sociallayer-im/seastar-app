@@ -14,12 +14,19 @@ export class SolaApiError extends Error {
      * the buyer through a silent WeChat authorize).
      */
     code?: string
+    /**
+     * RFC 6749 §5.2 `error_description`. The OAuth endpoints answer with
+     * {error, error_description} where `error` is a machine code — so for
+     * those, `message` is the code and this is the sentence.
+     */
+    description?: string
 
-    constructor(message: string, status: number, code?: string) {
+    constructor(message: string, status: number, code?: string, description?: string) {
         super(message)
         this.name = 'SolaApiError'
         this.status = status
         this.code = code
+        this.description = description
     }
 }
 
@@ -75,7 +82,8 @@ export async function request<T = any>(path: string, opts: RequestOptions = {}):
         throw new SolaApiError(
             (data as any).error || `Request failed (${resp.status})`,
             resp.status,
-            (data as any).code
+            (data as any).code,
+            (data as any).error_description
         )
     }
     return data as T

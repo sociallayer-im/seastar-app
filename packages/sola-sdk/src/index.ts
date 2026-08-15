@@ -14,6 +14,7 @@ export * from './comment'
 export * from './activity'
 export * from './remember'
 export * from './place'
+export * from './oauth'
 
 export * from './stripe'
 export * from './wechat'
