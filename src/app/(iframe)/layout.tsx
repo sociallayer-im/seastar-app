@@ -7,8 +7,11 @@ import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {selectLang} from '@/app/actions'
 import {poppins, icon} from "@/app/fonts"
+import {CANONICAL_ORIGIN} from '@/app/config'
 
 export const metadata: Metadata = {
+    // See (normal)/layout.tsx.
+    metadataBase: new URL(CANONICAL_ORIGIN),
     title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
     description: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
 }

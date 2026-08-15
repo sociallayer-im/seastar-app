@@ -9,8 +9,16 @@ import Header from "@/components/Header"
 import StartupChecks from "@/components/client/StartupChecks"
 import {icon, poppins, media_icons, editor_icons} from "@/app/fonts"
 import { headers } from "next/headers"
+import {CANONICAL_ORIGIN} from '@/app/config'
 
 export const metadata: Metadata = {
+    // Open Graph images are given as site-relative paths (getAvatar falls back
+    // to /images/default_avatar/*.png), and Next resolves those against
+    // metadataBase. Unset, its fallback is http://localhost:3000 — so every
+    // group or profile without an uploaded avatar shipped an unfetchable
+    // og:image on both deployments. Only groups that happened to have an
+    // avatar hid it.
+    metadataBase: new URL(CANONICAL_ORIGIN),
     title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
     description: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
 }

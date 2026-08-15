@@ -7,8 +7,12 @@ import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
 import {selectLang} from '@/app/actions'
 import {poppins, icon, media_icons, editor_icons} from "@/app/fonts"
+import {CANONICAL_ORIGIN} from '@/app/config'
 
 export const metadata: Metadata = {
+    // Relative og:image paths resolve against this; see (normal)/layout.tsx.
+    // Needed here too — dashboard-event-detail sets its own openGraph block.
+    metadataBase: new URL(CANONICAL_ORIGIN),
     title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
     description: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
 }

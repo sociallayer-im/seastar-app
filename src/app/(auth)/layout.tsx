@@ -7,8 +7,12 @@ import Modals from '@/components/client/Modal/Modals'
 import LangSwitcher from '@/components/client/LangSwitcher'
 import {selectLang} from '@/app/actions'
 import {icon, poppins} from "@/app/fonts"
+import {CANONICAL_ORIGIN} from '@/app/config'
 
 export const metadata: Metadata = {
+    // See (normal)/layout.tsx. metadataBase is per-segment-tree, not global —
+    // each route group needs its own or it silently falls back to localhost.
+    metadataBase: new URL(CANONICAL_ORIGIN),
     title: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
     description: process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer",
 }
