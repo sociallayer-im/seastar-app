@@ -9,12 +9,34 @@ import {WechatPayParams} from '@sola/sdk'
  */
 
 /**
- * True inside the WeChat client's browser. UA sniffing is the only detection
- * WeChat documents; the bridge is injected asynchronously, so its presence at
- * any given moment is not a reliable substitute.
+ * True inside the WeChat client's browser — ANY of them, desktop included.
+ * UA sniffing is the only detection WeChat documents; the bridge is injected
+ * asynchronously, so its presence at any given moment is not a reliable
+ * substitute.
  */
 export const isWechatBrowser = () =>
     typeof navigator !== 'undefined' && /MicroMessenger/i.test(navigator.userAgent)
+
+/**
+ * True where JSAPI pay can plausibly work: the WeChat client, minus the desktop
+ * ones.
+ *
+ * The desktop clients are the reason this is not just isWechatBrowser(). WeChat
+ * for Windows and macOS put `MicroMessenger` in the UA of their built-in
+ * browser too, but do not inject a bridge that can open a payment sheet — so
+ * the looser check said "you're in WeChat, go ahead", an order was created, and
+ * the sheet never appeared.
+ *
+ * Deliberately an EXCLUDE-list rather than a mobile allow-list. Both errors are
+ * possible and they are not symmetric: wrongly allowing costs one 'unavailable'
+ * round trip, which now cancels the order and shows this same prompt, while
+ * wrongly blocking costs the sale outright and the buyer has no recourse. A UA
+ * this does not recognise — a new client, a WebView embedding, a rewritten
+ * string — therefore gets to try. Only the two clients that positively identify
+ * themselves as desktop are refused up front.
+ */
+export const isMobileWechatBrowser = () =>
+    isWechatBrowser() && !/WindowsWechat|MacWechat/i.test(navigator.userAgent)
 
 interface WeixinJSBridge {
     invoke(method: string, params: Record<string, string>, callback: (res: {err_msg?: string}) => void): void

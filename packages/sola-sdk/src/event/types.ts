@@ -245,11 +245,17 @@ export interface TicketItem {
     user?: Profile,
 }
 
+/** FormField::FIELD_TYPES. `image` and `file` both store the uploaded URL in
+ *  the answer's `value` — the upload happens first, and the form only ever
+ *  carries the link. They differ in the control shown and whether the answer
+ *  can be rendered inline. */
+export type FormFieldType = 'text' | 'select' | 'image' | 'file'
+
 /** FormFieldBlueprint. */
 export interface EventFormField {
     id: string,
     label: string,
-    field_type: 'text' | 'select',
+    field_type: FormFieldType,
     required: boolean,
     for_admin?: boolean,
     position: number,
@@ -262,6 +268,14 @@ export interface EventForm {
     title: string,
     description: string | null,
     published?: boolean,
+    /** What a shareable /form/<slug> link is built from. */
+    slug?: string,
+    /** Set when an event uses this form as its registration questions. Such a
+     *  form is answered by joining the event — posting to /forms/:slug/submissions
+     *  is refused, because that path creates no participant. */
+    event_id?: string | null,
+    submission_message?: string | null,
+    created_at?: string,
     fields: EventFormField[],
 }
 
@@ -280,6 +294,9 @@ export interface FormSubmission {
     starred: boolean,
     admin_note: string | null,
     submitted_at: string,
+    /** When the answers were last CHANGED — a submission stays editable, so
+     *  this and submitted_at diverge. */
+    updated_at?: string,
     answers: FormAnswer[],
     user: Profile | null,
 }

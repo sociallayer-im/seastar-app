@@ -30,6 +30,12 @@ export default async function Header({sticky = true}:{sticky?: boolean}) {
                                  className={`ml-3 text-xs font-semibold ${currentPath?.includes('/my-events/') ? 'text-primary-foreground' : ''}`}>
                     {lang['My Events']}
                 </a>}
+                {/* Signed-in only, like My Events: the hub is entirely about
+                    your own forms, and it redirects to /signin anyway. */}
+                {!!profile && <a href="/forms"
+                                 className={`ml-3 text-xs font-semibold ${currentPath?.startsWith('/forms') ? 'text-primary-foreground' : ''}`}>
+                    {lang['Forms']}
+                </a>}
             </div>
             <div className="flex-row-item-center text-xs relative">
                 <HeaderSearchBar lang={lang} />

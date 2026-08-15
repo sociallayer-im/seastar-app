@@ -7,7 +7,8 @@ import {getCurrProfile, getServerSideAuth} from '@/app/actions'
 import {
     getEventDetailById,
     getEventForm,
-    getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId, getRecurringById,
+    getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId,
+    getPendingTicketItemsByProfileNameAndEventId, getRecurringById,
     Recurring, Ticket
 } from '@sola/sdk'
 import {AVNeeds, SeatingStyle, ExternalCatering} from '@/app/configForSpecifyGroup'
@@ -128,17 +129,29 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     }
 
     const ticketsPurchased: Ticket[] = []
+    // The order still awaiting payment, if there is one. The page needs the
+    // order itself and not just currProfilePaymentPending: cancelling an
+    // abandoned attempt takes its id, and without a way to cancel, the
+    // "awaiting payment" notice is a dead end the buyer cannot leave.
+    let pendingTicketItemId: string | null = null
     if (!!currProfile && !!eventDetail.tickets?.length) {
         const token = await getServerSideAuth()
-        const ticketItems = await getPurchasedTicketItemsByProfileNameAndEventId({
-            params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: token!},
-            clientMode: CLIENT_MODE
-        })
+        const [ticketItems, pendingItems] = await Promise.all([
+            getPurchasedTicketItemsByProfileNameAndEventId({
+                params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: token!},
+                clientMode: CLIENT_MODE
+            }),
+            getPendingTicketItemsByProfileNameAndEventId({
+                params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: token!},
+                clientMode: CLIENT_MODE
+            })
+        ])
 
         ticketItems.forEach(item => {
             const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
             !!ticket && ticketsPurchased.push(ticket)
         })
+        pendingTicketItemId = pendingItems[0]?.id || null
     }
 
     // eventDetail was fetched with the viewer's authToken (see getEventDetailById
@@ -179,6 +192,8 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         canPublishEvent: !!currProfile && canSubmitEvent,
         canViewAllSubmissions: !!currProfile && (isGroupManager || isGroupOwner || isEventCreator),
         ticketsPurchased,
+        pendingTicketItemId,
+        currProfileParticipant,
         externalCatering,
         seatingStyle,
         avNeeds,

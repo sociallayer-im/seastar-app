@@ -9,6 +9,7 @@ import {attendEventWithoutTicket, EventForm} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {useState} from 'react'
+import FormFieldsInput, {FormValues, validateFormValues} from '@/components/client/FormFieldsInput'
 
 export default function AttendEventBtn({eventId, lang, className, onAttended, form, requireApproval}: {
     eventId: string,
@@ -102,7 +103,7 @@ function ApplicationFormDialog({form, lang, close, onSubmit}: {
     close: () => void
     onSubmit: (answers: Array<{field_id: string, value: string}>) => Promise<void>
 }) {
-    const [values, setValues] = useState<Record<string, string>>({})
+    const [values, setValues] = useState<FormValues>({})
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [submitting, setSubmitting] = useState(false)
 
@@ -112,12 +113,7 @@ function ApplicationFormDialog({form, lang, close, onSubmit}: {
     }
 
     const handleSubmit = async () => {
-        const newErrors: Record<string, string> = {}
-        form.fields.forEach(field => {
-            if (field.required && !values[field.id]?.trim()) {
-                newErrors[field.id] = lang['This field is required'] || 'This field is required'
-            }
-        })
+        const newErrors = validateFormValues(form.fields, values, lang)
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors)
             return
@@ -133,37 +129,13 @@ function ApplicationFormDialog({form, lang, close, onSubmit}: {
                 <div className="font-semibold text-lg">{lang['Application Form']}</div>
                 <i className="uil-times-circle text-xl text-gray-400 cursor-pointer" onClick={close}/>
             </div>
-            <div className="overflow-y-auto flex-1 space-y-4 pr-1">
-                {form.fields.map(field => (
-                    <div key={field.id}>
-                        <div className="text-sm font-medium mb-1">
-                            {field.label}
-                            {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </div>
-                        {field.field_type === 'select' ? (
-                            <select
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400 bg-white"
-                                value={values[field.id] || ''}
-                                onChange={e => handleFieldChange(field.id, e.target.value)}
-                            >
-                                <option value="">-- Select --</option>
-                                {(field.options || []).map((opt, i) => (
-                                    <option key={i} value={opt}>{opt}</option>
-                                ))}
-                            </select>
-                        ) : (
-                            <input
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400"
-                                placeholder={field.label}
-                                value={values[field.id] || ''}
-                                onChange={e => handleFieldChange(field.id, e.target.value)}
-                            />
-                        )}
-                        {errors[field.id] && (
-                            <div className="text-xs text-red-500 mt-1">{errors[field.id]}</div>
-                        )}
-                    </div>
-                ))}
+            <div className="overflow-y-auto flex-1 pr-1">
+                <FormFieldsInput
+                    fields={form.fields}
+                    values={values}
+                    errors={errors}
+                    onChange={handleFieldChange}
+                    lang={lang}/>
             </div>
             <div className="mt-4">
                 <Button

@@ -56,16 +56,32 @@ export const submitPaymentTxHash = async ({params, clientMode}: SolaSdkFunctionP
     return {participant: data.participant, ticketItem: data.ticket_item}
 }
 
-/** Cancel an unpaid (pending) crypto ticket item. */
+/**
+ * Abandon an order that never completed, on any rail.
+ *
+ * Pass `ticketItemId`; the chain/productId/itemId triple is sails' vocabulary
+ * and cannot address a card order at all, because those have no chain. The API
+ * accepts either.
+ *
+ * Cancelling releases the held unit and, if it was the buyer's last live order
+ * for the event, withdraws them — which is what makes signing up again
+ * possible afterwards.
+ */
 export const cancelUnpaidItem = async ({params, clientMode}: SolaSdkFunctionParams<{
-    chain: string,
-    productId: string,
-    itemId: string,
+    ticketItemId?: string,
+    chain?: string,
+    productId?: string,
+    itemId?: string,
     authToken: string
 }>) => {
     const data = await request<{ ticket_item: TicketItem }>('/tickets/cancel_unpaid_item', {
         method: 'POST',
-        body: {chain: params.chain, product_id: params.productId, item_id: params.itemId},
+        body: {
+            ticket_item_id: params.ticketItemId,
+            chain: params.chain,
+            product_id: params.productId,
+            item_id: params.itemId
+        },
         authToken: params.authToken,
         clientMode
     })
@@ -158,6 +174,30 @@ export const getPurchasedTicketItemsByProfileNameAndEventId = async ({params, cl
         // The server-side param is still called profile_handle; it matches users.name.
         return await request<TicketItem[]>('/tickets/list', {
             params: {profile_handle: params.profileName, event_id: params.eventId, status: 'succeeded'},
+            authToken: params.authToken,
+            clientMode,
+            noCache: true
+        })
+    } catch {
+        return [] as TicketItem[]
+    }
+}
+
+/**
+ * My orders for one event that are still awaiting payment.
+ *
+ * The page needs the ORDER, not just the fact that one exists: cancelling an
+ * abandoned attempt takes its id, and `participants.payment_status` — which is
+ * all the participant record carries — is a summary with no id in it.
+ */
+export const getPendingTicketItemsByProfileNameAndEventId = async ({params, clientMode}: SolaSdkFunctionParams<{
+    profileName: string,
+    eventId: string,
+    authToken: string
+}>) => {
+    try {
+        return await request<TicketItem[]>('/tickets/list', {
+            params: {profile_handle: params.profileName, event_id: params.eventId, status: 'pending'},
             authToken: params.authToken,
             clientMode,
             noCache: true

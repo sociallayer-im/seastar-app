@@ -38,6 +38,7 @@ import VenueDetailBtn from '@/components/client/VenueDetailBtn'
 import { getLabelColor } from '@/utils/label_color'
 import EventKindLabel from "@/components/EventKind"
 import GoToBuyTicket from '@/components/client/GoToBuyTicket'
+import CancelRegistrationBtn from '@/components/client/CancelRegistrationBtn'
 
 const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 
@@ -81,6 +82,8 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
         currProfileAttended,
         currProfilePending,
         currProfilePaymentPending,
+        currProfileParticipant,
+        pendingTicketItemId,
         currProfileCheckedIn,
         isTicketEvent,
         eventProcess,
@@ -244,12 +247,22 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         }
 
                         {/* Applied, not decided: the button's job is to say so,
-                            not to offer a second application. */}
+                            not to offer a second application — but the
+                            applicant must be able to back out, or "under
+                            review" is a state they can never leave. */}
                         {currProfilePending &&
-                            <div className="flex-row-item-center mt-2">
+                            <div className="flex-row-item-center mt-2 gap-2">
                                 <Button disabled={true} variant={'secondary'} className="text-xs flex-1">
                                     {lang['Under Review']}
                                 </Button>
+                                {!!currProfileParticipant &&
+                                    <CancelRegistrationBtn
+                                        lang={lang}
+                                        kind="application"
+                                        eventId={eventDetail.id}
+                                        participantId={currProfileParticipant.id}
+                                        className="text-xs flex-1"/>
+                                }
                             </div>
                         }
 
@@ -264,10 +277,26 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                         }
 
                         {/* An order is already in flight — finishing it is the
-                            action, not starting another. */}
+                            action, not starting another. Abandoning it is the
+                            other legitimate action: without it the buyer is
+                            stuck here until the sweeper expires the order,
+                            because the API refuses a second one for the same
+                            ticket. */}
                         {isTicketEvent && !currProfileAttended && currProfilePaymentPending &&
-                            <div className="mt-2 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
-                                {lang['Order awaiting payment']}
+                            <div className="mt-2">
+                                <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+                                    {lang['Order awaiting payment']}
+                                </div>
+                                {!!pendingTicketItemId &&
+                                    <div className="flex-row-item-center mt-2">
+                                        <CancelRegistrationBtn
+                                            lang={lang}
+                                            kind="order"
+                                            eventId={eventDetail.id}
+                                            ticketItemId={pendingTicketItemId}
+                                            className="text-xs flex-1"/>
+                                    </div>
+                                }
                             </div>
                         }
 

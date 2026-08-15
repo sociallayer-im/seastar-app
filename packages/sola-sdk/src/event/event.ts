@@ -292,6 +292,25 @@ export const cancelAttendEvent = async ({params: {eventId, authToken}, clientMod
     throw new Error('You are not attending this event')
 }
 
+/**
+ * Withdraw a participant record we already have the id of — which the event
+ * page does, from `current_participant`.
+ *
+ * `cancelAttendEvent` above pages the whole attendee list to find the same
+ * row; prefer this one wherever the id is already in hand. The API soft-
+ * deletes: the row survives as `cancelled` (so a paid order stays refundable)
+ * and re-registering later reuses it.
+ */
+export const cancelParticipant = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    participantId: string,
+    authToken: string
+}>) => {
+    await request(`/events/${params.eventId}/participants/${params.participantId}`, {
+        method: 'DELETE', authToken: params.authToken, clientMode
+    })
+}
+
 // --- forms (keyed by event, not form) ---
 
 export const saveEventForm = async ({params, clientMode}: SolaSdkFunctionParams<{

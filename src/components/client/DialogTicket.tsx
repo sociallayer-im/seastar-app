@@ -5,6 +5,7 @@ import {
     EventDetail,
     BadgeClassDetail,
     checkBadgeOwnership,
+    cancelUnpaidItem,
     createTicketPayment,
     createStripeCheckoutSession,
     createWechatPrepay,
@@ -30,7 +31,7 @@ import {useEffect, useMemo, useState} from 'react'
 import {useRouter} from 'next/navigation'
 import {isFiatChain, Payments, PaymentSettingToken, PaymentsType} from '@/utils/payment_setting'
 import {executePayHubPayment, PAYMENT_STEP_LABEL, PaymentStep, resolveTokenAddress, tsidToBigInt} from '@/utils/evm_payment'
-import {invokeWechatPay, isWechatBrowser} from '@/utils/wechat_pay'
+import {invokeWechatPay, isMobileWechatBrowser} from '@/utils/wechat_pay'
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
 import {Button} from '@/components/shadcn/Button'
@@ -60,6 +61,21 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle')
     /** Money has left; we are waiting for the server to agree. */
     const [confirming, setConfirming] = useState<boolean>(false)
+
+    /**
+     * Whether WeChat Pay can actually run here — `null` until we know.
+     *
+     * Resolved in an effect rather than read inline, because the answer comes
+     * from the user agent: on the server it is always false, so reading it
+     * during render would make the client's first paint disagree with the
+     * markup it hydrates. The third state matters for what that costs: seeded
+     * `false`, a buyer who IS in mobile WeChat would see the "open this in
+     * WeChat" warning flash at them before the effect corrected it. Unknown
+     * disables the button (invisible for one tick) and shows nothing.
+     */
+    const [wechatPayReady, setWechatPayReady] = useState<boolean | null>(null)
+    useEffect(() => { setWechatPayReady(isMobileWechatBrowser()) }, [])
+
     const router = useRouter()
 
     /**
@@ -345,6 +361,30 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     }
 
     /**
+     * Hands an order back when we know for certain nothing was paid for it.
+     *
+     * Only ever called where that certainty exists — the sheet was never
+     * drawn. Cancelling releases the ticket unit and the coupon usage and
+     * withdraws the participant, so the buyer can immediately try again
+     * somewhere the payment works, instead of being told "you already have an
+     * unpaid order for this ticket" for the next 35 minutes.
+     *
+     * Best effort: if it fails the sweeper still expires the order, so there is
+     * nothing useful to tell the buyer about it.
+     */
+    const releaseUnpaidOrder = async (ticketItem: TicketItem) => {
+        setPendingTicketItem(null)
+        try {
+            await cancelUnpaidItem({
+                params: {ticketItemId: ticketItem.id, authToken: getAuth()!},
+                clientMode: CLIENT_MODE
+            })
+        } catch (e) {
+            console.error('[releaseUnpaidOrder]', e)
+        }
+    }
+
+    /**
      * WeChat Pay, which unlike Stripe never leaves the page: the payment sheet
      * is drawn over it by the WeChat client and hands control straight back.
      *
@@ -354,7 +394,11 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
      * 'fail' it cancels nothing: a failed sheet is not proof no money moved.
      */
     const payWithWechat = async (ticketItem: TicketItem) => {
-        if (!isWechatBrowser()) {
+        // Unreachable via handlePay, which checks first — kept because the
+        // environment can change under a long-lived dialog, and reaching it
+        // with an order in hand must not strand that order.
+        if (!isMobileWechatBrowser()) {
+            await releaseUnpaidOrder(ticketItem)
             setPaymentError(lang['Open in WeChat to pay'])
             setBuying(false)
             return
@@ -386,9 +430,20 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             setBuying(false)
             return
         }
-        if (outcome === 'unavailable' || outcome === 'fail') {
-            // Deliberately does NOT cancel the order: the sheet may have failed
-            // after the money moved. The sweeper closes and expires it if not.
+        if (outcome === 'unavailable') {
+            // 'unavailable' means the bridge never arrived, so
+            // getBrandWCPayRequest was never invoked and no sheet was ever
+            // drawn — no money can have moved. That is the one outcome where
+            // cancelling is provably safe, and it hands the seat back now
+            // instead of in 35 minutes.
+            await releaseUnpaidOrder(ticketItem)
+            setPaymentError(lang['Open in WeChat to pay'])
+            setBuying(false)
+            return
+        }
+        if (outcome === 'fail') {
+            // Deliberately does NOT cancel the order: the sheet DID open, so it
+            // may have failed after the money moved. The sweeper expires it.
             setPaymentError(lang['Payment failed, please try again'])
             setBuying(false)
             return
@@ -414,6 +469,15 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
     const handlePay = async () => {
         if (!currProfile || !selectedMethod) return
+        // Checked BEFORE the order is created, which is the whole point: this
+        // used to be discovered inside payWithWechat, by which time an order
+        // already existed, holding a ticket unit and blocking any retry for
+        // the 35 minutes it took the sweeper to expire it. A buyer on a laptop
+        // could not buy, and could not stop not-buying either.
+        if (selectedPaymentType?.chain === 'wechat' && !wechatPayReady) {
+            setPaymentError(lang['Open in WeChat to pay'])
+            return
+        }
         setPaymentError('')
         const loading = showLoading()
         setBuying(true)
@@ -616,6 +680,15 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                                                  className="w-6 h-6 rounded-full mr-1"/>}/>
                     </DropdownMenu>
                 </div>
+
+                {/* Said here, next to the choice that causes it, rather than
+                    after a failed press: WeChat Pay is the default rail on CN,
+                    so a buyer on a laptop meets it without having chosen it. */}
+                {selectedPaymentType.chain === 'wechat' && wechatPayReady === false &&
+                    <div className="mt-3 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                        {lang['Open in WeChat to pay']}
+                    </div>
+                }
             </div>
         }
 
@@ -694,9 +767,10 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
         {!!ticket.payment_methods?.length && !!currProfile && !soldOut && !stopSelling && !pendingTicketItem && !confirming &&
             <Button variant={'special'}
-                    disabled={!badgeCollected || !memberEligible || checkingBadgeCollected || buying || !selectedMethod}
+                    disabled={!badgeCollected || !memberEligible || checkingBadgeCollected || buying || !selectedMethod
+                        || (selectedPaymentType?.chain === 'wechat' && !wechatPayReady)}
                     onClick={handlePay}
-                    className="text-sm w-full">Pay</Button>
+                    className="text-sm w-full">{lang['Pay']}</Button>
         }
 
         {!!pendingTicketItem && paymentStep !== 'done' && (

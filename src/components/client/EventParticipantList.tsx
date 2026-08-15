@@ -10,6 +10,7 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {CLIENT_MODE} from '@/app/config'
 import dynamic from 'next/dynamic'
+import FormFieldsInput, {FormAnswerValue, validateFormValues} from '@/components/client/FormFieldsInput'
 
 const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTime'))
 
@@ -447,12 +448,7 @@ function MyApplicationDialog({lang, close, submission, form, participant, isPend
 
     const handleSubmit = async () => {
         if (!form) return
-        const newErrors: Record<string, string> = {}
-        form.fields.forEach(field => {
-            if (field.required && !values[field.id]?.trim()) {
-                newErrors[field.id] = lang['This field is required'] || 'This field is required'
-            }
-        })
+        const newErrors = validateFormValues(form.fields, values, lang)
         if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return }
         setSubmitting(true)
         await onUpdate(form.fields.map(f => ({field_id: f.id, value: values[f.id] || ''})))
@@ -469,28 +465,28 @@ function MyApplicationDialog({lang, close, submission, form, participant, isPend
                 {!submission && !form?.fields.length && (
                     <div className="text-sm text-gray-400">{lang['No answers submitted'] || 'No answers submitted'}</div>
                 )}
-                {form?.fields.map(field => (
+                {/* While the application is still under review it stays
+                    editable, uploads included — the same controls the
+                    applicant filled in with, not a text box that would turn an
+                    uploaded file back into a raw URL. */}
+                {isPending ? (
+                    <FormFieldsInput
+                        fields={form?.fields || []}
+                        values={values}
+                        errors={errors}
+                        onChange={(id, value) => {
+                            setValues({...values, [id]: value})
+                            if (errors[id]) setErrors({...errors, [id]: ''})
+                        }}
+                        lang={lang}/>
+                ) : form?.fields.map(field => (
                     <div key={field.id}>
                         <div className="text-sm font-medium mb-1">
                             {field.label}{field.required && <span className="text-red-500 ml-1">*</span>}
                         </div>
-                        {isPending ? (
-                            <>
-                                <input
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400"
-                                    value={values[field.id] || ''}
-                                    onChange={e => {
-                                        setValues({...values, [field.id]: e.target.value})
-                                        if (errors[field.id]) setErrors({...errors, [field.id]: ''})
-                                    }}
-                                />
-                                {errors[field.id] && <div className="text-xs text-red-500 mt-1">{errors[field.id]}</div>}
-                            </>
-                        ) : (
-                            <div className="text-sm bg-gray-50 rounded-lg px-3 py-2 min-h-[36px]">
-                                {values[field.id] || <span className="text-gray-300">—</span>}
-                            </div>
-                        )}
+                        <div className="text-sm bg-gray-50 rounded-lg px-3 py-2 min-h-[36px]">
+                            <FormAnswerValue field={field} value={values[field.id] || ''}/>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -544,7 +540,7 @@ function ApplicationAnswersDialog({lang, close, submission, form, participant, o
                         <div key={field.id}>
                             <div className="text-xs text-gray-400 mb-1">{field.label}{field.required && ' *'}</div>
                             <div className="text-sm bg-gray-50 rounded-lg px-3 py-2 min-h-[36px]">
-                                {answer?.value || <span className="text-gray-300">—</span>}
+                                <FormAnswerValue field={field} value={answer?.value || ''}/>
                             </div>
                         </div>
                     )
