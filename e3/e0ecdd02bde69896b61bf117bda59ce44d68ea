@@ -1,0 +1,25 @@
+src/app/(dashboard)/layout.tsx
+  s_e9ed806a3d225c::t_8ee58d41e94fb5 10,13-15
+src/app/(auth)/layout.tsx
+  s_e9ed806a3d225c::t_52a1af6d725e38 10,13-15
+src/app/(iframe)/layout.tsx
+  s_e9ed806a3d225c::t_5b8a18214dd451 10,13-14
+src/app/(normal)/layout.tsx
+  s_e9ed806a3d225c::t_bbbfef98623fa8 12,15-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e3e0ecdd02bde69896b61bf117bda59ce44d68ea",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
