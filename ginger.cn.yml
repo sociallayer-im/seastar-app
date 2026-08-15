@@ -62,6 +62,16 @@ secrets:
   inject:
     - NEXT_PUBLIC_API_URL
     - NEXT_PUBLIC_APP_TITLE
+    # Absolute origin for Open Graph URLs. Needed here because the code default
+    # is https://sola.day (the international site): without this, CN's share
+    # cards would link visitors out of CN entirely. Verified empirically that
+    # keys in this list reach `next build` — CN's client bundle contains
+    # api.juluo.xyz and no api.sola.day, and .env.cn.production is not a
+    # filename Next auto-loads, so the inject list is the only path in.
+    #
+    # NEXT_PUBLIC_CANONICAL_HOST is deliberately absent: it switches on host
+    # normalisation, and CN's www.juluo.xyz must not redirect anywhere.
+    - NEXT_PUBLIC_CANONICAL_ORIGIN
     - NEXT_PUBLIC_AUTH_FIELD
     - NEXT_PUBLIC_CLIENT_MODE
     - NEXT_PUBLIC_ENABLE_GOOGLE_MAP
