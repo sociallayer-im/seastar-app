@@ -48,10 +48,22 @@ proxy:
   # Traefik rule and a DNS-01 ACME challenge, since HTTP-01 cannot answer for
   # *.sola.day. Only these two were asked for.
   #
-  # Order of operations, because Traefik only requests a certificate once a
-  # request arrives for a host it already has a router for: deploy this list
-  # FIRST, then repoint DNS. Doing it the other way round serves a TLS error
-  # until the next deploy.
+  # ORDER: repoint DNS BEFORE deploying a new host into this list.
+  #
+  # Traefik asks Let's Encrypt for the certificate the moment the router
+  # appears — not on the first request, which is what an earlier version of
+  # this comment claimed and which cost an outage on 2026-08-15. Deploying
+  # first means the HTTP-01 challenge is answered by whatever the old DNS
+  # still points at (a 404 from Vercel, in that case), the whole SAN bundle
+  # fails, and every host in this list that had no cert yet serves a TLS
+  # error. app.sola.day 308ing to a certless sola.day made that user-visible.
+  #
+  # Worse, Traefik does NOT retry on its own: it only re-runs ACME when the
+  # router config actually changes, so re-deploying the identical list is a
+  # no-op. Recovery is to deploy once with the failing hosts REMOVED, then
+  # again with them re-added — two `ginger deploy --skip-push` runs, ~20s
+  # each — so they register as new domains. Restarting Traefik would also
+  # work but it is shared with ~12 other services.
   hosts: [sola.day, www.sola.day, app.sola.day, auth.sola.day, infinitacity.sola.day, edgeesmeralda.sola.day]
   app_port: 3000
   ssl: true
