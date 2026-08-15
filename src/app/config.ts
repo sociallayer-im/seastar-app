@@ -16,6 +16,30 @@ export const CODE_LENGTH = 6
 // SOLA_APP_SUBDOMAINS, or getGroupSubdomain would read "auth" as a group handle.
 export const AUTH_HOST_SUBDOMAINS = ['auth', 'auth-beta']
 
+// The one host this deployment wants to be reached on. Everything in
+// CANONICAL_REDIRECT_HOSTS 308s to it, path and query preserved, and it is the
+// origin stamped into absolute Open Graph URLs.
+//
+// Both are env-driven and both default to empty, because the two deployments
+// disagree: SG serves the bare apex (sola.day) and folds app./www. into it,
+// while CN's canonical host IS www.juluo.xyz and must not redirect anywhere.
+// Unset means "no host normalisation", which is also what local dev wants —
+// a hardcoded rule here would bounce localhost:4001 to production.
+export const CANONICAL_HOST = process.env.NEXT_PUBLIC_CANONICAL_HOST || ''
+
+// Hosts that should 308 to CANONICAL_HOST. Deliberately an explicit list rather
+// than "anything that isn't canonical": auth.sola.day must keep answering on
+// its own name (middleware rewrites its '/' to /signin), and every group
+// subdomain — infinitacity.sola.day and any future one — renders in place. A
+// catch-all would silently break both.
+export const CANONICAL_REDIRECT_HOSTS = (process.env.NEXT_PUBLIC_CANONICAL_REDIRECT_HOSTS || '')
+    .split(',').map(h => h.trim().toLowerCase()).filter(Boolean)
+
+// Absolute origin for Open Graph / share URLs, which cannot be relative. Falls
+// back to the canonical host so a deployment only has to set one variable.
+export const CANONICAL_ORIGIN = process.env.NEXT_PUBLIC_CANONICAL_ORIGIN
+    || (CANONICAL_HOST ? `https://${CANONICAL_HOST}` : 'https://sola.day')
+
 // Third-party sign-in (Google) is only wired where an OAuth client exists and
 // the origin is registered in the Google console.
 export const THIRD_PARTY_LOGIN = process.env.NEXT_PUBLIC_THIRD_PARTY_LOGIN === 'true'

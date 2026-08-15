@@ -1,3 +1,4 @@
+import {CANONICAL_ORIGIN} from '@/app/config'
 import {
     ProfileData,
     ProfileDataProps,
@@ -37,7 +38,7 @@ export async function generateMetadata({params: {handle}, searchParams: {tab}}: 
                 title: `${displayProfileName(data.profile)} | Social Layer`,
                 description: data.profile.bio || undefined,
                 type: 'website',
-                url: `https://app.sola.day/profile/${data.profile.name}`,
+                url: `${CANONICAL_ORIGIN}/profile/${data.profile.name}`,
                 images: getAvatar(data.profile.id, data.profile.image_url),
             }
         }

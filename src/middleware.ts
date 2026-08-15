@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import {getGroupSubdomain} from '@/utils'
-import {AUTH_HOST_SUBDOMAINS} from '@/app/config'
+import {AUTH_HOST_SUBDOMAINS, CANONICAL_HOST, CANONICAL_REDIRECT_HOSTS} from '@/app/config'
 
 /**
  * True for the host the standalone auth app used to answer on (auth.sola.day,
@@ -22,6 +22,28 @@ export function middleware(request: NextRequest) {
     // every consumer of x-current-path (the share page QR code, most
     // visibly). The forwarded headers carry the URL the visitor typed.
     const host = headers.get('x-forwarded-host')?.split(',')[0].trim() || headers.get('host')
+
+    // Host normalisation: app.sola.day and www.sola.day are now aliases of
+    // sola.day. Done here rather than in Traefik because ginger's config
+    // exposes no way to attach an arbitrary redirect middleware to a router.
+    //
+    // 308 rather than 301: it is the only permanent redirect browsers are
+    // required to replay with the original method and body, and the auth
+    // screens POST. 301 would silently turn those into GETs.
+    //
+    // Runs before every other branch on purpose — the alias hosts should never
+    // reach the sign-in rewrite or the group-subdomain lookup below.
+    if (CANONICAL_HOST && host) {
+        const hostname = host.split(':')[0].toLowerCase()
+        if (CANONICAL_REDIRECT_HOSTS.includes(hostname) && hostname !== CANONICAL_HOST) {
+            const target = new URL(request.url)
+            target.protocol = 'https:'
+            target.host = CANONICAL_HOST
+            target.port = ''
+            return NextResponse.redirect(target, 308)
+        }
+    }
+
     const groupHandle = getGroupSubdomain(host)
     const requestUrl = new URL(request.url)
     if (host) {

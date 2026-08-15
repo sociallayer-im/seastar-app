@@ -35,7 +35,15 @@ export default async function RootLayout({
         <html lang={langType}
               className={`${poppins.className} ${icon.variable} ${media_icons.variable} ${editor_icons.variable}`}>
         <head>
-            <script src="https://analytics.wamo.club/js/script.js" async data-domain="app.sola.day" type="text/javascript" />
+            {/* data-domain is Plausible's SITE IDENTIFIER, not a URL — it has to
+                match a site that exists in the Plausible instance or events are
+                silently dropped. It deliberately still says app.sola.day after
+                the move to sola.day: renaming it splits the history in two, and
+                the rename has to happen in Plausible first either way. Override
+                with NEXT_PUBLIC_PLAUSIBLE_DOMAIN once that site is renamed. */}
+            <script src="https://analytics.wamo.club/js/script.js" async
+                    data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || 'app.sola.day'}
+                    type="text/javascript" />
         </head>
         <Head>
             <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>

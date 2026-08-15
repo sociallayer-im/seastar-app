@@ -35,7 +35,24 @@ proxy:
   # NEXT_PUBLIC_SIGN_IN_URL=https://auth.sola.day baked in) then
   # `cd seastar-auth && ginger deploy --skip-push`. seastar-auth's config is left
   # pointing at auth.sola.day precisely so that second step needs no edit.
-  hosts: [app.sola.day, auth.sola.day]
+  # sola.day is the canonical host as of 2026-08-15. app.sola.day and
+  # www.sola.day are kept routed here only so middleware can 308 them to it —
+  # removing them from this list would give visitors a bare Traefik 404 instead
+  # of a redirect, which is worse than the old URL working.
+  #
+  # infinitacity/edgeesmeralda are group subdomains: middleware reads the first
+  # label as a group handle and renders that group's home page in place (see
+  # getGroupSubdomain -> x-event-home -> app/(normal)/page.tsx). There are 391
+  # rows in soon's `domains` table that could work the same way, but each needs
+  # its own DNS record and an entry here — a wildcard would need a wildcard
+  # Traefik rule and a DNS-01 ACME challenge, since HTTP-01 cannot answer for
+  # *.sola.day. Only these two were asked for.
+  #
+  # Order of operations, because Traefik only requests a certificate once a
+  # request arrives for a host it already has a router for: deploy this list
+  # FIRST, then repoint DNS. Doing it the other way round serves a TLS error
+  # until the next deploy.
+  hosts: [sola.day, www.sola.day, app.sola.day, auth.sola.day, infinitacity.sola.day, edgeesmeralda.sola.day]
   app_port: 3000
   ssl: true
   health_check_path: /api/health
@@ -78,6 +95,13 @@ secrets:
   inject:
     - NEXT_PUBLIC_API_URL
     - NEXT_PUBLIC_APP_TITLE
+    # Read by middleware, which Next inlines at build like any other
+    # NEXT_PUBLIC_ var — injected here only for symmetry with the rest of the
+    # list. Both are non-empty in .env.production; ginger aborts on an inject
+    # key with no value, which is why ginger.cn.yml must NOT list them (CN
+    # leaves both unset so no host normalisation happens there).
+    - NEXT_PUBLIC_CANONICAL_HOST
+    - NEXT_PUBLIC_CANONICAL_REDIRECT_HOSTS
     - NEXT_PUBLIC_AUTH_FIELD
     - NEXT_PUBLIC_CLIENT_MODE
     - NEXT_PUBLIC_ENABLE_GOOGLE_MAP

@@ -1,3 +1,4 @@
+import {CANONICAL_ORIGIN} from '@/app/config'
 import EventDetailPage, {
     EventDetailPageDataProps,
     EventDetailPageSearchParams
@@ -55,7 +56,7 @@ export async function generateMetadata({ params: { eventid }, searchParams: { ta
             title: `${eventDetail.title} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
             description: description,
             type: 'website',
-            url: `https://app.sola.day/event/detail/${eventDetail.id}`,
+            url: `${CANONICAL_ORIGIN}/event/detail/${eventDetail.id}`,
             images: eventDetail.image_url || '/images/facaster_default_cover.png',
         }
     }

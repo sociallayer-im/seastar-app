@@ -1,3 +1,4 @@
+import {CANONICAL_ORIGIN} from '@/app/config'
 import GroupPageData, {GroupDataProps} from "@/app/(normal)/group/[handle]/data"
 import {displayProfileName, getAvatar, pickSearchParam} from "@/utils"
 import {Badge} from "@/components/shadcn/Badge"
@@ -30,7 +31,7 @@ export async function generateMetadata({params:{handle}, searchParams:{tab}}: Gr
             title: `${displayProfileName(group)} - ${lang['Group']} | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`,
             description: group.bio || undefined,
             type: 'website',
-            url: `https://app.sola.day/group/${group.name}`,
+            url: `${CANONICAL_ORIGIN}/group/${group.name}`,
             images: getAvatar(group.id, group.image_url),
         }
     }
