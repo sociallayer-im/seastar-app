@@ -30,6 +30,7 @@ export default function FormEditor({lang, form}: {
     const [title, setTitle] = useState(form?.title || '')
     const [description, setDescription] = useState(form?.description || '')
     const [published, setPublished] = useState(form?.published ?? true)
+    const [publicSubmissions, setPublicSubmissions] = useState(form?.public_submissions ?? false)
     const [fields, setFields] = useState<FormFieldDraft[]>(
         form?.fields?.length
             ? [...form.fields]
@@ -67,6 +68,7 @@ export default function FormEditor({lang, form}: {
                         title: title.trim() || lang['Untitled Form'],
                         description,
                         published,
+                        publicSubmissions,
                         fields: payload,
                         authToken
                     },
@@ -77,6 +79,7 @@ export default function FormEditor({lang, form}: {
                         title: title.trim() || lang['Untitled Form'],
                         description,
                         published,
+                        publicSubmissions,
                         fields: payload,
                         authToken
                     },
@@ -124,6 +127,18 @@ export default function FormEditor({lang, form}: {
                 <input type="checkbox" checked={published}
                     onChange={e => setPublished(e.target.checked)}/>
                 {lang['Published']}
+            </label>
+
+            <label className="flex items-start gap-2 text-sm cursor-pointer">
+                <input type="checkbox" className="mt-1" checked={publicSubmissions}
+                    onChange={e => setPublicSubmissions(e.target.checked)}/>
+                <span>
+                    <span className="block">{lang['Public responses']}</span>
+                    {/* Spelled out rather than left to the label: turning this
+                        on republishes what people already answered, and the
+                        one thing they cannot do is un-answer. */}
+                    <span className="block text-xs text-gray-500">{lang['Public responses intro']}</span>
+                </span>
             </label>
 
             <div className="flex-row-item-center gap-3 pt-2">

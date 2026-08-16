@@ -864,6 +864,14 @@ export const en = {
     'Are you sure you want to cancel this order? You can register again afterwards.': 'Are you sure you want to cancel this order? You can register again afterwards.',
     'Are you sure you want to withdraw your application? You can apply again afterwards.': 'Are you sure you want to withdraw your application? You can apply again afterwards.',
     'Application cancelled': 'Application cancelled',
+    'Long Text': 'Long Text',
+    'Public responses': 'Show responses publicly',
+    'Public responses intro': 'Anyone can see every answer, and who gave it (name and avatar — never email or phone). Off by default; turning it off again hides them.',
+    'View responses': 'View responses',
+    'Edit my answers': 'Edit my answers',
+    'My Application': 'My Application',
+    'Date': 'Date',
+    'Multi Select': 'Multi Select',
 }
 
 export type Dictionary = typeof en;

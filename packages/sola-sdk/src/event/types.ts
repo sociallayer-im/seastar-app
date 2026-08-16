@@ -188,6 +188,13 @@ export interface EventDraftType {
     image_url?: string | null
     image_note?: string | null
     recurring_id?: string | null
+    /** The event's application form, loaded so the editor can show it. The
+     *  edit page used to omit both of these: `form` being absent made the
+     *  application-form section render as OFF on an event that had one, and
+     *  `form_id` being absent is the only reason that did not then clear it on
+     *  save. Neither absence was intentional. */
+    form_id?: string | null
+    form?: EventForm | null
     tickets: TicketDraft[]
     event_roles: EventRole[] | null
     /** Designate this event as the group's ticket event (its tickets grant
@@ -245,11 +252,21 @@ export interface TicketItem {
     user?: Profile,
 }
 
-/** FormField::FIELD_TYPES. `image` and `file` both store the uploaded URL in
- *  the answer's `value` — the upload happens first, and the form only ever
- *  carries the link. They differ in the control shown and whether the answer
- *  can be rendered inline. */
-export type FormFieldType = 'text' | 'select' | 'image' | 'file'
+/** FormField::FIELD_TYPES.
+ *
+ *  Every one of these stores a string in the answer's `value`; they differ
+ *  only in the control the respondent gets and how the answer is rendered
+ *  back. `image` and `file` store the uploaded URL — the upload happens first
+ *  and the form only ever carries the link. `date` and `url` are not parsed or
+ *  validated anywhere: a question whose type changed after it was answered
+ *  still shows whatever was written. */
+export type FormFieldType =
+    'text' | 'textarea' | 'select' | 'multi_select' | 'date' | 'url' | 'image' | 'file'
+
+/** A multi_select answer is its chosen options joined by this, in the single
+ *  `value` every answer has — mirrors FormField::MULTI_VALUE_SEPARATOR. A
+ *  single-select answer is therefore already a valid multi_select answer. */
+export const MULTI_VALUE_SEPARATOR = '|'
 
 /** FormFieldBlueprint. */
 export interface EventFormField {
@@ -275,6 +292,13 @@ export interface EventForm {
      *  is refused, because that path creates no participant. */
     event_id?: string | null,
     submission_message?: string | null,
+    /** When true, anyone may read every submission — see the responses page.
+     *  A property of the FORM, event-attached or not. */
+    public_submissions?: boolean,
+    /** Whether the CALLER may edit this form. A public form has readers who
+     *  are signed in and are not its author; they must not be offered an
+     *  editor link that only fails when followed. */
+    can_edit?: boolean,
     created_at?: string,
     fields: EventFormField[],
 }

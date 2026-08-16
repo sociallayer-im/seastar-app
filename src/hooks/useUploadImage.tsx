@@ -10,9 +10,12 @@ export default function useUploadImage() {
     const {toast} = useToast()
 
     const uploadImage = async () => {
-        const files = await chooseFile({accepts: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']})
+        const files = await chooseFile({
+            accepts: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml']
+        })
+        const file = files[0]
         const reader = new FileReader()
-        reader.readAsDataURL(files[0])
+        reader.readAsDataURL(file)
 
         return new Promise<string>((resolve, reject) => {
             reader.onload = async () => {
@@ -29,7 +32,15 @@ export default function useUploadImage() {
                     for (let i = 0; i < byteString.length; i++) {
                         ia[i] = byteString.charCodeAt(i)
                     }
-                    const blob = new Blob([ia], {type: 'image/png'})
+                    // The file's OWN type, not a hardcoded image/png. This
+                    // round trip only re-packages the bytes — it does not
+                    // convert anything — so labelling everything png stored a
+                    // JPEG, a GIF and an SVG under a content type none of them
+                    // had. Browsers sniff their way through that inside an
+                    // <img>, which is why it went unnoticed, but an SVG does
+                    // not survive it, and Cloudflare's resizing reads the
+                    // header it is given.
+                    const blob = new Blob([ia], {type: file.type || 'image/png'})
 
                     const auth_token = Cookies.get(process.env.NEXT_PUBLIC_AUTH_FIELD!)
                     if (!auth_token) {
@@ -40,14 +51,16 @@ export default function useUploadImage() {
                         params: {file: blob, authToken: auth_token},
                         clientMode: CLIENT_MODE
                     })
+                    // Wait for the object to be fetchable before handing the
+                    // URL back, so a form does not save a link that 404s for a
+                    // moment. It is a readiness check, not a validity one: the
+                    // upload has already succeeded server-side by this point,
+                    // so a browser that declines to decode the image should
+                    // not throw the stored URL away.
                     const image = new Image()
                     image.src = url
-                    image.onload = () => {
-                        resolve(url)
-                    }
-                    image.onerror = () => {
-                        reject(new Error('Load image failed'))
-                    }
+                    image.onload = () => resolve(url)
+                    image.onerror = () => resolve(url)
                 } catch (e:unknown) {
                     toast({
                         title: e instanceof Error ? e.message : 'Upload failed',

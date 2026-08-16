@@ -325,11 +325,21 @@ export const saveEventForm = async ({params, clientMode}: SolaSdkFunctionParams<
         position: number,
         options?: string[]
     }>,
+    /** Publishing the answers is a property of the FORM. Left undefined the
+     *  API keeps whatever the form had, so an older caller cannot silently
+     *  unpublish a wall of answers. */
+    publicSubmissions?: boolean,
     authToken: string
 }>) => {
     return await request<EventForm>(`/events/${params.eventId}/form`, {
         method: 'POST',
-        body: {title: params.title, fields: params.fields},
+        body: {
+            title: params.title,
+            fields: params.fields,
+            ...(params.publicSubmissions === undefined
+                ? {}
+                : {public_submissions: params.publicSubmissions})
+        },
         authToken: params.authToken,
         clientMode
     })
@@ -370,6 +380,43 @@ export const getFormSubmission = async ({params, clientMode}: SolaSdkFunctionPar
     })
     if (!data || (data as any).submission === null) return null
     return data as FormSubmission
+}
+
+/** My own answers on an EVENT's application form, without needing my user id.
+ *  Named apart from the standalone form/'s getMyFormSubmission, which is keyed
+ *  by slug — the two address different endpoints. */
+export const getMyEventFormSubmission = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken: string
+}>) => {
+    const data = await request<FormSubmission | {submission: null}>(
+        `/events/${params.eventId}/form/my_submission`,
+        {authToken: params.authToken, clientMode, noCache: true}
+    )
+    if (!data || (data as {submission: null}).submission === null) return null
+    return data as FormSubmission
+}
+
+/**
+ * Correct my own application answers while it is still under review.
+ *
+ * NOT attendEventWithoutTicket, which is what the edit dialog used to call:
+ * that is participants#create, and it refuses anyone already participating —
+ * so every "save" came back "User can only participate once per event" and
+ * nothing was ever edited. The API refuses this once the organizer has
+ * decided, because by then those answers are what they decided on.
+ */
+export const updateMyFormSubmission = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    formAnswers: Array<{field_id: string, value: string}>,
+    authToken: string
+}>) => {
+    return await request<FormSubmission>(`/events/${params.eventId}/form/submission`, {
+        method: 'PATCH',
+        body: {form_answers: params.formAnswers},
+        authToken: params.authToken,
+        clientMode
+    })
 }
 
 export const listFormSubmissions = async ({params, clientMode}: SolaSdkFunctionParams<{

@@ -53,10 +53,18 @@ const EventDateTimeInput = dynamic(
 // Re-exported because several callers import it from this module.
 export type {FormFieldDraft}
 
+/** The application-form half of the editor. The two travel together because
+ *  they are saved by one call — publishing the answers is a property of the
+ *  form, not of the event. */
+export interface ApplicationFormDraft {
+  fields: FormFieldDraft[]
+  publicSubmissions: boolean
+}
+
 export interface EventFormProps {
   lang: Dictionary
   data: CreateEventPageDataType
-  onConfirm?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType, formFields: FormFieldDraft[] | null) => void
+  onConfirm?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType, applicationForm: ApplicationFormDraft | null) => void
   onCancel?: (eventDraft: EventDraftType, repeatOpt: RepeatFormType) => void
 }
 
@@ -78,8 +86,9 @@ export default function EventForm({
   const [enableTicket, setEnableTicket] = useState(!!draft.tickets?.length)
 
   // application form
-  const existingForm = (data.eventDraft as any).form as { fields: EventFormField[] } | null
+  const existingForm = data.eventDraft.form ?? null
   const [enableApplicationForm, setEnableApplicationForm] = useState(!!existingForm)
+  const [publicSubmissions, setPublicSubmissions] = useState(!!existingForm?.public_submissions)
   const [formFields, setFormFields] = useState<FormFieldDraft[]>(
     existingForm?.fields?.map((f, i) => ({ id: f.id, label: f.label, required: f.required, position: i, field_type: f.field_type, options: f.options || [] })) || []
   )
@@ -208,7 +217,8 @@ export default function EventForm({
       _draft.tickets = []
     }
 
-    onConfirm?.(_draft, repeatForm, enableApplicationForm ? formFields : null)
+    onConfirm?.(_draft, repeatForm,
+      enableApplicationForm ? {fields: formFields, publicSubmissions} : null)
   }
 
   const handleCancelEvent = async () => {
@@ -877,6 +887,21 @@ export default function EventForm({
                       {enableApplicationForm && (
                         <div className="mt-3">
                           <FormFieldsEditor fields={formFields} setFields={setFormFields} lang={lang} />
+
+                          {/* Same option the standalone editor offers, because
+                              it is the same property of the same model: an
+                              event's answers are as publishable as a survey's
+                              if whoever wrote the questions says so. */}
+                          <label className="flex items-start gap-2 text-sm cursor-pointer mt-4">
+                            <input type="checkbox" className="mt-1" checked={publicSubmissions}
+                              onChange={(e) => setPublicSubmissions(e.target.checked)} />
+                            <span>
+                              <span className="block">{lang['Public responses']}</span>
+                              <span className="block text-xs text-gray-500">
+                                {lang['Public responses intro']}
+                              </span>
+                            </span>
+                          </label>
                         </div>
                       )}
                     </div>

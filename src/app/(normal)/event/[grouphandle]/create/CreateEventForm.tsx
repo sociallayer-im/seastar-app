@@ -15,13 +15,13 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth, processEventRoles} from '@/utils'
 import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatForm'
 import {CLIENT_MODE} from '@/app/config'
-import {FormFieldDraft} from '@/app/(normal)/event/[grouphandle]/create/EventForm'
+import {ApplicationFormDraft} from '@/app/(normal)/event/[grouphandle]/create/EventForm'
 
 export default function CreateEventForm(props: { lang: Dictionary, data: CreateEventPageDataType }) {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const handleSingleEvent = async (eventDraft: EventDraftType, formFields: FormFieldDraft[] | null) => {
+    const handleSingleEvent = async (eventDraft: EventDraftType, applicationForm: ApplicationFormDraft | null) => {
         const authToken = getAuth()
         const loading = showLoading()
         try {
@@ -30,11 +30,12 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
                 params: {eventDraft: processedEventRoleDraft, authToken: authToken!},
                 clientMode: CLIENT_MODE
             })
-            if (formFields && formFields.length > 0) {
+            if (applicationForm && applicationForm.fields.length > 0) {
                 await saveEventForm({
                     params: {
                         eventId: event.id,
-                        fields: formFields.map((f, i) => ({...f, position: i})),
+                        fields: applicationForm.fields.map((f, i) => ({...f, position: i})),
+                        publicSubmissions: applicationForm.publicSubmissions,
                         authToken: authToken!
                     },
                     clientMode: CLIENT_MODE
@@ -85,9 +86,9 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
         }
     }
 
-    const onConfirm = async (eventDraft: EventDraftType, repeatForm: RepeatFormType, formFields: FormFieldDraft[] | null) => {
+    const onConfirm = async (eventDraft: EventDraftType, repeatForm: RepeatFormType, applicationForm: ApplicationFormDraft | null) => {
         if (!repeatForm.interval) {
-            await handleSingleEvent(eventDraft, formFields)
+            await handleSingleEvent(eventDraft, applicationForm)
         } else {
             await handleRepeatingEvent(eventDraft, repeatForm)
         }

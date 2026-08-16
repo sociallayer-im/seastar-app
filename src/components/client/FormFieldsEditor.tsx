@@ -15,6 +15,9 @@ export type FormFieldDraft = Pick<EventFormField, 'label' | 'required' | 'positi
     options: string[]
 }
 
+/** The two types that carry a choice list — mirrors FormField::OPTION_TYPES. */
+const OPTION_TYPES: string[] = ['select', 'multi_select']
+
 export const emptyField = (position: number): FormFieldDraft =>
     ({label: '', required: false, position, field_type: 'text', options: []})
 
@@ -46,12 +49,16 @@ export default function FormFieldsEditor({fields, setFields, lang}: {
                             // Choices belong to a select and nothing else; keeping
                             // them across a type change lets a stale list
                             // reappear if the author switches back and forth.
-                            options: e.target.value === 'select'
+                            options: OPTION_TYPES.includes(e.target.value)
                                 ? (field.options.length ? field.options : [''])
                                 : []
                         })}>
                         <option value="text">{lang['Text']}</option>
+                        <option value="textarea">{lang['Long Text']}</option>
                         <option value="select">{lang['Select']}</option>
+                        <option value="multi_select">{lang['Multi Select']}</option>
+                        <option value="date">{lang['Date']}</option>
+                        <option value="url">{lang['Link']}</option>
                         <option value="image">{lang['Image']}</option>
                         <option value="file">{lang['File']}</option>
                     </select>
@@ -66,7 +73,7 @@ export default function FormFieldsEditor({fields, setFields, lang}: {
                     </button>
                 </div>
 
-                {field.field_type === 'select' && (
+                {OPTION_TYPES.includes(field.field_type) && (
                     <div className="pl-1 space-y-1">
                         <div className="text-xs text-gray-400 mb-1">Options</div>
                         {field.options.map((opt, oi) => (

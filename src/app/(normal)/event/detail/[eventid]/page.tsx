@@ -39,6 +39,7 @@ import { getLabelColor } from '@/utils/label_color'
 import EventKindLabel from "@/components/EventKind"
 import GoToBuyTicket from '@/components/client/GoToBuyTicket'
 import CancelRegistrationBtn from '@/components/client/CancelRegistrationBtn'
+import MyApplicationBtn from '@/components/client/MyApplicationBtn'
 
 const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 
@@ -263,6 +264,23 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                                         participantId={currProfileParticipant.id}
                                         className="text-xs flex-1"/>
                                 }
+                            </div>
+                        }
+
+                        {/* Reaching your own answers used to mean finding
+                            yourself in the participants tab — which a ticketed
+                            event hides from everyone but the organizer, so on
+                            exactly the events people pay to apply to there was
+                            no way in at all. Editable while under review;
+                            read-only once the organizer has decided on them. */}
+                        {!!form && !!currProfileParticipant &&
+                            (currProfilePending || currProfileAttended) &&
+                            <div className="flex-row-item-center mt-2">
+                                <MyApplicationBtn
+                                    eventId={eventDetail.id}
+                                    lang={lang}
+                                    editable={currProfilePending}
+                                    className="text-xs flex-1"/>
                             </div>
                         }
 

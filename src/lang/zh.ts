@@ -842,4 +842,12 @@ export const zh: Dictionary = {
   'Are you sure you want to cancel this order? You can register again afterwards.': '确定取消这笔订单吗？取消后可以重新报名。',
   'Are you sure you want to withdraw your application? You can apply again afterwards.': '确定撤回申请吗？撤回后可以重新申请。',
   'Application cancelled': '已取消申请',
+  'Long Text': '长文本',
+  'Public responses': '公开展示所有回复',
+  'Public responses intro': '任何人都能看到全部回答，以及回答者（昵称和头像，不含邮箱和手机号）。默认关闭；关掉后重新隐藏。',
+  'View responses': '查看回复',
+  'Edit my answers': '修改我的回答',
+  'My Application': '我的报名表',
+  'Date': '日期',
+  'Multi Select': '多选',
 }

@@ -62,6 +62,7 @@ export const createForm = async ({params, clientMode}: SolaSdkFunctionParams<{
     description?: string | null,
     submissionMessage?: string | null,
     published?: boolean,
+    publicSubmissions?: boolean,
     fields: FormFieldDraft[],
     authToken: string
 }>) => {
@@ -72,6 +73,7 @@ export const createForm = async ({params, clientMode}: SolaSdkFunctionParams<{
             description: params.description,
             submission_message: params.submissionMessage,
             published: params.published,
+            public_submissions: params.publicSubmissions,
             fields: params.fields
         },
         authToken: params.authToken,
@@ -85,6 +87,7 @@ export const updateForm = async ({params, clientMode}: SolaSdkFunctionParams<{
     description?: string | null,
     submissionMessage?: string | null,
     published?: boolean,
+    publicSubmissions?: boolean,
     fields?: FormFieldDraft[],
     authToken: string
 }>) => {
@@ -96,6 +99,7 @@ export const updateForm = async ({params, clientMode}: SolaSdkFunctionParams<{
     if (params.description !== undefined) body.description = params.description
     if (params.submissionMessage !== undefined) body.submission_message = params.submissionMessage
     if (params.published !== undefined) body.published = params.published
+    if (params.publicSubmissions !== undefined) body.public_submissions = params.publicSubmissions
     if (params.fields !== undefined) body.fields = params.fields
 
     return await request<EventForm>(`/forms/${params.slug}`, {
@@ -166,7 +170,8 @@ export const getMyFormSubmission = async ({params, clientMode}: SolaSdkFunctionP
  */
 export const listFormResponses = async ({params, clientMode}: SolaSdkFunctionParams<{
     slug: string,
-    authToken: string,
+    /** Optional: a form with public_submissions is readable signed out. */
+    authToken?: string,
     maxPages?: number
 }>) => {
     const maxPages = params.maxPages ?? 20

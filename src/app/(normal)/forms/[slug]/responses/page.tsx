@@ -10,20 +10,28 @@ import {FormAnswerValue} from '@/components/client/FormFieldsInput'
  */
 export default async function FormResponsesPage(props: {params: {slug: string}}) {
     const {lang} = await selectLang()
+    // No sign-in gate: a form whose author turned on public responses is meant
+    // to be readable by anyone, and the API is what decides. Sending a signed-
+    // out visitor to /signin first would hide a page that is public.
     const authToken = await getServerSideAuth()
-    const currProfile = await getCurrProfile()
-    if (!authToken || !currProfile) redirect(`/signin?return=/forms/${props.params.slug}/responses`)
 
-    const form = await getForm({params: {slug: props.params.slug, authToken}, clientMode: CLIENT_MODE})
+    const form = await getForm({
+        params: {slug: props.params.slug, authToken: authToken || undefined},
+        clientMode: CLIENT_MODE
+    })
     if (!form) redirect('/404')
 
     const result = await listFormResponses({
-        params: {slug: props.params.slug, authToken},
+        params: {slug: props.params.slug, authToken: authToken || undefined},
         clientMode: CLIENT_MODE
     }).catch(() => null)
-    // null means the API refused: this is somebody else's form.
+    // null means the API refused: somebody else's form, and not a public one.
     if (!result) redirect('/404')
     const {responses, total} = result
+
+    // Only the author gets the editor link — everyone else is a reader here.
+    // can_edit comes from the API, which is the only place that knows.
+    const canEdit = form.can_edit === true && !form.event_id
 
     const fields = [...form.fields].sort((a, b) => a.position - b.position)
 
@@ -31,9 +39,10 @@ export default async function FormResponsesPage(props: {params: {slug: string}})
         <div className="max-w-[720px] mx-auto">
             <div className="flex-row-item-center justify-between mb-1">
                 <div className="text-xl font-semibold">{form.title}</div>
-                <a className="text-sm text-blue-500 underline" href={`/forms/${form.slug}/edit`}>
-                    {lang['Edit Form']}
-                </a>
+                {canEdit &&
+                    <a className="text-sm text-blue-500 underline" href={`/forms/${form.slug}/edit`}>
+                        {lang['Edit Form']}
+                    </a>}
             </div>
             <div className="text-xs text-gray-500 mb-4">
                 {/* Says so when it is showing a subset rather than letting a

@@ -2,6 +2,7 @@ import {
   EventDraftType,
   getAvailableGroupsForEventHost,
   getEventDetailById,
+  getEventForm,
   getGroupDetailByName,
   getRecurringById,
   Group,
@@ -53,6 +54,7 @@ function toEventDraft(eventDetail: EventDetail): EventDraftType {
     notes: eventDetail.notes,
     image_note: eventDetail.image_note,
     recurring_id: eventDetail.recurring_id,
+    form_id: eventDetail.form_id,
     tickets: (eventDetail.tickets || []).map(t => ({ ...t, payment_methods: t.payment_methods || [] })),
     event_roles: eventDetail.event_roles || [],
     location: eventDetail.place?.name || null,
@@ -112,12 +114,25 @@ export default async function EditEventData({
     })
   }
 
-  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager, await getServerSideAuth())
+  const authToken = await getServerSideAuth()
+  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager, authToken)
+
+  // Without this the editor showed the application-form section switched off
+  // on an event that has one, so an organizer opening the page saw their
+  // questions vanish — and building them again replaced the originals, taking
+  // the answers already given with them.
+  const form = eventDetail.form_id
+    ? await getEventForm({
+        params: {eventId: eventDetail.id, authToken: authToken || undefined},
+        clientMode: CLIENT_MODE,
+      })
+    : null
 
   return {
     currProfile,
     eventDraft: {
       ...toEventDraft(eventDetail),
+      form,
       // Seeded from the group's pointer — the single source of truth — so the
       // toggle reflects reality on an already-designated event.
       is_group_ticket_event: groupDetail.group_ticket_event_id === eventDetail.id,

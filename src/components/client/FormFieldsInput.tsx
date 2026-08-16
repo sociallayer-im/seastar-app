@@ -1,7 +1,7 @@
 'use client'
 
 import {useState} from 'react'
-import {EventFormField, uploadDocument} from '@sola/sdk'
+import {EventFormField, MULTI_VALUE_SEPARATOR, uploadDocument} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {Dictionary} from '@/lang'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -91,16 +91,34 @@ export default function FormFieldsInput({fields, values, errors, onChange, lang}
                             <option key={i} value={opt}>{opt}</option>
                         ))}
                     </select>
+                ) : field.field_type === 'multi_select' ? (
+                    <MultiSelectAnswer
+                        options={field.options || []}
+                        value={values[field.id] || ''}
+                        onChange={v => onChange(field.id, v)}/>
                 ) : field.field_type === 'image' ? (
                     <ImageAnswer value={values[field.id] || ''} lang={lang}
                         onChange={url => onChange(field.id, url)}/>
                 ) : field.field_type === 'file' ? (
                     <FileAnswer value={values[field.id] || ''} lang={lang}
                         onChange={url => onChange(field.id, url)}/>
-                ) : (
-                    <input
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400"
+                ) : field.field_type === 'textarea' ? (
+                    <textarea
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400 min-h-[96px]"
                         placeholder={field.label}
+                        value={values[field.id] || ''}
+                        onChange={e => onChange(field.id, e.target.value)}/>
+                ) : (
+                    /* type=date gives the native picker and type=url the right
+                       keyboard on a phone. Neither is validated beyond that:
+                       the value is stored as the text it already was, so a
+                       question whose type changed after it was answered still
+                       shows what somebody wrote. */
+                    <input
+                        type={field.field_type === 'date' ? 'date'
+                            : field.field_type === 'url' ? 'url' : 'text'}
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400"
+                        placeholder={field.field_type === 'url' ? 'https://…' : field.label}
                         value={values[field.id] || ''}
                         onChange={e => onChange(field.id, e.target.value)}/>
                 )}
@@ -109,6 +127,35 @@ export default function FormFieldsInput({fields, values, errors, onChange, lang}
                     <div className="text-xs text-red-500 mt-1">{errors[field.id]}</div>
                 )}
             </div>
+        ))}
+    </div>
+}
+
+/** Checkboxes, because a multi-select <select> is close to unusable on a
+ *  phone and invisible about how many choices exist. The value is the chosen
+ *  options joined — the ORDER of the field's own option list, not the order
+ *  they were clicked, so two people who picked the same things store the same
+ *  string. */
+function MultiSelectAnswer({options, value, onChange}: {
+    options: string[]
+    value: string
+    onChange: (value: string) => void
+}) {
+    const chosen = value ? value.split(MULTI_VALUE_SEPARATOR) : []
+
+    const toggle = (opt: string) => {
+        const next = chosen.includes(opt)
+            ? chosen.filter(o => o !== opt)
+            : [...chosen, opt]
+        onChange(options.filter(o => next.includes(o)).join(MULTI_VALUE_SEPARATOR))
+    }
+
+    return <div className="space-y-1">
+        {options.map((opt, i) => (
+            <label key={i} className="flex-row-item-center gap-2 text-sm cursor-pointer">
+                <input type="checkbox" checked={chosen.includes(opt)} onChange={() => toggle(opt)}/>
+                {opt}
+            </label>
         ))}
     </div>
 }
@@ -207,14 +254,18 @@ function FileAnswer({value, onChange, lang}: {
 export function FormAnswerValue({field, value}: {field?: EventFormField, value: string | null}) {
     if (!value) return <span className="text-gray-400">—</span>
 
-    const href = field?.field_type === 'image' || field?.field_type === 'file'
+    const href = ['image', 'file', 'url'].includes(field?.field_type ?? '')
         ? safeUrl(value)
         : null
 
     if (href && field?.field_type === 'image') {
-        return <a href={href} target="_blank" rel="noreferrer">
-            <img src={href} alt="" className="w-20 h-20 rounded object-cover border border-gray-200"/>
-        </a>
+        // Rendered, NOT linked. An image question accepts SVG, and an <img> is
+        // a safe place to put one — scripts in it never run. A link to the
+        // same file is not: following it loads the SVG as a top-level document
+        // on the domain that also serves our own assets, which is the one
+        // context where it does execute. Showing the picture is what this is
+        // for anyway.
+        return <img src={href} alt="" className="w-20 h-20 rounded object-cover border border-gray-200"/>
     }
     if (href && field?.field_type === 'file') {
         return <a href={href} target="_blank" rel="noreferrer"
@@ -222,6 +273,18 @@ export function FormAnswerValue({field, value}: {field?: EventFormField, value: 
             <i className="uil-file-alt mr-1"/>{href.split('/').pop()}
         </a>
     }
+    if (field?.field_type === 'multi_select') {
+        return <span className="flex flex-wrap gap-1">
+            {value.split(MULTI_VALUE_SEPARATOR).map((v, i) => (
+                <span key={i} className="text-xs bg-gray-200 rounded px-2 py-0.5">{v}</span>
+            ))}
+        </span>
+    }
+    if (href && field?.field_type === 'url') {
+        return <a href={href} target="_blank" rel="noreferrer"
+            className="text-blue-500 underline break-all">{href}</a>
+    }
     // Not a link we are willing to make — show it as the text it is.
+    // whitespace-pre-wrap is what makes a long-text answer readable.
     return <span className="whitespace-pre-wrap break-words">{value}</span>
 }

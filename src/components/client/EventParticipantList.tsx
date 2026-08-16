@@ -3,7 +3,7 @@
 import React from 'react'
 import {getAuth, shortWalletAddress} from '@/utils'
 import {Dictionary} from '@/lang'
-import {cancelAttendEvent, EventDetail, EventForm, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant, getEventForm, getFormSubmission, listFormSubmissions, attendEventWithoutTicket, FormSubmission} from '@sola/sdk'
+import {cancelAttendEvent, EventDetail, EventForm, ProfileDetail, Participant, checkInEventForParticipant, approveParticipant, rejectParticipant, getEventForm, getFormSubmission, listFormSubmissions, updateMyFormSubmission, FormSubmission} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -231,11 +231,15 @@ export default function EventParticipantList({
                             close?.()
                             const updLoading = showLoading()
                             try {
-                                await attendEventWithoutTicket({
+                                // Was attendEventWithoutTicket — participants#create,
+                                // which refuses anyone already participating, so this
+                                // dialog's Save has always come back "User can only
+                                // participate once per event" and changed nothing.
+                                await updateMyFormSubmission({
                                     params: {eventId: eventDetail.id, authToken: authToken!, formAnswers: answers},
                                     clientMode: CLIENT_MODE
                                 })
-                                toast({description: lang['Application submitted, pending approval'], variant: 'success'})
+                                toast({description: lang['Response recorded'], variant: 'success'})
                                 refresh()
                             } catch (e: unknown) {
                                 toast({description: e instanceof Error ? e.message : 'Failed to update', variant: 'destructive'})
