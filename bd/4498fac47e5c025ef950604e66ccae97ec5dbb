@@ -1,0 +1,25 @@
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_568cce8f1ac174 376-388
+  s_e9ed806a3d225c::t_0fe106d7152326 389
+src/app/(normal)/forms/[slug]/FormFill.tsx
+  s_e9ed806a3d225c::t_adb775513b5975 130-141
+src/app/(normal)/forms/FormsHub.tsx
+  s_e9ed806a3d225c::t_adb775513b5975 84,89-93
+  s_e9ed806a3d225c::t_2be6f37095761b 94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "bd4498fac47e5c025ef950604e66ccae97ec5dbb",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
