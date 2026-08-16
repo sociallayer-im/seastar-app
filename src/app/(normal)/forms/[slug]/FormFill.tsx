@@ -127,6 +127,18 @@ export default function FormFill({lang, form, submission, signedIn}: {
             {done && <span className="text-sm text-green-600">{lang['Response recorded']}</span>}
         </div>
 
+        {/* Where a public form's answers are actually reachable from. Without
+            this the responses page was only findable by knowing its URL, which
+            makes "show responses publicly" a setting with no visible effect.
+            The author sees it whatever the setting, since it is their own
+            page. */}
+        {(form.public_submissions || form.can_edit) &&
+            <div className="mt-4">
+                <a className="text-sm text-blue-500 underline" href={`/forms/${form.slug}/responses`}>
+                    {lang['View responses']}
+                </a>
+            </div>}
+
         {!signedIn &&
             <div className="text-xs text-gray-400 mt-3">{lang['Please login first']}</div>}
 

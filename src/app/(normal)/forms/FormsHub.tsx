@@ -81,10 +81,16 @@ export default function FormsHub({lang, created, filled}: {
                                 event, not here — two editors over the same
                                 fields would quietly overwrite each other. */}
                             {form.event_id
-                                ? <div className="mt-3 flex-row-item-center gap-3 text-sm">
+                                ? <div className="mt-3 flex-row-item-center gap-3 text-sm flex-wrap">
                                     <span className="text-xs text-gray-400">{lang['Managed by the event']}</span>
                                     <a className="text-blue-500 underline" href={`/event/detail/${form.event_id}`}>
                                         {lang['Event']}
+                                    </a>
+                                    {/* An event form is edited on the event, but its
+                                        answers still live here — and are the whole
+                                        point once they are public. */}
+                                    <a className="text-blue-500 underline" href={`/forms/${form.slug}/responses`}>
+                                        {lang['Responses']}
                                     </a>
                                 </div>
                                 : <div className="mt-3 flex-row-item-center gap-3 text-sm flex-wrap">

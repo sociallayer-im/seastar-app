@@ -373,6 +373,20 @@ export default async function EventDetail({ params: { eventid }, searchParams: {
                     </div>
                     : <SignInPanel lang={lang} />
                 }
+
+                {/* Outside the signed-in card on purpose: an organizer who
+                    published the answers meant them to be public, and a visitor
+                    who has not signed in is exactly who that is for. Without
+                    this the responses page was reachable only by knowing its
+                    URL, which makes the setting one with no visible effect. */}
+                {!!form?.public_submissions && !!form.slug &&
+                    <div className="flex-row-item-center mt-3">
+                        <a className={`${buttonVariants({ variant: 'secondary' })} text-xs flex-1`}
+                            href={`/forms/${form.slug}/responses`}>
+                            <span>{lang['View responses']}</span>
+                        </a>
+                    </div>
+                }
             </div>
 
             <div className="flex-1 sm:mr-9 order-2 sm:order-1">
