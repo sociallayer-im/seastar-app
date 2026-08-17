@@ -4,7 +4,7 @@ import {Dictionary} from '@/lang'
 import {useState} from 'react'
 import {Input} from "@/components/shadcn/Input"
 import {Button} from "@/components/shadcn/Button"
-import {checkDomainInput, cfImage, getAuth, verifyUsername} from '@/utils'
+import {cfImage, getAuth, HANDLE_CHAR_RE, HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, verifyHandle} from '@/utils'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import useModal from '@/components/client/Modal/useModal'
 import {createGroup, createPopupCity, getGroupDetailByName, GroupDetail, updateGroup} from '@sola/sdk'
@@ -70,11 +70,12 @@ export default function RegisterForm(props: { lang: Dictionary }) {
     }
 
     const handleChange = (value: string) => {
-        if (checkDomainInput(value)) {
-            const v = value.toLowerCase()
-            setHandle(v)
-            setError(verifyUsername(v, props.lang) || '')
-        }
+        // Same keystroke filter as the username screen: reject a character we
+        // will not accept rather than take it and then complain about it.
+        const v = value.toLowerCase()
+        if (!HANDLE_CHAR_RE.test(v)) return
+        setHandle(v)
+        setError(verifyHandle(v, props.lang) || '')
     }
 
     const handleSkip = () => {
@@ -237,13 +238,20 @@ export default function RegisterForm(props: { lang: Dictionary }) {
     }
 
     return <>
+        {/* The rules were invisible here: you typed, and found out what was
+            wrong one character at a time. Same list the username screen
+            shows, because it is now the same rule. */}
+        <ul className="text-sm text-gray-500 mb-3 list-disc pl-5">
+            <li>{props.lang['Contain the English-language letters a-z, the digits 0-9 and hyphens']}</li>
+            <li>{`${props.lang['Should be equal or longer than']} ${HANDLE_MIN_LENGTH}`}</li>
+        </ul>
         <Input
             className="w-full"
             autoFocus
-            maxLength={100}
+            maxLength={HANDLE_MAX_LENGTH}
             autoComplete={'off'}
             value={handle}
-            placeholder={props.lang['Your username']}
+            placeholder={props.lang['Group handle']}
             onChange={(e) => {
                 handleChange(e.target.value)
             }}

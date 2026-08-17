@@ -507,6 +507,10 @@ export const zh: Dictionary = {
   "Username contains invalid character": "用户名包含无效字符",
   "The minimum length of username is ": "用户名的最小长度为",
   "The maximum length of username is ": "用户名的最大长度为",
+  "Contain the English-language letters a-z, the digits 0-9 and hyphens":
+    "包含英文字符 a-z、数字 0-9 和连字符",
+  "This name is reserved": "该名称被站点占用，请换一个",
+  "Group handle": "群组 handle",
   "Do you want to create a group with this name ?":
     "您要使用这个名创建一个群组吗？",
   "Event Home": "前往活动主页",

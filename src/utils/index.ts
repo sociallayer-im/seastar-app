@@ -963,59 +963,56 @@ export const inValidStartEndTime = (start_at?: string | null, end_at?: string | 
     return start_at >= end_at
 }
 
-export const verifyUsername = (domain: string, lang: Dictionary) => {
-    const minLength = 6
-    const maxLength = 20
+/**
+ * The one rule for a user name and a group handle.
+ *
+ * There used to be two of these and they disagreed — this function (groups
+ * only, despite the name it used to have) demanded 6-20 with hyphens and no
+ * underscores, while the register screen enforced 6-30 with underscores and no
+ * hyphens, and the API in turn allowed things neither of them did. A person
+ * picking a handle had no way to know which rule they were up against.
+ *
+ * Kept character-for-character in step with soon's HandleName concern
+ * (app/models/concerns/handle_name.rb). Anything this accepts and the API
+ * rejects surfaces as an unexplained 422.
+ */
+export const HANDLE_MIN_LENGTH = 6
+export const HANDLE_MAX_LENGTH = 20
+export const HANDLE_RE = /^[a-z0-9-]{6,20}$/
+/** Only the character set, for filtering keystrokes as they are typed. */
+export const HANDLE_CHAR_RE = /^[a-z0-9-]*$/
 
-    if (!domain || !domain.trim()) {
+/**
+ * Handles that would resolve to a static page instead of their own. A group
+ * named "create" would live at /group/create, which is the group creation
+ * screen. Mirrors HandleName::RESERVED.
+ */
+export const RESERVED_HANDLES = ['create', 'checkin', 'detail', 'edit', 'share', 'success']
+
+export const verifyHandle = (value: string, lang: Dictionary): string | null => {
+    if (!value || !value.trim()) {
         return lang['Please input username']
     }
 
-    if (domain.startsWith('-')) {
-        return lang['Username cannot start with "-"']
+    if (value.length < HANDLE_MIN_LENGTH) {
+        return lang['The minimum length of username is '] + HANDLE_MIN_LENGTH
     }
 
-    if (domain.endsWith('-')) {
-        return lang['Username cannot end with "-"']
+    if (value.length > HANDLE_MAX_LENGTH) {
+        return lang['The maximum length of username is '] + HANDLE_MAX_LENGTH
     }
 
-    if (domain.match(/-{2,}/)) {
-        const char: any = domain.match(/-{2,}/)
-        return lang['Username contains invalid character'] + char[0]
+    if (!HANDLE_RE.test(value)) {
+        return lang['Contain the English-language letters a-z, the digits 0-9 and hyphens']
     }
 
-    if (domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)) {
-        const char: any = domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)
-        return lang['Username contains invalid character'] + char[0]
-    }
-
-    if (!domain.match(/^[a-z0-9]+(-{1}[a-z0-9]+)*$/)) {
-        return lang['Username contains invalid character']
-    }
-
-    if (domain.length < minLength) {
-        return lang['The minimum length of username is '] + minLength
-    }
-
-    if (domain.length > maxLength) {
-        return lang['The maximum length of username is '] + maxLength
+    if (RESERVED_HANDLES.includes(value)) {
+        return lang['This name is reserved']
     }
 
     return null
 }
 
-
-export const checkDomainInput = (domain: string) => {
-    if (domain.startsWith('-')) {
-        return false
-    }
-
-    if (domain.match(/\s/)) {
-        return false
-    }
-
-    return !domain.match(/[`~!@#$%^&*()_+<>?:"{},./\\|=;'[\]]/im)
-}
 
 export const getChainIcon = (chain: string) => {
     return Payments.find(p => p.chain === chain)?.chainIcon || '/images/unknown.png'

@@ -521,6 +521,10 @@ export const en = {
     "Username contains invalid character": "Username contains invalid character",
     "The minimum length of username is ": "The minimum length of username is ",
     "The maximum length of username is ": "The maximum length of username is ",
+    "Contain the English-language letters a-z, the digits 0-9 and hyphens":
+        "Contain the English-language letters a-z, the digits 0-9 and hyphens",
+    "This name is reserved": "This name is already used by the site — please pick another",
+    "Group handle": "Group handle",
     "Do you want to create a group with this name ?":
         "Do you want to create a group this the name ?",
     "Event Home": "Event Home",

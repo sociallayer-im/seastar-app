@@ -8,13 +8,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
-import {clientRedirectToReturn, getAuth} from '@/utils'
-
-// soon's rule, verbatim: /\A[a-z0-9_]{6,30}\z/ (app/models/user.rb). Kept in
-// sync deliberately — a mismatch here just means a confusing 422 from the API.
-const USERNAME_RE = /^[a-z0-9_]+$/
-const MIN_LENGTH = 6
-const MAX_LENGTH = 30
+import {clientRedirectToReturn, getAuth, HANDLE_CHAR_RE, HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, verifyHandle} from '@/utils'
 
 export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill?: string}) {
     const [username, setUsername] = useState(prefill || '')
@@ -22,12 +16,9 @@ export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
-    const validate = (value: string): string => {
-        if (!USERNAME_RE.test(value)) return lang['Contain the English-language letters a-z and the digits 0-9']
-        if (value.length < MIN_LENGTH) return `${lang['Should be equal or longer than']} ${MIN_LENGTH}`
-        if (value.length > MAX_LENGTH) return `${lang['Should be equal or shorter than']} ${MAX_LENGTH}`
-        return ''
-    }
+    // Shared with the group-handle screen and kept in step with soon's
+    // HandleName concern — a user name and a group handle are one rule now.
+    const validate = (value: string): string => verifyHandle(value, lang) || ''
 
     useEffect(() => {
         setError(username ? validate(username) : '')
@@ -76,8 +67,8 @@ export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill
     return <div className="max-w-[400px] w-full px-4 mx-auto">
         <div className="text-xl font-semibold mb-2">{lang['Set a unique Social Layer username']}</div>
         <ul className="text-sm text-gray-500 mb-4 list-disc pl-5">
-            <li>{lang['Contain the English-language letters a-z and the digits 0-9']}</li>
-            <li>{`${lang['Should be equal or longer than']} ${MIN_LENGTH}`}</li>
+            <li>{lang['Contain the English-language letters a-z, the digits 0-9 and hyphens']}</li>
+            <li>{`${lang['Should be equal or longer than']} ${HANDLE_MIN_LENGTH}`}</li>
         </ul>
 
         <Input
@@ -86,14 +77,14 @@ export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill
             name="username"
             autoFocus
             autoComplete="off"
-            maxLength={MAX_LENGTH}
+            maxLength={HANDLE_MAX_LENGTH}
             value={username}
             placeholder={lang['Your username']}
             onChange={e => {
                     // Reject disallowed characters at the keystroke rather than
                     // showing an error for something we won't accept anyway.
                     const next = e.target.value.toLowerCase()
-                    if (!/[^a-z0-9_]/.test(next)) setUsername(next)
+                    if (HANDLE_CHAR_RE.test(next)) setUsername(next)
                 }}
             onKeyDown={e => {
                 if (e.key === 'Enter') submit()
