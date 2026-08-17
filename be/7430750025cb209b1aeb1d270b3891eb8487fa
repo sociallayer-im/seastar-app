@@ -1,0 +1,25 @@
+src/lang/en.ts
+  s_e9ed806a3d225c::t_58a9b50340da01 922-923
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_58a9b50340da01 900-901
+src/app/(normal)/event/[grouphandle]/DiscussionPanel.tsx
+  s_e9ed806a3d225c::t_7aa35bfa4e0393 55-60,128
+src/app/(normal)/event/[grouphandle]/discussion/[topicid]/TopicDetail.tsx
+  s_e9ed806a3d225c::t_7aa35bfa4e0393 78-88,90-91,99-103,108-112,119-123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "be7430750025cb209b1aeb1d270b3891eb8487fa",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
