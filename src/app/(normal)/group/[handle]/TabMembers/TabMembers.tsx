@@ -8,7 +8,9 @@ import {Badge} from "@/components/shadcn/Badge"
 import {useMemo, useState} from "react"
 import {Input} from "@/components/shadcn/Input"
 import DropdownMenu from "@/components/client/DropdownMenu"
-import {Group, Membership, Profile, TeamRef} from '@sola/sdk'
+import {Group, Membership, Profile, Team, TeamRef} from '@sola/sdk'
+import useModal from '@/components/client/Modal/useModal'
+import DialogEditMember from '@/app/(normal)/group/[handle]/TabMembers/DialogEditMember'
 import {getLabelColor} from '@/utils/label_color'
 import LeaveGroupBtn from '@/app/(normal)/group/[handle]/TabMembers/LeaveGroupBtn'
 import AdminNotificationToggle from '@/app/(normal)/group/[handle]/TabMembers/AdminNotificationToggle'
@@ -22,6 +24,9 @@ export interface TabMembersProps {
     // can still toggle a child member's role to/from "manager" — see
     // GroupPolicy#can_assign_manager?. Grants nothing else.
     isParentManager?: boolean
+    /** Every team in the group, for the edit dialog's checklist. Only fetched
+     *  for managers — nobody else can act on it. */
+    teams?: Team[]
     group: Group,
     lang: Dictionary,
     currProfile?: Profile | null
@@ -29,7 +34,8 @@ export interface TabMembersProps {
 
 
 
-export default function TabMembers({members, isManager, isMember, currProfile, isOwner, isParentManager, lang, group}: TabMembersProps) {
+export default function TabMembers({members, isManager, isMember, currProfile, isOwner, isParentManager, teams: allTeams, lang, group}: TabMembersProps) {
+    const {openModal} = useModal()
     const [searchKeyword, setSearchKeyword] = useState('')
     const [teamId, setTeamId] = useState<string | null>(null)
 
@@ -205,6 +211,29 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                                 lang={lang}
                                 groupId={group.id}
                                 membership={member}/>
+                        }
+                        {/* The row is a link to the profile, so this has to
+                            stop the click reaching it. Managers only — every
+                            control inside would 403 for anyone else. */}
+                        {isManager &&
+                            <button className="ml-auto shrink-0 text-gray-400 hover:text-gray-700"
+                                aria-label={lang['Edit']}
+                                onClick={e => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    openModal({
+                                        content: close => <DialogEditMember
+                                            lang={lang} group={group} membership={member}
+                                            teams={allTeams || []}
+                                            // An owner's role is refused by the
+                                            // API, and only an owner may promote.
+                                            canChangeRole={isOwner && member.role !== 'owner'
+                                                && currProfile?.id !== member.user.id}
+                                            close={close!}/>
+                                    })
+                                }}>
+                                <i className="uil-setting text-lg"/>
+                            </button>
                         }
                     </a>
                 })

@@ -48,6 +48,7 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
         currUserIsOwner,
         currUserIsParentManager,
         members,
+        teams,
         canPublishEvent,
         canSubmitEvent
     } = await cachedGroupPageData(handle, pickSearchParam(_tab))
@@ -180,7 +181,8 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                             isOwner={currUserIsOwner}
                             isMember={currUserIsMember}
                             isManager={currUserIsManager}
-                            isParentManager={currUserIsParentManager}/>
+                            isParentManager={currUserIsParentManager}
+                            teams={teams}/>
                     </div>
                     }
 

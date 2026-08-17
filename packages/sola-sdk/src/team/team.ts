@@ -22,6 +22,10 @@ export interface Team {
     sort: number,
     members_count: number,
     archived: boolean,
+    /** Whether this team's badge is shown to people outside the group. The
+     *  roster is a public endpoint, so this is what decides whether the name
+     *  travels with it. Private by default. */
+    is_public: boolean,
     created_at: string,
 }
 
@@ -45,6 +49,7 @@ export interface TeamDraft {
     color?: string | null,
     sort?: number,
     archived?: boolean,
+    is_public?: boolean,
 }
 
 /** Members and managers only — a team annotates the roster, which is not public. */

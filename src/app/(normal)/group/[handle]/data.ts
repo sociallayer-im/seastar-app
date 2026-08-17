@@ -9,7 +9,7 @@ import {
     Membership,
     getGroupDetailByName,
     getGroupDetailById,
-    ProfileDetail, getProfileDetailByAuth
+    ProfileDetail, getProfileDetailByAuth, getTeams, Team
 } from "@sola/sdk"
 import {CLIENT_MODE} from '@/app/config'
 
@@ -40,6 +40,9 @@ export interface GroupData {
     // member add/remove, no group-settings edit, no venue/event management.
     currUserIsParentManager: boolean,
     members: Membership[],
+    /** Every team in the group — only populated for managers, who are the only
+     *  people offered the per-member edit dialog. */
+    teams: Team[],
     tab: string,
     canPublishEvent: boolean
     canSubmitEvent: boolean
@@ -92,6 +95,14 @@ export default async function GroupPageData(handle: string, tab='events'): Promi
         }
     }
 
+    // Only managers can act on teams, and only they are shown the edit
+    // dialog — so nobody else pays for the request.
+    let teams: Team[] = []
+    if (isManager && authToken) {
+        teams = await getTeams({params: {groupId: group.id, authToken}, clientMode: CLIENT_MODE})
+            .catch(() => [])
+    }
+
     return {
         group: group,
         currProfile: currProfile,
@@ -103,6 +114,7 @@ export default async function GroupPageData(handle: string, tab='events'): Promi
         canPublishEvent,
         canSubmitEvent,
         tab: tab || 'events',
-        members: [owner, ...managers, ...issuers, ...members]
+        members: [owner, ...managers, ...issuers, ...members],
+        teams
     } as GroupData
 }

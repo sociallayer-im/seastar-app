@@ -79,6 +79,17 @@ export default function TeamManagement({lang, group, teams: initialTeams, member
 
     // Spelled out rather than a bare "are you sure": the consequence people do
     // not expect is a team-restricted board quietly becoming manager-only.
+    const togglePublic = (team: Team, next: boolean) => run(
+        async () => {
+            const updated = await updateTeam({
+                params: {teamId: team.id, draft: {is_public: next}, authToken: authToken()},
+                clientMode: CLIENT_MODE
+            })
+            setTeams(teams.map(t => t.id === team.id ? updated : t))
+        },
+        () => router.refresh()
+    )
+
     const remove = (team: Team) => showConfirmDialog({
         lang,
         title: team.name,
@@ -149,6 +160,14 @@ export default function TeamManagement({lang, group, teams: initialTeams, member
                                 defaultValue={team.name}
                                 onBlur={e => rename(team, e.target.value)}/>
                             <span className="text-xs text-gray-400">{team.members_count}</span>
+                            {/* The roster is public, so this decides whether
+                                the badge is shown to people outside the group.
+                                Off by default. */}
+                            <label className="flex-row-item-center gap-1 text-xs text-gray-500 cursor-pointer">
+                                <input type="checkbox" checked={team.is_public} disabled={busy}
+                                    onChange={e => togglePublic(team, e.target.checked)}/>
+                                {lang['Show publicly']}
+                            </label>
                             <button className="text-sm text-blue-500" onClick={() => toggleOpen(team)}>
                                 {openTeam === team.id ? lang['Cancel'] : lang['Add Member']}
                             </button>
