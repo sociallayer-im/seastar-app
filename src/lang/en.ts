@@ -872,6 +872,10 @@ export const en = {
     'My Application': 'My Application',
     'Date': 'Date',
     'Multi Select': 'Multi Select',
+    'Download CSV': 'Download CSV',
+    'Submitted at': 'Submitted at',
+    'Name': 'Name',
+    'My Response': 'My Response',
 }
 
 export type Dictionary = typeof en;

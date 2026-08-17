@@ -1,6 +1,7 @@
 'use client'
 
 import {useState} from 'react'
+import {useRouter} from 'next/navigation'
 import {Dictionary} from '@/lang'
 import {EventForm, FormSubmission, submitForm} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
@@ -24,6 +25,7 @@ export default function FormFill({lang, form, submission, signedIn}: {
     submission: FormSubmission | null
     signedIn: boolean
 }) {
+    const router = useRouter()
     const {toast} = useToast()
     const {showLoading, closeModal} = useModal()
 
@@ -35,7 +37,6 @@ export default function FormFill({lang, form, submission, signedIn}: {
     })
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [saving, setSaving] = useState(false)
-    const [done, setDone] = useState(false)
     // The `submission` prop came from the server render and does not change
     // when we submit — without this the button still reads "Submit" and the
     // "you already responded" warning stays hidden after the first save, so a
@@ -63,9 +64,14 @@ export default function FormFill({lang, form, submission, signedIn}: {
                 },
                 clientMode: CLIENT_MODE
             })
-            setDone(true)
             setResponded(true)
             toast({title: lang['Response recorded'], variant: 'success'})
+            // Onto the receipt, not back into the boxes you just filled in.
+            // refresh() first because the router caches the RSC payload for a
+            // path it has seen — without it, editing an answer and submitting
+            // can land on the previous version of your own submission.
+            router.refresh()
+            router.push(`/forms/${form.slug}/submission`)
         } catch (e: unknown) {
             toast({variant: 'destructive', title: e instanceof Error ? e.message : 'Failed to submit'})
         } finally {
@@ -124,7 +130,10 @@ export default function FormFill({lang, form, submission, signedIn}: {
             <Button variant={'special'} onClick={submit} disabled={saving || !form.published}>
                 {responded ? lang['Update Response'] : lang['Submit']}
             </Button>
-            {done && <span className="text-sm text-green-600">{lang['Response recorded']}</span>}
+            {responded &&
+                <a className="text-sm text-blue-500 underline" href={`/forms/${form.slug}/submission`}>
+                    {lang['My Response']}
+                </a>}
         </div>
 
         {/* Where a public form's answers are actually reachable from. Without
@@ -139,10 +148,10 @@ export default function FormFill({lang, form, submission, signedIn}: {
                 </a>
             </div>}
 
+        {/* The thank-you message is shown on the submission page, which is
+            where submitting now lands — saying it here as well would say it
+            twice, and before it is true. */}
         {!signedIn &&
             <div className="text-xs text-gray-400 mt-3">{lang['Please login first']}</div>}
-
-        {!!form.submission_message && done &&
-            <div className="text-sm text-gray-600 mt-4 whitespace-pre-wrap">{form.submission_message}</div>}
     </div>
 }

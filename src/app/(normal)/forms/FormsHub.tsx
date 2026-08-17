@@ -11,16 +11,28 @@ import useModal from '@/components/client/Modal/useModal'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {getAuth} from '@/utils'
 
-export default function FormsHub({lang, created, filled}: {
+export default function FormsHub({lang, created, filled, initialTab}: {
     lang: Dictionary
     created: FormListItem[]
     filled: FormSubmissionWithForm[]
+    /** From ?tab= — so the tab survives a reload, a shared link and the back
+     *  button. It comes in as a prop rather than from useSearchParams because
+     *  the page already reads searchParams on the server. */
+    initialTab: 'created' | 'filled'
 }) {
     const router = useRouter()
     const {toast} = useToast()
     const {showLoading, closeModal} = useModal()
     const {showConfirmDialog} = useConfirmDialog()
-    const [tab, setTab] = useState<'created' | 'filled'>('created')
+    const [tab, setTab] = useState<'created' | 'filled'>(initialTab)
+
+    const switchTab = (key: 'created' | 'filled') => {
+        setTab(key)
+        // replace, not push: switching tabs twice should not take two presses
+        // of the back button to leave the page. scroll: false because the list
+        // is right there — jumping to the top is not what a tab click means.
+        router.replace(key === 'created' ? '/forms' : `/forms?tab=${key}`, {scroll: false})
+    }
 
     const remove = (form: FormListItem) => showConfirmDialog({
         lang,
@@ -54,7 +66,7 @@ export default function FormsHub({lang, created, filled}: {
             {([['created', lang['My Forms']], ['filled', lang['Forms I Filled']]] as const).map(([key, label]) => (
                 <button key={key}
                     className={`pb-2 text-sm ${tab === key ? 'font-semibold border-b-2 border-black' : 'text-gray-500'}`}
-                    onClick={() => setTab(key)}>
+                    onClick={() => switchTab(key)}>
                     {label}
                 </button>
             ))}
@@ -131,9 +143,17 @@ export default function FormsHub({lang, created, filled}: {
                             className="block border border-gray-200 rounded-lg p-4 hover:border-green-300">
                             <div className="flex-row-item-center justify-between gap-2">
                                 <div className="font-semibold">{sub.form.title}</div>
-                                <div className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 shrink-0">
-                                    {sub.status}
-                                </div>
+                                {/* A status is a decision somebody made about
+                                    your submission — approved, rejected,
+                                    pending review. Only an event's
+                                    registration has one: nobody reviews a
+                                    survey response, so the "pending" the API
+                                    stores for a standalone form means nothing
+                                    and reads as "still waiting on someone". */}
+                                {!!sub.form.event_id &&
+                                    <div className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 shrink-0">
+                                        {sub.status}
+                                    </div>}
                             </div>
                             <div className="text-xs text-gray-500 mt-1">
                                 {lang['Last updated']}: {new Date(sub.updated_at || sub.submitted_at).toLocaleString()}

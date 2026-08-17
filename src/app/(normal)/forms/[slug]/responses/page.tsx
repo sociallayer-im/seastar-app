@@ -3,6 +3,7 @@ import {getForm, listFormResponses} from '@sola/sdk'
 import {getCurrProfile, getServerSideAuth, selectLang} from '@/app/actions'
 import {CLIENT_MODE} from '@/app/config'
 import {FormAnswerValue} from '@/components/client/FormFieldsInput'
+import ExportCsvBtn from '@/app/(normal)/forms/[slug]/responses/ExportCsvBtn'
 
 /**
  * What people answered. Author only — the API 403s for anyone else, so this
@@ -31,7 +32,11 @@ export default async function FormResponsesPage(props: {params: {slug: string}})
 
     // Only the author gets the editor link — everyone else is a reader here.
     // can_edit comes from the API, which is the only place that knows.
-    const canEdit = form.can_edit === true && !form.event_id
+    // The export is gated on `isOwner` rather than `canEdit`: an event's
+    // registration form is edited on the event and so has no editor link here,
+    // but its organizer wants the spreadsheet just as much.
+    const isOwner = form.can_edit === true
+    const canEdit = isOwner && !form.event_id
 
     const fields = [...form.fields].sort((a, b) => a.position - b.position)
 
@@ -39,10 +44,14 @@ export default async function FormResponsesPage(props: {params: {slug: string}})
         <div className="max-w-[720px] mx-auto">
             <div className="flex-row-item-center justify-between mb-1">
                 <div className="text-xl font-semibold">{form.title}</div>
-                {canEdit &&
-                    <a className="text-sm text-blue-500 underline" href={`/forms/${form.slug}/edit`}>
-                        {lang['Edit Form']}
-                    </a>}
+                <div className="flex-row-item-center gap-3 shrink-0">
+                    {canEdit &&
+                        <a className="text-sm text-blue-500 underline" href={`/forms/${form.slug}/edit`}>
+                            {lang['Edit Form']}
+                        </a>}
+                    {isOwner &&
+                        <ExportCsvBtn lang={lang} title={form.title} fields={fields} responses={responses}/>}
+                </div>
             </div>
             <div className="text-xs text-gray-500 mb-4">
                 {/* Says so when it is showing a subset rather than letting a

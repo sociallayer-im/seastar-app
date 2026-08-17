@@ -850,4 +850,8 @@ export const zh: Dictionary = {
   'My Application': '我的报名表',
   'Date': '日期',
   'Multi Select': '多选',
+  'Download CSV': '下载 CSV',
+  'Submitted at': '提交时间',
+  'Name': '姓名',
+  'My Response': '我的回复',
 }
