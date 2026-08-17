@@ -1,0 +1,42 @@
+src/app/(normal)/forms/[slug]/responses/page.tsx
+  s_e9ed806a3d225c::t_fbef9380bbba52 35-39
+  s_e9ed806a3d225c::t_279c806a495539 6
+  s_e9ed806a3d225c::t_e1000e47b2d774 47-54
+src/app/(normal)/forms/FormsHub.tsx
+  s_e9ed806a3d225c::t_64c5534577d753 146-156
+  s_e9ed806a3d225c::t_0fc37d7a7358ba 69
+  s_e9ed806a3d225c::t_3866b3600c03a3 14,18-21
+  s_e9ed806a3d225c::t_1e6ed5505cb74f 27-35
+src/app/(normal)/forms/page.tsx
+  s_e9ed806a3d225c::t_9e1f2d771d2835 13,16-18,21
+src/app/(normal)/forms/[slug]/responses/ExportCsvBtn.tsx
+  s_e9ed806a3d225c::t_de1737b34cd9c7 1-62
+src/lang/en.ts
+  s_e9ed806a3d225c::t_f898472a559d74 875-878
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_1e90582b4d0bb7 853-856
+src/app/(normal)/forms/[slug]/submission/page.tsx
+  s_e9ed806a3d225c::t_b1099cfc74ac26 1-82
+src/app/(normal)/forms/[slug]/FormFill.tsx
+  s_e9ed806a3d225c::t_85961389521bb4 4
+  s_e9ed806a3d225c::t_436b91ccad18c3 69-74
+  s_e9ed806a3d225c::t_56f7a00be1a932 28
+  s_e9ed806a3d225c::t_10a0134b5b4532 133-136
+  s_e9ed806a3d225c::t_0ceae9cd18b2c7 151-153
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "fb33ccddaa564aad7246fca65d6a9939973678f4",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
