@@ -8,7 +8,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
-import {clientRedirectToReturn, getAuth, HANDLE_CHAR_RE, HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, verifyHandle} from '@/utils'
+import {clientRedirectToReturn, getAuth, HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, toHandleInput, verifyHandle} from '@/utils'
 
 export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill?: string}) {
     const [username, setUsername] = useState(prefill || '')
@@ -81,10 +81,9 @@ export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill
             value={username}
             placeholder={lang['Your username']}
             onChange={e => {
-                    // Reject disallowed characters at the keystroke rather than
-                    // showing an error for something we won't accept anyway.
-                    const next = e.target.value.toLowerCase()
-                    if (HANDLE_CHAR_RE.test(next)) setUsername(next)
+                    // Normalised at the keystroke rather than shown as an
+                    // error for something we would not accept anyway.
+                    setUsername(toHandleInput(e.target.value))
                 }}
             onKeyDown={e => {
                 if (e.key === 'Enter') submit()

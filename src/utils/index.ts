@@ -978,9 +978,32 @@ export const inValidStartEndTime = (start_at?: string | null, end_at?: string | 
  */
 export const HANDLE_MIN_LENGTH = 6
 export const HANDLE_MAX_LENGTH = 20
-export const HANDLE_RE = /^[a-z0-9-]{6,20}$/
-/** Only the character set, for filtering keystrokes as they are typed. */
-export const HANDLE_CHAR_RE = /^[a-z0-9-]*$/
+/**
+ * 6-20 lowercase letters, digits and hyphens, where a hyphen sits BETWEEN two
+ * of the others — no leading, trailing or repeated hyphen. Character-for-
+ * character the same rule as soon's HandleName::FORMAT.
+ */
+export const HANDLE_RE = /^(?=.{6,20}$)[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+/**
+ * What a keystroke or a paste becomes. Both handle screens run their input
+ * through this rather than testing it and dropping the whole edit on a bad
+ * character — pasting "Alice_Wong" would otherwise leave the field empty with
+ * nothing said about why.
+ *
+ * An underscore becomes a hyphen instead of vanishing, deliberately: it was
+ * legal until today (people are still registering names like
+ * "sonic_test_52821"), it is exactly the substitution the stored names are
+ * getting, and the change happens in front of the person typing rather than
+ * behind them.
+ *
+ * Only the character set is normalised here, never hyphen PLACEMENT: someone
+ * typing "edge-city" is momentarily at "edge-", and a filter that stripped a
+ * trailing hyphen would make the hyphen impossible to type at all. Placement
+ * is verifyHandle's job, where it is a message rather than a silent edit.
+ */
+export const toHandleInput = (value: string) =>
+    value.toLowerCase().replace(/_/g, '-').replace(/[^a-z0-9-]/g, '')
 
 /**
  * Handles that would resolve to a static page instead of their own. A group
@@ -1000,6 +1023,21 @@ export const verifyHandle = (value: string, lang: Dictionary): string | null => 
 
     if (value.length > HANDLE_MAX_LENGTH) {
         return lang['The maximum length of username is '] + HANDLE_MAX_LENGTH
+    }
+
+    // Checked before the catch-all so a misplaced hyphen says which rule it
+    // broke instead of restating the whole alphabet at someone who used a
+    // legal character.
+    if (value.startsWith('-')) {
+        return lang['Username cannot start with "-"']
+    }
+
+    if (value.endsWith('-')) {
+        return lang['Username cannot end with "-"']
+    }
+
+    if (value.includes('--')) {
+        return lang['Hyphens cannot appear consecutively']
     }
 
     if (!HANDLE_RE.test(value)) {

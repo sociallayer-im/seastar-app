@@ -4,7 +4,7 @@ import {Dictionary} from '@/lang'
 import {useState} from 'react'
 import {Input} from "@/components/shadcn/Input"
 import {Button} from "@/components/shadcn/Button"
-import {cfImage, getAuth, HANDLE_CHAR_RE, HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, verifyHandle} from '@/utils'
+import {cfImage, getAuth, HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, toHandleInput, verifyHandle} from '@/utils'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import useModal from '@/components/client/Modal/useModal'
 import {createGroup, createPopupCity, getGroupDetailByName, GroupDetail, updateGroup} from '@sola/sdk'
@@ -70,10 +70,8 @@ export default function RegisterForm(props: { lang: Dictionary }) {
     }
 
     const handleChange = (value: string) => {
-        // Same keystroke filter as the username screen: reject a character we
-        // will not accept rather than take it and then complain about it.
-        const v = value.toLowerCase()
-        if (!HANDLE_CHAR_RE.test(v)) return
+        // Same normalisation as the username screen — one rule, one filter.
+        const v = toHandleInput(value)
         setHandle(v)
         setError(verifyHandle(v, props.lang) || '')
     }
