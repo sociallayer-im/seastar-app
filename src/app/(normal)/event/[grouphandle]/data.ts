@@ -1,5 +1,6 @@
 import {
-    getEvents, EventListFilterProps, GroupDetail, EventWithJoinStatus
+    getEvents, EventListFilterProps, GroupDetail, EventWithJoinStatus,
+    getCategories, Category
 } from '@sola/sdk'
 import {redirect} from 'next/navigation'
 import {getCurrProfile, getServerSideAuth} from '@/app/actions'
@@ -8,7 +9,7 @@ import {
     setEventIsOwnerStatus,
 } from '@/utils'
 import {GoogleMapMarkerProps} from '@/components/client/Map'
-import {CLIENT_MODE} from '@/app/config'
+import {CLIENT_MODE, DISCUSSION} from '@/app/config'
 
 export type GroupEventHomeParams = {
     grouphandle?: string
@@ -96,6 +97,27 @@ export default async function GroupEventHomeData({
         }
     }
 
+    // The boards this viewer may see. Fetched here so the tab bar can be
+    // rendered in the first paint rather than appearing a moment later, but
+    // only when both switches are on — otherwise it is a request that is
+    // certain to 404.
+    let categories: Category[] | null = null
+    if (DISCUSSION && groupDetail.discussion_enabled) {
+        categories = await getCategories({
+            params: {groupId: groupDetail.id, authToken},
+            clientMode: CLIENT_MODE
+        }).catch(() => null)
+    }
+
+    // Mirrors soon's TopicPolicy#create?: the group tier, which a board's own
+    // visibility can narrow further. The server decides for real; this only
+    // decides whether to draw the button.
+    const canPostTopic = !!currProfile && (
+        isManager || isOwner ||
+        (groupDetail.can_post_topic === 'everyone') ||
+        (groupDetail.can_post_topic !== 'manager' && isMember)
+    )
+
     // Geo now lives on each event's place.
     const mapMarkers: GoogleMapMarkerProps[] = []
     const mapEvents = filteredEvents.filter((e) => e.place?.latitude && e.place?.longitude)
@@ -127,6 +149,8 @@ export default async function GroupEventHomeData({
         isIssuer,
         canPublishEvent,
         canSubmitEvent,
+        categories,
+        canPostTopic,
         enableGoogleMap: process.env.NEXT_PUBLIC_ENABLE_GOOGLE_MAP === 'true',
     }
 }

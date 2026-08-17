@@ -31,6 +31,13 @@ export interface GroupDetail extends Group {
     can_publish_event: string
     can_join_event: string
     can_view_event: string
+    /** Whether this group shows discussion boards. Off unless a manager turns
+     *  it on — and the deployment's own DISCUSSION_ENABLED is authoritative
+     *  above it, so true here still means nothing where the feature is off. */
+    discussion_enabled: boolean
+    /** manager | member | everyone — who may start a topic. A board's own
+     *  visibility narrows this further; the two are ANDed, not ORed. */
+    can_post_topic: string
     /** The one event whose tickets grant membership in this group; null until a
      *  manager designates one. At most one per group. */
     group_ticket_event_id: string | null

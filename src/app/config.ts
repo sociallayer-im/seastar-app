@@ -66,6 +66,13 @@ export const PHONE_LOGIN = process.env.NEXT_PUBLIC_PHONE_LOGIN === 'true'
 // STRIPE_ENABLED is authoritative — this flag only hides UI.
 export const STRIPE_ENABLED = process.env.NEXT_PUBLIC_STRIPE_ENABLED === 'true'
 
+// Discussion boards. Opt-in like PHONE_LOGIN, and for the same reason: soon's
+// own DISCUSSION_ENABLED is authoritative — every discussion endpoint 404s
+// without it — and this flag only decides whether the UI is drawn. A group
+// additionally has to switch its own `discussion_enabled` on, so both this and
+// the group's flag must be true before the tab appears.
+export const DISCUSSION = process.env.NEXT_PUBLIC_DISCUSSION === 'true'
+
 // WeChat Pay is the mirror image: CN only, set in .env.cn.production and
 // absent from .env.production. The backend's WECHAT_PAY_ENABLED plus an
 // actually-installed merchant are authoritative; this only hides UI.

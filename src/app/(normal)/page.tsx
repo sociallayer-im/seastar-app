@@ -51,7 +51,8 @@ export default async function Home(props: {searchParams: GroupEventHomeSearchPar
 
         const data = await GroupEventHomeData({searchParams: props.searchParams, groupDetail})
         const {lang, type} = await selectLang()
-        return <GroupEventHome data={data} lang={lang} langType={type} />
+        return <GroupEventHome data={data} lang={lang} langType={type}
+            initialTab={(props.searchParams as {tab?: string}).tab} />
     } else {
         return <DiscoverPage />
     }

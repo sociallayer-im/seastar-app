@@ -45,5 +45,6 @@ export default async function EventHome(props: {params: GroupEventHomeParams, se
         redirect('/404')
     }
 
-    return <GroupEventHome data={data} lang={lang} langType={type} />
+    return <GroupEventHome data={data} lang={lang} langType={type}
+        initialTab={(props.searchParams as {tab?: string}).tab} />
 }

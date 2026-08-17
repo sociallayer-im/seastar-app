@@ -81,7 +81,12 @@ export const updateGroup = async ({params: {group, authToken}, clientMode}: Sola
                 venue_tag_list: group.venue_tag_list,
                 can_publish_event: group.can_publish_event,
                 can_join_event: group.can_join_event,
-                can_view_event: group.can_view_event
+                can_view_event: group.can_view_event,
+                // Both must be listed here AND in soon's group_params permit
+                // list. A field missing from either one is dropped silently —
+                // the settings page saves, and the value never lands.
+                discussion_enabled: group.discussion_enabled,
+                can_post_topic: group.can_post_topic
             }
         }
     })

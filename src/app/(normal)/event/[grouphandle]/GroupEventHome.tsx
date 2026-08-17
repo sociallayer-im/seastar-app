@@ -13,7 +13,8 @@ import { useState } from "react"
 import { EventListFilterProps, EventWithJoinStatus, getEvents } from "@sola/sdk"
 import { Dictionary } from "@/lang"
 import useModal from '@/components/client/Modal/useModal'
-import { CLIENT_MODE } from "@/app/config"
+import { CLIENT_MODE, DISCUSSION } from "@/app/config"
+import DiscussionPanel from '@/app/(normal)/event/[grouphandle]/DiscussionPanel'
 import DialogEventHomeFilter from "@/components/client/DialogEventHomeFilter"
 import { PAGE_SIZE } from "./data"
 import Footer from "@/components/Footer"
@@ -22,9 +23,12 @@ interface GroupEventHomeProps {
     lang: Dictionary,
     langType: string,
     data: Awaited<ReturnType<typeof GroupEventHomeData>>
+    /** From ?tab=. Anything unrecognised, or a group with discussion off,
+     *  falls back to the events tab rather than rendering a blank panel. */
+    initialTab?: string
 }
 
-export default function GroupEventHome({ data, lang, langType }: GroupEventHomeProps) {
+export default function GroupEventHome({ data, lang, langType, initialTab }: GroupEventHomeProps) {
     const {
         groupDetail,
         events,
@@ -38,9 +42,26 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
         canSubmitEvent,
         highlightedEvents,
         enableGoogleMap,
+        categories,
+        canPostTopic,
     } = data
 
     const { showLoading, closeModal } = useModal()
+
+    // Both switches have to be on: the deployment's, and this group's. With
+    // either off there is no tab bar at all rather than a disabled tab — a tab
+    // bar with one tab is noise, and this page has never had one.
+    const showDiscussion = DISCUSSION && groupDetail.discussion_enabled && !!categories
+    const [tab, setTab] = useState<'event' | 'discussion'>(
+        showDiscussion && initialTab === 'discussion' ? 'discussion' : 'event'
+    )
+
+    const switchTab = (next: 'event' | 'discussion') => {
+        setTab(next)
+        // replaceState, not push: switching tabs is not a navigation people
+        // expect the back button to undo one step at a time.
+        window.history.replaceState({}, '', next === 'discussion' ? '?tab=discussion' : '?')
+    }
 
     const [eventList, setEventList] = useState<EventWithJoinStatus[]>(events)
     const [currFilter, setCurrFilter] = useState<EventListFilterProps>(filterOpts)
@@ -111,6 +132,26 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
     return <div style={{ background: '#fff url(/images/event_home_bg.png) top center repeat-x' }}>
         <div className="page-width min-h-[100svh] sm:pt-8 pt-3 flex-col flex md:flex-row">
             <div className="flex-1 md:max-w-[648px] order-2 md:order-1">
+                {showDiscussion &&
+                    <div className="flex-row-item-center gap-1 border-b border-gray-200 mb-3">
+                        <TabButton active={tab === 'event'} onClick={() => switchTab('event')}>
+                            {lang['Events']}
+                        </TabButton>
+                        <TabButton active={tab === 'discussion'} onClick={() => switchTab('discussion')}>
+                            {lang['Discussion']}
+                        </TabButton>
+                    </div>
+                }
+
+                {tab === 'discussion' && showDiscussion &&
+                    <DiscussionPanel
+                        lang={lang}
+                        group={groupDetail}
+                        categories={categories!}
+                        canPost={canPostTopic}/>
+                }
+
+                {tab === 'event' && <>
                 {enableGoogleMap && mapMarkers.length > 0 &&
                     <EventHomeMap
                         mapMarkers={mapMarkers}
@@ -140,6 +181,7 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
                         View More Events
                     </Button>}
                 </div>
+                </>}
             </div>
 
             <div className="md:w-[328px] ml-0 flex-col flex order-1 md:order-2 md:ml-6 mb-6">
@@ -236,4 +278,16 @@ export default function GroupEventHome({ data, lang, langType }: GroupEventHomeP
             <Footer lang={lang} />
         </div>
     </div>
+}
+
+function TabButton({active, onClick, children}: {
+    active: boolean,
+    onClick: () => void,
+    children: React.ReactNode
+}) {
+    return <button onClick={onClick}
+        className={`px-4 py-2 text-sm font-semibold border-b-2 duration-200 ${
+            active ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-400 hover:text-gray-600'}`}>
+        {children}
+    </button>
 }
