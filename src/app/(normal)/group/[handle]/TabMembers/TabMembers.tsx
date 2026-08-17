@@ -158,10 +158,15 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
             }
             {
                 memberList.map((member, i) => {
+                    // flex-wrap, not the usual flex-row-item-center: that class
+                    // is `row nowrap`, and a member in two or three teams has
+                    // more badges than a phone has width — the name was being
+                    // squashed to nothing. gap replaces the per-badge ml-2 so a
+                    // wrapped second line does not start with a stray margin.
                     return <a key={i}
-                              className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
+                              className="flex flex-wrap items-center gap-x-2 gap-y-1 shadow rounded-lg px-4 sm:px-6 py-4 duration-300 hover:scale-105"
                               href={`/profile/${member.user.name}`}>
-                    <div className="relative mr-2">
+                    <div className="relative shrink-0">
                             <img
                                 className="w-7 h-7 rounded-full"
                                 src={cfImage(getAvatar(member.user.id, member.user.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
@@ -172,19 +177,22 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                                      alt=""/>
                             }
                         </div>
-                        <div>{member.user.nickname || member.user.name}</div>
+                        {/* min-w-0 + break-all so a long handle wraps inside
+                            its own box instead of pushing the badges off the
+                            row. */}
+                        <div className="min-w-0 break-all">{member.user.nickname || member.user.name}</div>
                         {member.role !== 'member' &&
-                            <Badge variant={"past"} className="ml-2 capitalize">{member.role}</Badge>
+                            <Badge variant={"past"} className="capitalize shrink-0">{member.role}</Badge>
                         }
                         {currProfile?.name === member.user.name &&
-                            <Badge variant={"upcoming"} className="ml-2 capitalize">You</Badge>
+                            <Badge variant={"upcoming"} className="capitalize shrink-0">You</Badge>
                         }
                         {/* Which teams this person is in. The colour is the
                             team's own when set, else derived from its name by
                             the same function that colours tags and tracks. */}
                         {member.teams?.map(team =>
                             <span key={team.id}
-                                className="ml-2 text-xs px-2 py-0.5 rounded-full whitespace-nowrap"
+                                className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap shrink-0 max-w-full overflow-hidden overflow-ellipsis"
                                 style={{
                                     background: `${team.color || getLabelColor(team.name)}22`,
                                     color: team.color || getLabelColor(team.name)
