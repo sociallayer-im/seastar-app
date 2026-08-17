@@ -1,0 +1,23 @@
+src/app/(normal)/event/[grouphandle]/setting/domain/GroupDomainForm.tsx
+  s_e9ed806a3d225c::t_0eb408a67d3f6e 74
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_0eb408a67d3f6e 902
+src/lang/en.ts
+  s_e9ed806a3d225c::t_0eb408a67d3f6e 924
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f4d4bf83002f8391ae6bfce83f1a8f6429cb6ba3",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
