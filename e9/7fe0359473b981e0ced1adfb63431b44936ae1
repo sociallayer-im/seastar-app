@@ -1,0 +1,39 @@
+src/app/(normal)/fediverse/data.ts
+  s_e9ed806a3d225c::t_91fabe62d0b55d 1-12
+src/app/(normal)/fediverse/page.tsx
+  s_e9ed806a3d225c::t_91fabe62d0b55d 1-14
+src/app/(normal)/fediverse/Fediverse.tsx
+  s_e9ed806a3d225c::t_5ac0fba94fa8df 1-223
+src/lang/en.ts
+  s_e9ed806a3d225c::t_799d5d7427054c 883-895
+  s_e9ed806a3d225c::t_a96f523e4719a5 896-899
+packages/sola-sdk/src/index.ts
+  s_e9ed806a3d225c::t_b551cacfeff755 21
+src/components/Header.tsx
+  s_e9ed806a3d225c::t_1689232df38cad 39-42
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_a96f523e4719a5 874-877
+  s_e9ed806a3d225c::t_799d5d7427054c 861-873
+packages/sola-sdk/src/federation/types.ts
+  s_e9ed806a3d225c::t_42964bdf225e87 1-67
+packages/sola-sdk/src/federation/index.ts
+  s_e9ed806a3d225c::t_b551cacfeff755 1-2
+packages/sola-sdk/src/federation/federation.ts
+  s_e9ed806a3d225c::t_034492b4ba5465 1-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "e97fe0359473b981e0ced1adfb63431b44936ae1",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
