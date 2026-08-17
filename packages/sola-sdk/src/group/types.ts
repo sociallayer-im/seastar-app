@@ -1,4 +1,5 @@
 import {Profile, SocialMedia} from '../profile'
+import {TeamRef} from '../team/team'
 
 export interface Group {
     id: string
@@ -79,6 +80,12 @@ export interface Membership {
     admin_notification: boolean
     created_at: string
     user: Profile
+    /**
+     * The teams this person is in, within THIS group. Sent with the roster so
+     * the badges and the team filter need no second request — the roster is
+     * fetched whole and filtered in the browser, exactly like the name search.
+     */
+    teams: TeamRef[]
 }
 
 /**

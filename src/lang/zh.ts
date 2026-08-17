@@ -902,4 +902,13 @@ export const zh: Dictionary = {
   'Hide this topic': '隐藏该主题',
   'Hide this reply': '隐藏该回复',
   'The author will still see it, along with this reason.': '作者仍然可以看到它，以及你填写的原因。',
+  'Teams': '团队',
+  'Team': '团队',
+  'New Team': '新建团队',
+  'Team Name': '团队名称',
+  'Team Members': '团队成员',
+  'Add Member': '添加成员',
+  'No teams yet': '还没有团队',
+  'Delete this team?': '确定删除该团队？成员仍留在社群里，但仅对该团队可见的讨论板块将只有管理员能看到。',
+  'Visible to teams': '可见团队',
 }

@@ -8,7 +8,8 @@ import {Badge} from "@/components/shadcn/Badge"
 import {useMemo, useState} from "react"
 import {Input} from "@/components/shadcn/Input"
 import DropdownMenu from "@/components/client/DropdownMenu"
-import {Group, Membership, Profile} from '@sola/sdk'
+import {Group, Membership, Profile, TeamRef} from '@sola/sdk'
+import {getLabelColor} from '@/utils/label_color'
 import LeaveGroupBtn from '@/app/(normal)/group/[handle]/TabMembers/LeaveGroupBtn'
 import AdminNotificationToggle from '@/app/(normal)/group/[handle]/TabMembers/AdminNotificationToggle'
 
@@ -30,6 +31,20 @@ export interface TabMembersProps {
 
 export default function TabMembers({members, isManager, isMember, currProfile, isOwner, isParentManager, lang, group}: TabMembersProps) {
     const [searchKeyword, setSearchKeyword] = useState('')
+    const [teamId, setTeamId] = useState<string | null>(null)
+
+    // Built from the roster rather than fetched: the memberships already carry
+    // their teams, so a team with nobody in it has nothing to filter and does
+    // not belong in a filter bar. Managing teams is a separate screen.
+    const teams = useMemo(() => {
+        const seen = new Map<string, TeamRef>()
+        members.forEach(m => m.teams?.forEach(t => seen.set(t.id, t)))
+        // Server order, then id — both identical in Node and in the browser.
+        // localeCompare is not: it sorts these names one way on the server and
+        // another in a zh-CN browser, and the differing markup is a hydration
+        // error that throws away the subtree.
+        return [...seen.values()].sort((a, b) => b.sort - a.sort || (a.id < b.id ? -1 : 1))
+    }, [members])
 
     let ManagementOptions = isManager
         ? [{label: lang['Member Management'], url: `/group/${group.name}/management/member`}]
@@ -60,14 +75,18 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
         (member.role === 'owner' || member.role === 'manager') &&
         (currProfile?.id === member.user.id || isManager)
 
+    // Name and team narrow together rather than replacing each other — the
+    // question "who in the volunteers is called Wei" has to be askable.
     const memberList = useMemo(() => {
         const keyword = searchKeyword.toLowerCase().trim()
-        if (!searchKeyword) return members
         return members.filter(m => {
-            return m.user.nickname?.toLowerCase().includes(keyword) ||
-                m.user.name?.toLowerCase().includes(keyword)
+            const matchesName = !keyword
+                || m.user.nickname?.toLowerCase().includes(keyword)
+                || m.user.name?.toLowerCase().includes(keyword)
+            const matchesTeam = !teamId || m.teams?.some(t => t.id === teamId)
+            return matchesName && matchesTeam
         })
-    }, [members, searchKeyword])
+    }, [members, searchKeyword, teamId])
 
     return <div className="py-4">
         <div className="flex sm:flex-row flex-col items-center sm:justify-between justify-end">
@@ -111,6 +130,21 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
             </div>
         </div>
 
+        {teams.length > 0 &&
+            <div className="flex-row-item-center gap-2 flex-wrap mt-3">
+                <TeamChip active={teamId === null} onClick={() => setTeamId(null)}>
+                    {lang['All']}
+                </TeamChip>
+                {teams.map(team =>
+                    <TeamChip key={team.id} active={teamId === team.id}
+                        color={team.color || getLabelColor(team.name)}
+                        onClick={() => setTeamId(teamId === team.id ? null : team.id)}>
+                        {team.name}
+                    </TeamChip>
+                )}
+            </div>
+        }
+
         {memberList.length === 0 && <NoData />}
 
         <div className="grid grid-cols-1 gap-3 py-4">
@@ -145,6 +179,19 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                         {currProfile?.name === member.user.name &&
                             <Badge variant={"upcoming"} className="ml-2 capitalize">You</Badge>
                         }
+                        {/* Which teams this person is in. The colour is the
+                            team's own when set, else derived from its name by
+                            the same function that colours tags and tracks. */}
+                        {member.teams?.map(team =>
+                            <span key={team.id}
+                                className="ml-2 text-xs px-2 py-0.5 rounded-full whitespace-nowrap"
+                                style={{
+                                    background: `${team.color || getLabelColor(team.name)}22`,
+                                    color: team.color || getLabelColor(team.name)
+                                }}>
+                                {team.name}
+                            </span>
+                        )}
                         {canSetNotification(member) &&
                             <AdminNotificationToggle
                                 lang={lang}
@@ -156,4 +203,18 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
             }
         </div>
     </div>
+}
+
+function TeamChip({active, color, onClick, children}: {
+    active: boolean,
+    color?: string,
+    onClick: () => void,
+    children: React.ReactNode
+}) {
+    return <button onClick={onClick}
+        className={`shrink-0 text-xs rounded-full px-3 py-1 border duration-200 ${
+            active ? 'text-white' : 'border-gray-200 hover:border-gray-400'}`}
+        style={active ? {background: color || '#111827', borderColor: color || '#111827'} : undefined}>
+        {children}
+    </button>
 }

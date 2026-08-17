@@ -924,6 +924,15 @@ export const en = {
     'Hide this topic': 'Hide this topic',
     'Hide this reply': 'Hide this reply',
     'The author will still see it, along with this reason.': 'The author will still see it, along with this reason.',
+    'Teams': 'Teams',
+    'Team': 'Team',
+    'New Team': 'New Team',
+    'Team Name': 'Team Name',
+    'Team Members': 'Team Members',
+    'Add Member': 'Add Member',
+    'No teams yet': 'No teams yet',
+    'Delete this team?': 'Delete this team? Its members stay in the group, but any discussion board restricted to it will become visible to managers only.',
+    'Visible to teams': 'Visible to teams',
 }
 
 export type Dictionary = typeof en;

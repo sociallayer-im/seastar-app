@@ -16,6 +16,7 @@ export * from './remember'
 export * from './place'
 export * from './form'
 export * from './discussion/discussion'
+export * from './team/team'
 export * from './discussion/types'
 export * from './oauth'
 

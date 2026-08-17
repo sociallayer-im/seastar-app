@@ -43,6 +43,16 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
                     </div>
                 </a>
 
+                <a href={`/event/${groupDetail.name}/teams`}
+                    className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
+                    <div className="flex-row-item-center w-full justify-between">
+                        <div>{lang['Teams']}</div>
+                        <div className="font-normal flex-row-item-center">
+                            <i className="uil-arrow-right text-2xl" />
+                        </div>
+                    </div>
+                </a>
+
                 <a href={`/event/${groupDetail.name}/tracks`}
                     className={`${buttonVariants({ variant: 'secondary' })} w-full mb-3`}>
                     <div className="flex-row-item-center w-full justify-between">
