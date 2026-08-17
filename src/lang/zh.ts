@@ -899,4 +899,7 @@ export const zh: Dictionary = {
   'Unanswered': '无人回复',
   'Load More': '加载更多',
   'Delete this permanently?': '确定删除？删除后所有人都将看不到它。',
+  'Hide this topic': '隐藏该主题',
+  'Hide this reply': '隐藏该回复',
+  'The author will still see it, along with this reason.': '作者仍然可以看到它，以及你填写的原因。',
 }

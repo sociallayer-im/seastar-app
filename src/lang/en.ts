@@ -921,6 +921,9 @@ export const en = {
     'Unanswered': 'Unanswered',
     'Load More': 'Load More',
     'Delete this permanently?': 'Delete this? It will no longer be visible to anyone.',
+    'Hide this topic': 'Hide this topic',
+    'Hide this reply': 'Hide this reply',
+    'The author will still see it, along with this reason.': 'The author will still see it, along with this reason.',
 }
 
 export type Dictionary = typeof en;

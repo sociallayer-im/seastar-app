@@ -12,6 +12,9 @@ import {getAuth} from '@/utils'
 import {Badge} from '@/components/shadcn/Badge'
 import {Button} from '@/components/shadcn/Button'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import useModal from '@/components/client/Modal/useModal'
+import useConfirmDialog from '@/hooks/useConfirmDialog'
+import DialogReason from '@/components/client/DialogReason'
 import Avatar from '@/components/Avatar'
 import StarDiscussionBtn from '@/components/client/StarDiscussionBtn'
 import dynamic from 'next/dynamic'
@@ -35,6 +38,17 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
 }) {
     const router = useRouter()
     const {toast} = useToast()
+    const {openModal} = useModal()
+    const {showConfirmDialog} = useConfirmDialog()
+
+    // window.confirm/prompt block the page, cannot be styled or translated
+    // beyond the browser's own chrome, and on iOS Safari can be suppressed
+    // entirely — which would silently disable moderation.
+    const askReason = (title: string, description: string, onConfirm: (reason?: string) => void) =>
+        openModal({
+            content: close => <DialogReason lang={lang} title={title} description={description}
+                confirmLabel={lang['Hide']} onConfirm={onConfirm} close={close!}/>
+        })
 
     const [replies, setReplies] = useState(initialReplies)
     const [content, setContent] = useState('')
@@ -67,20 +81,22 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
         }
     }
 
-    const runTopicAction = async (action: 'pin' | 'unpin' | 'close' | 'open' | 'flag' | 'unflag') => {
+    const runTopicAction = async (action: 'pin' | 'unpin' | 'close' | 'open' | 'flag' | 'unflag',
+                                  reason?: string) => {
         const token = authToken()
         if (!token) return
-        // The reason is what makes hiding explainable to the person hidden;
-        // asking for it at the moment of hiding is the only time it is cheap.
-        const reason = action === 'flag'
-            ? (window.prompt(lang['Reason (optional)']) ?? undefined)
-            : undefined
         await run(
             () => topicAction({params: {topicId: topic.id, action, reason, authToken: token},
                 clientMode: CLIENT_MODE}),
             () => router.refresh()
         )
     }
+
+    // The reason is what makes hiding explainable to the person hidden, and
+    // the moment of hiding is the only time it is cheap to ask for.
+    const hideTopic = () =>
+        askReason(lang['Hide this topic'], lang['The author will still see it, along with this reason.'],
+            reason => runTopicAction('flag', reason))
 
     // Every mutating action goes through this. Without it a refused delete or
     // hide simply did nothing visible — no redirect, no message, and an
@@ -94,33 +110,43 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
         }
     }
 
-    const removeTopic = async () => {
-        const token = authToken()
-        if (!token || !window.confirm(lang['Delete this permanently?'])) return
-        await run(
-            () => deleteTopic({params: {topicId: topic.id, authToken: token}, clientMode: CLIENT_MODE}),
-            () => router.push(`/event/${groupDetail.name}?tab=discussion`)
-        )
-    }
-
-    const removeReply = async (reply: Reply) => {
-        const token = authToken()
-        if (!token || !window.confirm(lang['Delete this permanently?'])) return
-        await run(
-            () => deleteReply({params: {replyId: reply.id, authToken: token}, clientMode: CLIENT_MODE}),
-            () => setReplies(replies.filter(r => r.id !== reply.id))
-        )
-    }
-
-    const hideReply = async (reply: Reply) => {
+    const removeTopic = () => {
         const token = authToken()
         if (!token) return
-        const reason = window.prompt(lang['Reason (optional)']) ?? undefined
-        await run(
-            () => replyAction({params: {replyId: reply.id, action: 'flag', reason, authToken: token},
-                clientMode: CLIENT_MODE}),
-            () => router.refresh()
-        )
+        showConfirmDialog({
+            lang,
+            title: lang['Delete'],
+            content: lang['Delete this permanently?'],
+            onConfig: () => run(
+                () => deleteTopic({params: {topicId: topic.id, authToken: token}, clientMode: CLIENT_MODE}),
+                () => router.push(`/event/${groupDetail.name}?tab=discussion`)
+            )
+        })
+    }
+
+    const removeReply = (reply: Reply) => {
+        const token = authToken()
+        if (!token) return
+        showConfirmDialog({
+            lang,
+            title: lang['Delete'],
+            content: lang['Delete this permanently?'],
+            onConfig: () => run(
+                () => deleteReply({params: {replyId: reply.id, authToken: token}, clientMode: CLIENT_MODE}),
+                () => setReplies(replies.filter(r => r.id !== reply.id))
+            )
+        })
+    }
+
+    const hideReply = (reply: Reply) => {
+        const token = authToken()
+        if (!token) return
+        askReason(lang['Hide this reply'], lang['The author will still see it, along with this reason.'],
+            reason => run(
+                () => replyAction({params: {replyId: reply.id, action: 'flag', reason, authToken: token},
+                    clientMode: CLIENT_MODE}),
+                () => router.refresh()
+            ))
     }
 
     return <div className="max-w-[720px] mx-auto">
@@ -169,7 +195,7 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
                 <Button variant="secondary" onClick={() => runTopicAction(topic.closed ? 'open' : 'close')}>
                     {topic.closed ? lang['Unlock'] : lang['Lock']}
                 </Button>
-                <Button variant="secondary" onClick={() => runTopicAction(topic.flagged ? 'unflag' : 'flag')}>
+                <Button variant="secondary" onClick={() => topic.flagged ? runTopicAction('unflag') : hideTopic()}>
                     {topic.flagged ? lang['Unhide'] : lang['Hide']}
                 </Button>
             </div>
