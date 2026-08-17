@@ -5,7 +5,7 @@ import {useRouter} from 'next/navigation'
 import {Dictionary} from '@/lang'
 import {
     GroupDetail, Membership, Team,
-    addTeamMember, createTeam, deleteTeam, getTeamMembers, removeTeamMember, updateTeam
+    addTeamMember, createTeam, deleteTeam, removeTeamMember, updateTeam
 } from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {getAuth} from '@/utils'
@@ -37,7 +37,18 @@ export default function TeamManagement({lang, group, teams: initialTeams, member
     const [teams, setTeams] = useState(initialTeams)
     const [name, setName] = useState('')
     const [openTeam, setOpenTeam] = useState<string | null>(null)
-    const [teamMembers, setTeamMembers] = useState<Record<string, string[]>>({})
+    // Who is in each team, seeded from the roster rather than fetched.
+    // GET /teams/:id/members is paginated at 20 by default, so a team with
+    // more people than that came back truncated and the checklist showed them
+    // as not in the team. The roster already carries every member's teams and
+    // is loaded whole, so it is both cheaper and complete.
+    const [teamMembers, setTeamMembers] = useState<Record<string, string[]>>(() => {
+        const seed: Record<string, string[]> = {}
+        members.forEach(m => m.teams?.forEach(t => {
+            (seed[t.id] ||= []).push(m.user.id)
+        }))
+        return seed
+    })
     const [busy, setBusy] = useState(false)
 
     const authToken = () => getAuth()!
@@ -100,16 +111,8 @@ export default function TeamManagement({lang, group, teams: initialTeams, member
         )
     })
 
-    const toggleOpen = async (team: Team) => {
-        if (openTeam === team.id) { setOpenTeam(null); return }
-        setOpenTeam(team.id)
-        if (!teamMembers[team.id]) {
-            const people = await getTeamMembers({
-                params: {teamId: team.id, authToken: authToken()}, clientMode: CLIENT_MODE
-            }).catch(() => [])
-            setTeamMembers(prev => ({...prev, [team.id]: people.map(p => p.id)}))
-        }
-    }
+    const toggleOpen = (team: Team) =>
+        setOpenTeam(openTeam === team.id ? null : team.id)
 
     const toggleMember = (team: Team, userId: string) => {
         const current = teamMembers[team.id] || []
