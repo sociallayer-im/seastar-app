@@ -79,6 +79,9 @@ export interface Reply {
     reply_to: ReplyRef | null,
     flagged: boolean,
     flag_reason: string | null,
+    /** Everyone's count. `is_starred` is this viewer's own state. */
+    stars_count: number,
+    is_starred: boolean,
     created_at: string,
     updated_at: string,
     user: Profile,

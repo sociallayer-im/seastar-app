@@ -13,6 +13,10 @@ import {Badge} from '@/components/shadcn/Badge'
 import {Button} from '@/components/shadcn/Button'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import Avatar from '@/components/Avatar'
+import StarDiscussionBtn from '@/components/client/StarDiscussionBtn'
+import dynamic from 'next/dynamic'
+
+const DynamicLocalTime = dynamic(() => import('@/components/client/LocalTime'), {ssr: false})
 
 /**
  * One thread: the post, then its floors in the order they were written.
@@ -124,7 +128,9 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
             <Avatar profile={topic.user} size={20}/>
             <span>{topic.user?.nickname || topic.user?.name}</span>
             <span>·</span>
-            <span>{new Date(topic.created_at).toLocaleString()}</span>
+            <span><DynamicLocalTime value={topic.created_at}/></span>
+            <StarDiscussionBtn className="ml-auto" itemType="Topic" itemId={topic.id}
+                starred={topic.is_starred} count={topic.stars_count}/>
         </div>
 
         {/* The author is told, in words, that their post is hidden and why.
@@ -171,7 +177,7 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
                             <Avatar profile={reply.user} size={20}/>
                             <span className="font-semibold">{reply.user?.nickname || reply.user?.name}</span>
                             <span className="text-xs text-gray-400 ml-auto">
-                                {new Date(reply.created_at).toLocaleString()}
+                                <DynamicLocalTime value={reply.created_at}/>
                             </span>
                         </div>
 
@@ -199,6 +205,8 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
                         <div className="text-sm mt-2 whitespace-pre-wrap">{reply.content}</div>
 
                         <div className="flex-row-item-center gap-3 mt-2 text-xs text-gray-400">
+                            <StarDiscussionBtn itemType="Reply" itemId={reply.id} size="small"
+                                starred={reply.is_starred} count={reply.stars_count}/>
                             {!topic.closed &&
                                 <button onClick={() => setReplyTo(reply)}>{lang['Reply']}</button>}
                             {reply.can_edit &&

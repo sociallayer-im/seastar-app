@@ -262,7 +262,11 @@ export default function GroupEventHome({ data, lang, langType, initialTab }: Gro
 
                 {!currProfile && <SignInPanel lang={lang} />}
 
-                <div className="mt-6 hidden sm:block">
+                {/* The sidebar is otherwise shared between the tabs — it
+                    describes the community, not the list. This one panel is
+                    the exception: it filters events by date, venue and track,
+                    none of which a topic has. */}
+                <div className={`mt-6 hidden ${tab === 'event' ? 'sm:block' : ''}`}>
                     <DialogEventHomeFilter
                         filterOpts={currFilter}
                         groupDetail={groupDetail}

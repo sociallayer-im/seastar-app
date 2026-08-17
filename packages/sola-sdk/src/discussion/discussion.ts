@@ -152,6 +152,41 @@ export const replyAction = async ({params, clientMode}: SolaSdkFunctionParams<{
     })
 }
 
+/**
+ * Starring, for both a topic and a reply.
+ *
+ * Stars are rows in the shared `comments` table keyed by item_type/item_id,
+ * which is why one pair of functions covers both — and why the server has to
+ * recompute the denormalised count after each call rather than the record
+ * knowing about its own stars.
+ *
+ * Starring something already starred is idempotent, so a double click cannot
+ * inflate the count.
+ */
+export const starDiscussionItem = async ({params, clientMode}: SolaSdkFunctionParams<{
+    itemType: 'Topic' | 'Reply',
+    itemId: string,
+    authToken: string,
+}>) => {
+    await request('/comments/star', {
+        method: 'POST',
+        body: {item_type: params.itemType, item_id: params.itemId},
+        authToken: params.authToken, clientMode
+    })
+}
+
+export const unstarDiscussionItem = async ({params, clientMode}: SolaSdkFunctionParams<{
+    itemType: 'Topic' | 'Reply',
+    itemId: string,
+    authToken: string,
+}>) => {
+    await request('/comments/unstar', {
+        method: 'POST',
+        body: {item_type: params.itemType, item_id: params.itemId},
+        authToken: params.authToken, clientMode
+    })
+}
+
 /** Board management. Deleting only works on an empty board — archive instead. */
 export const createCategory = async ({params, clientMode}: SolaSdkFunctionParams<{
     draft: {group_id: string, name: string, slug?: string, summary?: string,

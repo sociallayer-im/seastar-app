@@ -7,6 +7,12 @@ import {Dictionary} from '@/lang'
 import {Topic} from '@sola/sdk'
 import Img from '@/components/Img'
 import Avatar from '@/components/Avatar'
+import StarDiscussionBtn from '@/components/client/StarDiscussionBtn'
+import dynamic from 'next/dynamic'
+
+// ssr: false because a locale-formatted date cannot survive hydration — see
+// the note in LocalTime.
+const DynamicLocalTime = dynamic(() => import('@/components/client/LocalTime'), {ssr: false})
 
 /**
  * A topic in the list, built to sit beside CardEvent without looking like a
@@ -69,15 +75,11 @@ export default function CardTopic({topic, href, lang}: {
                     <i className="uil-comment-alt-lines mr-1 text-sm"/>
                     {topic.replies_count}
                 </span>
-                {topic.stars_count > 0 &&
-                    <span className="flex-row-item-center">
-                        <i className="uil-star mr-1 text-sm"/>
-                        {topic.stars_count}
-                    </span>
-                }
+                <StarDiscussionBtn itemType="Topic" itemId={topic.id}
+                    starred={topic.is_starred} count={topic.stars_count}/>
                 {!!topic.replied_at &&
                     <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
-                        {lang['Last reply']}: {new Date(topic.replied_at).toLocaleDateString()}
+                        {lang['Last reply']}: <DynamicLocalTime value={topic.replied_at} dateOnly/>
                     </span>
                 }
             </div>
