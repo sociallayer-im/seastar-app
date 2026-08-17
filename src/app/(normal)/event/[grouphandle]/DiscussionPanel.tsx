@@ -52,10 +52,12 @@ export default function DiscussionPanel({lang, group, categories, canPost}: {
             setTopics(prev => page === 1 ? res.data : [...prev, ...res.data])
             setHasMore(res.meta.page < res.meta.total_pages)
         }).catch(() => {
-            // A 404 here means the feature or the group's switch is off. The
-            // tab should not have rendered at all in that case, so there is
-            // nothing useful to say — show the empty state.
-            if (!cancelled) setTopics([])
+            // A 404 here means the feature or the group's switch is off, and
+            // the tab should not have rendered at all in that case. Anything
+            // else is transient — either way, keep whatever is already on
+            // screen rather than blanking it; only the first page has nothing
+            // to keep.
+            if (!cancelled && page === 1) setTopics([])
         }).finally(() => {
             if (!cancelled) setLoading(false)
         })
@@ -123,7 +125,7 @@ export default function DiscussionPanel({lang, group, categories, canPost}: {
         {hasMore &&
             <Button variant="secondary" className="w-full mt-3" disabled={loading}
                 onClick={() => setPage(page + 1)}>
-                {lang['Topics']}
+                {lang['Load More']}
             </Button>
         }
     </div>

@@ -897,4 +897,6 @@ export const zh: Dictionary = {
   'Latest': '最近活跃',
   'Newest': '最新发布',
   'Unanswered': '无人回复',
+  'Load More': '加载更多',
+  'Delete this permanently?': '确定删除？删除后所有人都将看不到它。',
 }

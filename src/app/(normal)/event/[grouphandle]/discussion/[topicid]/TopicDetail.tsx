@@ -75,10 +75,20 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
         const reason = action === 'flag'
             ? (window.prompt(lang['Reason (optional)']) ?? undefined)
             : undefined
+        await run(
+            () => topicAction({params: {topicId: topic.id, action, reason, authToken: token},
+                clientMode: CLIENT_MODE}),
+            () => router.refresh()
+        )
+    }
+
+    // Every mutating action goes through this. Without it a refused delete or
+    // hide simply did nothing visible — no redirect, no message, and an
+    // unhandled rejection in the console.
+    const run = async (fn: () => Promise<unknown>, after?: () => void) => {
         try {
-            await topicAction({params: {topicId: topic.id, action, reason, authToken: token},
-                clientMode: CLIENT_MODE})
-            router.refresh()
+            await fn()
+            after?.()
         } catch (e: unknown) {
             toast({variant: 'destructive', title: e instanceof Error ? e.message : 'Failed'})
         }
@@ -86,25 +96,31 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
 
     const removeTopic = async () => {
         const token = authToken()
-        if (!token || !window.confirm(lang['Delete'])) return
-        await deleteTopic({params: {topicId: topic.id, authToken: token}, clientMode: CLIENT_MODE})
-        router.push(`/event/${groupDetail.name}?tab=discussion`)
+        if (!token || !window.confirm(lang['Delete this permanently?'])) return
+        await run(
+            () => deleteTopic({params: {topicId: topic.id, authToken: token}, clientMode: CLIENT_MODE}),
+            () => router.push(`/event/${groupDetail.name}?tab=discussion`)
+        )
     }
 
     const removeReply = async (reply: Reply) => {
         const token = authToken()
-        if (!token || !window.confirm(lang['Delete'])) return
-        await deleteReply({params: {replyId: reply.id, authToken: token}, clientMode: CLIENT_MODE})
-        setReplies(replies.filter(r => r.id !== reply.id))
+        if (!token || !window.confirm(lang['Delete this permanently?'])) return
+        await run(
+            () => deleteReply({params: {replyId: reply.id, authToken: token}, clientMode: CLIENT_MODE}),
+            () => setReplies(replies.filter(r => r.id !== reply.id))
+        )
     }
 
     const hideReply = async (reply: Reply) => {
         const token = authToken()
         if (!token) return
         const reason = window.prompt(lang['Reason (optional)']) ?? undefined
-        await replyAction({params: {replyId: reply.id, action: 'flag', reason, authToken: token},
-            clientMode: CLIENT_MODE})
-        router.refresh()
+        await run(
+            () => replyAction({params: {replyId: reply.id, action: 'flag', reason, authToken: token},
+                clientMode: CLIENT_MODE}),
+            () => router.refresh()
+        )
     }
 
     return <div className="max-w-[720px] mx-auto">

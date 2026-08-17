@@ -919,6 +919,8 @@ export const en = {
     'Latest': 'Latest',
     'Newest': 'Newest',
     'Unanswered': 'Unanswered',
+    'Load More': 'Load More',
+    'Delete this permanently?': 'Delete this? It will no longer be visible to anyone.',
 }
 
 export type Dictionary = typeof en;
