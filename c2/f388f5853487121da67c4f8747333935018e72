@@ -4,6 +4,8 @@ src/app/(normal)/my-events/attended/data.ts
   s_e9ed806a3d225c::t_d83a83450670a5 1,3,14-21,32-33
 src/app/(normal)/my-events/MyEvents.tsx
   s_e9ed806a3d225c::t_d83a83450670a5 3,6,8-18,51
+  s_e9ed806a3d225c::t_9d8b19a436235a 40-42,53-79
+  s_e9ed806a3d225c::t_cff13d9071aeaf 52
 src/lang/en.ts
   s_e9ed806a3d225c::t_d83a83450670a5 902
 src/lang/zh.ts
