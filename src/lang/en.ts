@@ -977,7 +977,7 @@ export const en = {
     'Domain bound': 'Domain bound',
     'DNS may take a few minutes': 'DNS changes can take a few minutes to propagate. If verification fails, wait and try again.',
     'Type': 'Type',
-    'Name': 'Name',
+    'Record name': 'Name',
     'Value': 'Value',
     'Move Group': 'Move Group',
     'This group\'s ActivityPub id': 'This group\'s ActivityPub id',

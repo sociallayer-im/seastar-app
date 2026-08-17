@@ -14,15 +14,12 @@ export * from './comment'
 export * from './activity'
 export * from './remember'
 export * from './place'
-<<<<<<< HEAD
 export * from './form'
 export * from './discussion/discussion'
 export * from './team/team'
 export * from './discussion/types'
 export * from './oauth'
-=======
 export * from './federation'
->>>>>>> 2ff745b (Add a fediverse page: find remote communities, browse and join their events)
 
 export * from './stripe'
 export * from './wechat'

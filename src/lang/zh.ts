@@ -955,7 +955,7 @@ export const zh: Dictionary = {
     'Domain bound': '域名已绑定',
     'DNS may take a few minutes': 'DNS 生效可能需要几分钟。验证失败时请稍后重试。',
     'Type': '类型',
-    'Name': '名称',
+  'Record name': '名称',
     'Value': '值',
     'Move Group': '迁移社群',
     'This group\'s ActivityPub id': '本社群的 ActivityPub 标识',

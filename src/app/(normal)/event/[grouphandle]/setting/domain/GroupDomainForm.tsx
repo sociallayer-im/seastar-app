@@ -71,7 +71,7 @@ export default function GroupDomainForm({groupId, groupName, lang}: {
             <div className="text-xs text-gray-500 mb-2">{label}</div>
             <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm break-all">
                 <span className="text-gray-400">{lang['Type']}</span><span>{r.type}</span>
-                <span className="text-gray-400">{lang['Name']}</span><span className="font-mono">{r.name}</span>
+                <span className="text-gray-400">{lang['Record name']}</span><span className="font-mono">{r.name}</span>
                 <span className="text-gray-400">{lang['Value']}</span>
                 <span className="font-mono flex-row-item-center justify-between">
                     <span>{r.value}</span>
