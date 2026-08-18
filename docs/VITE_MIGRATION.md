@@ -10,7 +10,7 @@ API 面的兼容层),**业务代码零逻辑改动** —— 所有源码修改�
 | | 迁移前 | 迁移后 |
 |---|---|---|
 | React | 18.2.0 | 19.2.8 |
-| Next.js | 14.2.35 | 16.3.1(仅作兼容层/回退,运行时是 vinext) |
+| Next.js | 14.2.35 | **已移除**(类型由 vinext/@vinext/types 提供) |
 | 构建器 | next build (webpack) | vinext 1.0.0-beta.6 + Vite 8.2.1 |
 | TypeScript | 5.x | 6.0.3(7.x 被 typescript-eslint `<6.1.0` 挡住,勿升) |
 | ESLint | 8 + .eslintrc | 9 + eslint.config.mjs(flat) |
@@ -24,10 +24,8 @@ API 面的兼容层),**业务代码零逻辑改动** —— 所有源码修改�
 bun run dev          # vinext dev(Vite + HMR),端口跟 --port
 bun run build        # vinext build → dist/
 bun run start        # vinext start(读 PORT/HOST,不是 HOSTNAME)
-bun run dev:next     # 回退:next dev --webpack(turbopack 解析不了编辑器 scss)
-bun run build:next   # 回退:next build --webpack → .next/
-bun run lint         # eslint 直跑(next lint 在 Next 16 已删除)
-npx tsc --noEmit     # 注意:.next/types 的 PageProps 校验只在 next build 后存在
+bun run lint         # eslint 直跑
+npx tsc --noEmit     # next-env.d.ts 由 vinext dev 生成/管理,勿手改
 ```
 
 构建时间(同机 3 次中位):vinext **9.6s** vs webpack 33s。
@@ -93,10 +91,10 @@ npx tsc --noEmit     # 注意:.next/types 的 PageProps 校验只在 next build 
 
 ## 回退路径
 
-`build:next`/`start:next` 保留完整 webpack 链路。Dockerfile 回退需要:
-runtime 阶段换回 bun 镜像、`dist` 改回 `.next`、ENTRYPOINT 换回
-`bun --bun run start`、`HOST` 换回 `HOSTNAME`(见 git 历史
-`404e976^` 之前的版本)。
+`next` 包与 webpack 回退脚本已彻底移除(用户决定只保留 Vite 链路)。
+如需回退,从 git 历史恢复:`bun add next@16 eslint-config-next@16`、
+恢复 dev:next/build:next/start:next 脚本与旧 Dockerfile(见
+`404e976^` 之前的版本)。next.config.mjs 仍保留 —— vinext 读它。
 
 ## 部署注意(尚未部署)
 
