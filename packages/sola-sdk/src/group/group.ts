@@ -10,12 +10,18 @@ import {SolaSdkFunctionParams} from '../types'
 // noCache defaults true (always fresh — most callers read this right after
 // an edit). Pass false to allow soon's own Cache-Control (this response never
 // personalizes) to govern via the standard fetch cache, not Next.js's.
-export const getGroupDetailByName = async ({params: {groupName, noCache}, clientMode}: SolaSdkFunctionParams<{groupName: string, noCache?: boolean}>) => {
-    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupName)}`, {clientMode, noCache: noCache ?? true})
+/**
+ * Pass `authToken` whenever the result's member roster will be displayed.
+ * The endpoint personalizes one thing — a group's private team badges are
+ * rendered only for people in that group — so an anonymous fetch returns the
+ * public ones and a member sees an incomplete roster.
+ */
+export const getGroupDetailByName = async ({params: {groupName, noCache, authToken}, clientMode}: SolaSdkFunctionParams<{groupName: string, noCache?: boolean, authToken?: string}>) => {
+    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupName)}`, {clientMode, authToken, noCache: noCache ?? true})
 }
 
-export const getGroupDetailById = async ({params: {groupId, noCache}, clientMode}: SolaSdkFunctionParams<{groupId: string, noCache?: boolean}>) => {
-    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupId)}`, {clientMode, noCache: noCache ?? true})
+export const getGroupDetailById = async ({params: {groupId, noCache, authToken}, clientMode}: SolaSdkFunctionParams<{groupId: string, noCache?: boolean, authToken?: string}>) => {
+    return await requestOrNull<GroupDetail>(`/groups/${encodeURIComponent(groupId)}`, {clientMode, authToken, noCache: noCache ?? true})
 }
 
 /**

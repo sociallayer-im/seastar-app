@@ -13,6 +13,7 @@ import {getLabelColor} from '@/utils/label_color'
 import {Button} from '@/components/shadcn/Button'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import Avatar from '@/components/Avatar'
+import AdminNotificationToggle from '@/app/(normal)/group/[handle]/TabMembers/AdminNotificationToggle'
 
 /**
  * Editing one person: which teams they are in, and whether they are a manager.
@@ -26,7 +27,7 @@ import Avatar from '@/components/Avatar'
  * edit leaves no ambiguity about what was stored. Failures roll the switch
  * back and say so.
  */
-export default function DialogEditMember({lang, group, membership, teams, isOwner, isManager, close}: {
+export default function DialogEditMember({lang, group, membership, teams, isOwner, isManager, canSetNotification, close}: {
     lang: Dictionary,
     group: Group,
     membership: Membership,
@@ -36,6 +37,10 @@ export default function DialogEditMember({lang, group, membership, teams, isOwne
     isOwner: boolean,
     /** Whether the viewer manages the group at all. */
     isManager: boolean,
+    /** Whether this row's notification switch is settable by the viewer — the
+     *  setting only exists on owner/manager rows, and is either your own or
+     *  one you manage. Computed by the caller, which already has the rule. */
+    canSetNotification: boolean,
     close: () => void
 }) {
     const router = useRouter()
@@ -124,6 +129,16 @@ export default function DialogEditMember({lang, group, membership, teams, isOwne
                     disabled={busy || !roleSwitchEnabled}
                     onChange={toggleManager}/>
             </label>
+        }
+
+        {/* Moved off the roster row: it is a per-person setting like the
+            others here, and on the row it was a switch with no label sitting
+            between a name and a badge. */}
+        {canSetNotification &&
+            <div className="flex-row-item-center justify-between py-2 border-b border-gray-100">
+                <span className="text-sm pr-3">{lang['Email me when a member submits an event']}</span>
+                <AdminNotificationToggle lang={lang} groupId={group.id} membership={membership}/>
+            </div>
         }
 
         <div className="text-sm text-gray-500 mt-4 mb-1">{lang['Teams']}</div>

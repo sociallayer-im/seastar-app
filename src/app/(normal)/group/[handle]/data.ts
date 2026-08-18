@@ -50,8 +50,11 @@ export interface GroupData {
 
 export default async function GroupPageData(handle: string, tab='events'): Promise<GroupData> {
 
+    // With the token: the roster's private team badges are only rendered for
+    // people in the group, so an anonymous fetch would hide a member's own
+    // teams from them.
     const groupsDetail = await getGroupDetailByName({
-        params: {groupName: handle},
+        params: {groupName: handle, authToken: cookies().get(AUTH_FIELD)?.value},
         clientMode: CLIENT_MODE
     })
 

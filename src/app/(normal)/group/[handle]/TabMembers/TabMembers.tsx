@@ -13,7 +13,6 @@ import useModal from '@/components/client/Modal/useModal'
 import DialogEditMember from '@/app/(normal)/group/[handle]/TabMembers/DialogEditMember'
 import {getLabelColor} from '@/utils/label_color'
 import LeaveGroupBtn from '@/app/(normal)/group/[handle]/TabMembers/LeaveGroupBtn'
-import AdminNotificationToggle from '@/app/(normal)/group/[handle]/TabMembers/AdminNotificationToggle'
 
 export interface TabMembersProps {
     members: Membership[]
@@ -39,10 +38,16 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
     const [searchKeyword, setSearchKeyword] = useState('')
     const [teamId, setTeamId] = useState<string | null>(null)
 
-    // Built from the roster rather than fetched: the memberships already carry
-    // their teams, so a team with nobody in it has nothing to filter and does
-    // not belong in a filter bar. Managing teams is a separate screen.
+    // A manager gets the group's real team list, so a team nobody is in yet is
+    // still visible (and visibly empty) rather than silently missing. Everyone
+    // else gets what the roster shows them, which is already filtered to the
+    // teams they may see.
     const teams = useMemo(() => {
+        if (allTeams?.length) {
+            return [...allTeams]
+                .filter(t => !t.archived)
+                .sort((a, b) => b.sort - a.sort || (a.id < b.id ? -1 : 1))
+        }
         const seen = new Map<string, TeamRef>()
         members.forEach(m => m.teams?.forEach(t => seen.set(t.id, t)))
         // Server order, then id — both identical in Node and in the browser.
@@ -50,7 +55,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
         // another in a zh-CN browser, and the differing markup is a hydration
         // error that throws away the subtree.
         return [...seen.values()].sort((a, b) => b.sort - a.sort || (a.id < b.id ? -1 : 1))
-    }, [members])
+    }, [members, allTeams])
 
     let ManagementOptions = isManager
         ? [{label: lang['Member Management'], url: `/group/${group.name}/management/member`}]
@@ -206,20 +211,14 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                                 {team.name}
                             </span>
                         )}
-                        {canSetNotification(member) &&
-                            <AdminNotificationToggle
-                                lang={lang}
-                                groupId={group.id}
-                                membership={member}/>
-                        }
                         {/* The row is a link to the profile, so this has to
                             stop the click reaching it. Managers only — every
                             control inside would 403 for anyone else.
-                            No ml-auto here: AdminNotificationToggle already
-                            claims the free space, and two of them would leave
-                            this one stranded mid-row. */}
+                            ml-auto pushes it to the far right; it is the only
+                            thing on the row that claims the free space now
+                            that the notification switch has moved inside. */}
                         {isManager &&
-                            <button className="shrink-0 text-gray-400 hover:text-gray-700"
+                            <button className="ml-auto shrink-0 text-gray-400 hover:text-gray-700"
                                 aria-label={lang['Edit']}
                                 onClick={e => {
                                     e.preventDefault()
@@ -230,6 +229,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                                             teams={allTeams || []}
                                             isOwner={!!isOwner}
                                             isManager={isManager}
+                                            canSetNotification={canSetNotification(member)}
                                             close={close!}/>
                                     })
                                 }}>

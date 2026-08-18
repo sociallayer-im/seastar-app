@@ -12,8 +12,11 @@ export default async function TeamsPage(props: {params: {grouphandle: string}}) 
         redirect(`/signin?return=/event/${props.params.grouphandle}/teams`)
     }
 
+    // With the token, and load-bearing: TeamManagement seeds every checkbox
+    // from this roster, so without it the private teams would show as having
+    // nobody in them.
     const groupDetail = await getGroupDetailByName({
-        params: {groupName: props.params.grouphandle},
+        params: {groupName: props.params.grouphandle, authToken},
         clientMode: CLIENT_MODE
     })
     if (!groupDetail) redirect('/404')
