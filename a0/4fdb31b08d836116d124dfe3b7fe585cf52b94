@@ -1,0 +1,37 @@
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_6ffd9210ef60f5 621
+src/lang/en.ts
+  s_e9ed806a3d225c::t_6ffd9210ef60f5 640
+src/components/client/AttendEventBtn.tsx
+  s_e9ed806a3d225c::t_c0189759262241 54-61
+src/app/configForSpecifyGroup.ts
+  s_e9ed806a3d225c::t_c0189759262241 28
+src/components/client/GoToBuyTicket.tsx
+  s_e9ed806a3d225c::t_6ffd9210ef60f5 6-7,12,21-27
+src/components/client/DialogTicket.tsx
+  s_e9ed806a3d225c::t_793a5da0c8af97 62,341,343,350-352,355-363,433-438
+Dockerfile
+  s_e9ed806a3d225c::t_b2427551e0513d 88-97
+  s_e9ed806a3d225c::t_5a6616b4b5f77c 71-73
+.dockerignore
+  s_e9ed806a3d225c::t_5a6616b4b5f77c 8-14
+src/utils/evm_payment.ts
+  s_e9ed806a3d225c::t_bcc230ff253156 77-83,136,213-222
+  s_e9ed806a3d225c::t_a8a025feac09ed 223
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a04fdb31b08d836116d124dfe3b7fe585cf52b94",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
