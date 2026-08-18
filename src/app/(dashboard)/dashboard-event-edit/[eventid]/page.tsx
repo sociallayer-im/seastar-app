@@ -3,7 +3,8 @@ import EditEventForm from '@/app/(normal)/event/edit/[eventid]/EditEventForm'
 import {selectLang} from '@/app/actions'
 
 export default async function EditEventPage(props: EventEditEventPageProps) {
-    const data = await EditEventData({checkPermissions: false, ...props} as EditEventProps)
+    const data = await EditEventData({checkPermissions: false, /* @next-codemod-error 'props' is used with spread syntax (...). Any asynchronous properties of 'props' must be awaited when accessed. */
+    ...props} as EditEventProps)
     const {lang} = await selectLang()
 
 

@@ -5,7 +5,8 @@ import EditMarkerForm from '@/app/(normal)/marker/edit/[markerid]/EditMarkerForm
 
 export default async function MarkerEditPage(props: MarkerDetailPageDataProps) {
     const {lang} = await selectLang()
-    const {markerDetail, group} = await MarkerEditData(props)
+    const {markerDetail, group} = await MarkerEditData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     if (!group) {
         throw new Error('Marker has no group')
     }

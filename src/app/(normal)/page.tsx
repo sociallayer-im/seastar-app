@@ -18,7 +18,7 @@ const cachedGetGroupDetailByHandle = cache(async (handle: string) => {
 
 
 export async function generateMetadata() {
-    const headersList = headers()
+    const headersList = await headers()
     const eventHomeGroupHandle = headersList.get('x-event-home')
     if (!!eventHomeGroupHandle) {
         const groupDetail = await cachedGetGroupDetailByHandle(eventHomeGroupHandle)
@@ -39,8 +39,8 @@ export async function generateMetadata() {
     }
 }
 
-export default async function Home(props: {searchParams: GroupEventHomeSearchParams}) {
-    const headersList = headers()
+export default async function Home(props: {searchParams: Promise<GroupEventHomeSearchParams>}) {
+    const headersList = await headers()
     const eventHomeGroupHandle = headersList.get('x-event-home')
 
     if (!!eventHomeGroupHandle) {
@@ -49,10 +49,12 @@ export default async function Home(props: {searchParams: GroupEventHomeSearchPar
             redirect('/404')
         }
 
-        const data = await GroupEventHomeData({searchParams: props.searchParams, groupDetail})
+        const data = await GroupEventHomeData({searchParams: (await props.searchParams), groupDetail})
         const {lang, type} = await selectLang()
-        return <GroupEventHome data={data} lang={lang} langType={type}
-            initialTab={(props.searchParams as {tab?: string}).tab} />
+        return (
+            <GroupEventHome data={data} lang={lang} langType={type}
+                initialTab={((await props.searchParams) as {tab?: string}).tab} />
+        )
     } else {
         return <DiscoverPage />
     }

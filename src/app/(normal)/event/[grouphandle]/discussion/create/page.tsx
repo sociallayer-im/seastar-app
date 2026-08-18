@@ -4,10 +4,10 @@ import {getCurrProfile, getServerSideAuth, selectLang} from '@/app/actions'
 import {CLIENT_MODE, DISCUSSION} from '@/app/config'
 import TopicCreateForm from './TopicCreateForm'
 
-export default async function CreateTopicPage(props: {params: {grouphandle: string}}) {
+export default async function CreateTopicPage(props: {params: Promise<{grouphandle: string}>}) {
     const {lang} = await selectLang()
     const groupDetail = await getGroupDetailByName({
-        params: {groupName: props.params.grouphandle},
+        params: {groupName: (await props.params).grouphandle},
         clientMode: CLIENT_MODE
     })
     if (!groupDetail || !DISCUSSION || !groupDetail.discussion_enabled) redirect('/404')
@@ -15,7 +15,7 @@ export default async function CreateTopicPage(props: {params: {grouphandle: stri
     const authToken = await getServerSideAuth()
     const currProfile = await getCurrProfile()
     if (!authToken || !currProfile) {
-        redirect(`/signin?return=/event/${props.params.grouphandle}/discussion/create`)
+        redirect(`/signin?return=/event/${(await props.params).grouphandle}/discussion/create`)
     }
 
     // Only boards this person can see — posting to one they cannot see would

@@ -3,7 +3,13 @@ import {getCurrProfile, selectLang} from "@/app/actions"
 import IssueBadgeForm from "@/app/(normal)/badge-class/[badgeclassid]/send-badge/SendBadgeForm"
 import {redirect} from 'next/navigation'
 
-export default async function IssueBadgePage ({params:{badgeclassid}}: BadgeClassPageDataProps) {
+export default async function IssueBadgePage(props: BadgeClassPageDataProps) {
+    const params = await props.params
+
+    const {
+        badgeclassid
+    } = params
+
     const {badgeClass, toProfile, isPrivate} = await BadgeClassPageData(badgeclassid)
     const {lang} = await selectLang()
     const currProfile = await getCurrProfile()

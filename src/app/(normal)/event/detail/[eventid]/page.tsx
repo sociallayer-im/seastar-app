@@ -45,10 +45,24 @@ const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEv
 
 const cachedEventDetailPage = cache(EventDetailPage)
 
-export async function generateMetadata({ params: { eventid }, searchParams: { tab } }: {
-    params: EventDetailPageDataProps,
-    searchParams: EventDetailPageSearchParams
-}) {
+export async function generateMetadata(
+    props: {
+        params: Promise<EventDetailPageDataProps>,
+        searchParams: Promise<EventDetailPageSearchParams>
+    }
+) {
+    const searchParams = await props.searchParams
+
+    const {
+        tab
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        eventid
+    } = params
+
     const { eventDetail } = await cachedEventDetailPage(eventid, pickSearchParam(tab))
 
     const description = removeMarkdown(eventDetail.content || '').slice(0, 200)
@@ -64,10 +78,25 @@ export async function generateMetadata({ params: { eventid }, searchParams: { ta
     }
 }
 
-export default async function EventDetail({ params: { eventid }, searchParams: { tab: _tab, payment } }: {
-    params: EventDetailPageDataProps,
-    searchParams: EventDetailPageSearchParams & { payment?: string | string[] }
-}) {
+export default async function EventDetail(
+    props: {
+        params: Promise<EventDetailPageDataProps>,
+        searchParams: Promise<EventDetailPageSearchParams & { payment?: string | string[] }>
+    }
+) {
+    const searchParams = await props.searchParams
+
+    const {
+        tab: _tab,
+        payment
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        eventid
+    } = params
+
     const paymentReturn = pickSearchParam(payment)
     const {
         eventDetail,

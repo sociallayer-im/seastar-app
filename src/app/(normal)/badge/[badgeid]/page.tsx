@@ -14,7 +14,8 @@ const DynamicShowTime = dynamic(
 
 
 export default async function BadgePage(props: BadgePageDataProps) {
-    const data = await BadgePageData(props)
+    const data = await BadgePageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
 
     return data.isPrivate && !data.isOwner
         ? <PrivateBadge {...data} />

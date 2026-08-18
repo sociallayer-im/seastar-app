@@ -15,27 +15,27 @@ import {FormAnswerValue} from '@/components/client/FormFieldsInput'
  *
  * Signed-in only, by definition — a submission belongs to a person.
  */
-export default async function FormSubmissionPage(props: {params: {slug: string}}) {
+export default async function FormSubmissionPage(props: {params: Promise<{slug: string}>}) {
     const {lang} = await selectLang()
     const authToken = await getServerSideAuth()
     const currProfile = await getCurrProfile()
     if (!authToken || !currProfile) {
-        redirect(`/signin?return=/forms/${props.params.slug}/submission`)
+        redirect(`/signin?return=/forms/${(await props.params).slug}/submission`)
     }
 
     const form = await getForm({
-        params: {slug: props.params.slug, authToken},
+        params: {slug: (await props.params).slug, authToken},
         clientMode: CLIENT_MODE
     })
     if (!form) redirect('/404')
 
     const submission = await getMyFormSubmission({
-        params: {slug: props.params.slug, authToken},
+        params: {slug: (await props.params).slug, authToken},
         clientMode: CLIENT_MODE
     })
     // Never answered it: there is no receipt to show, so show the form. Landing
     // on an empty preview would be a dead end with nothing to do on it.
-    if (!submission) redirect(`/forms/${props.params.slug}`)
+    if (!submission) redirect(`/forms/${(await props.params).slug}`)
 
     const fields = [...form.fields].sort((a, b) => a.position - b.position)
     const byField = new Map(submission.answers.map(a => [a.form_field_id, a.value]))

@@ -25,7 +25,7 @@ export default function PaymentReturn({lang, eventId, profileName, result}: {
     result: 'success' | 'cancelled'
 }) {
     const [confirmed, setConfirmed] = useState(false)
-    const timer = useRef<ReturnType<typeof setInterval>>()
+    const timer = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
 
     useEffect(() => {
         if (result !== 'success') return

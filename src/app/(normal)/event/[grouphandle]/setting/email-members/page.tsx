@@ -7,10 +7,11 @@ import {selectLang} from '@/app/actions'
 import EmailMembersForm from './EmailMembersForm'
 
 interface Props {
-    params: {grouphandle: string}
+    params: Promise<{grouphandle: string}>
 }
 
-export default async function EmailMembersPage({params}: Props) {
+export default async function EmailMembersPage(props: Props) {
+    const params = await props.params
     const groupDetail = await getGroupDetailByName({
         params: {groupName: params.grouphandle},
         clientMode: CLIENT_MODE

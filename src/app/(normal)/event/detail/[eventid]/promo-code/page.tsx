@@ -7,7 +7,8 @@ import NoData from '@/components/NoData'
 
 export default async function PromoCodeListPage(props: PromoCodePageProps) {
     const {lang} = await selectLang()
-    const {eventDetail, coupons} = await PomoCodePageData(props)
+    const {eventDetail, coupons} = await PomoCodePageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px) px-3 !pb-12 pt-0">

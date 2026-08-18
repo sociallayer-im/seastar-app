@@ -35,7 +35,7 @@ export default async function RootLayout({
                                          }: Readonly<{ children: ReactNode }>) {
     const {type: langType, lang} = await selectLang()
     const currProfile = await getCurrProfile()
-    const headersList = headers()
+    const headersList = await headers()
     const currentPath = headersList.get('x-current-path')
     const isSchedule = currentPath?.includes('/schedule')
 

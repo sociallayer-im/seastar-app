@@ -17,7 +17,19 @@ const DynamicShowTime = dynamic(
     {ssr: false}
 )
 
-export async function generateMetadata({params:{badgeclassid}, searchParams:{to}}: BadgeClassPageDataProps) {
+export async function generateMetadata(props: BadgeClassPageDataProps) {
+    const searchParams = await props.searchParams
+
+    const {
+        to
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        badgeclassid
+    } = params
+
     const {badgeClass, isOwner, isPrivate} = await cachedBadgeClassPageData(badgeclassid, to)
     badgeClass.badge_type
     const title = isPrivate && !isOwner ? 'Private Badge' : badgeClass.title
@@ -26,7 +38,19 @@ export async function generateMetadata({params:{badgeclassid}, searchParams:{to}
     }
 }
 
-export default async function BadgeClassPage({params:{badgeclassid}, searchParams:{to}}: BadgeClassPageDataProps) {
+export default async function BadgeClassPage(props: BadgeClassPageDataProps) {
+    const searchParams = await props.searchParams
+
+    const {
+        to
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        badgeclassid
+    } = params
+
     const data = await cachedBadgeClassPageData(badgeclassid, to)
 
     return data.isPrivate && !data.isOwner

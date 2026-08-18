@@ -8,7 +8,7 @@ import HeaderSignInBtn from "@/components/client/HeaderSignInBtn"
 
 export default async function Header({sticky = true}:{sticky?: boolean}) {
     const { type, lang } = await selectLang()
-    const headersList = headers()
+    const headersList = await headers()
 
     const currentPath = headersList.get('x-current-path')
     const profile = await getCurrProfile()

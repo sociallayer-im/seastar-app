@@ -10,7 +10,8 @@ import {pickSearchParam} from '@/utils'
  * lever against an app already in the wild — and it burns that app's live
  * tokens rather than merely blocking new authorizations.
  */
-export default async function AdminOauthPage({searchParams}: {searchParams?: {q?: string | string[]}}) {
+export default async function AdminOauthPage(props: {searchParams?: Promise<{q?: string | string[]}>}) {
+    const searchParams = await props.searchParams
     const {lang} = await selectLang()
     const query = pickSearchParam(searchParams?.q)
     const {applications, total} = await AdminOauthData(query)

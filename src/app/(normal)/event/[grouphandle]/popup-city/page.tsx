@@ -8,7 +8,8 @@ import PopupCityForm from './PopupCityForm'
 // list-of-entities-you-manage + "create a new one" flow from when popup
 // cities lived in a separate table.
 export default async function GroupPopupCityPage(props: GroupEventSettingDataProps) {
-    const {groupDetail} = await GroupEventSettingData(props)
+    const {groupDetail} = await GroupEventSettingData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const {lang} = await selectLang()
 
     return <PopupCityForm groupDetail={groupDetail} lang={lang}/>

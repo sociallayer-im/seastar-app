@@ -6,10 +6,11 @@ import {headers} from 'next/headers'
 import QrCode from '@/components/client/QRcode'
 
 export default async function Checkin(props: EventDetailDataProps) {
-    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(props)
+    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const {lang} = await selectLang()
 
-    const currPath = headers().get('x-current-path')
+    const currPath = (await headers()).get('x-current-path')
     const qrcodeText = `${new URL(currPath!).origin}/event/checkin-for-participants/${eventDetail.id}?profile_id=${currProfile!.id}`
 
     return <div className="page-width-sm !pt-3 !pb-12">

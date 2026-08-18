@@ -7,7 +7,8 @@ import CheckinBtn from '@/app/(normal)/event/checkin-for-participants/[eventid]/
 import QrCode from '@/components/client/QRcode'
 
 export default async function CheckinForParticipants(props: EventDetailDataProps) {
-    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(props)
+    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const {lang} = await selectLang()
 
     return <div className="page-width-sm !pt-3 !pb-12">

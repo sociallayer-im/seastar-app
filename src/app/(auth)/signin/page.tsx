@@ -15,7 +15,8 @@ import WechatSignIn from '@/app/(auth)/signin/WechatSignIn'
  * middleware rewrite — so every sign-in link already in circulation, including
  * `https://auth.sola.day/?return=…`, lands here unchanged.
  */
-export default async function SignInPage({searchParams}: {searchParams?: {error?: string}}) {
+export default async function SignInPage(props: {searchParams?: Promise<{error?: string}>}) {
+    const searchParams = await props.searchParams
     // Already signed in? Go straight where they were headed. Checked against the
     // raw token rather than getCurrProfile, which reports an account with no
     // username as signed-out and would trap it on this page instead of sending
@@ -33,7 +34,7 @@ export default async function SignInPage({searchParams}: {searchParams?: {error?
     // any other browser dead-ends on "请在微信客户端打开链接". So the button is
     // gated on the UA as well as the build flag, rather than offering a link
     // that cannot work. (Desktop would need 开放平台 QR sign-in, a separate app.)
-    const inWechat = /MicroMessenger/i.test(headers().get('user-agent') ?? '')
+    const inWechat = /MicroMessenger/i.test((await headers()).get('user-agent') ?? '')
     const wechatLogin = WECHAT_LOGIN && inWechat
 
     // All alternatives are build-time flags (CN leaves only WeChat, in the

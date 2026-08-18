@@ -1,4 +1,4 @@
-import {cookies, headers} from 'next/headers'
+import { cookies, headers, type UnsafeUnwrappedCookies, type UnsafeUnwrappedHeaders } from 'next/headers'
 import {sanitizeReturnTarget} from '@/utils'
 
 /**
@@ -11,4 +11,4 @@ import {sanitizeReturnTarget} from '@/utils'
  * window.location to read it from here.
  */
 export const returnTargetFromCookies = (): string =>
-    sanitizeReturnTarget(cookies().get('return')?.value, headers().get('host'))
+    sanitizeReturnTarget((cookies() as unknown as UnsafeUnwrappedCookies).get('return')?.value, (headers() as unknown as UnsafeUnwrappedHeaders).get('host'))

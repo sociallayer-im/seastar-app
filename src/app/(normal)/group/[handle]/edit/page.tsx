@@ -4,14 +4,26 @@ import GroupPageData, {GroupDataProps} from '@/app/(normal)/group/[handle]/data'
 
 export const fetchCache = 'force-no-store'
 
-export async function generateMetadata({params:{handle}}: GroupDataProps) {
+export async function generateMetadata(props: GroupDataProps) {
+    const params = await props.params
+
+    const {
+        handle
+    } = params
+
     const {group} = await GroupPageData(handle)
     return {
         title: `${group.nickname || group.name} | Edit Group | ${process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}`
     }
 }
 
-export default async function EditGroupPage({params: {handle}}: GroupDataProps) {
+export default async function EditGroupPage(props: GroupDataProps) {
+    const params = await props.params
+
+    const {
+        handle
+    } = params
+
     const {group, currUserIsManager, members, currUserIsOwner} = await GroupPageData(handle)
     const lang = (await selectLang()).lang
 
@@ -21,6 +33,4 @@ export default async function EditGroupPage({params: {handle}}: GroupDataProps) 
         isOwner={currUserIsOwner}
         isManager={currUserIsManager}
         group={group}/>
-
-
 }

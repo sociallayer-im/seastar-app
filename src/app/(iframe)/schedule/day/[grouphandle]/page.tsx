@@ -22,10 +22,13 @@ const cachedGetGroupDetailByHandle = cache((handle: string) => {
     return getGroupDetailByName({params: {groupName: handle}, clientMode: CLIENT_MODE})
 })
 
-export async function generateMetadata({params}: {
-    params: IframeSchedulePageParams,
-    searchParams: IframeSchedulePageSearchParams
-}) {
+export async function generateMetadata(
+    props: {
+        params: Promise<IframeSchedulePageParams>,
+        searchParams: Promise<IframeSchedulePageSearchParams>
+    }
+) {
+    const params = await props.params
     const groupDetail = await cachedGetGroupDetailByHandle(params.grouphandle)
     if (!groupDetail) {
         redirect('/404')
@@ -36,10 +39,14 @@ export async function generateMetadata({params}: {
     }
 }
 
-export default async function IframeScheduleDailyPage({searchParams, params}: {
-    params: IframeSchedulePageParams,
-    searchParams: IframeSchedulePageSearchParams
-}) {
+export default async function IframeScheduleDailyPage(
+    props: {
+        params: Promise<IframeSchedulePageParams>,
+        searchParams: Promise<IframeSchedulePageSearchParams>
+    }
+) {
+    const params = await props.params
+    const searchParams = await props.searchParams
     const groupDetail = await cachedGetGroupDetailByHandle(params.grouphandle)
     if (!groupDetail) {redirect('/404')}
     const data = await IframeSchedulePageData({

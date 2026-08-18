@@ -27,7 +27,19 @@ export const dynamic = 'force-dynamic'
 
 const cachedProfileData = cache(ProfileData)
 
-export async function generateMetadata({params: {handle}, searchParams: {tab}}: ProfileDataProps) {
+export async function generateMetadata(props: ProfileDataProps) {
+    const searchParams = await props.searchParams
+
+    const {
+        tab
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        handle
+    } = params
+
     const data = await cachedProfileData(handle, pickSearchParam(tab))
     if (!data.profile) {
         redirect('/error')
@@ -45,7 +57,19 @@ export async function generateMetadata({params: {handle}, searchParams: {tab}}: 
     }
 }
 
-export default async function Profile({params: {handle}, searchParams: {tab: _tab}}: ProfileDataProps) {
+export default async function Profile(props: ProfileDataProps) {
+    const searchParams = await props.searchParams
+
+    const {
+        tab: _tab
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        handle
+    } = params
+
     const {profile, currProfile, isSelf, tab} = await cachedProfileData(handle, pickSearchParam(_tab))
     const lang = (await selectLang()).lang
 

@@ -1,5 +1,6 @@
 import {redirect} from 'next/navigation'
 
-export default function CalendarPage({params}:{params:{grouphandle:string}}){
+export default async function CalendarPage(props:{params: Promise<{grouphandle:string}>}) {
+    const params = await props.params
     redirect(`/event/${params.grouphandle}/schedule/list`)
 }

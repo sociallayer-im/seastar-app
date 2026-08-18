@@ -5,7 +5,8 @@ import MarkerMap from './Map'
 
 
 export default async function GroupMarkerMap(props: GroupMarkerMapPageDataProps) {
-    const {markers, currProfile, groupDetail, category} = await GroupMarkerMapPageData(props)
+    const {markers, currProfile, groupDetail, category} = await GroupMarkerMapPageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const {lang, type} = await selectLang()
 
     return <MarkerMap

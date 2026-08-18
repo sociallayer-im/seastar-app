@@ -1,6 +1,9 @@
 import {redirect} from 'next/navigation'
 
-export default function IframeSchedule({searchParams}:{searchParams: { date?: string, group: string, view?: string }}) {
+export default async function IframeSchedule(
+    props:{searchParams: Promise<{ date?: string, group: string, view?: string }>}
+) {
+    const searchParams = await props.searchParams
     const {date, group, view} = searchParams
 
     if (!group) {

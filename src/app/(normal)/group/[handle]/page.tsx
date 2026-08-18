@@ -21,7 +21,19 @@ export const dynamic = 'force-dynamic'
 
 const cachedGroupPageData = cache(GroupPageData)
 
-export async function generateMetadata({params:{handle}, searchParams:{tab}}: GroupDataProps) {
+export async function generateMetadata(props: GroupDataProps) {
+    const searchParams = await props.searchParams
+
+    const {
+        tab
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        handle
+    } = params
+
     const {group} = await cachedGroupPageData(handle, pickSearchParam(tab))
     const lang = (await selectLang()).lang
 
@@ -37,7 +49,19 @@ export async function generateMetadata({params:{handle}, searchParams:{tab}}: Gr
     }
 }
 
-export default async function GroupPage({params:{handle}, searchParams:{tab:_tab}}: GroupDataProps) {
+export default async function GroupPage(props: GroupDataProps) {
+    const searchParams = await props.searchParams
+
+    const {
+        tab:_tab
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        handle
+    } = params
+
     const {
         group,
         tab,

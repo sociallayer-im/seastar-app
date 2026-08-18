@@ -8,9 +8,12 @@ import FormVerifyEmail from '@/app/(auth)/verify-email/FormVerifyEmail'
  * (/verify-email?email=…) so the flow — and browser-back out of it — is
  * unchanged.
  */
-export default async function VerifyEmailPage({searchParams}: {
-    searchParams: {email?: string | string[]}
-}) {
+export default async function VerifyEmailPage(
+    props: {
+        searchParams: Promise<{email?: string | string[]}>
+    }
+) {
+    const searchParams = await props.searchParams
     const email = pickSearchParam(searchParams.email)
     // Nothing to verify without an address — start over rather than render a
     // form that can only fail.

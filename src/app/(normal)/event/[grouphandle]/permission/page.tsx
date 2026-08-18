@@ -4,7 +4,8 @@ import GroupEventSettingData, {GroupEventSettingDataProps} from '@/app/(normal)/
 
 export default async function GroupEventPermissionPage(props: GroupEventSettingDataProps) {
     const {lang} = await selectLang()
-    const {groupDetail} = await GroupEventSettingData(props)
+    const {groupDetail} = await GroupEventSettingData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
 
     return <PermissonForm lang={lang} groupDetail={groupDetail} />
 }

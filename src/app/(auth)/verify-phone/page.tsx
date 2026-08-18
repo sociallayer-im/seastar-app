@@ -7,9 +7,12 @@ import FormVerifyPhone from '@/app/(auth)/verify-phone/FormVerifyPhone'
 /**
  * Code entry for SMS sign-in, the counterpart of /verify-email.
  */
-export default async function VerifyPhonePage({searchParams}: {
-    searchParams: {phone?: string | string[]}
-}) {
+export default async function VerifyPhonePage(
+    props: {
+        searchParams: Promise<{phone?: string | string[]}>
+    }
+) {
+    const searchParams = await props.searchParams
     // Nothing here works on a deployment without SMS — the endpoints 404.
     if (!PHONE_LOGIN) redirect('/signin')
 

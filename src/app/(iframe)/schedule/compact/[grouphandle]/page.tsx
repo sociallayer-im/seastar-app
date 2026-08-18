@@ -16,7 +16,10 @@ const cachedGetGroupDetailByHandle = cache((handle: string) => {
     return getGroupDetailByName({params: {groupName: handle}, clientMode: CLIENT_MODE})
 })
 
-export async function generateMetadata({params}: {params: IframeSchedulePageParams, searchParams: IframeSchedulePageSearchParams}) {
+export async function generateMetadata(
+    props: {params: Promise<IframeSchedulePageParams>, searchParams: Promise<IframeSchedulePageSearchParams>}
+) {
+    const params = await props.params
     const groupDetail = await cachedGetGroupDetailByHandle(params.grouphandle)
     if (!groupDetail) {
         redirect('/404')
@@ -27,17 +30,21 @@ export async function generateMetadata({params}: {params: IframeSchedulePagePara
     }
 }
 
-export default async function IframeScheduleWeeklyPage({searchParams, params}: {
-    params: IframeSchedulePageParams,
-    searchParams: IframeSchedulePageSearchParams
-}) {
+export default async function IframeScheduleWeeklyPage(
+    props: {
+        params: Promise<IframeSchedulePageParams>,
+        searchParams: Promise<IframeSchedulePageSearchParams>
+    }
+) {
+    const params = await props.params
+    const searchParams = await props.searchParams
     const groupDetail = await cachedGetGroupDetailByHandle(params.grouphandle)
     if (!groupDetail) {redirect('/404')}
 
     const lang = (await selectLang()).lang
-    const currPath = headers().get('x-current-path')
+    const currPath = (await headers()).get('x-current-path')
     const authToken = await getServerSideAuth()
-    
+
     const {events, data} = await calculateGridPosition({
         groupDetail,
         searchParams,

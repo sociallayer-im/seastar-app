@@ -8,7 +8,8 @@ export const dynamic = 'force-dynamic'
 
 export default async function EditVenuePage(props: EditVenuePageProps) {
     const {lang} = await selectLang()
-    const { venueDetail } = await EditVenueData({checkPermissions: false, ...props})
+    const { venueDetail } = await EditVenueData({checkPermissions: false, /* @next-codemod-error 'props' is used with spread syntax (...). Any asynchronous properties of 'props' must be awaited when accessed. */
+    ...props})
 
     return <VenueDetailPage venue={venueDetail} lang={lang} />
 }

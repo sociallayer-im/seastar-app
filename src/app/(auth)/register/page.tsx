@@ -11,9 +11,12 @@ import RegisterForm from '@/app/(auth)/register/RegisterForm'
  * Same path as the standalone auth app's /register, including ?username= as the
  * prefill.
  */
-export default async function RegisterPage({searchParams}: {
-    searchParams: {username?: string | string[]}
-}) {
+export default async function RegisterPage(
+    props: {
+        searchParams: Promise<{username?: string | string[]}>
+    }
+) {
+    const searchParams = await props.searchParams
     const authToken = await getServerSideAuth()
     if (!authToken) redirect('/signin')
 

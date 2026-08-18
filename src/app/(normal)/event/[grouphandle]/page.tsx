@@ -18,8 +18,8 @@ const cachedGetGroupDetailByHandle = cache(async (handle: string) => {
 })
 
 
-export async function generateMetadata(props: {params: GroupEventHomeParams}) {
-    const {params: {grouphandle}} = props
+export async function generateMetadata(props: {params: Promise<GroupEventHomeParams>}) {
+    const {grouphandle} = await props.params
     const {lang} = await selectLang()
     const groupDetail = await cachedGetGroupDetailByHandle(grouphandle!)
 
@@ -36,15 +36,17 @@ export async function generateMetadata(props: {params: GroupEventHomeParams}) {
     }
 }
 
-export default async function EventHome(props: {params: GroupEventHomeParams, searchParams: GroupEventHomeSearchParams}) {
-    const {params: {grouphandle}} = props
+export default async function EventHome(props: {params: Promise<GroupEventHomeParams>, searchParams: Promise<GroupEventHomeSearchParams>}) {
+    const {grouphandle} = await props.params
     const groupDetail = await cachedGetGroupDetailByHandle(grouphandle!)
-    const data = await GroupEventHomeData({searchParams: props.searchParams, groupDetail})
+    const data = await GroupEventHomeData({searchParams: (await props.searchParams), groupDetail})
     const {lang, type} = await selectLang()
     if (!groupDetail) {
         redirect('/404')
     }
 
-    return <GroupEventHome data={data} lang={lang} langType={type}
-        initialTab={(props.searchParams as {tab?: string}).tab} />
+    return (
+        <GroupEventHome data={data} lang={lang} langType={type}
+            initialTab={((await props.searchParams) as {tab?: string}).tab} />
+    )
 }

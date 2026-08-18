@@ -10,12 +10,12 @@ import FormsHub from '@/app/(normal)/forms/FormsHub'
  * to be an event's registration questions is listed too (linking back to the
  * event, which is where it is edited).
  */
-export default async function FormsPage(props: {searchParams: {tab?: string}}) {
+export default async function FormsPage(props: {searchParams: Promise<{tab?: string}>}) {
     const {lang} = await selectLang()
     const {created, filled} = await FormsHubData()
     // Anything that is not the one other tab is the default — a hand-edited
     // ?tab=nonsense should show the page, not nothing.
-    const initialTab = props.searchParams.tab === 'filled' ? 'filled' : 'created'
+    const initialTab = (await props.searchParams).tab === 'filled' ? 'filled' : 'created'
 
     return <div className="page-width min-h-[calc(100svh-48px)] py-6">
         <FormsHub lang={lang} created={created} filled={filled} initialTab={initialTab}/>

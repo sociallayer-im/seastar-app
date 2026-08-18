@@ -4,6 +4,7 @@ import CreateBadgePageData, {CreateBadgePageDataProps} from '@/app/(normal)/badg
 
 export default async function CreateBadgePage(props: CreateBadgePageDataProps) {
     const {lang} = await selectLang()
-    const data = await CreateBadgePageData(props)
+    const data = await CreateBadgePageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     return <CreateBadgeForm lang={lang} {...data}/>
 }

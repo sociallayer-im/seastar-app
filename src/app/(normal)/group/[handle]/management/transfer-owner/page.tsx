@@ -7,14 +7,26 @@ export const fetchCache = 'force-no-store'
 
 const cachedGroupPageData = cache(GroupPageData)
 
-export async function generateMetadata({params:{handle}}: GroupDataProps) {
+export async function generateMetadata(props: GroupDataProps) {
+    const params = await props.params
+
+    const {
+        handle
+    } = params
+
     const {group} = await cachedGroupPageData(handle)
     return {
         title: `Transfer Owner | ${group.nickname || group.name}`
     }
 }
 
-export default async function TransferOwnerPage({params:{handle}}: GroupDataProps) {
+export default async function TransferOwnerPage(props: GroupDataProps) {
+    const params = await props.params
+
+    const {
+        handle
+    } = params
+
     const {group, members} = await cachedGroupPageData(handle)
     const lang = (await selectLang()).lang
 

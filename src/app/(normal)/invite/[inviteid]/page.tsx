@@ -7,7 +7,8 @@ export default async function InvitePage(props: InvitePageDataProps) {
         inviteDetail,
         currProfile,
         code,
-    } = await InvitePageData(props)
+    } = await InvitePageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const { lang } = await selectLang()
 
     return <div className="w-full min-h-[calc(100svh-48px)]">

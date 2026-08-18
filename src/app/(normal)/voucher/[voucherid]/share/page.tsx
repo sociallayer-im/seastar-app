@@ -5,7 +5,8 @@ import ShareVoucherAction from "@/app/(normal)/voucher/[voucherid]/share/ShareVo
 import {cfImage} from '@/utils'
 
 export default async function ShareVoucherPage(props: ShareVoucherPageDataProps) {
-    const {voucher, voucherCode} = await ShareVoucherPageData(props)
+    const {voucher, voucherCode} = await ShareVoucherPageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const {lang} = await selectLang()
 
     return <div className="min-h-[calc(100svh-48px)] w-full overflow-auto bg-[#f8f8f8]">

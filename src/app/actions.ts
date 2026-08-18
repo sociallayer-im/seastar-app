@@ -10,8 +10,8 @@ import NodeCache from 'node-cache'
 const Cache = new NodeCache()
 
 export const selectLang = async function () {
-    const acceptLanguage = headers().get('accept-language')
-    const cookieLang = cookies().get('lang')?.value
+    const acceptLanguage = (await headers()).get('accept-language')
+    const cookieLang = (await cookies()).get('lang')?.value
 
     const type = getLangType(acceptLanguage, cookieLang)
     return {
@@ -21,7 +21,7 @@ export const selectLang = async function () {
 }
 
 export const getServerSideAuth = async () => {
-    return cookies().get(AUTH_FIELD)?.value
+    return (await cookies()).get(AUTH_FIELD)?.value
 }
 
 export const getCurrProfile = async function () {

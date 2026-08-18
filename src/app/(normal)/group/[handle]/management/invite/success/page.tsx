@@ -7,7 +7,8 @@ import InviteSuccessAction from './InviteSuccessAction'
 import InviteSuccessData, { InviteSuccessDataProps } from '@/app/(normal)/group/[handle]/management/invite/success/data'
 
 export async function generateMetadata(props: InviteSuccessDataProps) {
-    const { group, role } = await InviteSuccessData(props)
+    const { group, role } = await InviteSuccessData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const { lang } = await selectLang()
 
     return {
@@ -20,7 +21,8 @@ export async function generateMetadata(props: InviteSuccessDataProps) {
 
 export default async function InviteSuccess(props: InviteSuccessDataProps) {
 
-    const { group, role, inviteDetail } = await InviteSuccessData(props)
+    const { group, role, inviteDetail } = await InviteSuccessData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const { lang } = await selectLang()
 
     return <div className="min-h-[calc(100svh-48px)] w-full overflow-auto bg-[#f8f8f8]">

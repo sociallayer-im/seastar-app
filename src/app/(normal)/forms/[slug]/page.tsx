@@ -11,13 +11,13 @@ import FormFill from '@/app/(normal)/forms/[slug]/FormFill'
  * anyone — but answering needs an account, because a submission belongs to a
  * person and is what makes coming back to edit it possible at all.
  */
-export default async function FormPage(props: {params: {slug: string}}) {
+export default async function FormPage(props: {params: Promise<{slug: string}>}) {
     const {lang} = await selectLang()
     const authToken = await getServerSideAuth()
     const currProfile = await getCurrProfile()
 
     const form = await getForm({
-        params: {slug: props.params.slug, authToken: authToken || undefined},
+        params: {slug: (await props.params).slug, authToken: authToken || undefined},
         clientMode: CLIENT_MODE
     })
     if (!form) redirect('/404')
@@ -26,7 +26,7 @@ export default async function FormPage(props: {params: {slug: string}}) {
     // than blank — editing a response means seeing it first.
     const submission = authToken && currProfile
         ? await getMyFormSubmission({
-            params: {slug: props.params.slug, authToken},
+            params: {slug: (await props.params).slug, authToken},
             clientMode: CLIENT_MODE
         })
         : null

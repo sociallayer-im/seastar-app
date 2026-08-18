@@ -54,7 +54,7 @@ export default async function GroupPageData(handle: string, tab='events'): Promi
     // people in the group, so an anonymous fetch would hide a member's own
     // teams from them.
     const groupsDetail = await getGroupDetailByName({
-        params: {groupName: handle, authToken: cookies().get(AUTH_FIELD)?.value},
+        params: {groupName: handle, authToken: (await cookies()).get(AUTH_FIELD)?.value},
         clientMode: CLIENT_MODE
     })
 
@@ -65,7 +65,7 @@ export default async function GroupPageData(handle: string, tab='events'): Promi
     const group = groupsDetail
 
     let currProfile: ProfileDetail | null = null
-    const authToken = cookies().get(AUTH_FIELD)?.value
+    const authToken = (await cookies()).get(AUTH_FIELD)?.value
     if (!!authToken) {
         currProfile = await getProfileDetailByAuth({
             params: {authToken},

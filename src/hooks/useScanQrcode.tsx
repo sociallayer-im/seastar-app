@@ -29,7 +29,7 @@ export default function useScanQrcode() {
 
 function DialogScanQrcode(props: ScanQrcodeProps) {
     const {toast} = useToast()
-    const html5QrcodeRef = useRef<Html5Qrcode>()
+    const html5QrcodeRef = useRef<Html5Qrcode | undefined>(undefined)
 
     const handleClose = () => {
         html5QrcodeRef.current?.stop()

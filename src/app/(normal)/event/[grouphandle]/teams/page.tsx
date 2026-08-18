@@ -4,19 +4,19 @@ import {getCurrProfile, getServerSideAuth, selectLang} from '@/app/actions'
 import {CLIENT_MODE} from '@/app/config'
 import TeamManagement from './TeamManagement'
 
-export default async function TeamsPage(props: {params: {grouphandle: string}}) {
+export default async function TeamsPage(props: {params: Promise<{grouphandle: string}>}) {
     const {lang} = await selectLang()
     const authToken = await getServerSideAuth()
     const currProfile = await getCurrProfile()
     if (!authToken || !currProfile) {
-        redirect(`/signin?return=/event/${props.params.grouphandle}/teams`)
+        redirect(`/signin?return=/event/${(await props.params).grouphandle}/teams`)
     }
 
     // With the token, and load-bearing: TeamManagement seeds every checkbox
     // from this roster, so without it the private teams would show as having
     // nobody in them.
     const groupDetail = await getGroupDetailByName({
-        params: {groupName: props.params.grouphandle, authToken},
+        params: {groupName: (await props.params).grouphandle, authToken},
         clientMode: CLIENT_MODE
     })
     if (!groupDetail) redirect('/404')

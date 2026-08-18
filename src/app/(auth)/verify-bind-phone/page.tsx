@@ -6,9 +6,12 @@ import {pickSearchParam} from '@/utils'
 import {returnTargetFromCookies} from '@/app/(auth)/authRedirect'
 import FormVerifyBindPhone from '@/app/(auth)/verify-bind-phone/FormVerifyBindPhone'
 
-export default async function VerifyBindPhonePage({searchParams}: {
-    searchParams: {phone?: string | string[]}
-}) {
+export default async function VerifyBindPhonePage(
+    props: {
+        searchParams: Promise<{phone?: string | string[]}>
+    }
+) {
+    const searchParams = await props.searchParams
     if (!PHONE_LOGIN) redirect('/signin')
 
     const authToken = await getServerSideAuth()

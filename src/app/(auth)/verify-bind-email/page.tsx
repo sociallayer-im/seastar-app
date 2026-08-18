@@ -6,9 +6,12 @@ import {pickSearchParam} from '@/utils'
 import {returnTargetFromCookies} from '@/app/(auth)/authRedirect'
 import FormVerifyBindEmail from '@/app/(auth)/verify-bind-email/FormVerifyBindEmail'
 
-export default async function VerifyBindEmailPage({searchParams}: {
-    searchParams: {email?: string | string[]}
-}) {
+export default async function VerifyBindEmailPage(
+    props: {
+        searchParams: Promise<{email?: string | string[]}>
+    }
+) {
+    const searchParams = await props.searchParams
     const authToken = await getServerSideAuth()
     if (!authToken) redirect('/signin')
 

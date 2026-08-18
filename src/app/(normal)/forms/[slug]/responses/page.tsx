@@ -9,7 +9,7 @@ import ExportCsvBtn from '@/app/(normal)/forms/[slug]/responses/ExportCsvBtn'
  * What people answered. Author only — the API 403s for anyone else, so this
  * page fetching it at all is the authorization check.
  */
-export default async function FormResponsesPage(props: {params: {slug: string}}) {
+export default async function FormResponsesPage(props: {params: Promise<{slug: string}>}) {
     const {lang} = await selectLang()
     // No sign-in gate: a form whose author turned on public responses is meant
     // to be readable by anyone, and the API is what decides. Sending a signed-
@@ -17,13 +17,13 @@ export default async function FormResponsesPage(props: {params: {slug: string}})
     const authToken = await getServerSideAuth()
 
     const form = await getForm({
-        params: {slug: props.params.slug, authToken: authToken || undefined},
+        params: {slug: (await props.params).slug, authToken: authToken || undefined},
         clientMode: CLIENT_MODE
     })
     if (!form) redirect('/404')
 
     const result = await listFormResponses({
-        params: {slug: props.params.slug, authToken: authToken || undefined},
+        params: {slug: (await props.params).slug, authToken: authToken || undefined},
         clientMode: CLIENT_MODE
     }).catch(() => null)
     // null means the API refused: somebody else's form, and not a public one.

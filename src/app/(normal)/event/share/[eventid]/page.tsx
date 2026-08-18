@@ -12,7 +12,19 @@ const DynamicShareActionsBtn = dynamic(() => import('@/app/(normal)/event/share/
 
 const cachedEventDetailPage = cache(EventDetailPage)
 
-export async function generateMetadata({params:{eventid},searchParams:{tab}}: EventDetailDataProps) {
+export async function generateMetadata(props: EventDetailDataProps) {
+    const searchParams = await props.searchParams
+
+    const {
+        tab
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        eventid
+    } = params
+
     const {eventDetail} = await cachedEventDetailPage(eventid, pickSearchParam(tab))
     const {lang} = await selectLang()
 
@@ -21,10 +33,22 @@ export async function generateMetadata({params:{eventid},searchParams:{tab}}: Ev
     }
 }
 
-export default async function ShareEventPage({params:{eventid},searchParams:{tab}}: EventDetailDataProps) {
+export default async function ShareEventPage(props: EventDetailDataProps) {
+    const searchParams = await props.searchParams
+
+    const {
+        tab
+    } = searchParams
+
+    const params = await props.params
+
+    const {
+        eventid
+    } = params
+
     const {eventDetail, groupDetail} = await cachedEventDetailPage(eventid, pickSearchParam(tab))
     const {lang} = await selectLang()
-    const shareUrl = `${new URL(headers().get('x-current-path')!).origin}/event/detail/${eventDetail.id}`
+    const shareUrl = `${new URL((await headers()).get('x-current-path')!).origin}/event/detail/${eventDetail.id}`
 
     return <div className="min-h-[100svh] w-full">
         <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">

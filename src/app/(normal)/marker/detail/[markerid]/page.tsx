@@ -7,7 +7,8 @@ import NoData from '@/components/NoData'
 import RichTextDisplayer from '@/components/client/Editor/Displayer'
 
 export default async function MarkerDetailPage(props: MarkerDetailPageDataProps) {
-    const {markerDetail, currProfile, currProfileIsCreator} = await MarkerDetailData(props)
+    const {markerDetail, currProfile, currProfileIsCreator} = await MarkerDetailData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
+    props)
     const {lang} = await selectLang()
 
     return <div className="page-width !pt-4 !pb-12">
