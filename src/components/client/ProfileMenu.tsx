@@ -72,7 +72,7 @@ export default function ProfileMenu({lang, currentPath, ...props}: { profile: Pr
         onSelect={(opts) => handleSelect(opts[0])}>
         <div className="flex-row-item-center cursor-pointer relative">
             <Avatar profile={props.profile} size={16} className="mr-1"/>
-            <div className="max-w-[50px] overflow-hidden whitespace-nowrap overflow-ellipsis">
+            <div className="max-w-[50px] overflow-hidden whitespace-nowrap text-ellipsis">
                 {props.profile.nickname || props.profile.name}
             </div>
             {!!hasUnreadActivities && <i className="absolute w-2 h-2 top-0 left-3 -mt-0.5 -mr-2 bg-red-500 rounded-full" />}

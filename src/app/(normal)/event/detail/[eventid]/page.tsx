@@ -160,12 +160,12 @@ export default async function EventDetail(
         }
     }
 
-    return <div className="page-width !pt-4 !pb-12">
+    return <div className="page-width pt-4! pb-12!">
         <div className="flex flex-row items-center justify-between sm:mb-8 mb-4">
             <a href={`/event/${groupDetail.name}`} className="flex-row-item-center">
                 <Avatar size={24} profile={groupDetail} className="mr-1" />
                 <span
-                    className="font-semibold font-sm overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[120px] sm:max-w-max">
+                    className="font-semibold font-sm overflow-hidden text-ellipsis whitespace-nowrap max-w-[120px] sm:max-w-max">
                     {displayProfileName(groupDetail)}
                 </span>
             </a>
@@ -428,7 +428,7 @@ export default async function EventDetail(
                 </div>}
 
 
-                <div className="flex-row-item-center my-3 gap-3 overflow-auto !flex-wrap">
+                <div className="flex-row-item-center my-3 gap-3 overflow-auto flex-wrap!">
                     {/* This event's tickets grant group membership. Derived from
                         the group's pointer, the single source of truth. */}
                     {groupDetail.group_ticket_event_id === eventDetail.id &&
@@ -468,7 +468,7 @@ export default async function EventDetail(
                 </div>
 
 
-                <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">
+                <div className="my-4 border-t border-b border-gray-300">
                     <div className="hide-scroll whitespace-nowrap overflow-auto max-w-[640px]">
                         {!!customHost ?
                             <a key={customHost.id}
@@ -563,7 +563,7 @@ export default async function EventDetail(
                         <>
                             <div className="flex-row-item-center my-4">
                                 <div
-                                    className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
+                                    className="mr-2 shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
                                     <i className="uil-location-point text-base"></i>
                                 </div>
                                 <div>

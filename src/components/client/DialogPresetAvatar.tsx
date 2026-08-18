@@ -23,7 +23,7 @@ export const AvatarTemplates = [
 export default function DialogPresetAvatar({close, lang, onSelect}: DialogPresetAvatarProps) {
     const {uploadAvatar} = useUploadAvatar()
 
-    return <div className="w-[360px] rounded-lg shadow p-4 grid grid-cols-1 gap-3 bg-background">
+    return <div className="w-[360px] rounded-lg shadow-sm p-4 grid grid-cols-1 gap-3 bg-background">
         <div className="font-semibold flex-row-item-center justify-between">
             <div>{lang['Choose a image for badge']}</div>
             <i className="uil-times-circle cursor-pointer text-xl text-gray-400"
@@ -49,7 +49,7 @@ export default function DialogPresetAvatar({close, lang, onSelect}: DialogPreset
                         return <div
                             key={index}
                             onClick={() => {onSelect?.(url); close()}}
-                            className="mr-1 cursor-pointer hover:brightness-95 rounded-lg bg-secondary w-20 h-20 flex-row-item-center justify-center  flex-shrink-0">
+                            className="mr-1 cursor-pointer hover:brightness-95 rounded-lg bg-secondary w-20 h-20 flex-row-item-center justify-center  shrink-0">
                             <img src={url} width={64} height={64}
                                    className="rounded-full w-[64px] h-[64px]"
                                    alt=""/>

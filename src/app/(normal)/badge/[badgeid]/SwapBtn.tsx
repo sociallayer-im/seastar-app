@@ -9,7 +9,7 @@ export default function SwapBtn({badge}: { badge: Badge }) {
 
     return <Button variant="secondary" className='w-full text-lg' onClick={() => swapBadge(badge)}>
         <svg xmlns="http://www.w3.org/2000/svg"
-             className="!w-6 !h-6"
+             className="w-6! h-6!"
              width="100" height="100"
              viewBox="0 0 25 24"
              fill="none">

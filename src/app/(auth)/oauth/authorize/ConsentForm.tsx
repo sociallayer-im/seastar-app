@@ -50,7 +50,7 @@ export default function ConsentForm({lang, langType, query, info}: {
         }
     }
 
-    return <div className="max-w-[460px] w-full bg-[var(--background)] rounded-lg shadow p-6">
+    return <div className="max-w-[460px] w-full bg-(--background) rounded-lg shadow-sm p-6">
         <div className="flex flex-col items-center text-center">
             {info.app_logo_url
                 ? <Img src={info.app_logo_url} alt={info.app_name} width={56} height={56}
@@ -65,7 +65,7 @@ export default function ConsentForm({lang, langType, query, info}: {
                 host are the only facts a user can actually judge. */}
             <div className="text-sm text-gray-500 mt-1">
                 {lang['Provided by']} {info.owner_handle
-                    ? <a className="text-[var(--color-theme)]"
+                    ? <a className="text-(--color-theme)"
                          href={`/${info.owner_type === 'group' ? 'group' : 'profile'}/${info.owner_handle}`}
                          target="_blank" rel="noreferrer">{info.owner_handle}</a>
                     : lang['an unknown developer']}

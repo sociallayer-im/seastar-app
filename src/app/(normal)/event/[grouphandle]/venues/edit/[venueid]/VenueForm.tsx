@@ -246,7 +246,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 pb-12! pt-0">
             {!isDashboardPage && <div className="py-6 font-semibold text-center text-xl">{lang['Edit Venue']}</div>}
 
             <div className="mb-4">
@@ -443,7 +443,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
                                             : undefined
                                         return <div key={i + weekDay}>
                                             <div style={style}
-                                                className="flex flex-row items-center pb-3 px-2 mt-3 rounded bg-gray-50">
+                                                className="flex flex-row items-center pb-3 px-2 mt-3 rounded-sm bg-gray-50">
                                                 <div
                                                     className="flex sm:flex-row flex-col flex-wrap sm:items-center flex-1 mr-2">
                                                     <div className="flex-row-item-center mt-3 flex-1 text-sm">
@@ -480,7 +480,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
                                                             renderOption={option => <div
                                                                 className="capitalize">{option.value}</div>}
                                                         >
-                                                            <Input className="w-full flex-1 !capitalize"
+                                                            <Input className="w-full flex-1 capitalize!"
                                                                 value={getTargetRole(timeslot.role)!.label}
                                                                 readOnly
                                                                 endAdornment={<i
@@ -534,7 +534,7 @@ export default function VenueForm({ tracks = [], lang, venueDetail, onConfirm, i
                                         setOverrides(newOverrides)
                                     }
                                 }}
-                                    className={`${buttonVariants({ variant: 'secondary' })} flex-1 mr-3 justify-between !h-auto`}>
+                                    className={`${buttonVariants({ variant: 'secondary' })} flex-1 mr-3 justify-between h-auto!`}>
                                     <div className="font-normal">
                                         <div className={"font-semibold"}>
                                             <DisplayDateTime dataTimeStr={override.day} format={'MMMM DD, YYYY'} />

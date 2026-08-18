@@ -122,11 +122,11 @@ export function MapMarker({marker, selected, onClick}: {
         <div className="flex flex-col items-center">
             <Button
                 style={selected ? {background: 'linear-gradient(276deg,#f7df3a -18.27%,#d2f8e8 59.84%)'} : undefined}
-                className="text-sm border !bg-background"
+                className="text-sm border bg-background!"
                 variant='secondary'
                 size="sm"
             >
-                <div className="overflow-ellipsis whitespace-nowrap overflow-hidden">
+                <div className="text-ellipsis whitespace-nowrap overflow-hidden">
                     {marker.title}
                 </div>
             </Button>

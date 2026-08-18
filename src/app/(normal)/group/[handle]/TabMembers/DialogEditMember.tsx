@@ -116,7 +116,7 @@ export default function DialogEditMember({lang, group, membership, teams, canPro
         )
     }
 
-    return <div className="max-w-[420px] rounded-lg bg-background shadow p-4" style={{width: '90vw'}}>
+    return <div className="max-w-[420px] rounded-lg bg-background shadow-sm p-4" style={{width: '90vw'}}>
         <div className="flex-row-item-center gap-2 mb-4">
             <Avatar profile={membership.user} size={32}/>
             <div className="font-semibold">{membership.user.nickname || membership.user.name}</div>

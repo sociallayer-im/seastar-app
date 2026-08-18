@@ -110,7 +110,7 @@ export default function FormEditor({lang, form}: {
             <div>
                 <div className="text-sm font-medium mb-1">{lang['Form Description']}</div>
                 <textarea
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400 min-h-[80px]"
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-hidden focus:border-green-400 min-h-[80px]"
                     value={description || ''}
                     onChange={e => setDescription(e.target.value)}/>
             </div>

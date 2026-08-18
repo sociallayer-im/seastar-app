@@ -48,7 +48,7 @@ export default function VenueListForm({groupDetail, lang, isManager}: { groupDet
 
     return (
         <div className="min-h-[calc(100svh-48px)] w-full">
-            <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+            <div className="page-width-md min-h-[calc(100svh-48px)] px-3 pb-12! pt-0">
                 <div className="flex justify-center items-center py-6 relative">
                     <Link href={`/event/${groupDetail.name}`} className="absolute left-0 text-primary-foreground font-semibold flex items-center gap-1">
                         <i className="uil-arrow-left" />

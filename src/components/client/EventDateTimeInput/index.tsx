@@ -234,7 +234,7 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
 
         <div className="my-2 flex-row-item-center select-none ">
             <div
-                className={`${isAllDayEvent? 'bg-secondary ' : ''}flex-shrink-0 cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center font-semibold active:brightness-90`}
+                className={`${isAllDayEvent? 'bg-secondary ' : ''}shrink-0 cursor-pointer hover:bg-secondary px-2 rounded-sm text-xs flex-row-item-center font-semibold active:brightness-90`}
                 onClick={setToAllDayEvent}>
                 <i className="uil-clock-three text-lg mr-0.5"/>
                 {lang['All Day Event']}
@@ -242,7 +242,7 @@ export default function EventDateTimeInput({state: {event, setEvent}, lang, venu
 
             <TimezonePicker value={event.timezone} onChange={tz => setTimezone(tz)}>
                 <div
-                    className="break-all cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center font-semibold active:brightness-90">
+                    className="break-all cursor-pointer hover:bg-secondary px-2 rounded-sm text-xs flex-row-item-center font-semibold active:brightness-90">
                     <i className="uil-globe text-lg mr-0.5"/>
                     <div className="webkit-box-clamp-1 max-w-34">{displayTimezone(event.timezone)}</div>
                     <img src="/images/dropdown_icon.svg" alt=""/>

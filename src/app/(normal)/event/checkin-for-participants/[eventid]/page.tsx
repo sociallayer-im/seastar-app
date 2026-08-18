@@ -10,13 +10,13 @@ export default async function CheckinForParticipants(props: AsyncProps<EventDeta
     const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(await awaitProps(props))
     const {lang} = await selectLang()
 
-    return <div className="page-width-sm !pt-3 !pb-12">
+    return <div className="page-width-sm pt-3! pb-12!">
         <div className="text-lg font-semibold text-center my-3">{lang['Check-In For Participants']}</div>
-        <div className="w-full shadow py-6 rounded-lg mb-8 flex-col flex items-center">
+        <div className="w-full shadow-sm py-6 rounded-lg mb-8 flex-col flex items-center">
             {!!eventDetail.image_url
                 ? <img src={cfImage(eventDetail.image_url, { width: 900, format: 'auto', quality: 85 })}
                        className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg" alt=""/>
-                : <div className="flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
+                : <div className="shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
                     <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>
                         <div
                             className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">

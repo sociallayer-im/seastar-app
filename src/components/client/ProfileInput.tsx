@@ -163,7 +163,7 @@ function RoleOption({showAddBtn, item, lang, onAdd, onRemove, onChange, placehol
                 </DropdownMenu>
             </div>
         </div>
-        <div className="flex-shrink-0 ml-3">
+        <div className="shrink-0 ml-3">
             {showAddBtn && <i onClick={() => {
                 !!onAdd && onAdd()
             }}

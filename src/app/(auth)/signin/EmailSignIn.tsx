@@ -56,7 +56,7 @@ export default function EmailSignIn({lang}: {lang: Dictionary}) {
     // affordance inside the field's own padding.
     return <div className="mb-3">
         <Input
-            className={`w-full shadow-sm ${error ? 'border-red-400' : ''}`}
+            className={`w-full shadow-xs ${error ? 'border-red-400' : ''}`}
             type="email"
             name="email"
             autoComplete="email"

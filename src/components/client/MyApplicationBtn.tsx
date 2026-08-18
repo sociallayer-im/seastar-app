@@ -126,7 +126,7 @@ function ApplicationDialog({lang, form, submission, editable, close, onSave}: {
         setSaving(false)
     }
 
-    return <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow p-5 max-h-[80vh] flex flex-col">
+    return <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow-sm p-5 max-h-[80vh] flex flex-col">
         <div className="flex-row-item-center justify-between mb-4">
             <div className="font-semibold text-lg">{lang['My Application']}</div>
             <i className="uil-times-circle text-xl text-gray-400 cursor-pointer" onClick={close}/>

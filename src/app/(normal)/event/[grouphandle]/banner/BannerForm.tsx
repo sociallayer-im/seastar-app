@@ -42,7 +42,7 @@ export default function GroupBannerForm({groupDetail, lang}: { groupDetail: Grou
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px) px-3 !pb-12 pt-0">
+        <div className="page-width-md min-h-[calc(100svh-48px) px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Banner']}</div>
             <div className="font-semibold mb-1">{lang['Image']}</div>
             <div onClick={e => {
@@ -54,7 +54,7 @@ export default function GroupBannerForm({groupDetail, lang}: { groupDetail: Grou
                 {
                     draft.banner_image_url
                         ? <img
-                            className="max-w-[100%] max-h-[100px]"
+                            className="max-w-full max-h-[100px]"
                             src={cfImage(draft.banner_image_url, { width: 656, format: 'auto', quality: 85 })} alt=""/>
                         : <img className="w-[100px] h-[100px] rounded-full"
                                src={'/images/upload_default.png'} alt=""/>

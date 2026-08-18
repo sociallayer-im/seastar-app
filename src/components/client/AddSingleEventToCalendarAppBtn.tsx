@@ -69,7 +69,7 @@ function DialogAddSingleEventToCalendarApp({event, lang, close}: {
     }
 
 
-    return <div className="bg-background rounded-lg shadow w-[300px] p-3">
+    return <div className="bg-background rounded-lg shadow-sm w-[300px] p-3">
         <div className="flex-row-item-center justify-between mb-4 ">
             <div className="font-semibold text-lg">{lang['Add to Calendar']}</div>
             <i className="uil-times-circle text-xl cursor-pointer" onClick={close}/>

@@ -138,7 +138,7 @@ export default function CreateBadgeForm({
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+        <div className="page-width min-h-[calc(100svh-48px)] px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Create Badge']}</div>
 
             {badgeType === 'private' &&
@@ -187,9 +187,9 @@ export default function CreateBadgeForm({
                             }
                         </div>}>
                         <div
-                            className={`${buttonVariants({variant: 'secondary'})} w-full !justify-between items-center cursor-pointer`}>
+                            className={`${buttonVariants({variant: 'secondary'})} w-full justify-between! items-center cursor-pointer`}>
                             <div
-                                className="overflow-hidden whitespace-nowrap overflow-ellipsis font-normal flex-row-item-center">
+                                className="overflow-hidden whitespace-nowrap text-ellipsis font-normal flex-row-item-center">
                                 <Avatar profile={creator[0]} size={24} className="mr-2"/>
                                 <div className="mr-2">{displayProfileName(creator[0])}</div>
                                 {creator[0].type === 'group'

@@ -23,7 +23,7 @@ export default function DialogVenue({venue, isManager, lang, groupHandle, close}
     const hasWeeklySlots = availabilities.some(a => a.day_of_week && !a.day)
     const dateOverrides = availabilities.filter(a => a.day && !a.day_of_week)
 
-    return <div className="sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:px-4 rounded-lg px-3 py-4">
+    return <div className="sm:max-w-[725px] max-w-[365px] w-[95vw] shadow-sm bg-(--background) sm:px-4 rounded-lg px-3 py-4">
         <div className="flex-row-item-center justify-end mb-1">
             <i className="uil-times text-xl cursor-pointer" onClick={close}/>
         </div>

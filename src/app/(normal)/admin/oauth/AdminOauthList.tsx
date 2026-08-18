@@ -68,13 +68,13 @@ export default function AdminOauthList({lang, applications, total, query}: {
 
         <div className="flex flex-col gap-3">
             {applications.map(app =>
-                <div key={app.id} className="rounded-lg bg-[var(--background)] shadow p-4">
+                <div key={app.id} className="rounded-lg bg-(--background) shadow-sm p-4">
                     <div className="flex-row-item-center justify-between">
                         <div className="font-semibold">
                             {app.name}
                             {app.trusted && <span className="ml-2 text-xs text-green-700">trusted</span>}
                         </div>
-                        <div className="text-xs px-2 py-1 rounded bg-gray-100">
+                        <div className="text-xs px-2 py-1 rounded-sm bg-gray-100">
                             {app.status === 'active' ? lang['Active']
                                 : app.status === 'draft' ? lang['Draft'] : lang['Application disabled']}
                         </div>

@@ -57,7 +57,7 @@ export default function PopupCityForm({groupDetail, lang}: { groupDetail: GroupD
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 pb-12! pt-0">
             <div className="my-6 font-semibold text-center text-xl">
                 {lang['Pop-up Cities']}
             </div>

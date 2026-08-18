@@ -16,7 +16,7 @@ export default async function GroupEventSettingPage(props: GroupEventSettingData
     const isManagerOrOwner = currMembership?.role === 'manager' || currMembership?.role === 'owner'
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Group Event Setting']}</div>
             <div className="flex flex-col max-w-[800px] mx-auto">
                 {/* The group's own profile (name, avatar, bio, links). Lives on

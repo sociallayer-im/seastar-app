@@ -49,18 +49,18 @@ export default async function ShareEventPage(props: AsyncProps<EventDetailDataPr
     const {lang} = await selectLang()
     const shareUrl = `${new URL((await headers()).get('x-current-path')!).origin}/event/detail/${eventDetail.id}`
 
-    return <div className="min-h-[100svh] w-full">
-        <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">
+    return <div className="min-h-svh w-full">
+        <div className="page-width min-h-svh px-3 pt-0 pb-16!">
             <div
                 className="py-6 font-semibold text-center text-xl">{lang['Share Event']}</div>
 
             <div className="flex flex-col items-center justify-center">
                 <div
-                    className="share-card shadow w-[335px] h-auto flex-shrink-0 bg-[#F1FCF8] p-5 pt-6 box-border overflow-hidden rounded-lg">
+                    className="share-card shadow-sm w-[335px] h-auto shrink-0 bg-[#F1FCF8] p-5 pt-6 box-border overflow-hidden rounded-lg">
                     {!!eventDetail.image_url
                         ? <img src={cfImage(eventDetail.image_url, { width: 900, format: 'auto', quality: 85 })}
                                className="block max-h-[200px] max-w-[295px] mx-auto rounded-lg"/>
-                        : <div className="mb-4 flex-shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
+                        : <div className="mb-4 shrink-0 w-[200px] h-[200px] overflow-hidden mx-auto">
                             <div className="default-cover w-[452px] h-[452px]" style={{transform: 'scale(0.44)'}}>
                                 <div
                                     className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">

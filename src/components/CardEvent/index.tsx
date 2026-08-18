@@ -50,7 +50,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
     return <a href={`/event/detail/${event.id}`}
         id={id}
         style={customStyle}
-        className={`overflow-hidden relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
+        className={`overflow-hidden relative shadow-sm flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
         <DynamicEventCardStarBtn eventId={event.id} starred={event.is_starred} />
         {isManager &&
             <DynamicHighLightEventBtn
@@ -79,7 +79,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
             <div className="my-1 flex-row-item-center font-semibold text-sm sm:text-base webkit-box-clamp-2">
                 <EventKindLabel kind={event.kind} />{event.title}
             </div>
-            <div className="flex-row-item-center !flex-wrap text-xs mt-1 mb-3">
+            <div className="flex-row-item-center flex-wrap! text-xs mt-1 mb-3">
                 {
                     event.tags?.filter(tag => !tag.startsWith(':'))
                         .map((tag, i) => {
@@ -109,28 +109,28 @@ export default function CardEvent({ event, className, id, style, lang, highlight
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
                     <i className="uil-location-point mr-1 text-sm" />
                     <span
-                        className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{event.venue.name}</span>
+                        className="whitespace-nowrap max-w-[160px] overflow-hidden text-ellipsis">{event.venue.name}</span>
                 </div>
             }
             {!!event.place?.name && !event.venue &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
                     <i className="uil-location-point mr-1 text-sm" />
                     <span
-                        className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{event.place?.name}</span>
+                        className="whitespace-nowrap max-w-[160px] overflow-hidden text-ellipsis">{event.place?.name}</span>
                 </div>
             }
             {!!event.meeting_url &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
                     <i className="uil-link mr-1 text-sm" />
                     <span
-                        className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis"> {event.meeting_url}</span>
+                        className="whitespace-nowrap max-w-[160px] overflow-hidden text-ellipsis"> {event.meeting_url}</span>
                 </div>
             }
             {!!(event as any).group &&
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
                     <i className="uil-users-alt mr-1 text-sm" />
                     <span
-                        className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">
+                        className="whitespace-nowrap max-w-[160px] overflow-hidden text-ellipsis">
                         {(event as any).group.nickname || (event as any).group.name}</span>
                 </div>
             }
@@ -141,10 +141,10 @@ export default function CardEvent({ event, className, id, style, lang, highlight
         </div>
         {
             !!event.image_url ?
-                <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
+                <div className="sm:w-[140px] sm:h-[140px] shrink-0 grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
                     <Img className="w-full h-full object-cover" src={cfImage(event.image_url, { width: 280, height: 280, fit: 'cover' })} alt="" />
                 </div>
-                : <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
+                : <div className="sm:w-[140px] sm:h-[140px] shrink-0 grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
                     <div className="default-cover w-[452px] h-[452px] sm:scale-[0.309] scale-[0.22]">
                         <div
                             className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">

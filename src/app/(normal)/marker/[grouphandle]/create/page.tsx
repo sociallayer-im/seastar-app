@@ -8,8 +8,8 @@ export default async function CreateMarkerPage(props: AsyncProps<CreateMarkerDat
     const {lang} = await selectLang()
 
 
-    return <div className="min-h-[100svh] w-full">
-        <div className="page-width-md !py-8">
+    return <div className="min-h-svh w-full">
+        <div className="page-width-md py-8!">
            <CreateMarkerForm
                lang={lang}
                groupDetail={groupDetail}

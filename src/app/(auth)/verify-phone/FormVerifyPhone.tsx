@@ -67,7 +67,7 @@ export default function FormVerifyPhone({lang, phone}: {lang: Dictionary, phone:
 
         <Input
             variant="textCenter"
-            className="w-full shadow-sm tracking-[0.3em] mb-4"
+            className="w-full shadow-xs tracking-[0.3em] mb-4"
             inputMode="numeric"
             autoComplete="one-time-code"
             autoFocus

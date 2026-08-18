@@ -13,9 +13,9 @@ export default async function Checkin(props: AsyncProps<EventDetailDataProps>) {
     const currPath = (await headers()).get('x-current-path')
     const qrcodeText = `${new URL(currPath!).origin}/event/checkin-for-participants/${eventDetail.id}?profile_id=${currProfile!.id}`
 
-    return <div className="page-width-sm !pt-3 !pb-12">
+    return <div className="page-width-sm pt-3! pb-12!">
         <div className="text-lg font-semibold text-center my-3">{lang['Check-In']}</div>
-        <div className="w-full shadow py-6 rounded-lg mb-8 flex-col flex items-center">
+        <div className="w-full shadow-sm py-6 rounded-lg mb-8 flex-col flex items-center">
             <QrCode text={qrcodeText} size={[200, 200]} />
             <div className="text-lg font-semibold text-center mt-3">{eventDetail.title}</div>
         </div>

@@ -67,7 +67,7 @@ export default function EventMap(props: EventMapProps) {
             ? {lat: Number(eventsHasLocation[0]!.place!.latitude!), lng: Number(eventsHasLocation[0]!.place!.longitude!)}
             : {lat: -34.397, lng: 150.644}
 
-    return <div className='w-full h-[calc(100svh-48px)] relative outline-none'>
+    return <div className='w-full h-[calc(100svh-48px)] relative outline-hidden'>
         <GoogleMap
             center={center}
             markers={Object.keys(groupedEvents).map((key: keyof typeof groupedEvents, index) => ({
@@ -94,7 +94,7 @@ export default function EventMap(props: EventMapProps) {
                                       id={`event_${event.id}`}
                                       event={event}
                                       lang={props.lang}
-                                      className="mr-3 h-[230px] max-w-[630px] w-[calc(100vw-24px)] flex-shrink-0 flex-grow-0"/>
+                                      className="mr-3 h-[230px] max-w-[630px] w-[calc(100vw-24px)] shrink-0 grow-0"/>
                 })
             }
         </div>

@@ -47,7 +47,7 @@ function WeeklyViewEventItem({event, timezone, lang}: {event: IframeSchedulePage
     const mainThemColor = filteredTags[0] ? getLabelColor(filteredTags[0]) : bgColor
 
     return <div
-        className="bg-white p-2 h-[220px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-[999]"
+        className="bg-white p-2 h-[220px] text-xs scale-100 relative duration-300 cursor-pointer hover:scale-105 hover:z-999"
         onClick={() => showPopup(event.id, event.group.id, event.is_starred, lang)}
         style={{gridArea: event.grid, boxShadow: '0 1.988px 18px 0 rgba(0, 0, 0, 0.10)', background: bgColor}}>
         <div className="block content-[''] w-[2px] h-[210px] absolute left-0 top-0"
@@ -75,22 +75,22 @@ function WeeklyViewEventItem({event, timezone, lang}: {event: IframeSchedulePage
                         const maxWidth = event.tagDisplayAmount !== 3 ? '110px' : 'auto'
 
                         return <div key={index}
-                            className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0"
+                            className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] ml-0!"
                             style={{
                                 maxWidth: maxWidth,
                                 borderColor: themColor
                             }}>
                             <i className="w-2 h-2 mr-1 rounded-full shrink-0" style={{background: themColor}}/>
-                            <span className="overflow-ellipsis overflow-hidden whitespace-nowrap">{tag}</span>
+                            <span className="text-ellipsis overflow-hidden whitespace-nowrap">{tag}</span>
                         </div>
                     })
             }
             {
                 filteredTags.length > event.tagDisplayAmount ?
                     <div
-                        className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] !ml-0">
+                        className="border border-[#CECED3] inline-flex flex-row flex-nowrap items-center h-[26px] px-2 rounded-3xl m-[2px] ml-0!">
                         <span
-                            className="overflow-ellipsis overflow-hidden whitespace-nowrap">+{filteredTags.length - event.tagDisplayAmount}</span>
+                            className="text-ellipsis overflow-hidden whitespace-nowrap">+{filteredTags.length - event.tagDisplayAmount}</span>
                     </div>
                     : null
             }
@@ -99,7 +99,7 @@ function WeeklyViewEventItem({event, timezone, lang}: {event: IframeSchedulePage
             <div className="flex-row-item-center">
                 <img src={cfImage(getAvatar(host.id, host.image_url), { width: 24, height: 24, fit: 'cover' })} width={12} height={12} className="rounded-full mr-1"
                     alt=""/>
-                <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
+                <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                    by {host.nickname || host.name}
                 </span>
             </div>

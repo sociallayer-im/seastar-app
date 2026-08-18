@@ -22,7 +22,7 @@ export default async function CommunitiesPage() {
     const currProfile = await getCurrProfile()
     const {lang} = await selectLang()
 
-    return <div className="page-width min-h-[100svh] pt-0 sm:pt-6 !pb-16">
+    return <div className="page-width min-h-svh pt-0 sm:pt-6 pb-16!">
         <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
             <div>{lang['Communities']}</div>
             <div className="text-sm font-normal">{communities.length}</div>

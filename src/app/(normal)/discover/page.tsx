@@ -34,7 +34,7 @@ export default async function DiscoverPage() {
     // which centers on mapMarkers[last].position.
     const mapMarkers: { position: { lat: number, lng: number }, title: string }[] = []
 
-    return <div className="page-width min-h-[100svh] pt-4 sm:pt-6 !pb-16">
+    return <div className="page-width min-h-svh pt-4 sm:pt-6 pb-16!">
         {enableGoogleMap && mapMarkers.length > 0 && <PopupCityMap mapMarkers={mapMarkers} lang={lang} langType={type} />}
 
         <Features featuredPopupCities={featuredPopupCities} />
@@ -69,7 +69,7 @@ export default async function DiscoverPage() {
                 {!!currProfile && <>
                     <SelectedBadgeWannaSend lang={lang} profileDetail={currProfile}>
                         <div
-                            className="h-[144px] rounded shadow p-4 cursor-pointer duration-200 hover:translate-y-[-6px]"
+                            className="h-[144px] rounded-sm shadow-sm p-4 cursor-pointer duration-200 hover:translate-y-[-6px]"
                             style={{ 'background': 'linear-gradient(180deg, #F3FFF8 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -91,7 +91,7 @@ export default async function DiscoverPage() {
                     </SelectedBadgeWannaSend>
 
                     <a href={`/profile/${currProfile.name}?tab=badges`}
-                        className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
+                        className="h-[144px] rounded-sm shadow-sm p-4 duration-200 hover:translate-y-[-6px]"
                         style={{ 'background': 'linear-gradient(180deg, #FEFFF3 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                             <path
@@ -102,7 +102,7 @@ export default async function DiscoverPage() {
                     </a>
 
                     <a href={`/profile/${currProfile.name}?tab=groups`}
-                        className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
+                        className="h-[144px] rounded-sm shadow-sm p-4 duration-200 hover:translate-y-[-6px]"
                         style={{ 'background': 'linear-gradient(180deg, #F3F7FF 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                             <path
@@ -113,7 +113,7 @@ export default async function DiscoverPage() {
                     </a>
 
                     <a href={`/profile/${currProfile.name}/edit`}
-                        className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
+                        className="h-[144px] rounded-sm shadow-sm p-4 duration-200 hover:translate-y-[-6px]"
                         style={{ 'background': 'linear-gradient(180deg, #FDF3FF 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                             <path
@@ -126,7 +126,7 @@ export default async function DiscoverPage() {
                 }
 
                 <a href={'https://www.sociallayer.im/'} target="_blank"
-                    className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
+                    className="h-[144px] rounded-sm shadow-sm p-4 duration-200 hover:translate-y-[-6px]"
                     style={{ 'background': 'linear-gradient(180deg, #FFF6F3 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -152,7 +152,7 @@ export default async function DiscoverPage() {
                 </a>
                 <a href={'https://social-layer.notion.site/Use-Badges-531bcb47d3694d45bd6c73da99b1ad6f?pvs=4'}
                     target="_blank"
-                    className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
+                    className="h-[144px] rounded-sm shadow-sm p-4 duration-200 hover:translate-y-[-6px]"
                     style={{ 'background': 'linear-gradient(180deg, #FFF2FB 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                         <path
@@ -162,7 +162,7 @@ export default async function DiscoverPage() {
                     <div className="text-lg font-semibold mt-2">{lang['What is Badge']}</div>
                 </a>
                 <a href={'/'}
-                    className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
+                    className="h-[144px] rounded-sm shadow-sm p-4 duration-200 hover:translate-y-[-6px]"
                     style={{ 'background': 'linear-gradient(180deg, #F3FFFE 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
                         <path
@@ -172,7 +172,7 @@ export default async function DiscoverPage() {
                     <div className="text-lg font-semibold mt-2">{lang['Development Doc']}</div>
                 </a>
                 <a href={'https://twitter.com/SocialLayer_im'} target='_blank'
-                    className="h-[144px] rounded shadow p-4 duration-200 hover:translate-y-[-6px]"
+                    className="h-[144px] rounded-sm shadow-sm p-4 duration-200 hover:translate-y-[-6px]"
                     style={{ 'background': 'linear-gradient(180deg, #EEF3F5 0%, rgba(255, 255, 255, 0.00) 100%)' }}>
                     <i className='media-x text-xl'></i>
                     <div className="text-lg font-semibold mt-2">@SocialLayer_im</div>

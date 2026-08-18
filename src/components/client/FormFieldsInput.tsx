@@ -83,7 +83,7 @@ export default function FormFieldsInput({fields, values, errors, onChange, lang}
 
                 {field.field_type === 'select' ? (
                     <select
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400 bg-white"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-hidden focus:border-green-400 bg-white"
                         value={values[field.id] || ''}
                         onChange={e => onChange(field.id, e.target.value)}>
                         <option value="">{lang['-- Select --'] || '-- Select --'}</option>
@@ -104,7 +104,7 @@ export default function FormFieldsInput({fields, values, errors, onChange, lang}
                         onChange={url => onChange(field.id, url)}/>
                 ) : field.field_type === 'textarea' ? (
                     <textarea
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400 min-h-[96px]"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-hidden focus:border-green-400 min-h-[96px]"
                         placeholder={field.label}
                         value={values[field.id] || ''}
                         onChange={e => onChange(field.id, e.target.value)}/>
@@ -117,7 +117,7 @@ export default function FormFieldsInput({fields, values, errors, onChange, lang}
                     <input
                         type={field.field_type === 'date' ? 'date'
                             : field.field_type === 'url' ? 'url' : 'text'}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-green-400"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-hidden focus:border-green-400"
                         placeholder={field.field_type === 'url' ? 'https://…' : field.label}
                         value={values[field.id] || ''}
                         onChange={e => onChange(field.id, e.target.value)}/>
@@ -265,7 +265,7 @@ export function FormAnswerValue({field, value}: {field?: EventFormField, value: 
         // on the domain that also serves our own assets, which is the one
         // context where it does execute. Showing the picture is what this is
         // for anyway.
-        return <img src={href} alt="" className="w-20 h-20 rounded object-cover border border-gray-200"/>
+        return <img src={href} alt="" className="w-20 h-20 rounded-sm object-cover border border-gray-200"/>
     }
     if (href && field?.field_type === 'file') {
         return <a href={href} target="_blank" rel="noreferrer"
@@ -276,7 +276,7 @@ export function FormAnswerValue({field, value}: {field?: EventFormField, value: 
     if (field?.field_type === 'multi_select') {
         return <span className="flex flex-wrap gap-1">
             {value.split(MULTI_VALUE_SEPARATOR).map((v, i) => (
-                <span key={i} className="text-xs bg-gray-200 rounded px-2 py-0.5">{v}</span>
+                <span key={i} className="text-xs bg-gray-200 rounded-sm px-2 py-0.5">{v}</span>
             ))}
         </span>
     }
@@ -286,5 +286,5 @@ export function FormAnswerValue({field, value}: {field?: EventFormField, value: 
     }
     // Not a link we are willing to make — show it as the text it is.
     // whitespace-pre-wrap is what makes a long-text answer readable.
-    return <span className="whitespace-pre-wrap break-words">{value}</span>
+    return <span className="whitespace-pre-wrap wrap-break-word">{value}</span>
 }

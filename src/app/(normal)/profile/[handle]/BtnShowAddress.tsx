@@ -12,7 +12,7 @@ export default function BtnShowAddress(props: {address: string, label?: {title?:
 
     const handleShowAddress = () => {
         openModal({
-            content: (close) => <div className="w-[360px] shadow p-4 rounded-lg bg-white">
+            content: (close) => <div className="w-[360px] shadow-sm p-4 rounded-lg bg-white">
                 <div className="font-semibold text-lg">{props.label?.title || 'Address'}</div>
                 <div className="break-all my-4">{props.address}</div>
                 <div className="flex flex-row-item-center">

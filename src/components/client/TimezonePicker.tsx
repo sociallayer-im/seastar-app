@@ -657,7 +657,7 @@ export default function TimezonePicker(props: {
         <PopoverContent align="start" className="bg-background" onInteractOutside={() => {
             setOpen(false)
         }}>
-            <div className="w-[360px] !max-w-[calc(100vw-42px)]">
+            <div className="w-[360px] max-w-[calc(100vw-42px)]!">
                 <Input placeholder={'Search...'}
                     startAdornment={<i className="uil-search text-lg"/>}
                     className="w-full mb-1"

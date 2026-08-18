@@ -72,7 +72,7 @@ export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill
         </ul>
 
         <Input
-            className={`w-full shadow-sm ${error ? 'border-red-400' : ''}`}
+            className={`w-full shadow-xs ${error ? 'border-red-400' : ''}`}
             type="text"
             name="username"
             autoFocus

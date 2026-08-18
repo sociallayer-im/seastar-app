@@ -73,8 +73,8 @@ export default async function Profile(props: AsyncProps<ProfileDataProps>) {
     const {profile, currProfile, isSelf, tab} = await cachedProfileData(handle, pickSearchParam(_tab))
     const lang = (await selectLang()).lang
 
-    return <div className="bg-[#f8f8f8] min-h-[100svh] w-full">
-        <div className="page-width bg-[#f8f8f8] min-h-[100svh] !pl-0 !pr-0 pt-0 sm:pt-6 !pb-16">
+    return <div className="bg-[#f8f8f8] min-h-svh w-full">
+        <div className="page-width bg-[#f8f8f8] min-h-svh pl-0! pr-0! pt-0 sm:pt-6 pb-16!">
             <div className="flex flex-col items-start sm:flex-row">
                 <div className="bg-white w-full sm:w-[375px] mb-3 relative">
                     <img src="/images/profile_bg.png" className="w-full h-[140px]"/>

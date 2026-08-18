@@ -130,13 +130,13 @@ export default function OauthApps({lang, applications}: {lang: Dictionary, appli
                 <div className="text-sm font-semibold">{lang['Client Secret']}</div>
                 <div className="text-xs text-amber-700 mb-2">{lang['Copy it now — it will not be shown again.']}</div>
                 <CopyText value={secret.value}
-                          className="font-mono text-xs break-all cursor-pointer bg-white rounded p-2">
+                          className="font-mono text-xs break-all cursor-pointer bg-white rounded-sm p-2">
                     {secret.value}
                 </CopyText>
             </div>}
 
         {creating &&
-            <div className="mb-6 rounded-lg bg-[var(--background)] shadow p-4 flex flex-col gap-3">
+            <div className="mb-6 rounded-lg bg-(--background) shadow-sm p-4 flex flex-col gap-3">
                 <label className="text-sm font-medium">{lang['Application Name']}</label>
                 <Input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})}/>
 
@@ -192,10 +192,10 @@ export default function OauthApps({lang, applications}: {lang: Dictionary, appli
 
         <div className="flex flex-col gap-3">
             {applications.map(app =>
-                <div key={app.id} className="rounded-lg bg-[var(--background)] shadow p-4">
+                <div key={app.id} className="rounded-lg bg-(--background) shadow-sm p-4">
                     <div className="flex-row-item-center justify-between">
                         <div className="font-semibold">{app.name}</div>
-                        <div className="text-xs px-2 py-1 rounded bg-gray-100">
+                        <div className="text-xs px-2 py-1 rounded-sm bg-gray-100">
                             {app.status === 'active' ? lang['Active']
                                 : app.status === 'draft' ? lang['Draft'] : lang['Application disabled']}
                         </div>

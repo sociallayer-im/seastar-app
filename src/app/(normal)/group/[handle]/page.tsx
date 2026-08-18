@@ -78,7 +78,7 @@ export default async function GroupPage(props: AsyncProps<GroupDataProps>) {
     } = await cachedGroupPageData(handle, pickSearchParam(_tab))
     const lang = (await selectLang()).lang
 
-    return <div className="bg-white min-h-[100svh] w-full !pb-16">
+    return <div className="bg-white min-h-svh w-full pb-16!">
         <div className="w-full mb-3 relative bg-[#f8f8f8]">
             <div className="h-[150px]" style={{background: 'url("/images/profile_bg.png")'}}>
                 <div className="page-width relative">
@@ -98,7 +98,7 @@ export default async function GroupPage(props: AsyncProps<GroupDataProps>) {
                     </div>
                 </div>
             </div>
-            <div className="page-width !pb-4">
+            <div className="page-width pb-4!">
                 <div>
                     <Avatar size={60} profile={group} className="mt-[-30px]"/>
                     <div className="flex-row-item-center my-2">

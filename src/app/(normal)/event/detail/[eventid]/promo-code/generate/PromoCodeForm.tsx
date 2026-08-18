@@ -52,7 +52,7 @@ export default function PromoCodeForm({lang, eventId}: { lang: Dictionary, event
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px) px-3 !pb-12 pt-0">
+        <div className="page-width-md min-h-[calc(100svh-48px) px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Generate Promo Code']}</div>
 
             <div className="mb-4">
@@ -64,9 +64,9 @@ export default function PromoCodeForm({lang, eventId}: { lang: Dictionary, event
                         <div className="font-semibold">{lang['Percentage Off']}</div>
                         {draft.discountType === 'ratio'
                             ?
-                            <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500"/>
+                            <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500"/>
                             :
-                            <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
+                            <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
                         }
                     </div>
                     {draft.discountType === 'ratio' &&
@@ -91,9 +91,9 @@ export default function PromoCodeForm({lang, eventId}: { lang: Dictionary, event
                         <div className="font-semibold">{lang['Amount Off']}</div>
                         {draft.discountType === 'amount'
                             ?
-                            <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500"/>
+                            <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500"/>
                             :
-                            <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
+                            <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500"/>
                         }
 
                     </div>

@@ -352,7 +352,7 @@ export default function EventParticipantList({
             {
                 participants.map(participant => {
                     return <div key={participant.id}
-                                className="border-b-[1px] border-gray-200 flex flex-row justify-between items-center py-4">
+                                className="border-b border-gray-200 flex flex-row justify-between items-center py-4">
                         <a className="flex-row-item-center" href={`/profile/${participant.user.name}`}>
                             <Avatar profile={participant.user} className="mr-2" size={32}/>
                             <div className="text-xs">
@@ -460,7 +460,7 @@ function MyApplicationDialog({lang, close, submission, form, participant, isPend
     }
 
     return (
-        <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow p-5 max-h-[80vh] flex flex-col">
+        <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow-sm p-5 max-h-[80vh] flex flex-col">
             <div className="flex-row-item-center justify-between mb-4">
                 <div className="font-semibold text-lg">{lang['Application Form']}</div>
                 <i className="uil-times-circle text-xl text-gray-400 cursor-pointer" onClick={close}/>
@@ -519,7 +519,7 @@ function ApplicationAnswersDialog({lang, close, submission, form, participant, o
     onReject: () => Promise<void>
 }) {
     return (
-        <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow p-5 max-h-[80vh] flex flex-col">
+        <div className="w-[90vw] max-w-[480px] bg-background rounded-lg shadow-sm p-5 max-h-[80vh] flex flex-col">
             <div className="flex-row-item-center justify-between mb-4">
                 <div className="flex-row-item-center gap-2">
                     <img src={participant.user.image_url || '/images/default_avatar.png'}

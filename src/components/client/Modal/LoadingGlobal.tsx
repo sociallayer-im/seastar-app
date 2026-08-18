@@ -1,5 +1,5 @@
 export default function LoadingGlobal() {
-    return <div data-testid="loading-global" className="fixed left-0 top-0 z-[99999] w-[100vw] h-[100svh] flex flex-col items-center justify-center">
+    return <div data-testid="loading-global" className="fixed left-0 top-0 z-99999 w-screen h-svh flex flex-col items-center justify-center">
         <div className="w-[80px] h-[80px] rounded-2xl bg-[rgba(0,0,0,0.5)] flex flex-row items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="32px" height="32px" viewBox="0 0 128 128">
                 <rect x="0" y="0" width="100%" height="100%" fill="none"/>

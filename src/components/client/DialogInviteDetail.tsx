@@ -127,7 +127,7 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
     }
 
 
-    return <div className="max-w-[90vw] w-[440px] bg-background rounded-lg shadow p-3">
+    return <div className="max-w-[90vw] w-[440px] bg-background rounded-lg shadow-sm p-3">
         <div className="max-h-[80svh] overflow-auto">
             <div className="font-semibold flex-row-item-center justify-between">
                 <div> {lang['Invite Detail']}</div>

@@ -64,7 +64,7 @@ function GoogleButton({lang}: {lang: Dictionary}) {
     return <Button
         variant="outline"
         onClick={() => login()}
-        className="w-full justify-start gap-3 font-normal shadow-sm mb-3 sm:mb-0 [&_svg]:size-5">
+        className="w-full justify-start gap-3 font-normal shadow-xs mb-3 sm:mb-0 [&_svg]:size-5">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
             <path fill="#4285f4" fillRule="evenodd"
                 d="M17.64 9.2q-.002-.956-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>

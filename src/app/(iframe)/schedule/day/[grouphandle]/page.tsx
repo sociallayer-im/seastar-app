@@ -127,7 +127,7 @@ export default async function IframeScheduleDailyPage(
 
             <div>
                 <div
-                    className="h-[52px] sticky top-0 z-[999] bg-[#F8F9F8] flex flex-row flex-nowrap items-center justify-center text-lg text-center">
+                    className="h-[52px] sticky top-0 z-999 bg-[#F8F9F8] flex flex-row flex-nowrap items-center justify-center text-lg text-center">
                     <DailyPagination
                         timezone={data.group.timezone}
                         currStartDate={data.interval[0].format('YYYY-MM-DD')}
@@ -155,7 +155,7 @@ export default async function IframeScheduleDailyPage(
                         {
                             hourLabels.map((label) => {
                                 return <div key={label}
-                                    className="h-[100px] px-3 text-right text-xs text-[#71717A] translate-y-[-0.5rem]">
+                                    className="h-[100px] px-3 text-right text-xs text-[#71717A] -translate-y-2">
                                     {label}
                                 </div>
                             })
@@ -167,7 +167,7 @@ export default async function IframeScheduleDailyPage(
                                 hourLabels.map((label) => {
                                     return <div
                                         key={label}
-                                        className="h-[100px] border borter-t-[#E0E0E0] relative after:content-[''] after:block after:h-[1px] after:border after:border-b-[#eee] after:absolute after:w-full after:left-0 after:top-[50px] after:border-dashed"/>
+                                        className="h-[100px] border borter-t-[#E0E0E0] relative after:content-[''] after:block after:h-px after:border after:border-b-[#eee] after:absolute after:w-full after:left-0 after:top-[50px] after:border-dashed"/>
 
                                 })
                             }

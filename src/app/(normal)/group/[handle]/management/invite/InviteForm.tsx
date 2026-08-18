@@ -139,12 +139,12 @@ export default function InviteForm({lang, group}: InviteFormProps) {
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-sm min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+        <div className="page-width-sm min-h-[calc(100svh-48px)] px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Invite Member']}</div>
 
             <div className="flex flex-col mx-auto">
                 <div className="mb-8 rounded-lg h-[200px] bg-secondary flex flex-col justify-center items-center">
-                    <Avatar profile={group} size={96} className="mb-2 border-2 border-white shadow"/>
+                    <Avatar profile={group} size={96} className="mb-2 border-2 border-white shadow-sm"/>
                     <div className="font-semibold">{displayProfileName(group)} <i className="capitalize">{role}</i>
                     </div>
                 </div>

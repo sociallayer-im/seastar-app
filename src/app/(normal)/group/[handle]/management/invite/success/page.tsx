@@ -24,7 +24,7 @@ export default async function InviteSuccess(props: AsyncProps<InviteSuccessDataP
     const { lang } = await selectLang()
 
     return <div className="min-h-[calc(100svh-48px)] w-full overflow-auto bg-[#f8f8f8]">
-        <div className="page-width min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0 justify-center items-center flex flex-col">
+        <div className="page-width min-h-[calc(100svh-48px)] px-3 pb-12! pt-0 justify-center items-center flex flex-col">
             <div className="py-6 font-semibold text-center text-xl">
                 {lang['The invitation has been sent!']}
             </div>

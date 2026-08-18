@@ -49,7 +49,7 @@ export default function TicketList({eventDetail, lang, currProfile, attended, pa
                             onClick={() => showTicket(ticket)}
                             className={`bg-gray-100 p-4 rounded-lg mb-3 border-2 ${locked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-[#baffad] hover:bg-[#effff9]'}`}>
                     <div className="font-semibold">{ticket.title}</div>
-                    <div className="text-xs my-2 break-words text-gray-500">
+                    <div className="text-xs my-2 wrap-break-word text-gray-500">
                         {ticket.content}
                     </div>
 
@@ -66,7 +66,7 @@ export default function TicketList({eventDetail, lang, currProfile, attended, pa
                                     (ticket.payment_methods || []).flatMap((method, mi) =>
                                         getPaymentMethodChainIcons(method).map((icon, ci) =>
                                             <img key={`${mi}-${ci}`}
-                                                 className="shadow min-w-5 h-5 rounded-full mr-[-6px] bg-white"
+                                                 className="shadow-sm min-w-5 h-5 rounded-full mr-[-6px] bg-white"
                                                  src={icon}
                                                  alt="" width={20} height={20}/>
                                         )

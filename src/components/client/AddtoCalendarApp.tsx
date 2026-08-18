@@ -34,7 +34,7 @@ function DialogAddToCalendar({urls, lang}: {
 }) {
     const isMac = navigator.platform.indexOf('Mac') > -1 || /iPad|iPhone|iPod/.test(navigator.userAgent)
 
-    return <div className="p-3 shadow rounded-lg w-[300px] bg-background">
+    return <div className="p-3 shadow-sm rounded-lg w-[300px] bg-background">
         <div className="font-semibold mb-3">{lang['Add iCal Subscription']}</div>
         <div className="text-sm mb-3">{lang['Add events to your calendar to stay updated.']}</div>
 

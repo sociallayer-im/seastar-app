@@ -73,7 +73,7 @@ export default function DialogRefund({order, lang, close, onDone}: {
         }
     }
 
-    return <div className="bg-background sm:p-4 p-3 rounded-lg shadow w-[96vw] sm:w-[380px]">
+    return <div className="bg-background sm:p-4 p-3 rounded-lg shadow-sm w-[96vw] sm:w-[380px]">
         <div className="flex-row-item-center justify-between mb-4">
             <div className="font-semibold text-lg">{lang['Refund']}</div>
             <i className="uil-times-circle cursor-pointer text-xl text-gray-400" onClick={close}/>

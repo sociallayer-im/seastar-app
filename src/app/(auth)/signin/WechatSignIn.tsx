@@ -10,7 +10,7 @@ export default function WechatSignIn({lang}: {lang: Dictionary}) {
     return <Button
         asChild
         variant="outline"
-        className="w-full justify-start gap-3 font-normal shadow-sm mb-3 sm:mb-0 [&_svg]:size-5">
+        className="w-full justify-start gap-3 font-normal shadow-xs mb-3 sm:mb-0 [&_svg]:size-5">
         <a href="/api/wechat/signin">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#07C160">
                 <path

@@ -103,11 +103,11 @@ export default function StripeKeysManager({lang}: { lang: Dictionary }) {
                         <span>{s.name}</span>
                         <span className="ml-2 text-gray-400 font-normal">{s.masked_key}</span>
                         {s.mode === 'test' &&
-                            <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">{lang['TEST MODE']}</span>}
+                            <span className="ml-2 text-xs px-1.5 py-0.5 rounded-sm bg-amber-100 text-amber-700">{lang['TEST MODE']}</span>}
                         {s.status === 'invalid' &&
-                            <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-700">invalid</span>}
+                            <span className="ml-2 text-xs px-1.5 py-0.5 rounded-sm bg-red-100 text-red-700">invalid</span>}
                         {s.delayed_confirmation &&
-                            <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-500">{lang['Delayed confirmation']}</span>}
+                            <span className="ml-2 text-xs px-1.5 py-0.5 rounded-sm bg-gray-100 text-gray-500">{lang['Delayed confirmation']}</span>}
                     </div>
                     {!!s.account_id && <div className="text-xs text-gray-400 mt-1">{s.account_id}</div>}
                 </div>

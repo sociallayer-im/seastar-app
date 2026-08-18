@@ -68,7 +68,7 @@ export default function BindEmailForm({lang}: {lang: Dictionary}) {
         </div>
 
         <Input
-            className={`w-full shadow-sm ${error ? 'border-red-400' : ''}`}
+            className={`w-full shadow-xs ${error ? 'border-red-400' : ''}`}
             type="email"
             name="email"
             autoComplete="email"

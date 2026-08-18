@@ -5,7 +5,7 @@ import {Dictionary} from '@/lang'
 import {ShowConfirmDialogProps} from '@/hooks/useConfirmDialog'
 
 export default function DialogConfirm({lang, title, content, onConfig, onCanceled, type='danger',hiddenCancelBtn,  close}: ShowConfirmDialogProps & {close: () => void}) {
-    return <div className="max-w-[460px] rounded-lg bg-background shadow p-3" style={{width: '90vw'}}>
+    return <div className="max-w-[460px] rounded-lg bg-background shadow-sm p-3" style={{width: '90vw'}}>
         {!!title &&
             <div className="font-semibold mb-2">{title}</div>
         }

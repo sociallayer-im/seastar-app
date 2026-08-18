@@ -53,15 +53,15 @@ export default async function RootLayout({
                     type="text/javascript" />
         </head>
         <body className={`antialiased`}>
-        <div className="min-h-[100svh]">
+        <div className="min-h-svh">
             <Header sticky={!isSchedule} />
             <div className="relative">
                 {children}
             </div>
         </div>
         {!!currProfile && <StartupChecks lang={lang} profile={currProfile}/>}
-        <div className="relative z-[9998]"><Modals/></div>
-        <div className="relative z-[9999]"><Toaster/></div>
+        <div className="relative z-9998"><Modals/></div>
+        <div className="relative z-9999"><Toaster/></div>
         </body>
         </html>
     )

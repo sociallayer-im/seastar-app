@@ -7,9 +7,9 @@ export default function CardGroup({group, currProfileHandle}: {group: GroupWithO
     // (/group/<handle>). What someone wants from a group they belong to is its
     // events; the profile page is reachable from there.
     return <a href={`/event/${group.name}`}
-        className="h-[210px] shadow bg-white rounded-2xl shadow-badge p-4 cursor-pointer flex flex-col items-center duration-200 hover:translate-y-[-6px]">
+        className="h-[210px] shadow-sm bg-white rounded-2xl shadow-badge p-4 cursor-pointer flex flex-col items-center duration-200 hover:translate-y-[-6px]">
         <Avatar profile={group} size={64} className="mt-4 mb-2"/>
-        <div className="w-full font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">
+        <div className="w-full font-semibold overflow-hidden text-ellipsis whitespace-nowrap text-center p-2">
             {group.nickname || group.name}
         </div>
         {

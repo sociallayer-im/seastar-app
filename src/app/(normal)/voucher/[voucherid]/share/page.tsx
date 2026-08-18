@@ -9,7 +9,7 @@ export default async function ShareVoucherPage(props: AsyncProps<ShareVoucherPag
     const {lang} = await selectLang()
 
     return <div className="min-h-[calc(100svh-48px)] w-full overflow-auto bg-[#f8f8f8]">
-        <div className="page-width min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+        <div className="page-width min-h-[calc(100svh-48px)] px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Share']}</div>
 
             <div

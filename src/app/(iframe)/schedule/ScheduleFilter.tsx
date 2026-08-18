@@ -136,7 +136,7 @@ export default function ScheduleFilter(props: ScheduleFilterProps) {
 
     const authToken = getAuth()
 
-    return <div className="filter-dialog bg-[--background] shadow rounded-lg p-5 max-w-[520px] w-[100vw]">
+    return <div className="filter-dialog bg-(--background) shadow-sm rounded-lg p-5 max-w-[520px] w-screen">
         <div className="flex-row-item-center justify-between">
             <div className="text-xl font-semibold">{props.labels?.filters || 'Filters'}</div>
             <button

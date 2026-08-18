@@ -50,7 +50,7 @@ export default function OauthGrants({lang, langType, grants}: {
 
         <div className="flex flex-col gap-3">
             {grants.map(grant =>
-                <div key={grant.id} className="rounded-lg bg-[var(--background)] shadow p-4">
+                <div key={grant.id} className="rounded-lg bg-(--background) shadow-sm p-4">
                     <div className="flex-row-item-center gap-3">
                         {grant.app_logo_url
                             ? <Img src={grant.app_logo_url} alt={grant.app_name} width={40} height={40}
@@ -72,7 +72,7 @@ export default function OauthGrants({lang, langType, grants}: {
                     <ul className="mt-3 flex flex-row flex-wrap gap-2">
                         {grant.scope_details.map(detail =>
                             <li key={detail.scope}
-                                className={`text-xs px-2 py-1 rounded ${detail.sensitive ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-600'}`}>
+                                className={`text-xs px-2 py-1 rounded-sm ${detail.sensitive ? 'bg-amber-50 text-amber-700' : 'bg-gray-100 text-gray-600'}`}>
                                 {zh ? detail.zh : detail.en}
                             </li>
                         )}

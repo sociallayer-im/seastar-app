@@ -29,7 +29,7 @@ export default async function MarkerEditPage(props: AsyncProps<MarkerDetailPageD
         geo_lng: markerDetail.place?.longitude ?? null,
     }
 
-    return <div className="page-width-md !pt-0 !pb-12">
+    return <div className="page-width-md pt-0! pb-12!">
         <div className="pt-6 pb-10 font-semibold text-center text-xl relative">
             {lang['Edit Marker']}
         </div>

@@ -58,7 +58,7 @@ export default async function SignInPage(props: {searchParams?: Promise<{error?:
                 it did, with no tab bar for a single choice. */}
             {PHONE_LOGIN ? <PhoneOrEmailSignIn lang={lang}/> : <EmailSignIn lang={lang}/>}
             {alternatives > 0 && <>
-                <div className="flex flex-row items-center mb-3 after:content-[''] after:block after:flex-1 after:bg-secondary after:h-[1px] before:block before:flex-1 before:bg-secondary before:h-[1px]">
+                <div className="flex flex-row items-center mb-3 after:content-[''] after:block after:flex-1 after:bg-secondary after:h-px before:block before:flex-1 before:bg-secondary before:h-px">
                     <div className="mx-2 text-sm">{lang['or']}</div>
                 </div>
                 {/* Two side by side when both are on; a lone one spans the row

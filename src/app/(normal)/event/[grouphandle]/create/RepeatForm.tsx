@@ -79,7 +79,7 @@ export default function RepeatForm(props: RepeatFormProps) {
 
     return <div
         onClick={showSetting}
-        className={`${repeatText ? 'bg-secondary ' : ''} cursor-pointer hover:bg-secondary px-2 rounded text-xs flex-row-item-center !inline-flex font-semibold active:brightness-90`}>
+        className={`${repeatText ? 'bg-secondary ' : ''} cursor-pointer hover:bg-secondary px-2 rounded-sm text-xs flex-row-item-center inline-flex! font-semibold active:brightness-90`}>
         <i className="uil-repeat text-base mr-0.5"/>
         {repeatText || props.lang['Does not Repeat']}
     </div>
@@ -135,7 +135,7 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
         setError('')
     }, [repeatForm])
 
-    return <div className="shadow rounded-lg bg-white p-4 w-80">
+    return <div className="shadow-sm rounded-lg bg-white p-4 w-80">
         <div className="max-h-[60svh] overflow-auto">
             <div className="font-semibold mb-3">{lang['Repeat Setting']}</div>
            {disabled && (
@@ -188,7 +188,7 @@ function DialogRepeatSetting({form, onConfirm, timezone, start_time, close, lang
                 <div className="mb-3">
                     <div>{lang['Event Times Preview']}</div>
                     {preview.map((t) => <div key={t}
-                                             className="px-2 py-1 rounded mb-1 bg-secondary"
+                                             className="px-2 py-1 rounded-sm mb-1 bg-secondary"
                     >{t}</div>)}
                 </div>
             }

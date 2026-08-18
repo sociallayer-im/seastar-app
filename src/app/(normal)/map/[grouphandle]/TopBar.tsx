@@ -160,12 +160,12 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
     }
 
     return <div
-        className="max-w-[96vw] w-[500px] bg-white rounded-lg p-3 shadow max-h-[96svh] sm:max-h-[80svh] overflow-auto">
+        className="max-w-[96vw] w-[500px] bg-white rounded-lg p-3 shadow-sm max-h-[96svh] sm:max-h-[80svh] overflow-auto">
         <div className="font-semibold mb-6 text-lg flex-row-item-center justify-between">
             <div>{lang['Create a Marker']}</div>
             <i className="uil-times-circle text-2xl cursor-pointer text-gray-500" onClick={close}/>
         </div>
-        <div className="flex-row-item-center !flex-wrap">
+        <div className="flex-row-item-center flex-wrap!">
             <MarkerForm
                 onCancel={close}
                 markerDraft={draft}

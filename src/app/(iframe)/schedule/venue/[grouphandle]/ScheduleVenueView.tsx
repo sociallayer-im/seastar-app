@@ -171,7 +171,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
 
 
     return (
-        <div className="w-full overflow-auto flex flex-col h-[100svh]">
+        <div className="w-full overflow-auto flex flex-col h-svh">
             <div className="py-2 sm:py-5 w-full flex flex-row items-center px-4 schedule-gradient">
                 <div>
                     <a href={data.eventHomeUrl} className="font-semibold text-[#6CD7B2] mr-2" target={data.isIframe ? "_blank" : "_self"}>
@@ -184,7 +184,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
                     <Input type="text"
                         inputSize="sm"
                         placeholder={'Set Date'}
-                        className="ml-2 !text-base !w-auto"
+                        className="ml-2 text-base! w-auto!"
                         readOnly
                         value={data.currDate}
                         endAdornment={<i className="uil-calender text-base" />}
@@ -204,7 +204,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
                             className="overflow-hidden text-sm border-r border-b border-t  border-gray-200 bg-gray-50 text-center font-medium relative">
                             {(venue as any).image_urls?.[0] && venue.id !== '' && <img src={cfImage((venue as any).image_urls?.[0], { width: 400, height: 300, fit: 'cover' })} alt="" className="w-full h-full object-cover" />}
                             {!(venue as any).image_urls?.[0] && venue.id !== '' && <img src={'/images/venue_default_bg.jpg'} alt="" className="w-full h-full object-cover opacity-50" />}
-                            <div className="font-semibold p-3 absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-end bg-gradient-to-b from-transparent via-[rgba(255,255,255,0.8)]  to-[rgba(255,255,255,1)] ">
+                            <div className="font-semibold p-3 absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-end bg-linear-to-b from-transparent via-[rgba(255,255,255,0.8)]  to-[rgba(255,255,255,1)] ">
                                 {venue.name}
                             </div>
                         </div>
@@ -238,7 +238,7 @@ export default function ScheduleVenueView({ data: initialData, groupDetail, even
                                 gridColumn: 1,
                             }}
                             className="sticky left-0 z-10 border-r border-b-dashed border-gray-200 bg-gray-50 text-sm text-gray-500 flex items-center justify-center">
-                            {time !== '00:00' && <span className="text-xs -translate-y-[18px]">{time}</span>}
+                            {time !== '00:00' && <span className="text-xs translate-y-[-18px]">{time}</span>}
                         </div>
                     ))}
 

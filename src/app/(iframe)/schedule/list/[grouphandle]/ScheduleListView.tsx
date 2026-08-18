@@ -113,7 +113,7 @@ export default function ScheduleListView({groupDetail, groupedEventByStartDate, 
         }
     }, [])
 
-    return <div className="min-h-[100svh] relative pb-12 bg-[#F8F9F8] w-full">
+    return <div className="min-h-svh relative pb-12 bg-[#F8F9F8] w-full">
     <div className="schedule-bg"></div>
     <div className="page-width z-10 relative">
         <div className="py-3 sm:py-5 max-w-[100vw] flex flex-row justify-between">

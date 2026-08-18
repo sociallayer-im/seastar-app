@@ -15,7 +15,7 @@ export default function Feedback() {
     }
 
     return <div
-        className="hover:brightness-95 fixed shadow cursor-pointer right-4 bottom-32 w-14 h-14 rounded-full bg-background flex-row-item-center justify-center"
+        className="hover:brightness-95 fixed shadow-sm cursor-pointer right-4 bottom-32 w-14 h-14 rounded-full bg-background flex-row-item-center justify-center"
         onClick={handleShow}>
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="21" viewBox="0 0 12 21" fill="none">
             <path
@@ -29,7 +29,7 @@ export default function Feedback() {
 }
 
 function DialogFeedback(props: { close: any }) {
-    return <div className="w-[300px] p-3 bg-background shadow rounded-lg">
+    return <div className="w-[300px] p-3 bg-background shadow-sm rounded-lg">
         <div className="flex-row-item-center justify-between">
             <div className="font-semibold">Submit feedback</div>
             <svg

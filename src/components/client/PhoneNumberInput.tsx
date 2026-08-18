@@ -34,7 +34,7 @@ export default function PhoneNumberInput({value, onChange, onEnter, invalid, aut
     endAdornment?: React.ReactNode
 }) {
     return <Input
-        className={`w-full shadow-sm ${invalid ? 'border-red-400' : ''}`}
+        className={`w-full shadow-xs ${invalid ? 'border-red-400' : ''}`}
         type="tel"
         name="phone"
         autoComplete="tel"

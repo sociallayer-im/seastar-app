@@ -220,7 +220,7 @@ function DialogRecurringSelectorType({lang, onConfirm, close}: {
 }) {
     const [selector, setSelector] = useState<'all' | 'after' | 'single'>('single')
 
-    return <div className="w-[350px] p-3 rounded-lg bg-background shadow">
+    return <div className="w-[350px] p-3 rounded-lg bg-background shadow-sm">
         <div className="flex-row-item-center justify-between mb-3">
             <div className="font-semibold text-lg">{lang['Select the scope of application']}</div>
             <i className="uil-times-circle text-xl text-gray-500 cursor-pointer" onClick={close}/>

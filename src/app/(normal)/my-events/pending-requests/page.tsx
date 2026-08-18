@@ -11,7 +11,7 @@ export default async function MyEventsPage() {
     const {lang} = await selectLang()
 
     return (
-        <div className="page-width min-h-[100svh] !pt-3 !sm:pt-6">
+        <div className="page-width min-h-svh pt-3! !sm:pt-6">
             <div className="container py-6">
                 <h1 className="text-2xl font-bold mb-6">{lang['My Events']}</h1>
 

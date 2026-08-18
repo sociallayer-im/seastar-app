@@ -24,7 +24,7 @@ export default function TagsFilter({tags, values, onSelected, multiple, lang, al
         }
     }
 
-    return <div className="flex-row-item-center !flex-wrap">
+    return <div className="flex-row-item-center flex-wrap!">
         {allowResetBtn &&
             <Button onClick={() => {
                 onSelected?.(undefined)

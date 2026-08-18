@@ -130,7 +130,7 @@ export default function GroupEventHome({ data, lang, langType, initialTab }: Gro
     }
 
     return <div style={{ background: '#fff url(/images/event_home_bg.png) top center repeat-x' }}>
-        <div className="page-width min-h-[100svh] sm:pt-8 pt-3 flex-col flex md:flex-row">
+        <div className="page-width min-h-svh sm:pt-8 pt-3 flex-col flex md:flex-row">
             <div className="flex-1 md:max-w-[648px] order-2 md:order-1">
                 {showDiscussion &&
                     <div className="flex-row-item-center gap-1 border-b border-gray-200 mb-3">
@@ -191,7 +191,7 @@ export default function GroupEventHome({ data, lang, langType, initialTab }: Gro
                         <Img src={cfImage((groupDetail.image_url && groupDetail.image_url != "") ? groupDetail.image_url : "/images/default_avatar/avatar_1.png", { width: 32, height: 32, fit: 'cover' })}
                             className="w-4 h-4 rounded-full mr-2" alt="" />
                         <span
-                            className="font-semibold text-xs whitespace-nowrap max-w-[150px] overflow-hidden overflow-ellipsis">
+                            className="font-semibold text-xs whitespace-nowrap max-w-[150px] overflow-hidden text-ellipsis">
                             {displayProfileName(groupDetail)}
                         </span>
                     </div>
@@ -229,7 +229,7 @@ export default function GroupEventHome({ data, lang, langType, initialTab }: Gro
                     }
 
                     <SelectedBadgeWannaSend
-                        className={'flex-shrink-0 mt-3'}
+                        className={'shrink-0 mt-3'}
                         lang={lang}
                         profileDetail={currProfile}
                         group={groupDetail}>

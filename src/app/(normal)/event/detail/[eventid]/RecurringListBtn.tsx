@@ -57,14 +57,14 @@ interface DialogRecurringListProps {
 }
 
 function DialogRecurringList({events, lang, currEventId, close}: DialogRecurringListProps) {
-    return <div className="w-[350px] h-auto max-h-[90svh] overflow-auto p-3 shadow rounded-lg bg-white">
+    return <div className="w-[350px] h-auto max-h-[90svh] overflow-auto p-3 shadow-sm rounded-lg bg-white">
         <div className="flex-row-item-center justify-between mb-3">
             <div className="font-semibold text-lg">{lang['Repeating Events']}</div>
             <i className="uil-times-circle cursor-pointer text-xl text-gray-500" onClick={close}/>
         </div>
         <div className="grid grid-cols-1 gap-1">
             {events.map((event) => {
-                const color = currEventId === event.id ? '!text-primary-foreground' : '!text-foreground'
+                const color = currEventId === event.id ? 'text-primary-foreground!' : 'text-foreground!'
                 return <a className={`${buttonVariants({variant: 'secondary'})} ${color}`}
                           href={`/event/detail/${event.id}`}
                           key={event.id}>

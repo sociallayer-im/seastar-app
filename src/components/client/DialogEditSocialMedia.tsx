@@ -29,7 +29,7 @@ export default function DialogEditSocialMedia({close, value, type, lang, onConfi
     }
 
     return <div
-        className="shadow rounded-lg bg-white p-4 w-80">
+        className="shadow-sm rounded-lg bg-white p-4 w-80">
         <div className="font-semibold mb-3">{lang['Edit']} {(Media_Meta as any)[type].label}</div>
         <div className="text-[#999] mb-3 text-sm">{(Media_Meta as any)[type].eg}</div>
         <Input value={newValue}

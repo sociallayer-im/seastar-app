@@ -4,7 +4,7 @@ import {buttonVariants} from '@/components/shadcn/Button'
 
 export default function NotFound() {
     return (
-        <div className="flex-row-item-center justify-center w-[100vw]">
+        <div className="flex-row-item-center justify-center w-screen">
            <div className="flex flex-col items-center justify-center">
                <NoData label={'Not Found'}  />
                <div className="font-semibold">Could not find requested resource</div>

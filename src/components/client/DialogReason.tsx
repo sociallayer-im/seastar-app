@@ -25,7 +25,7 @@ export default function DialogReason({lang, title, description, confirmLabel, on
 }) {
     const [reason, setReason] = useState('')
 
-    return <div className="max-w-[460px] rounded-lg bg-background shadow p-4" style={{width: '90vw'}}>
+    return <div className="max-w-[460px] rounded-lg bg-background shadow-sm p-4" style={{width: '90vw'}}>
         <div className="font-semibold mb-1">{title}</div>
         {!!description && <div className="text-sm text-gray-500 mb-3">{description}</div>}
 

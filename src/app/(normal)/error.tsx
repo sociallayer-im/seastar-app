@@ -14,7 +14,7 @@ export default function Error({error,reset }: {
 
     return (
         <div>
-            <div className="flex-row-item-center justify-center w-[100vw] p-3">
+            <div className="flex-row-item-center justify-center w-screen p-3">
                 <div className="flex flex-col items-center justify-center">
                     <NoData label={'Something went wrong!'}  />
                     {!!error.digest && <div className="my-3">Digest: {error.digest}</div>}

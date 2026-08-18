@@ -15,7 +15,7 @@ export default function ShareScheduleBtn({ lang, className, compact, groupHandle
     }
 
     return compact
-        ? <Button variant={'ghost'} size={'sm'} onClick={handleShowShareModal} className={`${className} !bg-white`}>
+        ? <Button variant={'ghost'} size={'sm'} onClick={handleShowShareModal} className={`${className} bg-white!`}>
             <i className="uil-external-link-alt" />
         </Button>
         : <Button variant={'ghost'} size={'sm'} onClick={handleShowShareModal} className={className}>
@@ -53,7 +53,7 @@ function ShareScheduleModal({ lang, close, view , groupHandle}: { lang: Dictiona
     }
 
     return (
-        <div className="max-w-[600px] rounded-lg bg-background shadow p-6" style={{ width: '90vw' }}>
+        <div className="max-w-[600px] rounded-lg bg-background shadow-sm p-6" style={{ width: '90vw' }}>
             <div className="font-semibold text-xl mb-6">{lang['Share Schedule']}</div>
 
             <div className="space-y-6">

@@ -13,14 +13,14 @@ export default function CardVoucher({voucher, lang}: {voucher: Voucher, lang: Di
     }
 
     return <div onClick={handleClick}
-              className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
+              className="h-[182px] bg-white shadow-sm rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
         <div
             className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
             <img className="w-[90px] h-[90px] rounded-full" width={90} height={90}
                    src={cfImage(voucher.badge_class.image_url, { width: 180, height: 180, fit: 'cover' })} alt=""/>
         </div>
         <div
-            className="font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">
+            className="font-semibold overflow-hidden text-ellipsis whitespace-nowrap text-center p-2">
             {voucher.badge_class.title!}
         </div>
     </div>

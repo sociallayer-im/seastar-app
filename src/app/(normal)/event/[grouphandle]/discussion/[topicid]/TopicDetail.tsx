@@ -228,7 +228,7 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
                             conversation still has to read correctly without it. */}
                         {!!reply.reply_to &&
                             <a href={`#reply-${reply.reply_to.id}`}
-                                className="block text-xs text-gray-500 bg-gray-50 rounded px-2 py-1 mt-2">
+                                className="block text-xs text-gray-500 bg-gray-50 rounded-sm px-2 py-1 mt-2">
                                 {lang['In reply to']} {reply.reply_to.user?.nickname || reply.reply_to.user?.name}
                                 {': '}
                                 {reply.reply_to.state === 'flagged'
@@ -238,7 +238,7 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
                         }
 
                         {reply.flagged &&
-                            <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1 mt-2">
+                            <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-sm px-2 py-1 mt-2">
                                 {lang['This reply is hidden']}
                                 {!!reply.flag_reason && <span> — {reply.flag_reason}</span>}
                             </div>
@@ -271,7 +271,7 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
                     </a>
                     : <>
                         {!!replyTo &&
-                            <div className="flex-row-item-center justify-between text-xs bg-gray-50 rounded px-2 py-1 mb-2">
+                            <div className="flex-row-item-center justify-between text-xs bg-gray-50 rounded-sm px-2 py-1 mb-2">
                                 <span>
                                     {lang['In reply to']} {replyTo.user?.nickname || replyTo.user?.name}
                                 </span>

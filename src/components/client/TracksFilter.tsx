@@ -25,12 +25,12 @@ export default function TracksFilter({tracks, values, onSelect, multiple, lang, 
         }
     }
 
-    return <div className="flex-row-item-center !flex-wrap">
+    return <div className="flex-row-item-center flex-wrap!">
         {allowResetBtn &&
             <Button
                 onClick={() => onSelect?.()}
                 variant={!!values && values.length ? 'outline' : 'normal'}
-                className={`!h-11 select-none hover:brightness-95 mb-1 mr-1 ${values?.length ? 'border-gray-300' : 'border-foreground'}`}
+                className={`h-11! select-none hover:brightness-95 mb-1 mr-1 ${values?.length ? 'border-gray-300' : 'border-foreground'}`}
                 size={'sm'}>
                 <div className="text-xs font-normal">
                     <div className="font-semibold">{lang['All Tracks']}</div>

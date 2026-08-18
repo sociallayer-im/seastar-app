@@ -33,7 +33,7 @@ export default function CardTopic({topic, href, lang}: {
     const author = topic.user?.nickname || topic.user?.name
 
     return <a href={href}
-        className="overflow-hidden relative shadow flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02]">
+        className="overflow-hidden relative shadow-sm flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02]">
         <div className="flex-1 mr-2 order-2 xs:order-1">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {topic.pinned && <Badge variant="upcoming" className="mr-1">{lang['Pinned']}</Badge>}
@@ -47,7 +47,7 @@ export default function CardTopic({topic, href, lang}: {
                 {topic.title}
             </div>
 
-            <div className="flex-row-item-center !flex-wrap text-xs mt-1 mb-2">
+            <div className="flex-row-item-center flex-wrap! text-xs mt-1 mb-2">
                 {topic.tags?.filter(tag => !tag.startsWith(':')).map((tag, i) =>
                     <div key={i} className="flex-row-item-center mr-2 shrink-0">
                         <i className="w-2 h-2 rounded-full mr-1" style={{background: getLabelColor(tag)}}/>
@@ -78,7 +78,7 @@ export default function CardTopic({topic, href, lang}: {
                 <StarDiscussionBtn itemType="Topic" itemId={topic.id}
                     starred={topic.is_starred} count={topic.stars_count}/>
                 {!!topic.replied_at &&
-                    <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
+                    <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                         {lang['Last reply']}: <DynamicLocalTime value={topic.replied_at} dateOnly/>
                     </span>
                 }
@@ -87,7 +87,7 @@ export default function CardTopic({topic, href, lang}: {
 
         {/* No placeholder when there is no image — see the note above. */}
         {!!topic.image_url &&
-            <div className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
+            <div className="sm:w-[140px] sm:h-[140px] shrink-0 grow-0 w-[100px] h-[100px] order-1 xs:order-2 xs:mb-0 mb-2">
                 <Img className="w-full h-full object-cover"
                     src={cfImage(topic.image_url, {width: 280, height: 280, fit: 'cover'})} alt=""/>
             </div>

@@ -80,7 +80,7 @@ export default function TransferOwnerForm({members, lang, group}: MemberManageme
                                 onClick={() => {
                                     handleSelect(member)
                                 }}
-                                className="mb-3 justify-between cursor-pointer flex-row-item-center shadow rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
+                                className="mb-3 justify-between cursor-pointer flex-row-item-center shadow-sm rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
                         <div className='flex-row-item-center'>
                             <img
                                 className="w-7 h-7 rounded-full mr-2"

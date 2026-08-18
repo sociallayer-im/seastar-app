@@ -117,7 +117,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                     <strong className="text-sm">{members.length}</strong> {lang['Members']}
                 </div>
                 <Input value={searchKeyword}
-                    className="flex-1 !h-9 text-sm sm:max-w-[200px]"
+                    className="flex-1 h-9! text-sm sm:max-w-[200px]"
                     placeholder={lang['Search members...']}
                     startAdornment={<i className="uil-search"/>}
                     onChange={e => {
@@ -172,7 +172,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
         <div className="grid grid-cols-1 gap-3 py-4">
             {isManager &&
                 <a
-                    className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
+                    className="flex-row-item-center shadow-sm rounded-lg px-6 py-4 duration-300 hover:scale-105"
                     href={`/group/${group.name}/management/invite`}>
                     <i className="uil-plus-circle mr-2 text-2xl"/>
                     <div>{lang['Invite Member']}</div>
@@ -186,7 +186,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                     // squashed to nothing. gap replaces the per-badge ml-2 so a
                     // wrapped second line does not start with a stray margin.
                     return <a key={i}
-                              className="flex flex-wrap items-center gap-x-2 gap-y-1 shadow rounded-lg px-4 sm:px-6 py-4 duration-300 hover:scale-105"
+                              className="flex flex-wrap items-center gap-x-2 gap-y-1 shadow-sm rounded-lg px-4 sm:px-6 py-4 duration-300 hover:scale-105"
                               href={`/profile/${member.user.name}`}>
                     <div className="relative shrink-0">
                             <img
@@ -214,7 +214,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                             the same function that colours tags and tracks. */}
                         {member.teams?.map(team =>
                             <span key={team.id}
-                                className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap shrink-0 max-w-full overflow-hidden overflow-ellipsis"
+                                className="text-xs px-2 py-0.5 rounded-full whitespace-nowrap shrink-0 max-w-full overflow-hidden text-ellipsis"
                                 style={{
                                     background: `${team.color || getLabelColor(team.name)}22`,
                                     color: team.color || getLabelColor(team.name)

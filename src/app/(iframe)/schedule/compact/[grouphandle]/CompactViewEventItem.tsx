@@ -40,7 +40,7 @@ function CompactViewEventItem({event, timezone, lang, lastEvent}: {
     }, [])
 
     return <div className="flex flex-row text-xs sm:text-base" key={event.id}>
-        <div className="w-12 sm:w-[100px] flex-shrink-0 text-right pr-3 pt-2">
+        <div className="w-12 sm:w-[100px] shrink-0 text-right pr-3 pt-2">
             {event.start_time === lastEvent?.start_time && event.endTimeStr === lastEvent?.endTimeStr
                 ? ''
                 : event.isAllDay ? 'All Day' : <div>
@@ -57,7 +57,7 @@ function CompactViewEventItem({event, timezone, lang, lastEvent}: {
              className="border-[#CECED3] border-dashed border-l pl-5 sm:pl-7 pb-2 flex-1 relative">
             <i className="w-[6px] h-[6px] block absolute bg-[#D9D9D9] rounded-full left-0 sm:top-[17px] top-3 ml-[-3px]"/>
             <div style={{background: bgColor}}
-                 className="flex flex-col sm:flex-row flex-nowrap !items-start bg-white py-2 px-4 shadow rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">
+                 className="flex flex-col sm:flex-row flex-nowrap items-start! bg-white py-2 px-4 shadow-sm rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">
                 <i className="h-full w-0.5 left-0 top-0 absolute" style={{background: themeColor}}/>
                 <div className="flex-1 mr-4">
                     <div className="font-semibold flex flex-row items-center flex-wrap">
@@ -66,7 +66,7 @@ function CompactViewEventItem({event, timezone, lang, lastEvent}: {
                             <img src={'/images/starred.png'} className="w-4 h-4 ml-1" /> : null
                         }
                         {event.is_attending ?
-                            <div className="flex-row-item-center !inline-flex">
+                            <div className="flex-row-item-center inline-flex!">
                                 <img src={'/images/check-circle.png'} className="w-4 h-4 ml-1" />
                                 <span className="font-normal text-xs ml-1">Attending</span>
                             </div> : null

@@ -68,7 +68,7 @@ function DialogFeedback({lang, ...props}: { close: () => void, event_id: string,
     }
 
     return (
-        <div className="bg-background w-[350px] p-3 shadow rounded-lg">
+        <div className="bg-background w-[350px] p-3 shadow-sm rounded-lg">
             <div className="text-lg font-semibold mb-3">{lang['Feedback']}</div>
             <Textarea placeholder={lang['Submit your feedback for this event']}
                       value={feedback}

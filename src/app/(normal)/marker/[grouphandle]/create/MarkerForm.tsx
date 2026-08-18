@@ -139,7 +139,7 @@ export default function MarkerForm({
 
         <div>
             <div className="font-semibold mb-1">{lang['Category']}</div>
-            <div className="flex-row-item-center !flex-wrap">
+            <div className="flex-row-item-center flex-wrap!">
                 {
                     MARKER_TYPES.map((type, index) => {
                         return <Button
@@ -157,7 +157,7 @@ export default function MarkerForm({
 
         <div>
             <div className="font-semibold mb-1">{lang['Description (Optional)']}</div>
-            <div className="flex-row-item-center !flex-wrap">
+            <div className="flex-row-item-center flex-wrap!">
                 <Input className="w-full"
                        placeholder={lang['Input marker description']}
                        value={draft.about || ''}
@@ -179,7 +179,7 @@ export default function MarkerForm({
 
         <div>
             <div className="font-semibold mb-1">{lang['Link (Optional)']}</div>
-            <div className="flex-row-item-center !flex-wrap">
+            <div className="flex-row-item-center flex-wrap!">
                 <Input className="w-full"
                        placeholder={lang['Input marker description']}
                        value={draft.link || ''}
@@ -197,7 +197,7 @@ export default function MarkerForm({
             </Button>
 
             {!!draft.id &&
-                <Button variant={'secondary'} className="flex-1 ml-3 !text-red-500"
+                <Button variant={'secondary'} className="flex-1 ml-3 text-red-500!"
                         onClick={() => {
                             !!onRemove && onRemove()
                         }}>

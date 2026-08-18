@@ -96,7 +96,7 @@ export default function EventParticipantTab({
             type="button"
             onClick={() => setTab(value)}
             className={`flex-1 sm:flex-none sm:px-4 rounded-full py-1.5 text-xs sm:text-sm whitespace-nowrap transition-colors
-                ${tab === value ? 'bg-white shadow-sm font-semibold text-gray-900' : 'text-gray-500'}`}>
+                ${tab === value ? 'bg-white shadow-xs font-semibold text-gray-900' : 'text-gray-500'}`}>
             {label}
             {count !== undefined && <span className="ml-1 text-[11px] opacity-70">({count})</span>}
         </button>
@@ -146,11 +146,11 @@ function ListSkeleton({failed, onRetry, lang}: {failed?: boolean, onRetry?: () =
 
     return <div aria-busy="true">
         {[0, 1, 2].map(i =>
-            <div key={i} className="border-b-[1px] border-gray-200 flex flex-row items-center py-4 animate-pulse">
+            <div key={i} className="border-b border-gray-200 flex flex-row items-center py-4 animate-pulse">
                 <div className="w-8 h-8 rounded-full bg-gray-100 mr-2"/>
                 <div className="flex-1">
-                    <div className="h-3 w-24 bg-gray-100 rounded"/>
-                    <div className="h-2 w-16 bg-gray-100 rounded mt-2"/>
+                    <div className="h-3 w-24 bg-gray-100 rounded-sm"/>
+                    <div className="h-2 w-16 bg-gray-100 rounded-sm mt-2"/>
                 </div>
             </div>
         )}

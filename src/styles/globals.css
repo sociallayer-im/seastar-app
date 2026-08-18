@@ -1,13 +1,53 @@
 /*@import "poppins.css";*/
-@import "font_icons.css";
-@import "media_icons.css";
-@import "editor_icons.css";
+@import './font_icons.css' layer(base);
+@import './media_icons.css' layer(base);
+@import './editor_icons.css' layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+/* The v4 upgrade tool dropped tailwind.config.ts but not its plugins array —
+   the shadcn components (DropdownMenu, Modal, Toast…) animate with this
+   plugin's animate-in/fade-in/zoom-in utilities. */
+@plugin "tailwindcss-animate";
 
-:root {
+@theme {
+  --breakpoint-xs: 374px;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-special: var(--special);
+  --color-special-foreground: var(--special-foreground);
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@layer utilities {
+  :root {
     --background: #ffffff;
     --foreground: #171717;
     --page-width: 1000px;
@@ -17,7 +57,12 @@
     --primary: 160, 88%, 73%;
     --primary-foreground: 159.25deg 57.22% 63.33%;
 
-    --special: linear-gradient(88.02deg, rgb(186, 255, 173) -2.09%, rgb(161, 244, 230) 62.09%, rgb(128, 248, 192) 97.29%);
+    --special: linear-gradient(
+      88.02deg,
+      rgb(186, 255, 173) -2.09%,
+      rgb(161, 244, 230) 62.09%,
+      rgb(128, 248, 192) 97.29%
+    );
     --special-foreground: 150.3%, 16%;
 
     --destructive: 0 100% 50%;
@@ -29,33 +74,28 @@
     --past-background: #eaeaea;
     --past-foreground: #adadad;
 
-    --upcoming-background: #EEF2FE;
-    --upcoming-foreground: #7492EF;
+    --upcoming-background: #eef2fe;
+    --upcoming-foreground: #7492ef;
 
     --secondary: #f2f2f2;
     --secondary-foreground: #1f2937;
-}
+  }
 
-@media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: dark) {
     :root {
-        --background: #fff;
-        --foreground: #272928;
+      --background: #fff;
+      --foreground: #272928;
 
-        --destructive: 0 100% 50%;
-        --destructive-foreground: 210 40% 98%;
+      --destructive: 0 100% 50%;
+      --destructive-foreground: 210 40% 98%;
     }
-}
+  }
 
-body {
+  body {
     color: var(--foreground);
     background: var(--background);
     overflow-y: scroll;
-}
-
-@layer utilities {
-    .text-balance {
-        text-wrap: balance;
-    }
+  }
 }
 
 .bg-special {

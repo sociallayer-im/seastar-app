@@ -92,7 +92,7 @@ export default function WalletSignIn({lang}: {lang: Dictionary}) {
     return <Button
         variant="outline"
         onClick={handleSignIn}
-        className="w-full justify-start gap-3 font-normal shadow-sm mb-3 sm:mb-0 [&_svg]:size-5">
+        className="w-full justify-start gap-3 font-normal shadow-xs mb-3 sm:mb-0 [&_svg]:size-5">
         <i className="uil-wallet text-xl"/>
         {lang['Ethereum Wallet']}
     </Button>

@@ -28,7 +28,7 @@ export default function MyTicketList({tickets, lang}: {
                                     (ticket.payment_methods || []).flatMap((method, mi) =>
                                         getPaymentMethodChainIcons(method).map((icon, ci) =>
                                             <img key={`${mi}-${ci}`}
-                                                 className="shadow min-w-5 h-5 rounded-full mr-[-6px] bg-white"
+                                                 className="shadow-sm min-w-5 h-5 rounded-full mr-[-6px] bg-white"
                                                  src={icon}
                                                  alt="" width={20} height={20}/>
                                         )

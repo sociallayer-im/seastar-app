@@ -11,7 +11,7 @@ export default async function PromoCodeListPage(props: AsyncProps<PromoCodePageP
     const {eventDetail, coupons} = await PomoCodePageData(await awaitProps(props))
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px) px-3 !pb-12 pt-0">
+        <div className="page-width-md min-h-[calc(100svh-48px) px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Promo Code']}</div>
 
             <div className="grid grid-cols-1 gap-3">
@@ -26,7 +26,7 @@ export default async function PromoCodeListPage(props: AsyncProps<PromoCodePageP
                             title = `$${coupon.discount / 100} USD Off`
                         }
 
-                        return <a className={`${buttonVariants({variant: 'secondary'})} flex-1 justify-between !h-auto`}
+                        return <a className={`${buttonVariants({variant: 'secondary'})} flex-1 justify-between h-auto!`}
                             href={`/event/detail/${eventDetail.id}/promo-code/${coupon.id}`}
                             key={index}>
                             <div className="flex-row-item-center justify-between w-full">

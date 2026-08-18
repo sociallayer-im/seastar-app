@@ -4,7 +4,7 @@ import {cn} from "./utils"
 import {cva, type VariantProps} from "class-variance-authority"
 
 const inputVariants = cva(
-    "inline-flex items-center rounded-lg border focus-within:outline-none focus-within:border-primary",
+    "inline-flex items-center rounded-lg border focus-within:outline-hidden focus-within:border-primary",
     {
         variants: {
             variant: {
@@ -12,9 +12,9 @@ const inputVariants = cva(
                 textCenter: "bg-secondary border-secondary [&>input]:text-center",
             },
             inputSize: {
-                default: 'px-3 h-[3rem] text-base',
-                md:'px-2 h-[2.5rem] text-sm',
-                sm:'px-2 h-[2rem] text-xs'
+                default: 'px-3 h-12 text-base',
+                md:'px-2 h-10 text-sm',
+                sm:'px-2 h-8 text-xs'
             }
         },
         defaultVariants: {
@@ -36,7 +36,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 {startAdornment}
                 <input
                     type={type}
-                    className="w-full flex-1 h-full bg-transparent outline-none mx-1"
+                    className="w-full flex-1 h-full bg-transparent outline-hidden mx-1"
                     ref={ref}
                     {...props}
                 />

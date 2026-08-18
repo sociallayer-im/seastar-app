@@ -114,7 +114,7 @@ export default function DialogVoucherDetail({
         }
     }
 
-    return <div className="max-w-[90vw] w-[440px] bg-background rounded-lg shadow p-3">
+    return <div className="max-w-[90vw] w-[440px] bg-background rounded-lg shadow-sm p-3">
         <div className="max-h-[80svh] overflow-auto">
             <div className="font-semibold flex-row-item-center justify-between">
                 <div> {lang['Badge Detail']}</div>
@@ -136,7 +136,7 @@ export default function DialogVoucherDetail({
 
             <div className="text-center">
                 <a href={`/profile/${voucherDetail.sender.name}`}
-                    className="!inline-flex whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-6">
+                    className="inline-flex! whitespace-nowrap flex-row-item-center justify-center mx-auto bg-secondary rounded-full py-2 px-6">
                     <div className="font-semibold">{lang['Creator']}</div>
                     <Avatar profile={voucherDetail.sender} size={24} className="mx-2" />
                     <div>{displayProfileName(voucherDetail.sender)}</div>

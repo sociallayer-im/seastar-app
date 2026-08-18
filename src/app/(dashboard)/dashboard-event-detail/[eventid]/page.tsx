@@ -144,7 +144,7 @@ export default async function EventDetail(
         }
     }
 
-    return <div className="page-width !pt-4 !pb-12">
+    return <div className="page-width pt-4! pb-12!">
         <div className="flex flex-col sm:flex-row">
             <div className="min-w-[324px] sm:max-w-[324px] mb-8 order-1 sm:order-2 sm:mb-0">
                 {
@@ -184,7 +184,7 @@ export default async function EventDetail(
                 </div>}
 
 
-                <div className="flex-row-item-center my-3 gap-3 overflow-auto !flex-wrap">
+                <div className="flex-row-item-center my-3 gap-3 overflow-auto flex-wrap!">
                     {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
                     {eventDetail.visibility === 'private' &&
                         <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
@@ -216,7 +216,7 @@ export default async function EventDetail(
                 </div>
 
 
-                <div className="my-4 border-t-[1px] border-b-[1px] border-gray-300">
+                <div className="my-4 border-t border-b border-gray-300">
                     <div className="hide-scroll whitespace-nowrap overflow-auto max-w-[640px]">
                         {!!customHost ?
                             <a key={customHost.id}
@@ -311,7 +311,7 @@ export default async function EventDetail(
                         <>
                             <div className="flex-row-item-center my-4">
                                 <div
-                                    className="mr-2 flex-shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
+                                    className="mr-2 shrink-0 w-9 h-9 flex flex-row items-center justify-center border border-gray-300 rounded-lg">
                                     <i className="uil-location-point text-base"></i>
                                 </div>
                                 <div>

@@ -43,9 +43,9 @@ export default async function OauthAuthorizePage(
 
     if (!data.info) {
         return <div className="w-full min-h-[calc(100svh-48px)] flex flex-col justify-center items-center px-4">
-            <div className="max-w-[420px] w-full bg-[var(--background)] rounded-lg shadow p-6 text-center">
+            <div className="max-w-[420px] w-full bg-(--background) rounded-lg shadow-sm p-6 text-center">
                 <div className="text-lg font-semibold mb-2">{lang['Authorization failed']}</div>
-                <div className="text-sm text-gray-500 break-words">{data.errorDescription || data.error}</div>
+                <div className="text-sm text-gray-500 wrap-break-word">{data.errorDescription || data.error}</div>
                 <div className="text-xs text-gray-400 mt-4 font-mono">{data.error}</div>
             </div>
         </div>

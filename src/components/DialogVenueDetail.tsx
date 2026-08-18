@@ -19,7 +19,7 @@ export default function DialogVenueDetail({venue, lang}: DialogVenueDetailProps)
     const hasWeeklySlots = availabilities.some(a => a.day_of_week && !a.day)
     const dateOverrides = availabilities.filter(a => a.day && !a.day_of_week)
 
-    return <div className="w-[340px] h-auto p-4 bg-background shadow rounded-lg">
+    return <div className="w-[340px] h-auto p-4 bg-background shadow-sm rounded-lg">
         <div className="text-lg font-semibold mb-4">{lang['Venue Timeslots']}</div>
 
         <div className="max-h-[60svh] overflow-auto">

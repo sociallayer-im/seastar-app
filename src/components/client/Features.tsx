@@ -19,7 +19,7 @@ export default function Features(props: { featuredPopupCities: PopupCity[] }) {
     // same defect as the pop-up city section below it, and just as visible.
     if (!props.featuredPopupCities.length) return null
 
-    return <div className="w-full mb-8 overflow-hidden rounded-lg border-gray-200 shadow">
+    return <div className="w-full mb-8 overflow-hidden rounded-lg border-gray-200 shadow-sm">
         <Carousel opts={{
             loop: true
         }} plugins={[Autoplay({ delay: 5000 })]}>

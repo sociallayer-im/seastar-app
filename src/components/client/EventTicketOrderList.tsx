@@ -203,7 +203,7 @@ export default function EventTicketOrderList({
             {
                 orders.map(order => {
                     const history = orderHistory(order)
-                    return <div key={order.id} className="border-b-[1px] border-gray-200 py-4">
+                    return <div key={order.id} className="border-b border-gray-200 py-4">
                         {/* Stacked on a phone: the meta side alone is a ticket
                             title, an amount, a status and a refund button, which
                             never fit beside an avatar at 390px — they used to
@@ -229,7 +229,7 @@ export default function EventTicketOrderList({
                                         {formatOrderAmount(order.amount, order.currency)}
                                     </div>
                                 }
-                                <span className={`text-xs px-1.5 py-0.5 rounded whitespace-nowrap ${STATUS_TONE[order.status || ''] || 'bg-gray-100 text-gray-500'}`}>
+                                <span className={`text-xs px-1.5 py-0.5 rounded-sm whitespace-nowrap ${STATUS_TONE[order.status || ''] || 'bg-gray-100 text-gray-500'}`}>
                                     {lang[ORDER_STATUS_LABEL[order.status || ''] as keyof typeof lang] || order.status}
                                 </span>
                                 {isEventOperator && !!REFUNDABLE_RAILS[order.chain || ''] &&

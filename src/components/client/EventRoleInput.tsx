@@ -169,11 +169,11 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
 
     return <div className="flex-row-item-center mb-2">
         {!!item.display_name &&
-            <div className="w-11 h-11 relative flex-shrink-0 mr-3">
+            <div className="w-11 h-11 relative shrink-0 mr-3">
                 <img className="w-11 h-11 rounded-full"
                     src={item.image_url || "/images/default_avatar/avatar_0.png"} alt="" />
                 <div onClick={setAvatar}
-                    className="cursor-pointer absolute bottom-0 right-0 bg-background rounded-full w-4 h-4 shadow flex-row-item-center justify-center">
+                    className="cursor-pointer absolute bottom-0 right-0 bg-background rounded-full w-4 h-4 shadow-sm flex-row-item-center justify-center">
                     <i className="uil-edit-alt text-xs" />
                 </div>
             </div>
@@ -213,7 +213,7 @@ function RoleOption({ showAddBtn, item, lang, onAdd, onRemove, onChange, multipl
             }
         </div>
         {multiple &&
-            <div className="flex-shrink-0 ml-3">
+            <div className="shrink-0 ml-3">
                 {showAddBtn ? <i onClick={() => {
                     !!onAdd && onAdd()
                 }}

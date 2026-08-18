@@ -95,7 +95,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                         const cover = badgeClass.badge_type === 'private' && !isManager ? '/images/badge_private.png' : badgeClass.image_url
 
                         return <a key={i} href={`/badge-class/${badgeClass.id}`}
-                            className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
+                            className="h-[182px] bg-white shadow-sm rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
                             <div
                                 className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
                                 {badgeClass.display === 'top' && <div
@@ -108,7 +108,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                                        className="w-[90px] h-[90px] rounded-full" />
                             </div>
                             <div
-                                className="font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">
+                                className="font-semibold overflow-hidden text-ellipsis whitespace-nowrap text-center p-2">
                                 {title}
                             </div>
                         </a>
@@ -122,7 +122,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                 {
                     inviting.map((invite, i) => {
                         return <div key={i} onClick={() => handleShowInvite(invite)}
-                            className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
+                            className="h-[182px] bg-white shadow-sm rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
                             <div
                                 className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
                                 <img width={90} height={90}
@@ -131,7 +131,7 @@ export default function Tabs({created, lang, isManager, inviting, isIssuer, grou
                                        className="w-[90px] h-[90px] rounded-full" />
                             </div>
                             <div
-                                className="capitalize font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">
+                                className="capitalize font-semibold overflow-hidden text-ellipsis whitespace-nowrap text-center p-2">
                                 {invite.role}
                             </div>
                         </div>

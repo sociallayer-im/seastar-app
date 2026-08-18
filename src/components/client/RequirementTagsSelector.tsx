@@ -74,7 +74,7 @@ export default function RequirementTagsSelector({ event, setEvent, lang }: Requi
                 <Switch checked={avNeeds} onCheckedChange={handleSwitchAvNeeds} />
             </div>
             {avNeeds && (
-                <div className="flex-row-item-center !flex-wrap gap-2 -mt-2">
+                <div className="flex-row-item-center flex-wrap! gap-2 -mt-2">
                     {AVNeeds.map((t, i) => {
                         return (
                             <Button
@@ -99,7 +99,7 @@ export default function RequirementTagsSelector({ event, setEvent, lang }: Requi
                 <Switch checked={externalCatering} onCheckedChange={handleSwitchExternalCatering} />
             </div>
             {externalCatering && (
-                <div className="flex-row-item-center !flex-wrap gap-2 -mt-2">
+                <div className="flex-row-item-center flex-wrap! gap-2 -mt-2">
                     {ExternalCatering.map((t, i) => {
                         return (
                             <Button

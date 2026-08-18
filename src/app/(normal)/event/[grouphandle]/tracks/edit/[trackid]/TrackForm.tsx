@@ -84,7 +84,7 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
     }
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
-        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 !pb-12 pt-0">
+        <div className="page-width-md min-h-[calc(100svh-48px)] px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{
                 !!trackDetail.id
                     ? lang['Edit Program']
@@ -108,7 +108,7 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
                     {
                         draft.image_url
                             ? <img
-                                className="max-w-[100%] max-h-[100px]"
+                                className="max-w-full max-h-[100px]"
                                 src={draft.image_url} alt="" />
                             : <img className="w-[100px] h-[100px] rounded-full"
                                 src={'/images/upload_default.png'} alt="" />
@@ -137,8 +137,8 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
                         </div>
                     </div>
                     {!draft.is_private
-                        ? <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
-                        : <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
+                        ? <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
+                        : <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
                     }
                 </div>
                 <div onClick={e => {
@@ -152,8 +152,8 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
                         </div>
                     </div>
                     {draft.is_private
-                        ? <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
-                        : <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
+                        ? <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
+                        : <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
                     }
                 </div>
             </div>
@@ -196,7 +196,7 @@ export default function TrackForm({ trackDetail, lang, groupDetail, onConfirm }:
                     members.map((member, index) => {
                         return <div key={index} className="flex-row-item-center w-full mb-2">
                             <div
-                                className={`${buttonVariants({ variant: 'secondary' })} flex-1 mr-3 flex !justify-start`}>
+                                className={`${buttonVariants({ variant: 'secondary' })} flex-1 mr-3 flex justify-start!`}>
                                 <Avatar profile={member.profile} size={24} />
                                 <div className="font-normal">
                                     {displayProfileName(member.profile)}
@@ -264,7 +264,7 @@ interface DialogSelectorMemberProps {
 
 function DialogSelectorMember({ lang, onChange, close, memberships }: DialogSelectorMemberProps) {
     const [selected, setSelected] = useState<Profile | null>(null)
-    return <div className="w-[100vw] h-[100svh] bg-white p-3 overflow-auto relative">
+    return <div className="w-screen h-svh bg-white p-3 overflow-auto relative">
         <div className="page-width-md">
             <div className="font-semibold text-lg text-center py-3">
                 Selector Member
@@ -276,7 +276,7 @@ function DialogSelectorMember({ lang, onChange, close, memberships }: DialogSele
                         onClick={() => {
                             setSelected(member.user)
                         }}
-                        className="mb-3 justify-between cursor-pointer flex-row-item-center shadow rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
+                        className="mb-3 justify-between cursor-pointer flex-row-item-center shadow-sm rounded-lg px-6 h-[60px] duration-300 hover:bg-secondary">
                         <div className='flex-row-item-center'>
                             <Avatar
                                 size={28}

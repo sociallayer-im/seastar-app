@@ -49,7 +49,7 @@ function ListViewEventItem({event, timezone, lang}: {
         })}
             className="pb-2 flex-1 relative">
             <div style={{background: bgColor}}
-                className="flex flex-col flex-nowrap !items-start bg-white py-2 px-4 shadow rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">
+                className="flex flex-col flex-nowrap items-start! bg-white py-2 px-4 shadow-sm rounded-[4px] cursor-pointer relative sm:duration-200 sm:hover:scale-105">
                 <i className="h-full w-0.5 left-0 top-0 absolute" style={{background: themeColor}}/>
                 <div className="flex-1 font-semibold mr-4 mb-2 flex-row-item-center">
                     {event.title}
@@ -57,7 +57,7 @@ function ListViewEventItem({event, timezone, lang}: {
                         <img src={'/images/starred.png'} className="w-4 h-4 ml-1" /> : null
                     }
                     {event.is_attending ?
-                        <div className="flex-row-item-center !inline-flex">
+                        <div className="flex-row-item-center inline-flex!">
                             <img src={'/images/check-circle.png'} className="w-4 h-4 ml-1" />
                             <span className="font-normal text-xs ml-1">Attending</span>
                         </div> : null

@@ -29,7 +29,7 @@ export default function CommunityList({communities, lang, showAdminActions}: Com
             // The group's event home, not its profile page — what someone
             // wants from a community is what it has on.
             <a key={group.id} href={`/event/${group.name}`}
-               className="h-[200px] rounded shadow p-3 duration-200 hover:translate-y-[-6px] relative">
+               className="h-[200px] rounded-sm shadow-sm p-3 duration-200 hover:translate-y-[-6px] relative">
                 <Avatar profile={group} size={64} className="object-cover"/>
                 <div className="webkit-box-clamp-2 text-lg font-semibold leading-5 h-10 mb-4 mt-2">
                     {displayProfileName(group)}

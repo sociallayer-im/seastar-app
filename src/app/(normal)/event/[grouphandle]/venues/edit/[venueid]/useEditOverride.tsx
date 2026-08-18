@@ -47,8 +47,8 @@ export function DialogEditOverride({override, lang, onConfig, onCancel}: DialogE
         onConfig?.(draft)
     }
 
-    return <div className="w-[100vw] h-[100svh] p-13 bg-background overflow-auto">
-        <div className="page-width-md !pb-12 !pt-3">
+    return <div className="w-screen h-svh p-13 bg-background overflow-auto">
+        <div className="page-width-md pb-12! pt-3!">
             <div className="font-semibold text-lg text-center mb-6">
                 {!!draft.id ? lang['Edit Override'] : lang['Create Override']}
             </div>
@@ -92,7 +92,7 @@ export function DialogEditOverride({override, lang, onConfig, onCancel}: DialogE
                         renderOption={option => <div
                             className="capitalize">{option.value}</div>}
                     >
-                        <Input className="w-full flex-1 !capitalize"
+                        <Input className="w-full flex-1 capitalize!"
                                value={getTargetRole(draft.role)!.label}
                                readOnly
                                endAdornment={<i

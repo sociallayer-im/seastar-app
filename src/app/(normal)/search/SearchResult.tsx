@@ -56,8 +56,8 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
         setCurrTab(tab)
     }
 
-    return <div className="min-h-[100svh] w-full">
-        <div className="pt-8 pb-4 sticky top-8 z-[200] bg-background">
+    return <div className="min-h-svh w-full">
+        <div className="pt-8 pb-4 sticky top-8 z-200 bg-background">
             <div className="page-width-md">
                 <div className="flex-row-item-center">
                     <Input
@@ -88,7 +88,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                 </div>
             </div>
         </div>
-        <div className="page-width-md min-h-[100svh] px-3 !pt-0 !pb-16">
+        <div className="page-width-md min-h-svh px-3 pt-0! pb-16!">
             {currTab === 'event' &&
                 <div className="grid grid-cols-1 gap-3">
                     <div>{result.events.length} Results</div>
@@ -103,7 +103,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                     <div>{result.groups.length} Results</div>
                     {result.groups.map((group, index) => {
                         return <a key={index}
-                                  className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
+                                  className="flex-row-item-center shadow-sm rounded-lg px-6 py-4 duration-300 hover:scale-105"
                                   href={`/group/${group.name}`}>
                             <div className="relative mr-2">
                                 <Avatar profile={group} size={28}/>
@@ -119,7 +119,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                     <div>{result.profiles.length} Results</div>
                     {result.profiles.map((profile, index) => {
                         return <a key={index}
-                                  className="flex-row-item-center shadow rounded-lg px-6 py-4 duration-300 hover:scale-105"
+                                  className="flex-row-item-center shadow-sm rounded-lg px-6 py-4 duration-300 hover:scale-105"
                                   href={`/profile/${profile.name}`}>
                             <div className="relative mr-2">
                                 <Avatar profile={profile} size={28}/>
@@ -137,7 +137,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                         {
                             result.badgeClasses.map((badgeClass, i) => {
                                 return <a key={i} href={`/badge-class/${badgeClass.id}`}
-                                          className="h-[182px] bg-white shadow rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
+                                          className="h-[182px] bg-white shadow-sm rounded-2xl shadow-badge p-2 cursor-pointer duration-200 hover:translate-y-[-6px]">
                                     <div
                                         className="bg-gray-100 flex flex-row items-center justify-center h-[130px] rounded-2xl relative overflow-auto">
                                         <img width={90} height={90}
@@ -146,7 +146,7 @@ export default function SearchResult({lang, tab, keyword, result}: SearchPagePro
                                                className="-[90px] h-[90px] rounded-full"/>
                                     </div>
                                     <div
-                                        className="font-semibold overflow-hidden overflow-ellipsis whitespace-nowrap text-center p-2">
+                                        className="font-semibold overflow-hidden text-ellipsis whitespace-nowrap text-center p-2">
                                         {badgeClass.title}
                                     </div>
                                 </a>

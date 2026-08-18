@@ -37,7 +37,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
 
     return (
         <div onClick={showVenueDetail}
-             className="bg-white rounded-lg shadow p-6 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
+             className="bg-white rounded-lg shadow-sm p-6 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
             <div className="flex gap-6 sm:flex-row flex-col">
                 <div className="flex-1 order-2 sm:order-1">
                     <h2 className="font-semibold mb-1">{venue.name}</h2>
@@ -55,7 +55,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
                     </div>
                 </div>
                 {!!venue.image_urls?.length &&
-                    <div className="w-[140px] h-[140px] rounded-lg overflow-hidden flex-shrink-0  order-1 sm:order-2">
+                    <div className="w-[140px] h-[140px] rounded-lg overflow-hidden shrink-0  order-1 sm:order-2">
                         <Img
                             src={cfImage(venue.image_urls[0], { width: 400, height: 300, fit: 'cover' })}
                             alt={venue.name}
@@ -79,7 +79,7 @@ export default function VenueCard({venue, lang, groupHandle, onRemove, isManager
                         variant={'secondary'}
                         size={'sm'}
                         onClick={(e) => {e.stopPropagation();onRemove(venue.id)}}
-                        className="!text-red-400 hover:brightness-95 flex items-center">
+                        className="text-red-400! hover:brightness-95 flex items-center">
                         <i className="uil-trash-alt mr-1"/>
                         {lang['Remove']}
                     </Button>

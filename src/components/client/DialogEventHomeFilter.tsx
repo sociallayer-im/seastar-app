@@ -87,13 +87,13 @@ export default function DialogEventHomeFilter({filterOpts, groupDetail, unionVen
         close && close()
     }
 
-    const className = dialogMode === 'dialog' ? 'w-[350px] p-3 bg-background shadow rounded-lg' : ''
+    const className = dialogMode === 'dialog' ? 'w-[350px] p-3 bg-background shadow-sm rounded-lg' : ''
 
     return <div className={className}>
         <div className="flex-row-item-center justify-between mb-4">
             <div className="font-semibold text-2xl">{lang['Filter']}</div>
             <Button onClick={handleReset}
-                    variant="ghost" size={'sm'} className="!font-normal text-sm text-primary-foreground">
+                    variant="ghost" size={'sm'} className="font-normal! text-sm text-primary-foreground">
                 {lang['Reset Filter']}
             </Button>
         </div>

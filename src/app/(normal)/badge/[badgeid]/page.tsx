@@ -21,9 +21,9 @@ export default async function BadgePage(props: AsyncProps<BadgePageDataProps>) {
 
 async function PublicBadge({badge, isOwner, groupCreator}: Awaited<ReturnType<typeof BadgePageData>>) {
     const {lang} = await selectLang()
-    return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
+    return <div className="page-width min-h-[calc(100vh-48px)] pt-6! pb-16!">
         <div className="w-full flex flex-col justify-start items-start">
-            <div className="w-full max-w-[500px] mx-auto flex-shrink-0 grid grid-cols-1 gap-6">
+            <div className="w-full max-w-[500px] mx-auto shrink-0 grid grid-cols-1 gap-6">
                 <img src={cfImage(badge.badge_class.image_url, { width: 320, height: 320, fit: 'cover' })}
                        width={160} height={160}
                        alt=""
@@ -90,9 +90,9 @@ async function PublicBadge({badge, isOwner, groupCreator}: Awaited<ReturnType<ty
 async function PrivateBadge({groupCreator, badge}: Awaited<ReturnType<typeof BadgePageData>>) {
     const {lang} = await selectLang()
 
-    return <div className="page-width min-h-[calc(100vh-48px)] !pt-6 !pb-16">
+    return <div className="page-width min-h-[calc(100vh-48px)] pt-6! pb-16!">
         <div className="w-full flex flex-col justify-start items-start">
-            <div className="w-full max-w-[500px] mx-auto flex-shrink-0 grid grid-cols-1 gap-6">
+            <div className="w-full max-w-[500px] mx-auto shrink-0 grid grid-cols-1 gap-6">
                 <img src={"/images/badge_private.png"}
                        width={160} height={160}
                        alt=""

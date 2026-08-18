@@ -89,7 +89,7 @@ export default function EmailMembersForm({groupId, groupHandle, memberCount, lan
                 onChange={e => setContent(e.target.value)}
                 placeholder="Write your message here… HTML is supported."
                 rows={16}
-                className="w-full border border-gray-200 rounded-lg p-3 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-gray-300"
+                className="w-full border border-gray-200 rounded-lg p-3 text-sm font-mono resize-y focus:outline-hidden focus:ring-2 focus:ring-gray-300"
             />
             <div className="text-xs text-gray-400 mt-1">HTML is supported. The content is rendered inside the email body.</div>
         </div>

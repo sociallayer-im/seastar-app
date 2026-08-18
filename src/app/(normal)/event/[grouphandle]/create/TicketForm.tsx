@@ -748,7 +748,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                                 <img src="/images/payment_icon/stripe.png" className="w-5 h-5 rounded-full mr-2" alt=""/>
                                 {lang['Card Payment (Stripe)']}
                                 {currSetting?.mode === 'test' &&
-                                    <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">{lang['TEST MODE']}</span>}
+                                    <span className="ml-2 text-xs px-1.5 py-0.5 rounded-sm bg-amber-100 text-amber-700">{lang['TEST MODE']}</span>}
                             </div>
                             <div className="flex-row-item-center text-sm mb-3 whitespace-nowrap">
                                 {/* From the method, not hardcoded: a fiat rail
@@ -815,7 +815,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
                         // platform merchant, which the backend attaches.
                         return <div key={index} className="border border-gray-200 p-3 rounded-lg mb-3">
                             <div className="mb-2 text-sm font-semibold flex-row-item-center">
-                                <img src="/images/payment_icon/wechat_pay.svg" className="w-5 h-5 rounded mr-2" alt=""/>
+                                <img src="/images/payment_icon/wechat_pay.svg" className="w-5 h-5 rounded-sm mr-2" alt=""/>
                                 {lang['WeChat Pay']}
                             </div>
                             <div className="flex-row-item-center text-sm">
@@ -939,7 +939,7 @@ function PaymentMethodForm({lang, ...props}: PaymentMethodForm) {
         }
         {WECHAT_PAY_ENABLED && !hasWechatMethod &&
             <Button variant={'secondary'} size={'sm'} onClick={addWechatPaymentMethod}>
-                <img src="/images/payment_icon/wechat_pay.svg" className="w-4 h-4 rounded mr-1" alt=""/>
+                <img src="/images/payment_icon/wechat_pay.svg" className="w-4 h-4 rounded-sm mr-1" alt=""/>
                 {lang['Add WeChat payment']}
             </Button>
         }

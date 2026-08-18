@@ -26,12 +26,12 @@ export default function HeaderSearchBar({lang}: { lang: Dictionary }) {
                            }
                        }}
                        placeholder={lang['Events, Groups, Badges, Users']}
-                       className="!rounded-full w-full"
+                       className="rounded-full! w-full"
                        value={keyword}
                        endAdornment={<Button
                            onClick={handleSearch}
                            variant={'primary'} size={'xs'}
-                           className="!rounded-full !py-2 !h-[22px] bg-[#6cd7b2]">
+                           className="rounded-full! py-2! h-[22px]! bg-[#6cd7b2]">
                            <i className="uil-search cursor-pointer text-white"/>
                        </Button>}
                        onChange={e => {
@@ -39,7 +39,7 @@ export default function HeaderSearchBar({lang}: { lang: Dictionary }) {
                        }}/>
                 <Button size={'xs'}
                         onClick={() => setActive(false)}
-                        variant={'ghost'} className="!text-[#6cd7b2] ml-1 !rounded-full">
+                        variant={'ghost'} className="text-[#6cd7b2]! ml-1 rounded-full!">
                     {lang['Cancel']}
                 </Button>
             </div>

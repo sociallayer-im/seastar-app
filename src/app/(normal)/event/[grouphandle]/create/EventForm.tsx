@@ -263,8 +263,8 @@ export default function EventForm({
   }
 
   return (
-    <div className="min-h-[100svh] w-full">
-      <div className="page-width min-h-[100svh] px-3 pt-0 !pb-16">
+    <div className="min-h-svh w-full">
+      <div className="page-width min-h-svh px-3 pt-0 pb-16!">
         <div className="pt-4 sm:pt-6 sm:pb-10 font-semibold text-center text-xl relative">
           {draft.id ? lang["Edit Event"] : lang["Create Event"]}
 
@@ -273,7 +273,7 @@ export default function EventForm({
               variant={"ghost"}
               size={"xs"}
               onClick={handleImportLumaEvent}
-              className="!block !sm:inline sm:absolute mt-1 sm:mt-0 right-0 top-6 text-sm !text-blue-500"
+              className="block! !sm:inline sm:absolute mt-1 sm:mt-0 right-0 top-6 text-sm text-blue-500!"
             >
               <div className="flex-row-item-center">
                 <i className="uil-plus-circle mr-1 text-base" />
@@ -287,7 +287,7 @@ export default function EventForm({
               onClick={handleCancelEvent}
               variant={"secondary"}
               size={"sm"}
-              className="absolute right-0 text-sm !text-red-500"
+              className="absolute right-0 text-sm text-red-500!"
             >
               {lang["Cancel Event"]}
             </Button>
@@ -297,7 +297,7 @@ export default function EventForm({
         <div className="flex flex-col items-center sm:items-start sm:flex-row w-full">
           <div className="sm:order-2 mt-4 sm:mt-0 mb-8">
             {!draft.image_url ? (
-              <div className="mb-4 flex-shrink-0 w-[324px] h-[324px] overflow-hidden mx-auto">
+              <div className="mb-4 shrink-0 w-[324px] h-[324px] overflow-hidden mx-auto">
                 <div
                   className="default-cover w-[452px] h-[452px]"
                   style={{ transform: "scale(0.72)" }}
@@ -729,7 +729,7 @@ export default function EventForm({
                       <Input
                         placeholder={"No limit"}
                         autoComplete={"off"}
-                        className="!h-[2rem] w-[130px] text-sm"
+                        className="h-8! w-[130px] text-sm"
                         type={"phone"}
                         onChange={(e) => {
                           setDraft({
@@ -776,9 +776,9 @@ export default function EventForm({
                           </div>
                         </div>
                         {draft.visibility !== "private" ? (
-                          <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
+                          <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
                         ) : (
-                          <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
+                          <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
                         )}
                       </div>
                       <div
@@ -800,9 +800,9 @@ export default function EventForm({
                           </div>
                         </div>
                         {draft.visibility === "private" ? (
-                          <i className="flex-shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
+                          <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
                         ) : (
-                          <i className="flex-shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
+                          <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
                         )}
                       </div>
                     </div>

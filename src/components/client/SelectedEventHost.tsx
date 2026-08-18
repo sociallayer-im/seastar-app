@@ -59,8 +59,8 @@ export default function SelectedEventHost({
             }
         </div>}>
         <div
-            className={`${buttonVariants({variant: 'secondary'})} w-full !justify-between items-center cursor-pointer`}>
-            <div className="overflow-hidden whitespace-nowrap overflow-ellipsis font-normal flex-row-item-center">
+            className={`${buttonVariants({variant: 'secondary'})} w-full justify-between! items-center cursor-pointer`}>
+            <div className="overflow-hidden whitespace-nowrap text-ellipsis font-normal flex-row-item-center">
                 <img className="w-6 h-6 rounded-full mr-2"
                     src={cfImage(getAvatar(currHost.id, currHost.image_url), { width: 48, height: 48, fit: 'cover' })} alt=""/>
                 {currHost.nickname || currHost.name}

@@ -13,7 +13,7 @@ export default async function Header({sticky = true}:{sticky?: boolean}) {
     const currentPath = headersList.get('x-current-path')
     const profile = await getCurrProfile()
 
-    return <header className={`w-full h-[48px] shadow bg-[var(--background)] ${sticky ? 'sticky top-0 z-[999]' : ''}`}>
+    return <header className={`w-full h-[48px] shadow-sm bg-(--background) ${sticky ? 'sticky top-0 z-999' : ''}`}>
         <div className="page-width w-full flex-row-item-center justify-between items-center h-[48px]">
             <div className="flex-row-item-center">
                 <a href="/" className="sm:block hidden">

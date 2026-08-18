@@ -54,8 +54,8 @@ export default function ListPagination({currStartDate, timezone, onChange, onSel
         return interval
     }, [timezone, currStartDate])
 
-    return <div className="flex-row-item-center sticky top-[0] left-0 right-0 z-[999] my-3 sm:my-6 bg-[#F8F9F8]">
-        <button className="btn btn-ghost h-[54px] rounded-sm" onClick={toPrevWeek}>
+    return <div className="flex-row-item-center sticky top-0 left-0 right-0 z-999 my-3 sm:my-6 bg-[#F8F9F8]">
+        <button className="btn btn-ghost h-[54px] rounded-xs" onClick={toPrevWeek}>
             <i className="uil-angle-left text-3xl"></i>
         </button>
         <div className="flex-row-item-center bg-[#F8F9F8] w-[1000px] flex-1 overflow-auto h-[54px] overflow-y-hidden">
@@ -66,7 +66,7 @@ export default function ListPagination({currStartDate, timezone, onChange, onSel
                         onClick={() => toSelected(day)}
                         id={isSelected ? 'selected' : ''}
                         style={isSelected ? {backgroundColor: '#EFFFF9'} : {}}
-                        className="px-8 flex-1 flex-shrink-0 cursor-pointer h-[52px] leading-[52px] text-center sm:border border-[#F1F1F1]"
+                        className="px-8 flex-1 shrink-0 cursor-pointer h-[52px] leading-[52px] text-center sm:border border-[#F1F1F1]"
                         key={index}>
                         <strong>{day.format('DD')}</strong>
                         <span className="ml-1">{day.format('ddd')}</span>
@@ -74,7 +74,7 @@ export default function ListPagination({currStartDate, timezone, onChange, onSel
                 })
             }
         </div>
-        <button className="btn btn-ghost h-[52px] rounded-sm" onClick={toNextWeek}>
+        <button className="btn btn-ghost h-[52px] rounded-xs" onClick={toNextWeek}>
             <i className="uil-angle-right text-3xl"></i>
         </button>
     </div>

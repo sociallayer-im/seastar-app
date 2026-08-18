@@ -31,7 +31,7 @@ export default async function PopupCityListPage() {
         return 0
     })
 
-    return <div className="page-width min-h-[100svh] pt-0 sm:pt-6 !pb-16">
+    return <div className="page-width min-h-svh pt-0 sm:pt-6 pb-16!">
         <h2 className="text-2xl font-semibold mb-3 md:flex-row flex items-center justify-between flex-col">
             {lang['Pop-up Cities']}
         </h2>
@@ -39,10 +39,10 @@ export default async function PopupCityListPage() {
         <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-2">
             {sortedPopupCities.map((popupCity, index) => {
                 return <a key={index} href={`/event/${popupCity.group.name}`}
-                    className="h-[292px] rounded shadow p-3 duration-200 hover:translate-y-[-6px] relative">
+                    className="h-[292px] rounded-sm shadow-sm p-3 duration-200 hover:translate-y-[-6px] relative">
                     
-                    <div className="rounded h-[148px] mb-3 overflow-hidden bg-gray-100">
-                        <Img className="object-cover w-full h-full rounded"
+                    <div className="rounded-sm h-[148px] mb-3 overflow-hidden bg-gray-100">
+                        <Img className="object-cover w-full h-full rounded-sm"
                             width={227} height={148}
                             src={cfImage(popupCity.image_url || popupCity.banner_image_url || getAvatar(popupCity.id), { width: 454, height: 296, fit: 'cover' })} alt="" />
                     </div>
@@ -68,7 +68,7 @@ export default async function PopupCityListPage() {
                             </div>
                         </div>
                         <div
-                            className="hidden sm:block whitespace-nowrap text-xs bg-primary py-1.5 px-2 rounded font-semibold ml-1">
+                            className="hidden sm:block whitespace-nowrap text-xs bg-primary py-1.5 px-2 rounded-sm font-semibold ml-1">
                             {lang['View events']}
                         </div>
                     </div>

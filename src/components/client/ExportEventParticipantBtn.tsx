@@ -48,7 +48,7 @@ function ExportModal(props: { lang: Dictionary, groupId: string, close: () => vo
         a.click()
     }
 
-    return <div className="p-4 bg-white rounded-lg shadow w-[340px]">
+    return <div className="p-4 bg-white rounded-lg shadow-sm w-[340px]">
         <div className="text-lg font-bold"  >{lang['Export Event Participant Data']}</div>
         <div className="flex flex-col gap-2 my-3">
             <div className="flex flex-row gap-2 items-center">

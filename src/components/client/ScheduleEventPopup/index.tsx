@@ -54,8 +54,8 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
     const { canAccess, isEventOperator, attended, checkedIn } = checkEventPermissionsForProfile(event!, groupDetail!, profile)
     const [attendedEvent, setAttendedEvent] = useState(attended)
 
-    return <div className="flex flex-col max-h-[90svh] sm:max-w-[725px] max-w-[365px] w-[95vw] shadow bg-[--background] sm:p-9 rounded-lg p-3">
-        <div className="flex flex-row flex-nowrap flex-shrink-0">
+    return <div className="flex flex-col max-h-[90svh] sm:max-w-[725px] max-w-[365px] w-[95vw] shadow-sm bg-(--background) sm:p-9 rounded-lg p-3">
+        <div className="flex flex-row flex-nowrap shrink-0">
             <div className="flex-1">
                 <div className="text-xs font-semibold sm:my-3 my-2">{formatEventDuration(event.start_time, event.end_time, event.timezone)}</div>
                 <div className="flex-row-item-center sm:my-2 my-1">
@@ -67,7 +67,7 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                 {!!event.tags &&
                     <div className="flex flex-row flex-wrap sm:my-2 my-1 sm:text-base text-xs">
                         {event.tags.filter(t => !t.startsWith(':')).map((tag, index) => {
-                            return <div key={index} className="flex-row-item-center !inline-flex mr-4">
+                            return <div key={index} className="flex-row-item-center inline-flex! mr-4">
                                 <i className='mr-1 w-2 h-2 shrink-0 rounded-full'
                                     style={{ background: getLabelColor(tag) }}></i>
                                 {tag}
@@ -80,7 +80,7 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                         {event.track &&
                             <div><span style={{ color: getLabelColor(event.track.title) }}>{event.track.title}</span><span className="mx-1">|</span></div>
                         }
-                        <img className="mr-1 w-4 h-4 flex-shrink-0 rounded-full" src={getAvatar(host.id, host.image_url)} alt="" />
+                        <img className="mr-1 w-4 h-4 shrink-0 rounded-full" src={getAvatar(host.id, host.image_url)} alt="" />
                         <span className="mr-1">by</span>
                         <span>{host.nickname || host.name}</span>
                     </div>
@@ -90,12 +90,12 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                         className="text-xs flex-row-item-center mt-1 ml-1 hover:underline"
                         href={genGoogleMapLink(event.place.latitude!, event.place.longitude!, (event.place.data as any)?.place_id ?? null)}>
                         <i className="uil-location-point mr-1" />
-                        <span className="w-[180px] sm:w-auto overflow-hidden overflow-ellipsis whitespace-nowrap">{event.place.name}</span>
+                        <span className="w-[180px] sm:w-auto overflow-hidden text-ellipsis whitespace-nowrap">{event.place.name}</span>
                     </a>
                 }
             </div>
             <div
-                className="sm:w-[160px] sm:h-[160px] w-[99px] h-[99px] rounded overflow-hidden flex-grow-0 flex-shrink-0 relative">
+                className="sm:w-[160px] sm:h-[160px] w-[99px] h-[99px] rounded-sm overflow-hidden grow-0 shrink-0 relative">
                 {!!event.image_url
                     ? <img src={event.image_url} className="w-full h-full object-cover" alt="" />
                     : <div className="default-cover w-[452px] h-[452px] sm:scale-[0.356] scale-[0.22]">
@@ -119,10 +119,10 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
             <RichTextDisplayer markdownStr={event.content || ''} />
         </div>
 
-        <div className="mt-3 flex sm:flex-row flex-col sm:justify-between w-full flex-shrink-0">
+        <div className="mt-3 flex sm:flex-row flex-col sm:justify-between w-full shrink-0">
             <div className="sm:order-1 order-2 flex mt-3 justify-center sm:justify-start">
                 {isEventOperator &&
-                    <a href={`/event/edit/${event.id}`} className={`${buttonVariants({ variant: 'ghost' })} text-primary-foreground !font-normal  !gap-1.5`}>
+                    <a href={`/event/edit/${event.id}`} className={`${buttonVariants({ variant: 'ghost' })} text-primary-foreground font-normal!  gap-1.5!`}>
                         <i className="uil-edit-alt" />
                         {lang['Edit']}
                     </a>

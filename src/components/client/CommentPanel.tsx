@@ -97,7 +97,7 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
     }, [])
 
     return <div>
-        <div className="flex flex-row  w-full !items-start">
+        <div className="flex flex-row  w-full items-start!">
             {currProfile ? <Avatar profile={currProfile} size={36} className="mr-2 border"/>
                 : <img className="w-9 h-9 rounded-full mr-2 border"
                        src="/images/default_avatar/avatar_1.png" alt=""/>
@@ -105,7 +105,7 @@ export default function CommentPanel({lang, currProfile, itemType, itemId, comme
 
             <div className="flex-1 bg-secondary rounded-lg p-2">
                 <Textarea
-                    className="flex-1 min-h-[60px] outline-none !border-0"
+                    className="flex-1 min-h-[60px] outline-hidden border-0!"
                     placeholder={lang['Input comment']}
                     value={content}
                     onChange={e => setContent(e.target.value)}

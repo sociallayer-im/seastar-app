@@ -76,7 +76,7 @@ export default function Notifications({activities, lang}: { activities: Activity
                 </Button>
             </div>
             {currTab === 'badge' && badgeActivities.map((a, i) =>
-                <div className="flex flex-col cursor-pointer border-b-[1px] pb-4" key={i}
+                <div className="flex flex-col cursor-pointer border-b pb-4" key={i}
                      onClick={() => handleShowVoucher(a)}>
                     <div className="flex-row-item-center mb-2 justify-between">
                         <div className="flex-row-item-center">
@@ -94,7 +94,7 @@ export default function Notifications({activities, lang}: { activities: Activity
             }
 
             {currTab === 'invite' && inviteActivities.map((a, i) =>
-                <div className="flex flex-col cursor-pointer border-b-[1px] pb-4" key={i}
+                <div className="flex flex-col cursor-pointer border-b pb-4" key={i}
                      onClick={() => handleShowInvite(a)}>
                     <div className="flex-row-item-center mb-2 justify-between">
                         <div className="flex-row-item-center">

@@ -36,13 +36,13 @@ export default function FormFieldsEditor({fields, setFields, lang}: {
                 <div className="flex-row-item-center gap-2">
                     <div className="flex-1">
                         <input
-                            className="w-full text-sm border-none outline-none bg-transparent"
+                            className="w-full text-sm border-none outline-hidden bg-transparent"
                             placeholder={lang['Question label']}
                             value={field.label}
                             onChange={e => updateField(index, {label: e.target.value})}/>
                     </div>
                     <select
-                        className="text-xs border border-gray-200 rounded px-1 py-0.5 bg-white shrink-0"
+                        className="text-xs border border-gray-200 rounded-sm px-1 py-0.5 bg-white shrink-0"
                         value={field.field_type}
                         onChange={e => updateField(index, {
                             field_type: e.target.value as FormFieldType,
@@ -79,7 +79,7 @@ export default function FormFieldsEditor({fields, setFields, lang}: {
                         {field.options.map((opt, oi) => (
                             <div key={oi} className="flex-row-item-center gap-1">
                                 <input
-                                    className="flex-1 text-xs border border-gray-200 rounded px-2 py-0.5 outline-none"
+                                    className="flex-1 text-xs border border-gray-200 rounded-sm px-2 py-0.5 outline-hidden"
                                     placeholder={`Option ${oi + 1}`}
                                     value={opt}
                                     onChange={e => {

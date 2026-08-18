@@ -147,8 +147,8 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
         })
     }
 
-    return <div className="min-h-[100svh] w-full">
-        <div className="page-width-md min-h-[100svh] px-3 !pb-12 pt-0">
+    return <div className="min-h-svh w-full">
+        <div className="page-width-md min-h-svh px-3 pb-12! pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Edit Profile']}</div>
 
             <div className="flex flex-col mx-auto">
@@ -163,7 +163,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                                         setNewGroup({...newGroup, image_url: url})
                                     }
                                 })}
-                                className="text-xs bg-white !rounded-3xl !text-foreground">{lang['Upload Avatar']}</Button>
+                                className="text-xs bg-white rounded-3xl! text-foreground!">{lang['Upload Avatar']}</Button>
                     </div>
 
                     <div className="font-semibold pb-2">{lang['Nickname']}</div>
@@ -196,7 +196,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                     <div className="mt-6">
                         <div className="font-semibold pb-2">Parent Group</div>
                         {parentGroup
-                            ? <div className="flex-row-item-center justify-between rounded-lg px-3 h-[3rem] bg-secondary mb-3">
+                            ? <div className="flex-row-item-center justify-between rounded-lg px-3 h-12 bg-secondary mb-3">
                                 <div className="flex-row-item-center">
                                     <Avatar profile={parentGroup} size={28} className="mr-2"/>
                                     <a href={`/group/${parentGroup.name}`}
@@ -247,10 +247,10 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                     {
                         (Object.keys(Media_Meta) as Array<keyof typeof Media_Meta>).map((key, i) => {
                             return <div key={i}
-                                        className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
+                                        className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-12 bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
                                     <div className="w-9 flex flex-row justify-center">
-                                        <i className={`${Media_Meta[key]!.icon} !text-lg`}/>
+                                        <i className={`${Media_Meta[key]!.icon} text-lg!`}/>
                                     </div>
                                     <span>{Media_Meta[key]!.label}</span>
                                 </div>
@@ -275,18 +275,18 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
             <div className="flex-row-item-center justify-between my-4">
                 {isOwner &&
                     <Button variant={'secondary'}
-                            className="!text-gray-400 text-sm flex-1 sm:flex-grow-0 sm:min-w-36 mr-4"
+                            className="text-gray-400! text-sm flex-1 sm:grow-0 sm:min-w-36 mr-4"
                             onClick={handleFreezeGroup}>
                         {lang['Freeze Group']}
                     </Button>
                 }
                 <div>
-                    <Button variant={'secondary'} className="flex-1 sm:flex-grow-0 sm:min-w-36 mr-4" onClick={() => {
+                    <Button variant={'secondary'} className="flex-1 sm:grow-0 sm:min-w-36 mr-4" onClick={() => {
                         history.go(-1)
                     }}>{lang['Cancel']}</Button>
                     <Button variant={'primary'}
                             disabled={!isManager}
-                            className="flex-1 sm:flex-grow-0 sm:min-w-36"
+                            className="flex-1 sm:grow-0 sm:min-w-36"
                             onClick={handleSave}>{lang['Save']}</Button>
                 </div>
             </div>

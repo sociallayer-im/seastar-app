@@ -156,10 +156,10 @@ export default function TeamManagement({lang, group, teams: initialTeams, member
                 {teams.map(team => {
                     const color = team.color || getLabelColor(team.name)
                     const inTeam = teamMembers[team.id] || []
-                    return <div key={team.id} className="shadow rounded-lg p-4">
+                    return <div key={team.id} className="shadow-sm rounded-lg p-4">
                         <div className="flex-row-item-center gap-2">
                             <span className="w-3 h-3 rounded-full shrink-0" style={{background: color}}/>
-                            <input className="font-semibold flex-1 bg-transparent outline-none"
+                            <input className="font-semibold flex-1 bg-transparent outline-hidden"
                                 defaultValue={team.name}
                                 onBlur={e => rename(team, e.target.value)}/>
                             <span className="text-xs text-gray-400">{team.members_count}</span>

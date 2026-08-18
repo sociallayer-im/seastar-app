@@ -70,7 +70,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
     }, [])
 
     return <div
-        className={`w-full h-[calc(100svh-48px)] relative outline-none`}>
+        className={`w-full h-[calc(100svh-48px)] relative outline-hidden`}>
         <GoogleMap
             defaultZoom={currCategory ? 15 : 3}
             center={defaultCenter}
@@ -107,7 +107,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
                                   style={style}
                                   key={marker.id}
                                   id={'marker-' + marker.id}
-                                  className={'shadow flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] mr-3 h-[164px] max-w-[430px] w-[calc(100vw-24px)] flex-shrink-0 flex-grow-0'}>
+                                  className={'shadow-sm flex rounded-lg p-3 flex-row flex-nowrap bg-background duration-200 hover:scale-[1.02] mr-3 h-[164px] max-w-[430px] w-[calc(100vw-24px)] shrink-0 grow-0'}>
                             <div className="flex-1 mr-2">
                                 <div className="font-semibold text-sm sm:text-base webkit-box-clamp-2 leading-6">
                                     <Badge variant="secondary" className="mr-1">{marker.category}</Badge>
@@ -118,13 +118,13 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
                                     <div className="h-6 flex-row-item-center text-xs sm:text-sm sm:my-1">
                                         <i className="uil-location-point mr-1 sm:text-lg text-sm"/>
                                         <span
-                                            className="whitespace-nowrap max-w-[160px] overflow-hidden overflow-ellipsis">{marker.place?.name}</span>
+                                            className="whitespace-nowrap max-w-[160px] overflow-hidden text-ellipsis">{marker.place?.name}</span>
                                     </div>
                                 }
                             </div>
                             {!!marker.cover_image_url &&
                                 <div
-                                    className="sm:w-[140px] sm:h-[140px] flex-shrink-0 flex-grow-0 w-[100px] h-[100px]">
+                                    className="sm:w-[140px] sm:h-[140px] shrink-0 grow-0 w-[100px] h-[100px]">
                                     <img className="w-full h-full object-cover" src={cfImage(marker.cover_image_url, { width: 400, height: 300, fit: 'cover' })} alt=""/>
                                 </div>
                             }
@@ -136,7 +136,7 @@ export default function MarkerMap({markers, langType, lang, groupDetail, currCat
 
         {waitingPickLocation &&
             <div
-                className="max-w-[98vw] w-[500px] justify-between bg-white shadow rounded-lg shaodw py-2 px-3 flex-row-item-center absolute top-10 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                className="max-w-[98vw] w-[500px] justify-between bg-white shadow-sm rounded-lg shaodw py-2 px-3 flex-row-item-center absolute top-10 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <div className="flex-row-item-center">
                     <img src="/images/map_marker.png" className="w-4 mr-2" alt=""/>
                     <div>Select a place to create a marker</div>

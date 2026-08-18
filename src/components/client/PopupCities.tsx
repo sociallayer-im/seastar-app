@@ -96,9 +96,9 @@ export default function PopupCities({popupCities, lang}: PopupCitiesProps) {
             <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-2">
                 {filteredCities.map((popupCity, index) => {
                     return <a key={index} href={`/event/${popupCity.group.name}`}
-                              className="rounded shadow p-3 duration-200 hover:translate-y-[-6px]">
-                        <div className="rounded aspect-[3/2] mb-3 overflow-hidden">
-                            <Img className="object-cover w-full h-full rounded"
+                              className="rounded-sm shadow-sm p-3 duration-200 hover:translate-y-[-6px]">
+                        <div className="rounded-sm aspect-3/2 mb-3 overflow-hidden">
+                            <Img className="object-cover w-full h-full rounded-sm"
                                    width={227} height={148}
                                    src={cfImage(popupCity.image_url || popupCity.group.image_url || '', { width: 454, height: 296, fit: 'cover' })} alt=""/>
                         </div>

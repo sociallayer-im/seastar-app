@@ -63,8 +63,8 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
         }
     }
 
-    return <div className="min-h-[100svh] w-full">
-        <div className="page-width min-h-[100svh] px-3 pb-12 pt-0">
+    return <div className="min-h-svh w-full">
+        <div className="page-width min-h-svh px-3 pb-12 pt-0">
             <div className="py-6 font-semibold text-center text-xl">{lang['Edit Profile']}</div>
 
             <div className="flex flex-col max-w-[800px] mx-auto">
@@ -79,7 +79,7 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                                         setNewProfile({...newProfile, image_url: url})
                                     }
                                 })}
-                                className="text-xs bg-white !rounded-3xl !text-foreground">{lang['Upload Avatar']}</Button>
+                                className="text-xs bg-white rounded-3xl! text-foreground!">{lang['Upload Avatar']}</Button>
                     </div>
 
                     <div className="font-semibold pb-2">{lang['Nickname']}</div>
@@ -106,10 +106,10 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                     {
                         (Object.keys(Media_Meta) as Array<keyof typeof Media_Meta>).map((key, i) => {
                             return <div key={i}
-                                        className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-[3rem] bg-secondary border border-secondary">
+                                        className="flex flex-row items-center justify-between rounded-lg mb-3 px-3 h-12 bg-secondary border border-secondary">
                                 <div className="flex-row-item-center">
                                     <div className="w-9 flex flex-row justify-center">
-                                        <i className={`${Media_Meta[key]!.icon} !text-lg`}/>
+                                        <i className={`${Media_Meta[key]!.icon} text-lg!`}/>
                                     </div>
                                     <span>{Media_Meta[key]!.label}</span>
                                 </div>
@@ -134,10 +134,10 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
             {STRIPE_ENABLED && <StripeKeysManager lang={lang}/>}
 
             <div className="flex-row-item-center sm:justify-center my-4">
-                <Button variant={'secondary'} className="flex-1 sm:flex-grow-0 sm:min-w-36 mr-4" onClick={() => {
+                <Button variant={'secondary'} className="flex-1 sm:grow-0 sm:min-w-36 mr-4" onClick={() => {
                     history.go(-1)
                 }}>{lang['Cancel']}</Button>
-                <Button variant={'primary'} className="flex-1 sm:flex-grow-0 sm:min-w-36"
+                <Button variant={'primary'} className="flex-1 sm:grow-0 sm:min-w-36"
                         onClick={handleSave}>{lang['Save']}</Button>
             </div>
         </div>

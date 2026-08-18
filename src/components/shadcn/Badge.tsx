@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "./utils"
 
 const badgeVariants = cva(
-    "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+    "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2",
     {
         variants: {
             variant: {
@@ -15,12 +15,12 @@ const badgeVariants = cva(
                 destructive:
                     "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
                 outline: "text-foreground border-foreground",
-                ongoing: "border-transparent bg-[var(--ongoing-background)] text-[var(--ongoing-foreground)]",
-                past: "border-transparent bg-[var(--past-background)] text-[var(--past-foreground)]",
-                upcoming: "border-transparent bg-[var(--upcoming-background)] text-[var(--upcoming-foreground)]",
+                ongoing: "border-transparent bg-(--ongoing-background) text-(--ongoing-foreground)",
+                past: "border-transparent bg-(--past-background) text-(--past-foreground)",
+                upcoming: "border-transparent bg-(--upcoming-background) text-(--upcoming-foreground)",
                 hosting: 'border-transparent bg-[#e7f4ff] text-[#5992ff]',
                 pending: 'border-transparent bg-[#fff7e8] text-[#e7c54e]',
-                cancel: 'border-transparent bg-[#bdbdbd] text-[#fff]',
+                cancel: 'border-transparent bg-[#bdbdbd] text-white',
                 joining: 'border-transparent bg-[#feeeee] text-[#ab2323]',
                 private: 'border-transparent bg-[#f8f2ff] text-[#c863ff]',
             },

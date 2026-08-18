@@ -111,7 +111,7 @@ export default function EventTabs({initialTab, tabs}: EventTabsProps) {
                     aria-selected={tab === item.key}
                     onClick={() => item.key !== tab && select(item.key)}
                     className={`flex-1 min-w-0 text-center cursor-pointer text-sm sm:text-base py-1 px-1 sm:px-2
-                        relative whitespace-nowrap ${index > 0 ? 'border-l-[1px] border-gray-200' : ''}`}>
+                        relative whitespace-nowrap ${index > 0 ? 'border-l border-gray-200' : ''}`}>
                     <span className="relative z-10">
                         {item.label}
                         {!!item.count && <span className="text-xs ml-0.5">({item.count})</span>}

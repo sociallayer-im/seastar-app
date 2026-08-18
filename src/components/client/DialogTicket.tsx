@@ -543,13 +543,13 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     }, [discountedPrice, selectedMethod, selectedToken])
 
     return <div
-        className="bg-background sm:p-4 p-3 rounded-lg shadow max-h-[100svh] overflow-y-auto w-[96vw] sm:w-[400px]">
+        className="bg-background sm:p-4 p-3 rounded-lg shadow-sm max-h-svh overflow-y-auto w-[96vw] sm:w-[400px]">
         <div className="flex-row-item-center justify-between mb-6">
             <div className="font-semibold text-xl">{lang['Ticket Detail']}</div>
             <i className="uil-times-circle cursor-pointer text-xl text-gray-400" onClick={close}/>
         </div>
 
-        <div className="flex-row-item-center !items-start">
+        <div className="flex-row-item-center items-start!">
             <div className="flex-1 mr-3 grid grid-cols-1 gap-1">
                 <div className="font-semibold text-lg">[{ticket.title}]</div>
                 <div className="text-sm">
@@ -565,7 +565,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 <div className="w-[80px] h-[80px]">
                     <img className="w-full h-full object-cover rounded-lg" src={cfImage(eventDetail.image_url, { width: 900, format: 'auto', quality: 85 })} alt=""/>
                 </div>
-                : <div className="w-[80px] h-[80px] flex-shrink-0 flex-grow-0">
+                : <div className="w-[80px] h-[80px] shrink-0 grow-0">
                     <div className="default-cover w-[452px] h-[452px] scale-[0.17]">
                         <div
                             className="webkit-box-clamp-2 font-semibold text-[27px] max-h-[80px] w-[312px] absolute left-[76px] top-[78px]">
@@ -707,7 +707,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                                onChange={(e) => setPromoCode(e.target.value)}/>
                         <Button variant={'normal'} size={'sm'}
                                 onClick={handleCheckPromoCode}
-                                className="text-sm !h-[38px]">{lang['Apply']}</Button>
+                                className="text-sm h-[38px]!">{lang['Apply']}</Button>
                     </div>
                 }
                 {!!promoCodeError && <div className="mt-2 text-red-400 text-sm">{promoCodeError}</div>}

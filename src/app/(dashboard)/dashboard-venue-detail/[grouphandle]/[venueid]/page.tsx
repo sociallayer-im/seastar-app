@@ -25,7 +25,7 @@ function VenueDetailPage({venue, lang}: {venue: VenueDetail, lang: Dictionary}) 
     const hasWeeklySlots = availabilities.some(a => a.day_of_week && !a.day)
     const dateOverrides = availabilities.filter(a => a.day && !a.day_of_week)
 
-    return <div className="bg-[--background] sm:px-4 rounded-lg px-3 py-4">
+    return <div className="bg-(--background) sm:px-4 rounded-lg px-3 py-4">
         {!!venue.image_urls?.length &&
             <div className="flex-row-item-center overflow-auto mb-6">
                 {venue.image_urls.map((img, index) => {

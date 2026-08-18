@@ -31,11 +31,11 @@ export default async function IframeLayout({
         <html lang={langType} className={`${poppins.className} ${icon.variable}`}>
             <Script data-domain="portal.sola.day" src="https://analytics.wamo.club/js/script.js" />
             <body className={`antialiased`}>
-                <div className="min-h-[100svh]">
+                <div className="min-h-svh">
                     {children}
                 </div>
-                <div className="relative z-[9998]"><Modals/></div>
-                <div className="relative z-[9999]"><Toaster/></div>
+                <div className="relative z-9998"><Modals/></div>
+                <div className="relative z-9999"><Toaster/></div>
             </body>
         </html>
     )

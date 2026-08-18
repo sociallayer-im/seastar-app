@@ -74,8 +74,8 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
         }
     }
 
-    return <div className="min-h-[100svh] relative pb-12 bg-[#F8F9F8] !min-w-[1024px]">
-        <div className="schedule-bg !min-w-[1024px]"></div>
+    return <div className="min-h-svh relative pb-12 bg-[#F8F9F8] min-w-[1024px]!">
+        <div className="schedule-bg min-w-[1024px]!"></div>
         <div className="page-width z-10 relative">
             <div className="py-3 sm:py-5 max-w-[100vw] flex flex-row justify-between">
                 <div className="sm:text-2xl text-xl">
@@ -193,7 +193,7 @@ export default function ScheduleWeekView({ groupDetail, data: initialData, lang,
                     </div>
                 </div>
             </div>
-            <div className="grid gap-2 sticky top-0 z-[999] grid-cols-7 bg-[#F8F9F8] w-[1000px]">
+            <div className="grid gap-2 sticky top-0 z-999 grid-cols-7 bg-[#F8F9F8] w-[1000px]">
                 {
                     interval.map((day, index) => {
                         return <div className="h-[52px] leading-[52px] text-center" key={index}>
