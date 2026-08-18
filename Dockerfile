@@ -41,7 +41,8 @@ RUN bun install --frozen-lockfile --ignore-scripts --production
 # node, not bun: vinext requires node >= 22 and its SSR pass misbehaved under
 # the bun runtime in local testing. The bun-installed node_modules are plain JS
 # (--ignore-scripts, no native builds), so they run under node unchanged.
-FROM node:22-slim AS production
+# 24 = active LTS; verified locally (vinext start under 24.18, full smoke pass).
+FROM node:24-slim AS production
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
