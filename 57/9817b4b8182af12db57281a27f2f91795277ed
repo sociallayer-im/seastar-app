@@ -1,0 +1,29 @@
+src/app/(normal)/event/[grouphandle]/create/CreateEventFormClientOnly.tsx
+  s_e9ed806a3d225c::t_85f02889a6df1f 1-6
+src/app/(normal)/event/share/[eventid]/ShareActionsBtnClientOnly.tsx
+  s_e9ed806a3d225c::t_8abb528974e50d 1-6
+src/app/(normal)/badge/[badgeid]/page.tsx
+  s_e9ed806a3d225c::t_ac8a7e5c072822 10
+src/app/(normal)/event/[grouphandle]/create/page.tsx
+  s_e9ed806a3d225c::t_8d8c6ea1a156e9 4
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_0c94dedb1f586a 43
+src/app/(normal)/event/share/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_545e101f1c1a2b 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "579817b4b8182af12db57281a27f2f91795277ed",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
