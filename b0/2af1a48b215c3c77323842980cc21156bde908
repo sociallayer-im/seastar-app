@@ -1,0 +1,25 @@
+package.json
+  s_e9ed806a3d225c::t_7e5b88f751c3b2 36
+src/components/client/CommentPanel.tsx
+  s_e9ed806a3d225c::t_8b37b966bb033d 3
+  s_e9ed806a3d225c::t_bb2cb449158275 163
+  s_e9ed806a3d225c::t_4e7dab00d56613 157-162,164-169
+bun.lock
+  s_e9ed806a3d225c::t_9836379f26ca13 28,94-111,126-127,336-337,460-461,520-521,528-529,542-543,564-565,720-721,778-779,802-803,820-821,856,866-867,936-937,1038-1039,1064-1065,1134-1135,1150-1153,1158-1161,1190-1191,1208-1215,1238-1241,1280-1281,1306-1309
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b02af1a48b215c3c77323842980cc21156bde908",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}

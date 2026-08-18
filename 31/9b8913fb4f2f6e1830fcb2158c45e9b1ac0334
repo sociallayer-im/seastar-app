@@ -1,0 +1,27 @@
+src/app/(normal)/my-events/attended/page.tsx
+  s_e9ed806a3d225c::t_d83a83450670a5 6-7
+src/app/(normal)/my-events/attended/data.ts
+  s_e9ed806a3d225c::t_d83a83450670a5 1,3,14-21,32-33
+src/app/(normal)/my-events/MyEvents.tsx
+  s_e9ed806a3d225c::t_d83a83450670a5 3,6,8-18,51
+src/lang/en.ts
+  s_e9ed806a3d225c::t_d83a83450670a5 958
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_d83a83450670a5 936
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "319b8913fb4f2f6e1830fcb2158c45e9b1ac0334",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}

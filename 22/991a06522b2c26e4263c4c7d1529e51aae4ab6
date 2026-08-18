@@ -1,0 +1,20 @@
+src/utils/index.ts
+  s_e9ed806a3d225c::t_9d961e3e5102d3 58,67-81,85,108-111,113
+  s_e9ed806a3d225c::t_1dbd626053114b 131-135
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "22991a06522b2c26e4263c4c7d1529e51aae4ab6",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
