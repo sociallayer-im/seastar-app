@@ -3,7 +3,7 @@ import { Input } from "@/components/shadcn/Input"
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
 import DropdownMenu, { DropdownTrigger } from "@/components/client/DropdownMenu"
 import { cfImage, getAvatar } from "@/utils"
-import { debounce } from 'lodash'
+import {debounce} from '@/utils/debounce'
 import useUploadAvatar from "@/hooks/useUploadAvatar"
 import { EventDraftType, EventRole, EventRoleType, searchProfile } from '@sola/sdk'
 import { CLIENT_MODE } from '@/app/config'

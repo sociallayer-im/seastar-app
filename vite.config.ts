@@ -20,7 +20,6 @@ export default defineConfig({
             'react',
             'react-dom',
             'dayjs',
-            'lodash',
             'js-cookie',
             'copy-to-clipboard',
             'markdown-it',

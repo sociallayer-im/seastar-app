@@ -1,7 +1,7 @@
 import {Input} from "@/components/shadcn/Input"
 import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
 import {useCallback, useEffect, useMemo, useState} from "react"
-import {debounce} from 'lodash'
+import {debounce} from '@/utils/debounce'
 import {useMapsLibrary} from '@vis.gl/react-google-maps'
 import {MarkerDraft, VenueDetail} from '@sola/sdk'
 import {LegacyVenueLocation} from '@/utils'

@@ -2,7 +2,7 @@ import {LocationInputProps} from "@/components/client/LocationInput/index"
 import {Input} from "@/components/shadcn/Input"
 import DropdownMenu, {DropdownTrigger} from "@/components/client/DropdownMenu"
 import {useCallback, useEffect, useMemo, useRef, useState} from "react"
-import {debounce} from 'lodash'
+import {debounce} from '@/utils/debounce'
 import {useMapsLibrary} from '@vis.gl/react-google-maps'
 
 export interface SelectVenue extends Omit<LocationInputProps, 'venues'> {

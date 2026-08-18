@@ -1,6 +1,5 @@
-/** @type {import('next').NextConfig} */
+// Read by vinext; only images.remotePatterns is consumed (next/image shim).
 const nextConfig = {
-    reactStrictMode: false,
     images: {
         remotePatterns: [
             {
