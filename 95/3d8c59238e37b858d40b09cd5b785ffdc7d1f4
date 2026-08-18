@@ -1,0 +1,36 @@
+src/hooks/useScanQrcode.tsx
+  s_e9ed806a3d225c::t_3d288b3b6a7cc5 149-156,164-171,182,187-191
+  s_e9ed806a3d225c::t_33eaba3d53214a 85-91
+src/utils/markdown_html.ts
+  s_e9ed806a3d225c::t_4db11066cd9a4b 44-58,60-63,67-69,76
+src/utils/evm_payment.ts
+  s_e9ed806a3d225c::t_2feaa984b336ec 35-59
+  s_e9ed806a3d225c::t_f121eebdf92197 134-155
+  s_e9ed806a3d225c::t_f9e92a0cf1a318 163-176,178-184
+  s_e9ed806a3d225c::t_a3b6d678941b0f 72-88
+  s_e9ed806a3d225c::t_a4913435dfacb5 187,189-192,194-195,198
+  s_e9ed806a3d225c::t_f410cfd5d2526f 270-271,290-291
+  s_e9ed806a3d225c::t_e184152550ad42 254-264,279-282,303-306
+  s_e9ed806a3d225c::t_f241104802b1e2 242
+  s_e9ed806a3d225c::t_2c626ffaa2753a 71,89-103,105-109
+  s_e9ed806a3d225c::t_bca57392f6e312 177,196,232,238,250
+scripts/verify-markdown-html.mjs
+  s_e9ed806a3d225c::t_578cd40bcf248b 180,184,211-212,215-225
+  s_e9ed806a3d225c::t_0e8478a9e6fd08 172-179,181-183,185-210,227-239
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "953d8c59238e37b858d40b09cd5b785ffdc7d1f4",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
