@@ -13,7 +13,14 @@
 | `72410bc` | 重依赖按需加载,精简 utils barrel |
 | `dbe0312` | loader 请求并行化,`cache()` 替代 NodeCache |
 | `ab34360` | 路由级 `loading.tsx`、移除 `forwardRef`、`Img` 清理 |
-| `b315c48` | 深度 review 发现的问题修复(见最后一节) |
+| `b315c48` | 深度 review 发现的问题修复 |
+| `13ee927` | 自研二维码解码器,移除 html5-qrcode |
+| `035ec2b` | 移除 viem、qrcode 生成器、apollo,镜像剥离 next |
+| `953d8c5` | 三轮深度审查发现的问题修复 |
+| `2047f9c` | 关闭双重支付窗口,停止把用户数据当 HTML 渲染 |
+| `a04fdb3` | 部署前审查修复 |
+
+合并到 main:2026-08-19,快进合并,共 28 个提交。
 
 ## 一、减重
 
@@ -155,10 +162,13 @@ Promise;markdown 去重语义相同;分享 URL、debounce、BigNumber 替换行�
 forwardRef 移除后无 ref 泄漏进 DOM;`loading.tsx` 只落在 `(normal)` 树,不影响
 iframe/dashboard 布局。
 
-## 尚未验证
+## 尚未验证(截至合并时仍未做)
 
-合并部署前仍需真人过一遍需要登录态的交互流程 —— 尤其是本轮修过的**转让群主**
-和**接受徽章券**这两条。其余:富文本编辑器、地图选点、支付、server actions。
+1. 需要登录态的浏览器交互流程:登录回跳、富文本编辑器、地图选点、server
+   actions,尤其是修过的**转让群主**和**接受徽章券**。
+2. 测试网上的加密支付。自动化验证只覆盖到 ABI 编码层,**链校验、替换交易识别、
+   重试续传都是 RPC 交互逻辑,只有真钱包能验**。建议试三个动作:付款时切错
+   网络、发出后点"加速"、确认阶段断网后点重试(应续传而非重付)。
 
 ---
 
@@ -236,3 +246,222 @@ node scripts/qr-independent-check.mjs   # 23 项:旋转/真实载荷/小尺寸/�
 - `playsinline`:否则 iOS Safari 会强制全屏播放。
 - `facingMode: environment`:后置摄像头才是对着别人手机的那个。
 - 解码前降采样到最长边 640px。
+
+---
+
+# 第三轮:移除剩余大依赖(2026-08-19)
+
+`035ec2b`。四个大件,每一个都以**精确对照物**为验收门槛,而不是靠人工检查。
+这一轮的方法论比结果更值得记:凡是能找到"原库"当对照物的替换,就用逐字节/逐位
+比对当闸门;找不到对照物的(比如裁剪 UI),就不要替换。
+
+## viem → 原生 EIP-1193(236 KB → 2.9 KB raw)
+
+支付路径只用到六个 JSON-RPC 调用和两种 ABI 编码。`src/utils/evm_abi.ts` 自己
+编码(selector 由签名字符串经 `js-sha3` 推导,不硬编码十六进制),
+`evm_payment.ts` 直接走 `window.ethereum`。
+
+验收:`scripts/verify-evm-encoding.mjs` 与 viem 的 `encodeFunctionData` 比对
+1574 组 calldata,逐字节相同。**并且验证了这个测试会失败** —— 把左填充改成右
+填充、selector 取 5 字节,分别掉到 69/1574 和 61/1574。
+
+`localBatchGatewayRequest` 那个 101 KB 的 chunk 是 viem 的 CCIP-read 模块,
+随之整个消失。注意 viem 只装了一份,两个 chunk 是 Rollup 拆的,不是重复依赖。
+
+## qrcode 生成器 → 自实现
+
+`src/utils/qrcode/encode.ts`,与解码器共用新抽出的 `spec.ts`(decode.ts 由
+560 行缩到 365 行)。794 个矩阵与原包逐位一致 —— 尺寸、版本、掩码、每个模块。
+
+**要做到逐位一致必须移植原包的 Dijkstra 分段优化器**:混合模式字符串
+(`AB12cd34EF56gh78IJ90`)会被拆成多个段,单段选择做不到一致。
+
+`qrcode` 包**降级为 devDependency 而非删除**:它是两套二维码测试的独立对照物。
+一个只跟自家编码器对照过的解码器等于没验证。
+
+发现的既有真相:旧代码 `color: {light: 'red'}` 从来不是红色 —— 包内把 'red'
+当十六进制解析得到 NaN,渲染成透明。读 PNG 像素证实(`0,0,0,0`)。替换保留的是
+**实际像素**而非字面意图。
+
+## markdown-it + prosemirror 离开客户端(294 KB / 102 KB gz)
+
+这是当时最大的 chunk,而且在事件详情页是**首屏**加载。
+
+关键判断:**不需要重写 markdown 解析器**。它之所以在客户端,只是因为只读展示
+组件挂载了一个真正的 ProseMirror 编辑器实例。把解析挪到服务端,客户端归零。
+
+实现上没有另写渲染器,而是遍历解析后的文档、**用 schema 里每个节点自己的
+`toDOM` 规格**生成 HTML —— 浏览器原本就是用这套规格构建 DOM 的,所以结构一致
+是构造上的必然。
+
+验收三重:与 prosemirror 官方 `DOMSerializer` 逐字符比对 23 种文档;6 个 XSS
+载荷;以及**改动前后事件详情页截图逐字节相同**。
+
+日程弹窗是客户端组件,保留客户端渲染,但改成点击时才动态导入解析器。
+
+## next:199 MB 从镜像里消失
+
+它作为 `@unpic/react` 的**可选 peer** 一直被 bun 装着,占生产 node_modules
+的 597 MB 中的 199 MB。
+
+**这件事的意义不止于体积**:迁移时"next 已彻底移除"的结论**从未真正被验证过**
+—— 所有检查都是在包还物理存在于磁盘上的情况下跑的,万一有代码在运行时解析
+`next`,会静默成功而测不出来。把它移走重跑 build / dev / 生产冒烟,才补上这个
+验证缺口。
+
+Dockerfile 里的清理带 `test -d` 守卫:bun 布局变了会**构建失败**,而不是静默地
+又把 199 MB 装回去。`webpack`(9.5 MB)故意不删 —— 清理它会在 vinext 运行时
+真正使用的包里留下悬空符号链接。
+
+`@apollo/client`(10 MB):SDK 的 package.json 里声明,源码零引用,删除。
+
+---
+
+# 三轮深度审查发现的问题(`953d8c5`、`2047f9c`)
+
+编码层面的证明都站得住(ABI 逐字节、二维码逐位、markdown 逐字符),**问题全
+出在这些证明看不到的地方**。这一节值得完整保留,因为它是这次工作最大的教训来源。
+
+## 严重:支付可能被签到错误的链上
+
+viem 的 client 构造时带了 `chain`,它在**每次发送交易前**都会 `getChainId()`
++ `assertCurrentChain()`。移除 viem 时这层保护一起丢了,只剩一个
+`await wallet_switchEthereumChain` —— 而多个移动钱包会在网络真正切换完成前就
+返回。
+
+后果链条完整:USDC/USDT 在支持的五条链上都有部署,错误链上的授权查询会**成功
+并返回 0**,随后授权和转账都签在错链上。PayHub 若不在那条链的该地址上,代币
+直接消失;若在,后端按订单自己的链验证,永远匹配不上,买家付了钱拿不到票。
+
+**MetaMask 桌面版会挡住切换直到完成,所以在开发机上根本复现不出来。**
+
+修法:链校验放进 `sendTransaction` 内部(结构上没有发送路径能绕过),每次发送
+都校验(用户可能在等授权确认的一分钟里切了网络),并在 `eth_sendTransaction`
+里显式传 `chainId` 让钱包自己也能拒绝。
+
+## 高:钱包"加速"导致钱付了、票没了
+
+viem 的 `waitForTransactionReceipt` 会跟踪替换交易,我们的轮询只盯一个固定
+哈希。用户点"加速"后原哈希永不上链,但**钱在替换交易里已经付出去了** —— 前端
+干等 5 分钟报失败,哈希从未上报,订单过期作废,且 item id 已烧进 calldata,
+重试永远匹配不上。现在通过账户 nonce 越过该交易来识别。
+
+## 高:我自己引入的订单卡死(部署前审查发现)
+
+修上一条时引入的:哈希在等待回执**之前**就存了,交易 revert 或被替换后没人
+清除 —— 重试会永远提交一个死哈希,买家在订单被清理前(约 35 分钟)**完全无法
+付款**。而 revert 意味着钱根本没动,本该是可恢复的失败,被我变成了死局。
+
+现在 revert 和替换抛可区分的错误并清除哈希,超时和上报失败则保留(那些哈希
+仍可能生效,而这正是这个存储存在的意义)。
+
+## 一类系统性 bug:靠整页跳转"免费销毁"的 UI
+
+把 `window.location.href` 改成 `router.push` 后,原来随页面卸载自动消失的东西
+不再消失:
+
+- 转让群主成功后被永久 spinner 盖住、body 滚动锁死,只能手动刷新
+- 接受徽章券后对话框留在目标页面上
+- 徽章交换的 1 秒轮询在跳转后继续,每秒弹一次成功提示并重复 push
+
+这不是"转换写错了",而是转换本身改变了一个没人明说的前提。**转换硬跳转时,
+要问原来的页面卸载在悄悄做什么。**
+
+## XSS:没攻破,但测试是假的
+
+审查用约 70 个载荷没能突破转义。**但那 6 个 XSS 用例测的是 markdown-it,不是
+我自己的代码** —— 把 `escapeAttr` 和 `safeUrl` 整个删掉,只有 1 个会失败。
+
+现在改成断言精确 HTML,新增针对属性边界、实体解码顺序、被拒协议必须丢弃
+href 等用例,并加了反向对照。实测:破坏 `escapeAttr` → 3 项失败,破坏
+`safeUrl` → 1 项失败。
+
+顺带加固 `safeUrl`:控制字符在协议判断前剥离(浏览器解析 URL 前会剥离它们,
+`java\tscript:` 原本会掉进"相对路径"分支;今天不可利用只是因为 markdown-it
+先做了百分号编码 —— 不应依赖这一点)。
+
+## 三处把用户数据当 HTML 渲染
+
+- `SelectVenue` 渲染 `venue.name`(后端数据)—— 真正的存储型 XSS
+- `ScheduleEventPopup` 把群组的 `ticket_link` 拼进 `href` —— 群管理员可注入,
+  影响该群日程的所有访客
+- `RegisterForm` 拼入用户自己输入的 handle(自 XSS)
+
+**没有逐处转义,而是把确认弹窗的 `content` 类型从 `string` 改成 `ReactNode`**
+—— 所有传纯字符串的调用点自动获得转义,真正需要标记的改传 JSX。是消除注入点,
+不是加护栏。
+
+代价是要扫全部调用点:部署前审查又发现三处漏网(`AttendEventBtn` 会把购票
+链接变成纯文本标签、`GoToBuyTicket`、以及一个 lang 值里含 `<b>`)——
+**它们是"本身就是带标签的普通字符串",不是从变量拼接的**,我第一次的 grep
+按后者去找,所以漏了。
+
+## 摄像头两处
+
+`closedRef` 在 effect 入口没重置,React StrictMode 双调用会让摄像头永久卡在
+"Starting camera...";原生 `BarcodeDetector` 存在但每帧都抛异常时,会无限扫描
+且**没有任何兜底**(那个分支从未导入 JS 解码器)。
+
+---
+
+# 部署前审查(`a04fdb3`)
+
+## 结论:迁移本身无阻塞项
+
+用**端到端模拟镜像运行时**验证 —— 生产安装 + 执行 prune + 只保留 Dockerfile
+会复制的文件 + node 24,所有路由 200、服务端 markdown 正常、零错误。这证实了
+`--production` 没漏掉服务端需要的包(markdown-it 和 prosemirror 被打进
+`dist/` 而非外部化)、prune 守卫的 shell 优先级正确、entrypoint 可解析。
+
+```bash
+# 复现方法
+mkdir sim && cd sim
+cp <repo>/package.json <repo>/bun.lock . && mkdir -p packages/sola-sdk
+cp <repo>/packages/sola-sdk/package.json packages/sola-sdk/
+bun install --frozen-lockfile --ignore-scripts --production
+# 执行 Dockerfile 里的 prune,然后:
+cp -R <repo>/dist <repo>/public <repo>/packages ./
+cp <repo>/next.config.mjs <repo>/.env.production ./
+PORT=4057 node node_modules/vinext/dist/cli.js start
+```
+
+**注意别用 3000 端口**:本机 Rails 后端占着它,curl 会打到那个服务,得到看似
+是路由问题的 404。我因此报过一次假警报。
+
+## 两个既有的安全问题
+
+- **SG 生产镜像一直带着 `YATCH_TOKEN`**(仓库**推送**凭据)。`ginger.cn.yml`
+  专门过滤了它并写明原因,`ginger.yml` 却没有 —— 任何能拉取镜像的人都能往
+  仓库写。改在 Dockerfile 里剥离,两个环境都覆盖,且不会因为将来有人改
+  pipeline 而失效。
+- **`.env.cn.production` 在构建上下文里**,`COPY . .` 会把微信密钥和 CN 仓库
+  token 烤进构建层,而 `builder.cache: max` 会把每层推到镜像仓库缓存。已加入
+  `.dockerignore`(CN 部署钩子在本地就写好了 `.env.production`)。
+
+## 待你确认
+
+- CN 的 `.env.cn.production` 没定义 `NEXT_PUBLIC_DISCUSSION` 和
+  `NEXT_PUBLIC_ICP_LICENSE` → juluo.xyz 上讨论功能关闭、ICP 备案号页脚不显示。
+  后者涉及国内合规,值得确认是否有意为之。
+- `ginger.yml` 的 `resources.memory: 900` 是按 `next start` 测的,vinext 从未
+  重测。首次部署盯一下。
+
+---
+
+# 方法论小结
+
+这次工作里真正起作用的几条,按价值排序:
+
+1. **能找到对照物就用对照物当闸门。** QR、ABI、markdown 三处替换都有"原库"
+   可比,于是验收标准是逐字节/逐位/逐字符相同,而不是"看起来对"。找不到对照物
+   的(cropperjs 的裁剪交互)就别替换 —— 没有闸门的替换是在赌。
+2. **测试必须被证明会失败。** 三次故意破坏(ABI 左右填充、markdown 转义、
+   二维码掩码)都验证了闸门有效。反过来,XSS 那 6 个用例正是因为没做这一步,
+   长期在测依赖而非自己的代码。
+3. **同一件事由两个独立视角各写一套测试是值得的。** 二维码解码器自测 123/123
+   全绿,我另写的测试发现 30°–60° 整段解不出来 —— 自测覆盖了规格维度(版本、
+   掩码、纠错),整个漏掉了物理维度(手机拿歪)。
+4. **编码正确 ≠ 流程正确。** 支付路径的 1574 项逐字节验证,看不到链校验丢失、
+   替换交易、重试双付这三个真正会让用户损失金钱的问题。
+5. **"验证过了"要问清楚是在什么条件下验的。** next 在磁盘上时验证"next 已
+   移除",等于没验。
