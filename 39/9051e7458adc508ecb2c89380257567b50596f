@@ -1,0 +1,46 @@
+components.json
+  s_e9ed806a3d225c::t_4b0db5a8eb6cad 7
+src/app/(normal)/group/[handle]/management/invite/InviteForm.tsx
+  s_e9ed806a3d225c::t_612e404bbd80bc 13
+tsconfig.json
+  s_e9ed806a3d225c::t_f3c2ea74dc864e 26
+docs/TODO.md
+  s_e9ed806a3d225c::t_8be0e5dc9f0c18 1-9
+src/app/(normal)/event/share/[eventid]/SocialShareBtn.tsx
+  s_e9ed806a3d225c::t_02846a7a47841f 3-18,21,23,25-26,28-29,31-32,34-35,37-38,40,42
+  s_e9ed806a3d225c::t_d963af1eb5ce68 2
+src/utils/debounce.ts
+  s_e9ed806a3d225c::t_2b9fc1aad6588f 1-9
+next.config.mjs
+  s_e9ed806a3d225c::t_2c86b0bae63111 1
+src/components/client/AddSingleEventToCalendarAppBtn.tsx
+  s_e9ed806a3d225c::t_71e3388954d52a 7
+bun.lock
+  s_e9ed806a3d225c::t_386e0063247ef8 674,1496-1497
+src/components/client/EventRoleInput.tsx
+  s_e9ed806a3d225c::t_e9375ffe38d8d1 6
+src/components/client/LocationInput/SearchLocation.tsx
+  s_e9ed806a3d225c::t_6ac1c2ca71b933 5
+src/components/client/ProfileInput.tsx
+  s_e9ed806a3d225c::t_256ff38d36500c 6
+src/components/client/SearchMarkerLocation.tsx
+  s_e9ed806a3d225c::t_ad2bc772f74312 4
+src/components/client/SearchVenueLocation.tsx
+  s_e9ed806a3d225c::t_7233d65d5e927a 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "399051e7458adc508ecb2c89380257567b50596f",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
