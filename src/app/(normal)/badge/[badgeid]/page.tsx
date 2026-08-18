@@ -7,10 +7,7 @@ import {selectLang} from '@/app/actions'
 import NoData from '@/components/NoData'
 import SwapBtn from '@/app/(normal)/badge/[badgeid]/SwapBtn'
 
-const DynamicShowTime = dynamic(
-    () => import('@/app/(normal)/badge-class/[badgeclassid]/FormatTime'),
-    {ssr: false}
-)
+import DynamicShowTime from '@/app/(normal)/badge-class/[badgeclassid]/FormatTimeClientOnly'
 
 
 export default async function BadgePage(props: AsyncProps<BadgePageDataProps>) {

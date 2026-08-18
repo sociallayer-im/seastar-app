@@ -1,8 +1,7 @@
 import CreateEventPageData, { CreateEventPageDataProps } from "@/app/(normal)/event/[grouphandle]/create/data"
 import { selectLang } from "@/app/actions"
-import dynamic from 'next/dynamic'
 
-const CreateEventForm = dynamic(() => import('@/app/(normal)/event/[grouphandle]/create/CreateEventForm'), {ssr: false})
+import CreateEventForm from '@/app/(normal)/event/[grouphandle]/create/CreateEventFormClientOnly'
 
 export default async function CreateEvent(props: { params: Promise<CreateEventPageDataProps> }) {
     const params = await props.params

@@ -29,7 +29,6 @@ import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
 import PaymentReturn from '@/app/(normal)/event/detail/[eventid]/PaymentReturn'
 import JoinTicketEventBtn from '@/app/(normal)/event/detail/[eventid]/JoinTicketEventBtn'
-import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import { cache } from 'react'
 import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventParticipantTab'
@@ -41,7 +40,7 @@ import GoToBuyTicket from '@/components/client/GoToBuyTicket'
 import CancelRegistrationBtn from '@/components/client/CancelRegistrationBtn'
 import MyApplicationBtn from '@/components/client/MyApplicationBtn'
 
-const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
+import DynamicEventCardStarBtn from '@/components/client/StarEventBtnClientOnly'
 
 const cachedEventDetailPage = cache(EventDetailPage)
 

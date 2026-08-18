@@ -4,11 +4,10 @@ import DisplayDateTime from '@/components/client/DisplayDateTime'
 import QrCode from '@/components/client/QRcode'
 import {headers} from 'next/headers'
 import {cfImage, eventCoverTimeStr, getGmtOffset, pickSearchParam, AsyncProps} from '@/utils'
-import dynamic from 'next/dynamic'
 import {cache} from 'react'
 import SocialShareBtn from './SocialShareBtn'
 
-const DynamicShareActionsBtn = dynamic(() => import('@/app/(normal)/event/share/[eventid]/ShareActionsBtn'), {ssr: false})
+import DynamicShareActionsBtn from '@/app/(normal)/event/share/[eventid]/ShareActionsBtnClientOnly'
 
 const cachedEventDetailPage = cache(EventDetailPage)
 
