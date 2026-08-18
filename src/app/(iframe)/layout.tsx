@@ -1,7 +1,6 @@
 import type {Metadata} from "next"
 import Script from 'next/script'
 import "@/styles/globals.css"
-import Head from 'next/head'
 import {ReactNode} from "react"
 import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
@@ -30,9 +29,6 @@ export default async function IframeLayout({
 
     return (
         <html lang={langType} className={`${poppins.className} ${icon.variable}`}>
-            <Head key={'head'}>
-                <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
-            </Head>
             <Script data-domain="portal.sola.day" src="https://analytics.wamo.club/js/script.js" />
             <body className={`antialiased`}>
                 <div className="min-h-[100svh]">

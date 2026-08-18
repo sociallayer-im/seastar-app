@@ -1,6 +1,5 @@
 import type {Metadata} from "next"
 import "@/styles/globals.css"
-import Head from 'next/head'
 import {ReactNode} from "react"
 import {Toaster} from '@/components/shadcn/Toast/toaster'
 import Modals from '@/components/client/Modal/Modals'
@@ -53,9 +52,6 @@ export default async function RootLayout({
                     data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || 'app.sola.day'}
                     type="text/javascript" />
         </head>
-        <Head>
-            <link rel="icon" type="image/svg+xml" href="/images/favicon.svg"/>
-        </Head>
         <body className={`antialiased`}>
         <div className="min-h-[100svh]">
             <Header sticky={!isSchedule} />

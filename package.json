@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build --webpack",
-    "start": "next start",
+    "dev": "vinext dev",
+    "build": "vinext build",
+    "start": "vinext start",
     "lint": "eslint src packages/sola-sdk/src",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "dev:next": "next dev",
+    "build:next": "next build --webpack",
+    "start:next": "next start"
   },
   "overrides": {
     "strip-ansi": "6.0.0"
@@ -33,6 +36,7 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "html5-qrcode": "^2.3.8",
+    "ipaddr.js": "^2.5.0",
     "js-cookie": "^3.0.5",
     "js-sha3": "^0.9.3",
     "lodash": "^4.17.21",
@@ -61,7 +65,8 @@
     "react-share": "^5.2.2",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "^2.51.3"
+    "viem": "^2.51.3",
+    "vinext": "^1.0.0-beta.6"
   },
   "devDependencies": {
     "@types/dom-to-image": "^2.6.7",
@@ -72,14 +77,19 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "19",
     "@types/react-dom": "19",
+    "@vitejs/plugin-react": "^6.0.5",
+    "@vitejs/plugin-rsc": "^0.5.34",
     "eslint": "9",
     "eslint-config-next": "^16.3.1",
     "postcss": "^8",
+    "react-server-dom-webpack": "^19.2.8",
     "sass": "^1.79.4",
     "tailwindcss": "^3.4.1",
-    "typescript": "6"
+    "typescript": "6",
+    "vite": "8"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "type": "module"
 }
