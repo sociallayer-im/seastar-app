@@ -5,7 +5,7 @@ import {useRouter} from 'next/navigation'
 import {Dictionary} from '@/lang'
 import {
     Group, Membership, Team,
-    addTeamMember, removeTeamMember, addManager, removeManager
+    addTeamMember, removeTeamMember, addManager, removeManager, removeMember
 } from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {getAuth} from '@/utils'
@@ -14,6 +14,7 @@ import {Button} from '@/components/shadcn/Button'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import Avatar from '@/components/Avatar'
 import AdminNotificationToggle from '@/app/(normal)/group/[handle]/TabMembers/AdminNotificationToggle'
+import useConfirmDialog from '@/hooks/useConfirmDialog'
 
 /**
  * Editing one person: which teams they are in, and whether they are a manager.
@@ -27,19 +28,19 @@ import AdminNotificationToggle from '@/app/(normal)/group/[handle]/TabMembers/Ad
  * edit leaves no ambiguity about what was stored. Failures roll the switch
  * back and say so.
  */
-export default function DialogEditMember({lang, group, membership, teams, isOwner, isManager, canSetNotification, close}: {
+export default function DialogEditMember({lang, group, membership, teams, canPromote, canDemote, canEditTeams, canRemove, canSetNotification, close}: {
     lang: Dictionary,
     group: Group,
     membership: Membership,
     teams: Team[],
-    /** Whether the viewer is an owner. An owner may move the switch either
-     *  way; a manager may only promote — see the note on the switch. */
-    isOwner: boolean,
-    /** Whether the viewer manages the group at all. */
-    isManager: boolean,
-    /** Whether this row's notification switch is settable by the viewer — the
-     *  setting only exists on owner/manager rows, and is either your own or
-     *  one you manage. Computed by the caller, which already has the rule. */
+    /* The four capabilities, decided by the caller rather than re-derived
+     * here from roles: the rules differ per action (a manager may promote but
+     * not demote, a parent-group manager may do both but may not touch teams),
+     * and spreading that reasoning across two files is how the two drift. */
+    canPromote: boolean,
+    canDemote: boolean,
+    canEditTeams: boolean,
+    canRemove: boolean,
     canSetNotification: boolean,
     close: () => void
 }) {
@@ -50,14 +51,8 @@ export default function DialogEditMember({lang, group, membership, teams, isOwne
     const [role, setRole] = useState(membership.role)
     const [busy, setBusy] = useState(false)
 
-    // An owner's role is the owner's business and the API refuses it here.
-    // Your own row needs no special case: a manager's own role is already
-    // "manager", which the rule below leaves locked, and an owner's row is
-    // excluded outright.
-    const showRoleSwitch = isManager && membership.role !== 'owner'
-    // Managers may promote, not demote — so for them the switch only moves
-    // while the person is still a plain member.
-    const roleSwitchEnabled = isOwner || role !== 'manager'
+    const showRoleSwitch = canPromote || canDemote
+    const roleSwitchEnabled = role === 'manager' ? canDemote : canPromote
 
     const run = async (fn: () => Promise<unknown>, after: () => void, revert: () => void) => {
         setBusy(true)
@@ -89,6 +84,22 @@ export default function DialogEditMember({lang, group, membership, teams, isOwne
             () => setInTeams(inTeams)
         )
     }
+
+    const {showConfirmDialog} = useConfirmDialog()
+
+    const remove = () => showConfirmDialog({
+        lang,
+        title: membership.user.nickname || membership.user.name || '',
+        content: lang['Remove this person from the group?'],
+        onConfig: () => run(
+            () => removeMember({
+                params: {profileId: membership.user.id, groupId: group.id, authToken: getAuth()!},
+                clientMode: CLIENT_MODE
+            }),
+            close,
+            () => {}
+        )
+    })
 
     const toggleManager = () => {
         const authToken = getAuth()!
@@ -161,8 +172,15 @@ export default function DialogEditMember({lang, group, membership, teams, isOwne
             </div>
         }
 
-        <Button variant="secondary" className="w-full mt-4" onClick={close}>
-            {lang['Close']}
-        </Button>
+        <div className="flex-row-item-center gap-2 mt-4">
+            <Button variant="secondary" className="flex-1" onClick={close}>
+                {lang['Close']}
+            </Button>
+            {canRemove &&
+                <Button variant="destructive" className="flex-1" disabled={busy} onClick={remove}>
+                    {lang['Remove']}
+                </Button>
+            }
+        </div>
     </div>
 }

@@ -222,24 +222,18 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                         }
                     </div>
 
+                    {/* "Members" and "Managers" used to link to two
+                        management screens from here. Both are now the per-row
+                        dialog on the roster, which edits the same things
+                        without leaving the list you are looking at. */}
                     <div className="mt-6">
                         <div className="font-semibold pb-2">Group member Setting</div>
-                        <a href={`/group/${group.name}/management/member`}
-                           className={`${buttonVariants({variant: 'secondary'})} w-full mb-3`}>
+                        <a href={`/group/${group.name}?tab=members`}
+                           className={`${buttonVariants({variant: 'secondary'})} w-full`}>
                             <div className="flex-row-item-center w-full justify-between">
                                 <div>Members</div>
                                 <div className="font-normal flex-row-item-center">
                                     <div>{memberCount + managerCount}</div>
-                                    <i className="uil-arrow-right text-2xl"/>
-                                </div>
-                            </div>
-                        </a>
-                        <a href={`/group/${group.name}/management/manager`}
-                           className={`${buttonVariants({variant: 'secondary'})} w-full`}>
-                            <div className="flex-row-item-center w-full justify-between">
-                                <div>Managers</div>
-                                <div className="font-normal flex-row-item-center">
-                                    <div>{managerCount}</div>
                                     <i className="uil-arrow-right text-2xl"/>
                                 </div>
                             </div>

@@ -913,4 +913,5 @@ export const zh: Dictionary = {
   'Visible to teams': '可见团队',
   'Show publicly': '对外公开',
   'Owner only': '仅所有者可改',
+  'Remove this person from the group?': '将此人移出社群？其团队、角色和相应权限都会随成员身份一并失去。',
 }

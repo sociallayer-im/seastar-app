@@ -57,26 +57,37 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
         return [...seen.values()].sort((a, b) => b.sort - a.sort || (a.id < b.id ? -1 : 1))
     }, [members, allTeams])
 
-    let ManagementOptions = isManager
-        ? [{label: lang['Member Management'], url: `/group/${group.name}/management/member`}]
+    // Member and manager management used to be two separate screens reached
+    // from here. Both are now the per-row dialog, which does the same work
+    // without leaving the roster you are looking at.
+    const ManagementOptions = isOwner
+        ? [{label: lang['Transfer Owner'], url: `/group/${group.name}/management/transfer-owner`}]
         : []
 
-    if (isOwner) {
-        ManagementOptions = [
-            ...ManagementOptions,
-            {label: lang['Manager Management'], url: `/group/${group.name}/management/manager`},
-            {label: lang['Transfer Owner'], url: `/group/${group.name}/management/transfer-owner`}
-        ]
-    } else if (isParentManager) {
-        // Scoped down: only the manager-role toggle is authorized for a
-        // parent manager, so that's the only option offered here.
-        ManagementOptions = [
-            ...ManagementOptions,
-            {label: lang['Manager Management'], url: `/group/${group.name}/management/manager`}
-        ]
-    }
+    const showManagement = ManagementOptions.length > 0
 
-    const showManagement = isManager || isParentManager
+    // Who may do what to a given row. Kept here rather than inside the dialog
+    // because the rules differ per action and per viewer, and splitting that
+    // reasoning across two files is how the two drift apart.
+    //
+    //  - promote: an owner, a manager, or a parent group's manager
+    //  - demote:  an owner only (2026-08-18), wherever you stand
+    //  - teams:   needs GroupPolicy#manage?, which a parent manager lacks
+    //  - remove:  an owner for a manager's row, a manager for a member's;
+    //             an owner's row is nobody's to remove
+    const capabilities = (member: Membership) => {
+        const isSelf = currProfile?.id === member.user.id
+        const targetsOwner = member.role === 'owner'
+        return {
+            canPromote: !targetsOwner && member.role === 'member'
+                && (isManager || !!isParentManager),
+            canDemote: !targetsOwner && member.role === 'manager' && !!isOwner,
+            canEditTeams: isManager,
+            canRemove: !targetsOwner && !isSelf
+                && (member.role === 'manager' ? !!isOwner : isManager),
+            canSetNotification: canSetNotification(member)
+        }
+    }
 
     // The event-submission email only goes to owners and managers, so only
     // their rows carry the switch — the backend rejects it on a plain member.
@@ -217,7 +228,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                             ml-auto pushes it to the far right; it is the only
                             thing on the row that claims the free space now
                             that the notification switch has moved inside. */}
-                        {isManager &&
+                        {(isManager || isParentManager) &&
                             <button className="ml-auto shrink-0 text-gray-400 hover:text-gray-700"
                                 aria-label={lang['Edit']}
                                 onClick={e => {
@@ -227,9 +238,7 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                                         content: close => <DialogEditMember
                                             lang={lang} group={group} membership={member}
                                             teams={allTeams || []}
-                                            isOwner={!!isOwner}
-                                            isManager={isManager}
-                                            canSetNotification={canSetNotification(member)}
+                                            {...capabilities(member)}
                                             close={close!}/>
                                     })
                                 }}>

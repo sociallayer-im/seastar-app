@@ -935,6 +935,7 @@ export const en = {
     'Visible to teams': 'Visible to teams',
     'Show publicly': 'Show publicly',
     'Owner only': 'owner only',
+    'Remove this person from the group?': 'Remove this person from the group? They keep nothing — teams, roles and access all go with the membership.',
 }
 
 export type Dictionary = typeof en;
