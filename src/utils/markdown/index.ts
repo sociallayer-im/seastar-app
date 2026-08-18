@@ -1,5 +1,5 @@
 // Defines a parser and serializer for [CommonMark](http://commonmark.org/) text.
-import removeMarkdown from "markdown-to-text"
+import removeMarkdown from '@/utils/remove_markdown'
 
 export {schema} from "./schema"
 export {defaultMarkdownParser, MarkdownParser} from "./from_markdown"
