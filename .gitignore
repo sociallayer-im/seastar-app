@@ -48,3 +48,4 @@ next-env.d.ts
 .vercel
 .env.cn.production
 /dist/
+/.vinext/
