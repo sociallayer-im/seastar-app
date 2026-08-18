@@ -49,7 +49,7 @@ markdown-it 拖进事件详情页 —— 改为直接 import 自有的
 
 | chunk | 大小 | 何时加载 |
 |---|---|---|
-| html5-qrcode | 360 KB(最大) | 扫码对话框的 effect 里 `await import()` |
+| html5-qrcode | 360 KB(最大) | 扫码对话框的 effect 里 `await import()`。**后已整个替换掉,见文末「自研二维码解码器」** |
 | viem / `evm_payment` | 135 KB + 101 KB | 用户点击加密支付时 |
 | `DialogTicket` | — | 打开购票弹窗时(`next/dynamic`) |
 | `DialogCropper`(cropperjs) | — | 用户选择头像文件时 |
@@ -159,3 +159,80 @@ iframe/dashboard 布局。
 
 合并部署前仍需真人过一遍需要登录态的交互流程 —— 尤其是本轮修过的**转让群主**
 和**接受徽章券**这两条。其余:富文本编辑器、地图选点、支付、server actions。
+
+---
+
+# 自研二维码解码器(2026-08-19)
+
+移除 `html5-qrcode`(370 KB,曾是全站最大的 client chunk),换成
+`src/utils/qrcode/` 下的自有实现 —— **18 KB,缩小 20 倍**,且仍是按需加载
+(扫码对话框打开时才拉)。
+
+## 为什么必须自己写解码器,而不是只用原生 API
+
+`BarcodeDetector` 在 Chrome/Android 上可用且比 JS 快得多,但
+**Safari 至今不支持,因此 iOS 上所有浏览器都没有**(iOS 17 时期可用 flag
+打开,iOS 18 又坏了)。签到是现场拿手机扫别人的手机,iPhone 占比很高 ——
+所以 JS 解码器不是兜底,而是 iPhone 用户的主路径。
+
+实现上是双路径:能用原生就用原生,否则动态加载自研解码器。
+
+## 模块构成
+
+`bitmatrix` / `binarize`(Rec.709 灰度 + 8×8 分块自适应阈值)/ `locate`
+(定位图案检测)/ `extract`(透视变换 + 网格采样)/ `galois`(GF(256))/
+`reedsolomon`(Berlekamp-Massey + Chien + Forney)/ `decode`(格式信息 BCH、
+版本信息、8 种掩码、之字形读码、去交织、比特流解析)/ `index`(正反两次尝试)。
+
+支持版本 1–40、四个纠错级别、8 种掩码、numeric/alphanumeric/byte(UTF-8)/ECI。
+**Kanji 模式返回 null 而非崩溃** —— 相对 html5-qrcode 是一个窄的能力缺口,
+本 app 自己生成的码不会用到,但如果将来要扫外部的 Shift-JIS 码需要留意。
+
+## 验证
+
+两套独立的测试,都必须绿:
+
+```bash
+node scripts/verify-qr-decoder.mjs      # 123 项:版本/纠错级别/掩码/长文本/损坏纠错
+node scripts/qr-independent-check.mjs   # 23 项:旋转/真实载荷/小尺寸/延迟
+```
+
+两者都用仓库里已有的 `qrcode` 生成器做**往返测试**(生成 → 渲染成像素 → 解码
+→ 比对),不依赖任何图像库。
+
+**这里有一条教训值得记下**:第一版实现自测 123/123 全过,但我另写的独立测试
+发现 **30°–60° 区间整段解不出来** —— 每 90° 里约 40% 的朝向失效,手机稍微拿
+斜就扫不出。根因是模块尺寸估算:定位图案的 1:1:3:1:1 比例在对角方向依然成立
+(所以能找到图案),但沿水平扫描线量到的是**对角线跨度**,在 45° 时比真实值大
+√2 倍,推算出的符号尺寸随之偏小、版本判错。
+
+修法是 ZXing 的做法:沿**两个定位图案的连线方向**追踪 black-white-black 游程
+来量模块尺寸(`calculateModuleSize`/`blackWhiteBlackRun`),而不是用行扫描的
+结果 —— 那条线就是符号自身的坐标轴,天然与旋转无关。
+
+**同一套测试写两遍是有价值的**:自测覆盖了规格维度(版本、掩码、纠错),却整个
+漏掉了物理维度(拿歪)。
+
+## 实测性能
+
+| 场景 | 耗时 |
+|---|---|
+| 640×480 帧,画面中有码 | 3.3 ms |
+| 640×480 帧,画面中无码(最坏) | 15.8 ms |
+| 浏览器内(Chromium,246×246) | 7.9 ms |
+
+扫描循环节流在 100ms(约 10fps),即使手机上慢 3–4 倍也仍有余量;视频预览由
+合成器渲染,不受主线程解码阻塞。**因此没有引入 Web Worker** —— 若将来现场
+反馈有卡顿,再考虑。
+
+## 摄像头层(`src/hooks/useScanQrcode.tsx`)
+
+公开 API 未变(`const {scanQrcode} = useScanQrcode()`),四个调用点无需改动。
+实现要点:
+
+- **摄像头释放**:所有退出路径统一 `teardown()` 停掉 track。特别处理了「权限
+  弹窗还开着时用户就关掉对话框」—— 那个 stream 若不停会永久泄漏(指示灯常亮),
+  旧实现有这个问题。
+- `playsinline`:否则 iOS Safari 会强制全屏播放。
+- `facingMode: environment`:后置摄像头才是对着别人手机的那个。
+- 解码前降采样到最长边 640px。

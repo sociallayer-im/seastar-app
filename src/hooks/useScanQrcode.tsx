@@ -1,10 +1,5 @@
 import useModal from '@/components/client/Modal/useModal'
-import {useEffect, useRef} from 'react'
-// Type-only imports — the html5-qrcode implementation (370 KB, the largest
-// client chunk) is loaded on demand inside the dialog effect, not at page load.
-import type {Html5Qrcode} from 'html5-qrcode'
-import type {Html5QrcodeResult} from 'html5-qrcode/src/core'
-import type {CameraDevice} from 'html5-qrcode/src/camera/core'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 
 interface ScanQrcodeProps {
@@ -29,87 +24,203 @@ export default function useScanQrcode() {
     return {scanQrcode}
 }
 
+// Decoding a full-resolution frame in JS is needlessly slow; QR modules stay
+// resolvable well below the camera's native size.
+const DECODE_MAX_SIDE = 640
+// ~10 fps. Faster gains nothing — a user holding a phone at a code needs a few
+// hundred ms anyway — and it keeps the main thread free on older iPhones.
+const DECODE_INTERVAL_MS = 100
+
+type NativeDetector = {detect: (source: CanvasImageSource) => Promise<Array<{rawValue: string}>>}
+
+/**
+ * Chrome/Android has a native detector that is much faster than anything we can
+ * do in JS. Safari — and therefore every browser on iOS — does not implement it
+ * (it was briefly available behind a flag on iOS 17 and regressed in 18), which
+ * is exactly why the JS decoder below is a hard requirement and not a nicety:
+ * event check-in happens on phones, and a large share of them are iPhones.
+ */
+const createNativeDetector = async (): Promise<NativeDetector | null> => {
+    const ctor = (globalThis as unknown as {
+        BarcodeDetector?: {
+            new(opts: {formats: string[]}): NativeDetector
+            getSupportedFormats?: () => Promise<string[]>
+        }
+    }).BarcodeDetector
+
+    if (!ctor) return null
+
+    try {
+        // Presence of the constructor does not guarantee the format is
+        // supported by the platform's backend.
+        const formats = await ctor.getSupportedFormats?.()
+        if (formats && !formats.includes('qr_code')) return null
+        return new ctor({formats: ['qr_code']})
+    } catch {
+        return null
+    }
+}
+
 function DialogScanQrcode(props: ScanQrcodeProps) {
     const {toast} = useToast()
-    const html5QrcodeRef = useRef<Html5Qrcode | undefined>(undefined)
-    // Closing before the scanner finished starting used to leave the camera
-    // running: handleClose found the ref still empty and stopped nothing.
+    const videoRef = useRef<HTMLVideoElement | null>(null)
+    const streamRef = useRef<MediaStream | null>(null)
     const closedRef = useRef(false)
+    const [status, setStatus] = useState<'starting' | 'scanning' | 'failed'>('starting')
 
-    const handleClose = () => {
+    // Every exit path runs through here: the camera must be released, or the
+    // indicator light stays on and the device keeps the capture session open.
+    const teardown = useCallback(() => {
         closedRef.current = true
-        html5QrcodeRef.current?.stop()
+        streamRef.current?.getTracks().forEach(track => track.stop())
+        streamRef.current = null
+    }, [])
+
+    const handleClose = useCallback(() => {
+        teardown()
         props.close()
-    }
+    }, [teardown, props])
 
     useEffect(() => {
-        ;(async () => {
-            const {Html5Qrcode} = await import('html5-qrcode')
+        let frameHandle = 0
+        let timer: ReturnType<typeof setTimeout> | undefined
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d', {willReadFrequently: true})
+
+        const fail = (description: string) => {
             if (closedRef.current) return
-            html5QrcodeRef.current = new Html5Qrcode('reader')
+            setStatus('failed')
+            toast({description, variant: 'warning'})
+        }
 
-            let cameras: Array<CameraDevice> = []
+        ;(async () => {
+            if (!navigator.mediaDevices?.getUserMedia) {
+                fail('Camera is not available in this browser')
+                return
+            }
 
+            let stream: MediaStream
             try {
-                cameras = await Html5Qrcode.getCameras()
+                stream = await navigator.mediaDevices.getUserMedia({
+                    // The rear camera is the one pointed at someone else's phone.
+                    video: {facingMode: {ideal: 'environment'}}
+                })
             } catch (e: unknown) {
                 console.error(e)
-                toast({
-                    description: 'No camera found or permission denied',
-                    variant: 'warning'
-                })
+                fail('No camera found or permission denied')
                 return
             }
 
-            if (!cameras || cameras.length === 0) {
-                toast({
-                    description: 'No camera found or permission denied',
-                    variant: 'warning'
-                })
+            // Closed while the permission prompt was up: release immediately,
+            // otherwise this stream leaks with no one left to stop it.
+            if (closedRef.current) {
+                stream.getTracks().forEach(track => track.stop())
                 return
             }
 
-            function onScanSuccess(decodedText: string, decodedResult: Html5QrcodeResult) {
-                props.onResult?.(decodedText)
+            streamRef.current = stream
+            const video = videoRef.current
+            if (!video) {
+                stream.getTracks().forEach(track => track.stop())
+                return
+            }
+
+            video.srcObject = stream
+            // Required for iOS Safari to play inline instead of going fullscreen.
+            video.setAttribute('playsinline', 'true')
+            try {
+                await video.play()
+            } catch (e: unknown) {
+                console.error(e)
+                fail('Could not start the camera preview')
+                return
+            }
+
+            if (closedRef.current) return
+            setStatus('scanning')
+
+            const detector = await createNativeDetector()
+            const decodeQR = detector
+                ? null
+                : (await import('@/utils/qrcode')).decodeQR
+
+            const handleResult = (value: string) => {
+                if (closedRef.current || !value) return
+                props.onResult?.(value)
                 handleClose()
             }
 
-            function onScanFailure(error: string) {
+            const scanFrame = async () => {
+                if (closedRef.current) return
+
+                const width = video.videoWidth
+                const height = video.videoHeight
+                if (!width || !height) return
+
+                if (detector) {
+                    try {
+                        const results = await detector.detect(video)
+                        if (results[0]?.rawValue) {
+                            handleResult(results[0].rawValue)
+                            return
+                        }
+                    } catch (e: unknown) {
+                        console.error(e)
+                    }
+                    return
+                }
+
+                if (!ctx || !decodeQR) return
+
+                const scale = Math.min(1, DECODE_MAX_SIDE / Math.max(width, height))
+                canvas.width = Math.round(width * scale)
+                canvas.height = Math.round(height * scale)
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+                const {data} = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+                const value = decodeQR(data, canvas.width, canvas.height)
+                if (value) handleResult(value)
             }
 
-            if (closedRef.current) return
-
-            try {
-                await html5QrcodeRef.current.start(cameras[0].id, {
-                    fps: 10,
-                }, onScanSuccess, onScanFailure)
-                // The dialog may have been closed while start() was pending.
-                if (closedRef.current) await html5QrcodeRef.current.stop()
-            } catch (e: unknown) {
-                console.error(e)
-                toast({
-                    description: e instanceof Error ? e.message : 'Scan failed',
-                    variant: 'warning'
-                })
-                return
+            const loop = async () => {
+                if (closedRef.current) return
+                await scanFrame()
+                if (closedRef.current) return
+                timer = setTimeout(() => {
+                    frameHandle = requestAnimationFrame(loop)
+                }, DECODE_INTERVAL_MS)
             }
 
-            return async () => {
-                await html5QrcodeRef.current?.stop()
-            }
+            await loop()
         })()
+
+        return () => {
+            teardown()
+            clearTimeout(timer)
+            cancelAnimationFrame(frameHandle)
+        }
+        // Deliberately mount-only: re-running would restart the camera.
     }, [])
 
-    const style = {width: '100vw', height: '100vh'}
-
     return <div className="bg-black p-3 shadow flex flex-col items-center justify-center relative overflow-hidden"
-                style={style}>
+                style={{width: '100vw', height: '100svh'}}>
 
-        <img src="/images/scan.png" alt="" className="scan-line z-10" />
-        <div id="reader"
-             style={{width: '100%', maxWidth: '476px'}}/>
+        <img src="/images/scan.png" alt="" className="scan-line z-10"/>
+
+        <div className="relative w-full max-w-[476px] aspect-square overflow-hidden rounded-lg">
+            <video ref={videoRef}
+                   className="w-full h-full object-cover"
+                   muted
+                   playsInline
+                   autoPlay/>
+            {status !== 'scanning' &&
+                <div className="absolute inset-0 flex items-center justify-center text-white text-sm">
+                    {status === 'starting' ? 'Starting camera...' : 'Camera unavailable'}
+                </div>
+            }
+        </div>
 
         <i onClick={handleClose}
-           className="uil-times-circle text-white text-4xl mt-3 cursor-possinter"/>
+           className="uil-times-circle text-white text-4xl mt-3 cursor-pointer"/>
     </div>
 }
