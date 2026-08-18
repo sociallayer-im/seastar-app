@@ -76,8 +76,10 @@ export default function NavTabs({param = 'tab', current, tabs, basePath, classNa
                 </button>
             )}
         </div>
+        {/* w-full so the panel does not shrink-wrap when the tab bar sits in a
+            flex column that aligns its children rather than stretching them. */}
         {children !== undefined &&
-            <div className={pending ? 'opacity-50 transition-opacity duration-200' : ''} aria-busy={pending}>
+            <div className={`w-full ${pending ? 'opacity-50 transition-opacity duration-200' : ''}`} aria-busy={pending}>
                 {children}
             </div>
         }

@@ -141,7 +141,11 @@ export default async function GroupPage({params:{handle}, searchParams:{tab:_tab
                         </div>
                     </div>
                 }
-                <div className="flex flex-col items-start flex-1 min-w-0">
+                {/* No items-start: it shrink-wraps each child to its content,
+                    which collapsed every tab panel to a few hundred pixels and
+                    left most of a desktop row empty. The tab bar escaped it
+                    only because it is passed w-full. */}
+                <div className="flex flex-col flex-1 min-w-0">
                 {/* Soft navigation, and the server builds only the tab that
                     was asked for — a group's badge or member list is not
                     something to fetch on the chance someone clicks. */}
