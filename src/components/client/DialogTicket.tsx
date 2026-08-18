@@ -59,7 +59,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
     const [pendingTicketItem, setPendingTicketItem] = useState<TicketItem | null>(null)
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle')
-    const [paidTx, setPaidTx] = useState<{hash: string, sender: string} | null>(null)
+    const [paidTx, setPaidTx] = useState<{itemId: string, hash: string, sender: string} | null>(null)
     /** Money has left; we are waiting for the server to agree. */
     const [confirming, setConfirming] = useState<boolean>(false)
 
@@ -338,19 +338,29 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     const paidTxKey = (ticketItemId: string) => `evm-paid-tx:${ticketItemId}`
 
     const rememberTxHash = (ticketItemId: string, hash: string, sender: string) => {
-        setPaidTx({hash, sender})
+        setPaidTx({itemId: ticketItemId, hash, sender})
         try {
-            window.localStorage.setItem(paidTxKey(ticketItemId), JSON.stringify({hash, sender}))
+            window.localStorage.setItem(paidTxKey(ticketItemId), JSON.stringify({hash, sender, ts: Date.now()}))
         } catch {
             // Private mode / quota: state alone still covers the in-page retry.
         }
     }
 
     const recallTxHash = (ticketItemId: string): {hash: string, sender: string} | null => {
-        if (paidTx) return paidTx
+        // Must belong to this order: returning the in-memory hash for any item
+        // would submit order A's transaction against order B.
+        if (paidTx?.itemId === ticketItemId) return paidTx
         try {
             const raw = window.localStorage.getItem(paidTxKey(ticketItemId))
-            return raw ? JSON.parse(raw) as {hash: string, sender: string} : null
+            if (!raw) return null
+            const stored = JSON.parse(raw) as {hash: string, sender: string, ts?: number}
+            // Orders are swept long before this; an entry older than a day can
+            // only be litter from a payment that never completed.
+            if (stored.ts && Date.now() - stored.ts > 24 * 60 * 60 * 1000) {
+                window.localStorage.removeItem(paidTxKey(ticketItemId))
+                return null
+            }
+            return {hash: stored.hash, sender: stored.sender}
         } catch {
             return null
         }
@@ -420,6 +430,12 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             await submitAndSettle(ticketItem, txHash, account)
         } catch (e: unknown) {
             console.error(e)
+            // A reverted or replaced transaction can never settle. Keeping its
+            // hash would make every retry re-submit a transaction the backend
+            // must reject, leaving the buyer unable to pay at all until the
+            // order is swept.
+            const {isDeadTransactionError} = await import('@/utils/evm_payment')
+            if (isDeadTransactionError(e)) forgetTxHash(ticketItem.id)
             setPaymentError(e instanceof Error ? e.message : 'Payment failed')
             setPaymentStep('error')
         }

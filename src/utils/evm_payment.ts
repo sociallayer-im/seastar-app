@@ -74,6 +74,13 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
  * under the replacement, which is why the message tells the user to check
  * rather than to pay again.
  */
+class RevertedTransactionError extends Error {
+    constructor(hash: string) {
+        super(`Transaction reverted: ${hash}`)
+        this.name = 'RevertedTransactionError'
+    }
+}
+
 class ReplacedTransactionError extends Error {
     constructor(hash: string) {
         super(
@@ -126,7 +133,7 @@ async function waitForReceipt(
         if (receipt) {
             // Pre-Byzantium receipts have no status field; treat as success.
             if (receipt.status === '0x0' || receipt.status === '0x00') {
-                throw new Error(`Transaction reverted: ${hash}`)
+                throw new RevertedTransactionError(hash)
             }
             return receipt
         }
@@ -201,6 +208,17 @@ async function sendTransaction(
         throw new Error('Wallet returned an invalid transaction hash.')
     }
     return hash as Hex
+}
+
+/**
+ * True when the hash we handed the caller can never settle: the transaction
+ * reverted (no money moved) or the wallet replaced it (money may have moved,
+ * but under a hash we cannot know). Either way the caller must stop trying to
+ * submit that hash — otherwise the order is stuck on a transaction the backend
+ * will reject forever.
+ */
+export function isDeadTransactionError(e: unknown): boolean {
+    return e instanceof RevertedTransactionError || e instanceof ReplacedTransactionError
 }
 
 export async function executePayHubPayment({

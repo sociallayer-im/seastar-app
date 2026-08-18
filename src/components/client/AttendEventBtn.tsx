@@ -51,7 +51,14 @@ export default function AttendEventBtn({eventId, lang, className, onAttended, fo
                 showConfirmDialog({
                     lang,
                     title: 'Join Event',
-                    content: 'Please purchase the ticket to join the event. <br /><a style="color: #097eff; text-decoration: underline; white-space: nowrap;" href="https://edgecity.simplefi.tech/auth?popup=edge-esmeralda" target="_blank">Go to Purchase Ticket</a>',
+                    content: <>
+                        Please purchase the ticket to join the event.
+                        <div className="mt-2">
+                            <a className="text-[#097eff] underline whitespace-nowrap"
+                               href="https://edgecity.simplefi.tech/auth?popup=edge-esmeralda"
+                               target="_blank" rel="noreferrer">Go to Purchase Ticket</a>
+                        </div>
+                    </>,
                     type: 'info'
                 })
                 return

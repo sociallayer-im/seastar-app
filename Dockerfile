@@ -68,7 +68,9 @@ FROM node:24-slim AS production
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
-# vinext binds HOST, not HOSTNAME (deliberate upstream rename).
+# vinext takes PORT from the environment; the listen host is not read from the
+# environment at all and already defaults to 0.0.0.0. Kept as documentation of
+# the intended bind address — it is not what makes it happen.
 ENV HOST=0.0.0.0
 
 # Only what `vinext start` actually reads at runtime. packages/ comes along
@@ -82,6 +84,16 @@ COPY --from=build /app/dist dist
 COPY --from=build /app/public public
 COPY --from=build /app/packages packages
 COPY --from=build /app/package.json /app/next.config.mjs /app/.env.production ./
+
+# YATCH_TOKEN is a registry *push* credential that ginger reads from the env
+# file; nothing in the app reads it, and shipping it means anyone who can pull
+# this image can write to the registry. ginger.cn.yml already strips it while
+# building the CN env file, but ginger.yml has no such pipeline, so the SG
+# image carried it. Stripping here covers both environments and cannot be
+# forgotten when a pipeline is edited.
+RUN grep -v '^YATCH_TOKEN' .env.production > .env.production.clean \
+    && mv .env.production.clean .env.production \
+    && ! grep -q '^YATCH_TOKEN' .env.production
 
 EXPOSE 3000
 # `vinext start` serves the dist/ build on 0.0.0.0:$PORT.

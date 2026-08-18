@@ -5,6 +5,13 @@ node_modules
 .env
 .env.local
 .env*.local
+# The CN build never needs these in the context: ginger.cn.yml's deploy hook
+# runs locally and writes the CN values into .env.production before the build.
+# Leaving them in meant `COPY . .` baked the WeChat secret and the registry
+# token into the build stage — which `builder.cache: max` then exports to the
+# registry's buildcache.
+.env.cn.production
+.env.production.sgbak
 .git
 .vercel
 .storybook

@@ -637,7 +637,7 @@ export const en = {
     "External Event Imported Successfully":
         "External Event Imported Successfully",
     "Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details.":
-        "Importing external event details will disregard <b>ticket information</b> and <b>online meeting</b> addresses. Please manually edit these details.",
+        "Importing external event details will disregard ticket information and online meeting addresses. Please manually edit these details.",
     "Import External Event": "Import Event",
     "Want to create your own Pop-up City?":
         "Want to create your own Pop-up City?",
