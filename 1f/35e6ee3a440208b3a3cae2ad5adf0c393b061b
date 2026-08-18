@@ -1,0 +1,25 @@
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_60bd4f75d89ec4 27
+src/utils/remove_markdown.ts
+  s_e9ed806a3d225c::t_ff169611621fab 1-16
+src/utils/markdown/index.ts
+  s_e9ed806a3d225c::t_60bd4f75d89ec4 2
+src/app/(dashboard)/dashboard-event-detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_60bd4f75d89ec4 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1f35e6ee3a440208b3a3cae2ad5adf0c393b061b",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
