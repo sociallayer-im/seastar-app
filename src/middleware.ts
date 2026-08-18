@@ -61,7 +61,11 @@ export function middleware(request: NextRequest) {
     // redirect, so the address bar keeps the URL the user arrived on.
     const response = isAuthHost(host) && url.pathname === '/'
         ? NextResponse.rewrite(new URL(`/signin${url.search}`, request.url), {request: {headers}})
-        : NextResponse.next({ headers })
+        // {request: {headers}}, not {headers}: the latter sets *response*
+        // headers. Next happened to forward them to headers() anyway; vinext
+        // follows the documented behavior, and x-current-path readers (the
+        // share page's QR URL, the layouts) got null.
+        : NextResponse.next({ request: { headers } })
 
     const referer = url.searchParams.get('referer')
     if (referer) {
