@@ -1,4 +1,3 @@
-import type {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import {redirect} from "next/navigation"
 import {pickSearchParam} from "@/utils"
 import {type ProfileDetail, getProfileDetailByName, getProfileDetailByAuth} from '@sola/sdk'
