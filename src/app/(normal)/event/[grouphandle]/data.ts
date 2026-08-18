@@ -58,7 +58,7 @@ export default async function GroupEventHomeData({
 
     const authToken = await getServerSideAuth()
 
-    const [highlightedEvents, filteredEvents] = await Promise.all([
+    const [highlightedEvents, filteredEvents, categories] = await Promise.all([
         getEvents({
             params: {
                 filters: {
@@ -72,10 +72,20 @@ export default async function GroupEventHomeData({
             },
             clientMode: CLIENT_MODE,
         }),
-        await getEvents({
+        getEvents({
             params: {filters: {...filterOpts, page: 1}, authToken, limit: PAGE_SIZE * (filterOpts.page ?? 1)},
             clientMode: CLIENT_MODE,
-        })
+        }),
+        // The boards this viewer may see. Fetched here so the tab bar can be
+        // rendered in the first paint rather than appearing a moment later, but
+        // only when both switches are on — otherwise it is a request that is
+        // certain to 404.
+        DISCUSSION && groupDetail.discussion_enabled
+            ? getCategories({
+                params: {groupId: groupDetail.id, authToken},
+                clientMode: CLIENT_MODE
+            }).catch(() => null)
+            : Promise.resolve<Category[] | null>(null)
     ])
 
     // Events already embed their track (soon EventBlueprint).
@@ -95,18 +105,6 @@ export default async function GroupEventHomeData({
         if (!!pastEvents.length) {
             redirect(`/event/${groupDetail.name}?collection=past`)
         }
-    }
-
-    // The boards this viewer may see. Fetched here so the tab bar can be
-    // rendered in the first paint rather than appearing a moment later, but
-    // only when both switches are on — otherwise it is a request that is
-    // certain to 404.
-    let categories: Category[] | null = null
-    if (DISCUSSION && groupDetail.discussion_enabled) {
-        categories = await getCategories({
-            params: {groupId: groupDetail.id, authToken},
-            clientMode: CLIENT_MODE
-        }).catch(() => null)
     }
 
     // Mirrors soon's TopicPolicy#create?: the group tier, which a board's own

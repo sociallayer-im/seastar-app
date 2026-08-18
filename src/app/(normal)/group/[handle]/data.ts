@@ -50,28 +50,27 @@ export interface GroupData {
 
 export default async function GroupPageData(handle: string, tab='events'): Promise<GroupData> {
 
+    const authToken = (await cookies()).get(AUTH_FIELD)?.value
+
     // With the token: the roster's private team badges are only rendered for
     // people in the group, so an anonymous fetch would hide a member's own
-    // teams from them.
-    const groupsDetail = await getGroupDetailByName({
-        params: {groupName: handle, authToken: (await cookies()).get(AUTH_FIELD)?.value},
-        clientMode: CLIENT_MODE
-    })
+    // teams from them. The group and the viewer's profile are independent
+    // reads — fetch both at once.
+    const [groupsDetail, currProfile] = await Promise.all([
+        getGroupDetailByName({
+            params: {groupName: handle, authToken},
+            clientMode: CLIENT_MODE
+        }),
+        authToken
+            ? getProfileDetailByAuth({params: {authToken}, clientMode: CLIENT_MODE})
+            : Promise.resolve<ProfileDetail | null>(null)
+    ])
 
     if (!groupsDetail) {
         redirect('/error')
     }
 
     const group = groupsDetail
-
-    let currProfile: ProfileDetail | null = null
-    const authToken = (await cookies()).get(AUTH_FIELD)?.value
-    if (!!authToken) {
-        currProfile = await getProfileDetailByAuth({
-            params: {authToken},
-            clientMode: CLIENT_MODE
-        })
-    }
 
     const {
         owner,
@@ -86,25 +85,27 @@ export default async function GroupPageData(handle: string, tab='events'): Promi
         canSubmitEvent
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupsDetail, currProfile)
 
-    // group.parent (from GroupBlueprint's base association) carries no
-    // memberships — fetch the parent's own detail to check the current
-    // user's role there.
-    let currUserIsParentManager = false
-    if (!isManager && group.parent_id && currProfile) {
-        const parentGroup = await getGroupDetailById({params: {groupId: group.parent_id}, clientMode: CLIENT_MODE})
-        if (parentGroup) {
-            const {isManager: isParentManager} = analyzeGroupMembershipAndCheckProfilePermissions(parentGroup, currProfile)
-            currUserIsParentManager = isParentManager
-        }
-    }
-
-    // Only managers can act on teams, and only they are shown the edit
-    // dialog — so nobody else pays for the request.
-    let teams: Team[] = []
-    if (isManager && authToken) {
-        teams = await getTeams({params: {groupId: group.id, authToken}, clientMode: CLIENT_MODE})
-            .catch(() => [])
-    }
+    // Both follow-ups depend only on the membership analysis and not on each
+    // other — one round trip.
+    const [currUserIsParentManager, teams] = await Promise.all([
+        // group.parent (from GroupBlueprint's base association) carries no
+        // memberships — fetch the parent's own detail to check the current
+        // user's role there.
+        (async () => {
+            if (!isManager && group.parent_id && currProfile) {
+                const parentGroup = await getGroupDetailById({params: {groupId: group.parent_id}, clientMode: CLIENT_MODE})
+                if (parentGroup) {
+                    return analyzeGroupMembershipAndCheckProfilePermissions(parentGroup, currProfile).isManager
+                }
+            }
+            return false
+        })(),
+        // Only managers can act on teams, and only they are shown the edit
+        // dialog — so nobody else pays for the request.
+        isManager && authToken
+            ? getTeams({params: {groupId: group.id, authToken}, clientMode: CLIENT_MODE}).catch(() => [] as Team[])
+            : Promise.resolve([] as Team[])
+    ])
 
     return {
         group: group,

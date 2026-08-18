@@ -26,25 +26,24 @@ export interface ProfileData {
 }
 
 export async function ProfileData(handle: string, tab='events'): Promise<ProfileData> {
-    const profileDetail = await getProfileDetailByName({
-        params: {name: handle},
-        clientMode: CLIENT_MODE
-    })
+    const authToken = await getServerSideAuth()
+
+    // The viewed profile and the viewer's own are independent reads.
+    const [profileDetail, currProfile] = await Promise.all([
+        getProfileDetailByName({
+            params: {name: handle},
+            clientMode: CLIENT_MODE
+        }),
+        authToken
+            ? getProfileDetailByAuth({params: {authToken: authToken}, clientMode: CLIENT_MODE})
+            : Promise.resolve<ProfileDetail | null>(null)
+    ])
 
     if (!profileDetail) {
         redirect('/error')
     }
 
     const profile = profileDetail
-
-    let currProfile: ProfileDetail | null = null
-    const authToken = await getServerSideAuth()
-    if (!!authToken) {
-        currProfile = await getProfileDetailByAuth({
-            params: {authToken: authToken},
-            clientMode: CLIENT_MODE
-        })
-    }
 
     const isSelf = currProfile?.id === profile?.id
 

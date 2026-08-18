@@ -5,9 +5,18 @@ import {getLang, getLangType} from '@/lang'
 import {AUTH_FIELD} from '@/utils'
 import {getProfileDetailByAuth, ProfileDetail} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
-import NodeCache from 'node-cache'
+import {cache} from 'react'
 
-const Cache = new NodeCache()
+// Per-request dedupe (React cache): the layout and nearly every page's data.ts
+// both resolve the current profile, so this halves those calls without the
+// cross-request staleness a process-global cache had.
+const currProfileByToken = cache(async (authToken: string): Promise<ProfileDetail | null> => {
+    const profile = await getProfileDetailByAuth({
+        params: {authToken: authToken},
+        clientMode: CLIENT_MODE
+    })
+    return profile?.name ? profile : null
+})
 
 export const selectLang = async function () {
     const acceptLanguage = (await headers()).get('accept-language')
@@ -30,21 +39,5 @@ export const getCurrProfile = async function () {
         return null
     }
 
-    const cache = Cache.get(authToken)
-    if (cache) {
-        return cache as ProfileDetail
-    }
-
-    const profile =  await getProfileDetailByAuth({
-        params: {authToken: authToken},
-        clientMode: CLIENT_MODE
-    })
-
-    if (!profile?.name) {
-        return null
-    }
-
-    Cache.set(authToken, profile, 2)
-
-    return  profile
+    return currProfileByToken(authToken)
 }

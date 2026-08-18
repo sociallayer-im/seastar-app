@@ -29,20 +29,21 @@ export interface EventDetailDataProps {
 }
 
 export default async function EventDetailPage(eventid: string, tab='content'){
-    const currProfile = await getCurrProfile()
-
     // The attendee array is the one part of this response that grows with the
     // event, and the detail page keeps it behind a tab that fetches its own
     // data (EventParticipantTab). `current_participant` comes back either way,
     // which is all this function needs to decide the RSVP state.
-    const eventDetail = await getEventDetailById({
-        params: {
-            eventId: eventid,
-            authToken: await getServerSideAuth(),
-            includeParticipants: false
-        },
-        clientMode: CLIENT_MODE
-    })
+    const [currProfile, eventDetail] = await Promise.all([
+        getCurrProfile(),
+        (async () => getEventDetailById({
+            params: {
+                eventId: eventid,
+                authToken: await getServerSideAuth(),
+                includeParticipants: false
+            },
+            clientMode: CLIENT_MODE
+        }))()
+    ])
     if (!eventDetail) {
         redirect('/404')
     }
@@ -51,13 +52,52 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         redirect('/404')
     }
 
-    const groupDetail = await getGroupDetailByName({
-        params: {groupName: eventDetail.group.name},
-        clientMode: CLIENT_MODE
-    })
+    // groupDetail, recurring, form and the viewer's ticket orders are all
+    // independent reads — one round trip instead of four.
+    const [groupDetail, recurring, form, ticketState] = await Promise.all([
+        getGroupDetailByName({
+            params: {groupName: eventDetail.group.name},
+            clientMode: CLIENT_MODE
+        }),
+        eventDetail.recurring_id
+            ? getRecurringById({params: {recurringId: eventDetail.recurring_id}, clientMode: CLIENT_MODE})
+            : Promise.resolve(null as Recurring | null),
+        eventDetail.form_id
+            ? getEventForm({params: {eventId: eventDetail.id}, clientMode: CLIENT_MODE})
+            : Promise.resolve(null),
+        (async () => {
+            const ticketsPurchased: Ticket[] = []
+            // The order still awaiting payment, if there is one. The page needs
+            // the order itself and not just currProfilePaymentPending: cancelling
+            // an abandoned attempt takes its id, and without a way to cancel, the
+            // "awaiting payment" notice is a dead end the buyer cannot leave.
+            let pendingTicketItemId: string | null = null
+            if (!!currProfile && !!eventDetail.tickets?.length) {
+                const token = await getServerSideAuth()
+                const [ticketItems, pendingItems] = await Promise.all([
+                    getPurchasedTicketItemsByProfileNameAndEventId({
+                        params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: token!},
+                        clientMode: CLIENT_MODE
+                    }),
+                    getPendingTicketItemsByProfileNameAndEventId({
+                        params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: token!},
+                        clientMode: CLIENT_MODE
+                    })
+                ])
+
+                ticketItems.forEach(item => {
+                    const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
+                    !!ticket && ticketsPurchased.push(ticket)
+                })
+                pendingTicketItemId = pendingItems[0]?.id || null
+            }
+            return {ticketsPurchased, pendingTicketItemId}
+        })()
+    ])
     if (!groupDetail) {
         redirect('/404')
     }
+    const {ticketsPurchased, pendingTicketItemId} = ticketState
 
     const {
         isManager: isGroupManager,
@@ -123,45 +163,9 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const avNeeds = requirementTags.filter(tag => AVNeeds.includes(tag))
     const externalCatering = requirementTags.filter(tag => ExternalCatering.includes(tag))
 
-    let recurring: Recurring | null = null
-    if (!!eventDetail.recurring_id) {
-        recurring = await getRecurringById({params: {recurringId: eventDetail.recurring_id}, clientMode: CLIENT_MODE})
-    }
-
-    const ticketsPurchased: Ticket[] = []
-    // The order still awaiting payment, if there is one. The page needs the
-    // order itself and not just currProfilePaymentPending: cancelling an
-    // abandoned attempt takes its id, and without a way to cancel, the
-    // "awaiting payment" notice is a dead end the buyer cannot leave.
-    let pendingTicketItemId: string | null = null
-    if (!!currProfile && !!eventDetail.tickets?.length) {
-        const token = await getServerSideAuth()
-        const [ticketItems, pendingItems] = await Promise.all([
-            getPurchasedTicketItemsByProfileNameAndEventId({
-                params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: token!},
-                clientMode: CLIENT_MODE
-            }),
-            getPendingTicketItemsByProfileNameAndEventId({
-                params: {profileName: currProfile.name, eventId: eventDetail.id, authToken: token!},
-                clientMode: CLIENT_MODE
-            })
-        ])
-
-        ticketItems.forEach(item => {
-            const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
-            !!ticket && ticketsPurchased.push(ticket)
-        })
-        pendingTicketItemId = pendingItems[0]?.id || null
-    }
-
     // eventDetail was fetched with the viewer's authToken (see getEventDetailById
     // above), so the backend already annotated it with is_starred for them.
     const currProfileStarred = !!currProfile && !!(eventDetail as unknown as {is_starred?: boolean}).is_starred
-
-    // The registration form is fetched separately now (EventDetail carries form_id only).
-    const form = eventDetail.form_id
-        ? await getEventForm({params: {eventId: eventDetail.id}, clientMode: CLIENT_MODE})
-        : null
 
     return {
         currProfile,

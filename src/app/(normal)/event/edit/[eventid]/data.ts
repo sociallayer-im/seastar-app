@@ -69,15 +69,16 @@ export default async function EditEventData({
   params: { eventid },
   checkPermissions = true,
 }: EditEventProps) {
-  const currProfile = await getCurrProfile()
+  const [currProfile, eventDetail] = await Promise.all([
+    getCurrProfile(),
+    getEventDetailById({
+      params: { eventId: eventid },
+      clientMode: CLIENT_MODE,
+    }),
+  ])
   if (!currProfile && checkPermissions) {
     redirect("/")
   }
-
-  const eventDetail = await getEventDetailById({
-    params: { eventId: eventid },
-    clientMode: CLIENT_MODE,
-  })
   if (!eventDetail) {
     redirect("/404")
   }
@@ -93,40 +94,41 @@ export default async function EditEventData({
   const { isManager, isOwner, isMember, isIssuer } =
     analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
 
-  const availableGroupHost = currProfile
-    ? await getAvailableGroupsForEventHost({
-        params: { profileName: currProfile.name },
-        clientMode: CLIENT_MODE,
-      })
-    : []
+  const authToken = await getServerSideAuth()
+
+  // Host list, recurrence, venue filter and the application form are four
+  // independent reads — one round trip instead of four.
+  const [availableGroupHost, recurring, availableVenues, form] = await Promise.all([
+    currProfile
+      ? getAvailableGroupsForEventHost({
+          params: { profileName: currProfile.name },
+          clientMode: CLIENT_MODE,
+        })
+      : Promise.resolve([]),
+    eventDetail.recurring_id
+      ? getRecurringById({
+          params: { recurringId: eventDetail.recurring_id },
+          clientMode: CLIENT_MODE,
+        })
+      : Promise.resolve(null as Recurring | null),
+    filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager, authToken),
+    // Without this the editor showed the application-form section switched off
+    // on an event that has one, so an organizer opening the page saw their
+    // questions vanish — and building them again replaced the originals, taking
+    // the answers already given with them.
+    eventDetail.form_id
+      ? getEventForm({
+          params: {eventId: eventDetail.id, authToken: authToken || undefined},
+          clientMode: CLIENT_MODE,
+        })
+      : Promise.resolve(null),
+  ])
 
   const availableHost: Array<Profile | Group> = currProfile
     ? eventDetail.owner.id === currProfile?.id
       ? [currProfile, ...availableGroupHost]
       : [eventDetail.owner, ...availableGroupHost]
     : []
-
-  let recurring: Recurring | null = null
-  if (!!eventDetail.recurring_id) {
-    recurring = await getRecurringById({
-      params: { recurringId: eventDetail.recurring_id },
-      clientMode: CLIENT_MODE,
-    })
-  }
-
-  const authToken = await getServerSideAuth()
-  const availableVenues = await filterVenuesForProfile(groupDetail, currProfile, isOwner || isManager, authToken)
-
-  // Without this the editor showed the application-form section switched off
-  // on an event that has one, so an organizer opening the page saw their
-  // questions vanish — and building them again replaced the originals, taking
-  // the answers already given with them.
-  const form = eventDetail.form_id
-    ? await getEventForm({
-        params: {eventId: eventDetail.id, authToken: authToken || undefined},
-        clientMode: CLIENT_MODE,
-      })
-    : null
 
   return {
     currProfile,

@@ -48,7 +48,6 @@
     "js-sha3": "^0.9.3",
     "lucide-react": "^0.523.0",
     "markdown-it": "^14.1.0",
-    "node-cache": "^5.1.2",
     "orderedmap": "^2.1.1",
     "prosemirror-commands": "^1.7.2",
     "prosemirror-dropcursor": "^1.8.3",
