@@ -1,0 +1,21 @@
+package.json
+  s_e9ed806a3d225c::t_140fcce023c5ee 49-60
+bun.lock
+  s_e9ed806a3d225c::t_32d81159cc4680 38-49,1191,1193,1195,1203,1205,1211,1213,1561-1576,1617-1622
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "778f4fec9cdc6900430a4363126e5c8d050caacc",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
