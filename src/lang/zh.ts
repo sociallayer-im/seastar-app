@@ -513,7 +513,7 @@ export const zh: Dictionary = {
   "Group handle": "群组 handle",
   "Do you want to create a group with this name ?":
     "您要使用这个名创建一个群组吗？",
-  "Event Home": "前往活动主页",
+  "Event Home": "前往社区主页",
   "Events of [{1}]": "「{1}」的活动",
   Content: "内容",
   "Ticket Detail": "门票详情",
