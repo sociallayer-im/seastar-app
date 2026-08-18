@@ -1,0 +1,37 @@
+docs/TODO.md
+  s_e9ed806a3d225c::t_b90d48b2615a74 3-9
+src/utils/evm_payment.ts
+  s_e9ed806a3d225c::t_a327a6ace71771 4
+src/app/(normal)/event/detail/[eventid]/JoinTicketEventBtn.tsx
+  s_e9ed806a3d225c::t_01933334b79743 7-10
+src/app/(normal)/event/detail/[eventid]/TicketList.tsx
+  s_e9ed806a3d225c::t_01933334b79743 8-11
+src/hooks/useScanQrcode.tsx
+  s_e9ed806a3d225c::t_801a80842a1790 3-7,43,106
+src/components/client/DialogTicket.tsx
+  s_e9ed806a3d225c::t_8a210c1f66fe86 337-338
+  s_e9ed806a3d225c::t_1c73c58551e605 33
+src/utils/index.ts
+  s_e9ed806a3d225c::t_9a38cac2d96a72 869-871
+  s_e9ed806a3d225c::t_34be652bbce930 1113,1122,1142
+src/hooks/useUploadAvatar/index.tsx
+  s_e9ed806a3d225c::t_467b3535185c1f 3-6
+src/utils/evm_payment_steps.ts
+  s_e9ed806a3d225c::t_aa48cf6a9a392f 1-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "72410bcfb38a0e8d30b1265922ac3835864e93a1",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
