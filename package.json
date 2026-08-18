@@ -8,7 +8,7 @@
     "start": "vinext start",
     "lint": "eslint src packages/sola-sdk/src",
     "lint:fix": "eslint . --fix",
-    "dev:next": "next dev",
+    "dev:next": "next dev --webpack",
     "build:next": "next build --webpack",
     "start:next": "next start"
   },
