@@ -9,7 +9,12 @@ export default function DialogConfirm({lang, title, content, onConfig, onCancele
         {!!title &&
             <div className="font-semibold mb-2">{title}</div>
         }
-        {!!content && <div className="mb-4" dangerouslySetInnerHTML={{__html: content}} />}
+        {/* Rendered as React, not innerHTML: `content` used to be an HTML
+            string, and two call sites interpolated values into it — a venue
+            name and a group-supplied ticket URL going straight into an href.
+            As a ReactNode every plain-string caller is escaped for free and
+            the two that need markup pass JSX. */}
+        {!!content && <div className="mb-4">{content}</div>}
         <div className="flex-row-item-center">
             {!hiddenCancelBtn &&
                 <Button className="flex-1 mr-2" variant="secondary"

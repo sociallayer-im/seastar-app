@@ -212,6 +212,8 @@ export async function executePayHubPayment({
     eventId,
     orderNumber,
     onStep,
+    onTxHash,
+    onAccount,
 }: {
     chain: string
     tokenAddress: string
@@ -221,6 +223,14 @@ export async function executePayHubPayment({
     eventId: string
     orderNumber: bigint
     onStep: (step: PaymentStep) => void
+    /**
+     * Called the moment the wallet returns the payment hash, before waiting for
+     * it to confirm. Everything after this point can fail with the money
+     * already gone, so the caller needs the hash then — not on return.
+     */
+    onTxHash?: (hash: `0x${string}`) => void
+    /** The connected account, as soon as it is known. */
+    onAccount?: (account: `0x${string}`) => void
 }): Promise<{txHash: `0x${string}`; account: `0x${string}`}> {
     const eth = getProvider()
 
@@ -232,6 +242,7 @@ export async function executePayHubPayment({
     const accounts = (await request(eth, {method: 'eth_requestAccounts'})) as string[]
     const account = accounts?.[0] as Hex | undefined
     if (!account) throw new Error('No account available. Please unlock your wallet and try again.')
+    onAccount?.(account)
 
     // 2. Switch to correct chain
     onStep('switching_chain')
@@ -298,6 +309,8 @@ export async function executePayHubPayment({
             {type: 'uint256', value: orderNumber},
         ]),
     })
+
+    onTxHash?.(txHash)
 
     onStep('waiting_confirm')
     await waitForReceipt(eth, txHash, {

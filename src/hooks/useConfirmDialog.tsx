@@ -1,3 +1,4 @@
+import type {ReactNode} from 'react'
 import DialogConfirm from '@/components/client/DialogConfirm'
 import {Dictionary} from '@/lang'
 import useModal from '@/components/client/Modal/useModal'
@@ -6,7 +7,8 @@ export interface ShowConfirmDialogProps {
     lang: Dictionary,
     title: string,
     type?: 'danger' | 'info',
-    content: string,
+    /** Rendered as React, never as HTML — see DialogConfirm. */
+    content: ReactNode,
     hiddenCancelBtn?: boolean,
     onConfig?: () => void,
     onCanceled?: () => void

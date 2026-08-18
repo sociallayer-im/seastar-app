@@ -59,6 +59,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
     const [pendingTicketItem, setPendingTicketItem] = useState<TicketItem | null>(null)
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle')
+    const [paidTx, setPaidTx] = useState<{hash: string, sender: string} | null>(null)
     /** Money has left; we are waiting for the server to agree. */
     const [confirming, setConfirming] = useState<boolean>(false)
 
@@ -324,9 +325,75 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         }
     }
 
+    /**
+     * Resume a payment whose transaction is already on chain.
+     *
+     * Everything between "the wallet returned a hash" and "the backend
+     * acknowledged it" can fail with the money already spent, and the retry
+     * button used to re-enter the whole flow and send a *second* transfer. The
+     * backend stops one hash settling two orders, but nothing stops two hashes
+     * paying for one. So the hash is kept the moment it exists, survives a
+     * reload, and a retry submits it instead of paying again.
+     */
+    const paidTxKey = (ticketItemId: string) => `evm-paid-tx:${ticketItemId}`
+
+    const rememberTxHash = (ticketItemId: string, hash: string, sender: string) => {
+        setPaidTx({hash, sender})
+        try {
+            window.localStorage.setItem(paidTxKey(ticketItemId), JSON.stringify({hash, sender}))
+        } catch {
+            // Private mode / quota: state alone still covers the in-page retry.
+        }
+    }
+
+    const recallTxHash = (ticketItemId: string): {hash: string, sender: string} | null => {
+        if (paidTx) return paidTx
+        try {
+            const raw = window.localStorage.getItem(paidTxKey(ticketItemId))
+            return raw ? JSON.parse(raw) as {hash: string, sender: string} : null
+        } catch {
+            return null
+        }
+    }
+
+    const forgetTxHash = (ticketItemId: string) => {
+        setPaidTx(null)
+        try {
+            window.localStorage.removeItem(paidTxKey(ticketItemId))
+        } catch {
+            // Nothing to do; a stale entry is only re-submitted, never re-paid.
+        }
+    }
+
+    const submitAndSettle = async (ticketItem: TicketItem, hash: string, sender: string) => {
+        setPaymentStep('verifying')
+        const authToken = getAuth()
+        await submitPaymentTxHash({
+            params: {ticketItemId: ticketItem.id, txhash: hash, senderAddress: sender, authToken: authToken!},
+            clientMode: CLIENT_MODE
+        })
+        forgetTxHash(ticketItem.id)
+        setPaymentStep('done')
+        settleInPlace()
+    }
+
     const handleEVMPayment = async (ticketItem: TicketItem) => {
         if (!selectedMethod || !selectedPaymentType) return
         setPaymentError('')
+
+        // Already paid, only the reporting failed: never send a second transfer.
+        const alreadyPaid = recallTxHash(ticketItem.id)
+        if (alreadyPaid) {
+            try {
+                await submitAndSettle(ticketItem, alreadyPaid.hash, alreadyPaid.sender)
+            } catch (e: unknown) {
+                console.error(e)
+                setPaymentError(e instanceof Error ? e.message : 'Could not confirm your payment')
+                setPaymentStep('error')
+            }
+            return
+        }
+
         try {
             const chain = selectedPaymentType.chain
             const tokenAddress = resolveTokenAddress(selectedMethod, chain)
@@ -336,6 +403,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
             // viem is only needed once the user actually pays with crypto
             const {executePayHubPayment} = await import('@/utils/evm_payment')
+            let senderAddress = ''
             const {txHash, account} = await executePayHubPayment({
                 chain,
                 tokenAddress,
@@ -345,16 +413,11 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 eventId: ticketItem.event_id || eventDetail.id,
                 orderNumber: tsidToBigInt(ticketItem.id),
                 onStep: setPaymentStep,
+                onAccount: (a) => { senderAddress = a },
+                onTxHash: (hash) => rememberTxHash(ticketItem.id, hash, senderAddress),
             })
 
-            setPaymentStep('verifying')
-            const authToken = getAuth()
-            await submitPaymentTxHash({
-                params: {ticketItemId: ticketItem.id, txhash: txHash, senderAddress: account, authToken: authToken!},
-                clientMode: CLIENT_MODE
-            })
-            setPaymentStep('done')
-            settleInPlace()
+            await submitAndSettle(ticketItem, txHash, account)
         } catch (e: unknown) {
             console.error(e)
             setPaymentError(e instanceof Error ? e.message : 'Payment failed')
@@ -806,5 +869,11 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         }
 
         {!!paymentError && <div className="mt-3 text-red-400 text-sm">{paymentError}</div>}
+
+        {/* Once a transfer is on chain the buyer must be able to see its hash:
+            it is the only handle they or support have if confirming fails. */}
+        {!!paidTx && paymentStep !== 'done' && <div className="mt-2 text-xs text-gray-500 break-all">
+            {lang['Your payment transaction']}: {paidTx.hash}
+        </div>}
     </div>
 }

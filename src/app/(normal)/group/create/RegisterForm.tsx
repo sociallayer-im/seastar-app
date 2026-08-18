@@ -43,8 +43,10 @@ export default function RegisterForm(props: { lang: Dictionary }) {
         showConfirmDialog({
             lang: props.lang,
             title: props.lang['Create a Group'],
-            content: `${props.lang['Do you want to create a group with this name ?']}
-                        <div style="text-align: center;margin-top: 12px"><b>${handle}</b></div>`,
+            content: <>
+                {props.lang['Do you want to create a group with this name ?']}
+                <div className="text-center mt-3"><b>{handle}</b></div>
+            </>,
             type: 'info',
             onConfig: async () => {
                 const loading = showLoading()

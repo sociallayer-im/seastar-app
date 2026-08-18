@@ -525,6 +525,7 @@ export const zh: Dictionary = {
   "Your Tickets": "你的门票",
   "Purchase for Free": "免费购买",
   "Purchase Successful": "购买成功",
+  "Your payment transaction": "你的支付交易",
   "Sold Out": "售罄",
   "Stop Selling": "停止销售",
   "You can add a badge after creating an event": "您可以在创建活动后添加徽章",

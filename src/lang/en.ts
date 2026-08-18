@@ -539,6 +539,7 @@ export const en = {
     "Your Tickets": "Your Tickets",
     "Purchase for Free": "Purchase for Free",
     "Purchase Successful": "Purchase Successful",
+    "Your payment transaction": "Your payment transaction",
     "Sold Out": "Sold Out",
     "Stop Selling": "Stop Selling",
     "You can add a badge after creating an event":

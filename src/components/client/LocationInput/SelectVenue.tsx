@@ -177,7 +177,7 @@ function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
 
     return <div className={`${inapplicable ? 'pointer-events-none' : ''}`}>
         <div className={`${inapplicable ? 'opacity-50' : ''}`}>
-            <div className="webkit-box-clamp-1" dangerouslySetInnerHTML={{__html: venue.name}}/>
+            <div className="webkit-box-clamp-1">{venue.name}</div>
             <div className="text-sm text-[#999]">
                 {!!(venue.availabilities?.some(a => a.day_of_week && !a.day)) &&
                     <Badge variant="secondary" className="mr-1 mt-2">{lang['Timeslots']}</Badge>}
