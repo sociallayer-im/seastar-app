@@ -83,7 +83,12 @@ export default function DialogVoucherDetail({
                     clientMode: CLIENT_MODE
                 })
             }
+            // Soft navigation keeps modals alive — close the overlay and the
+            // dialog before leaving, and refresh so the badge tab is current.
+            closeModal(loading)
+            close?.()
             router.push(`/profile/${currProfile!.name}?tab=badges`)
+            router.refresh()
         } catch (e: unknown) {
             closeModal(loading)
             console.error(e)

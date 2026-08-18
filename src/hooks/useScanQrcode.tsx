@@ -32,8 +32,12 @@ export default function useScanQrcode() {
 function DialogScanQrcode(props: ScanQrcodeProps) {
     const {toast} = useToast()
     const html5QrcodeRef = useRef<Html5Qrcode | undefined>(undefined)
+    // Closing before the scanner finished starting used to leave the camera
+    // running: handleClose found the ref still empty and stopped nothing.
+    const closedRef = useRef(false)
 
     const handleClose = () => {
+        closedRef.current = true
         html5QrcodeRef.current?.stop()
         props.close()
     }
@@ -41,6 +45,7 @@ function DialogScanQrcode(props: ScanQrcodeProps) {
     useEffect(() => {
         ;(async () => {
             const {Html5Qrcode} = await import('html5-qrcode')
+            if (closedRef.current) return
             html5QrcodeRef.current = new Html5Qrcode('reader')
 
             let cameras: Array<CameraDevice> = []
@@ -72,10 +77,14 @@ function DialogScanQrcode(props: ScanQrcodeProps) {
             function onScanFailure(error: string) {
             }
 
+            if (closedRef.current) return
+
             try {
                 await html5QrcodeRef.current.start(cameras[0].id, {
                     fps: 10,
                 }, onScanSuccess, onScanFailure)
+                // The dialog may have been closed while start() was pending.
+                if (closedRef.current) await html5QrcodeRef.current.stop()
             } catch (e: unknown) {
                 console.error(e)
                 toast({

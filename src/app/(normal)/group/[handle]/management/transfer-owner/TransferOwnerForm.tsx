@@ -52,7 +52,11 @@ export default function TransferOwnerForm({members, lang, group}: MemberManageme
                 },
                 clientMode: CLIENT_MODE
             })
+            // Soft navigation no longer tears down the loading overlay — close
+            // it explicitly, and refresh so the group page reflects the new owner.
+            closeModal(loading)
             router.push(`/group/${group.name}`)
+            router.refresh()
         } catch (e: unknown) {
             console.error(e)
             closeModal(loading)

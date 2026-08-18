@@ -47,7 +47,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                 })
             }
             if (redirect) {
-                redirect && (router.push(`/event/detail/${event.id}`))
+                redirect && (router.push(`/event/detail/${event.id}`), router.refresh())
             } else {
                 toast({description: 'Event updated successfully', variant: 'success'})
             }
@@ -83,6 +83,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
             })
             if (redirect) {
                 router.push(`/event/detail/${eventDraft.id}`)
+                router.refresh()
             } else {
                 toast({description: 'Event updated successfully', variant: 'success'})
             }
@@ -137,6 +138,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                     toast({description: 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
                         router.push(`/event/${props.data.groupDetail.name}`)
+                        router.refresh()
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)
@@ -173,6 +175,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                     toast({description: 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
                         router.push(`/event/${props.data.groupDetail.name}`)
+                        router.refresh()
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)

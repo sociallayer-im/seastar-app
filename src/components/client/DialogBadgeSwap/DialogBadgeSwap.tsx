@@ -76,12 +76,17 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
                 clientMode: CLIENT_MODE
             }).then(res => {
                 if (res?.owner.id !== props.badge.owner.id) {
+                    // Stop polling at once — with soft navigation the dialog
+                    // survives the push, so a still-running interval would fire
+                    // this toast/push every second forever.
+                    clearInterval(timeout)
                     setSuccess(true)
                     setTimeout(() => {
                         toast({
                             description: 'Swap success',
                             variant: 'success'
                         })
+                        props.close?.()
                         router.push(`/profile/${user.name}?tab=badges`)
                     }, 1500)
                 }

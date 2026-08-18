@@ -142,7 +142,10 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
             })
 
             setTimeout(() => {
+                // Soft navigation keeps the dialog mounted — close it before leaving.
+                close()
                 router.push(`/map/${groupDetail.name}/marker`)
+                router.refresh()
             }, 2000)
         } catch (e: unknown) {
             console.error(e)

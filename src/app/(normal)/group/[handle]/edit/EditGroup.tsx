@@ -113,6 +113,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
             })
             toast({title: 'Group updated'})
             router.push('/group/' + newGroup.name)
+            router.refresh()
         } catch (e: unknown) {
             console.error('[EditGroup]: ', e)
             toast({title: e instanceof Error ? e.message : 'Failed to update Group', variant: 'destructive'})
@@ -140,6 +141,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                         clientMode: CLIENT_MODE
                     })
                     router.push(`/profile/${currProfileHandle}`)
+                    router.refresh()
                 } catch (e: unknown) {
                     console.error(e)
                     closeModal(loading)

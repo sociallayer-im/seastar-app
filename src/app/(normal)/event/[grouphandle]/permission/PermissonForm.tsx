@@ -31,6 +31,7 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
             toast({title: lang['Save successful'], variant: 'success'})
             setTimeout(() => {
                 router.push(`/event/${groupDetail.name}/setting`)
+                router.refresh()
             }, 1500)
         } catch (e: unknown) {
             console.error(e)

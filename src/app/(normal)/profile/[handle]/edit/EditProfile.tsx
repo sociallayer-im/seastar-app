@@ -57,6 +57,7 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
             })
             toast({title: 'Profile updated'})
             router.push('/profile/' + newProfile.name)
+            router.refresh()
         } catch (e: unknown) {
             console.error('[EditProfile]: ', e)
             toast({title: e instanceof Error ? e.message : 'Failed to update profile', variant: 'destructive'})
