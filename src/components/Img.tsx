@@ -27,14 +27,9 @@ export type ImgProps = ImgHTMLAttributes<HTMLImageElement> & {
  * which is exactly today's behaviour — the change cannot regress them.
  */
 export default function Img({priority, loading, ...props}: ImgProps) {
-    // React 18.2 does not know the camelCase `fetchPriority` prop and warns on
-    // it; the all-lowercase spelling is passed through to the DOM untouched,
-    // which is what the browser reads. Revisit when React reaches 18.3+.
-    const priorityAttrs: Record<string, string> = priority ? {fetchpriority: 'high'} : {}
-
     return <img
         {...props}
-        {...priorityAttrs}
+        fetchPriority={priority ? 'high' : undefined}
         loading={loading ?? (priority ? 'eager' : 'lazy')}
         decoding="async"/>
 }
