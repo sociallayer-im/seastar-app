@@ -1,0 +1,36 @@
+src/components/client/DialogBadgeSwap/DialogBadgeSwap.tsx
+  s_e9ed806a3d225c::t_3a6bb5eecf28a2 79-82,89
+src/hooks/useScanQrcode.tsx
+  s_e9ed806a3d225c::t_e2fc84ee09c088 80-81,86-87
+  s_e9ed806a3d225c::t_9c12f1ccff54a0 35-37,40,48
+src/app/(normal)/event/[grouphandle]/permission/PermissonForm.tsx
+  s_e9ed806a3d225c::t_2ec05002da4f53 34
+src/app/(normal)/event/edit/[eventid]/EditEventForm.tsx
+  s_e9ed806a3d225c::t_2ec05002da4f53 50,86,141,178
+src/components/client/DialogVoucherDetail.tsx
+  s_e9ed806a3d225c::t_ac8fc8d9efb5a2 86-89,91
+src/app/(normal)/profile/[handle]/edit/EditProfile.tsx
+  s_e9ed806a3d225c::t_2ec05002da4f53 60
+src/app/(normal)/group/[handle]/edit/EditGroup.tsx
+  s_e9ed806a3d225c::t_2ec05002da4f53 116,144
+src/app/(normal)/map/[grouphandle]/TopBar.tsx
+  s_e9ed806a3d225c::t_7de0f264b45a3c 145-146,148
+src/app/(normal)/group/[handle]/management/transfer-owner/TransferOwnerForm.tsx
+  s_e9ed806a3d225c::t_1048ce93be775b 55-57,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b315c483b2adb8dc3430c63399d6294597838907",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
