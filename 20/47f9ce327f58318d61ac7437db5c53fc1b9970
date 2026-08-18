@@ -1,0 +1,41 @@
+src/components/client/DialogTicket.tsx
+  s_e9ed806a3d225c::t_767240a2146c55 62,406,416-417,420
+  s_e9ed806a3d225c::t_e78403245eaff6 872-875,877
+  s_e9ed806a3d225c::t_78cd3bb1596011 328-379,383-396
+  s_e9ed806a3d225c::t_ee42f2dfa2c744 876
+src/hooks/useConfirmDialog.tsx
+  s_e9ed806a3d225c::t_33046bfaacfd64 1,10-11
+src/components/client/LocationInput/SelectVenue.tsx
+  s_e9ed806a3d225c::t_a2e46a7efb88a1 180
+src/lang/en.ts
+  s_e9ed806a3d225c::t_ee42f2dfa2c744 542
+src/app/(normal)/group/create/RegisterForm.tsx
+  s_e9ed806a3d225c::t_11bf7574253c0c 46-49
+src/components/client/DialogConfirm.tsx
+  s_e9ed806a3d225c::t_33046bfaacfd64 12-17
+src/utils/evm_payment.ts
+  s_e9ed806a3d225c::t_30c7d337e37d7a 226-231
+  s_e9ed806a3d225c::t_f24dad47716cea 215,313
+  s_e9ed806a3d225c::t_767240a2146c55 216,232-233,245
+  s_e9ed806a3d225c::t_85ef79d682b179 314
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_ee42f2dfa2c744 528
+src/components/client/ScheduleEventPopup/index.tsx
+  s_e9ed806a3d225c::t_a2e46a7efb88a1 169-179
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2047f9ce327f58318d61ac7437db5c53fc1b9970",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
