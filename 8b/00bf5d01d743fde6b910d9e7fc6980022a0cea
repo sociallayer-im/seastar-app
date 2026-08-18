@@ -1,0 +1,175 @@
+src/components/client/Editor/RichTextEditor.tsx
+  s_e9ed806a3d225c::t_178a147def039e 335-341
+src/app/(normal)/group/[handle]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 3,24,52
+src/app/(dashboard)/dashboard-venue-detail/[grouphandle]/[venueid]/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 11
+  s_e9ed806a3d225c::t_e619ac254cfbf6 5,9
+src/app/(normal)/event/[grouphandle]/banner/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 7
+src/app/(normal)/search/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 7
+src/app/(normal)/event/detail/[eventid]/promo-code/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,9
+  s_e9ed806a3d225c::t_6f5345f558b4fc 11
+src/app/(normal)/badge-class/[badgeclassid]/send-badge/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,7
+src/app/(normal)/group/[handle]/management/transfer-owner/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,11,24
+src/app/(normal)/profile/[handle]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 21,30,60
+src/app/(normal)/event/[grouphandle]/timezone/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,8
+  s_e9ed806a3d225c::t_6f5345f558b4fc 10
+src/app/(normal)/profile/[handle]/edit/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,8,15
+  s_e9ed806a3d225c::t_6f5345f558b4fc 9,16
+src/app/(normal)/event/[grouphandle]/tracks/edit/[trackid]/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 8
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+package.json
+  s_e9ed806a3d225c::t_b44d3a4346faaa 80
+  s_e9ed806a3d225c::t_df64b45a68fbfa 9
+  s_e9ed806a3d225c::t_51ffef2112981d 42,75-76
+src/app/(auth)/signin/page.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 28
+src/app/(auth)/register/page.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 28
+src/app/(normal)/map/[grouphandle]/marker/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,8
+  s_e9ed806a3d225c::t_6f5345f558b4fc 9
+src/components/client/StarEventBtnClientOnly.tsx
+  s_e9ed806a3d225c::t_7af92da8e07a07 1-7
+src/app/(normal)/event/[grouphandle]/tracks/create/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 7
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+src/app/(normal)/event/detail/[eventid]/promo-code/[promocodeid]/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 17
+  s_e9ed806a3d225c::t_e619ac254cfbf6 10,15
+src/app/(normal)/event/edit/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 7
+src/app/(dashboard)/dashboard-venue-edit/[grouphandle]/[venueid]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,8
+  s_e9ed806a3d225c::t_6f5345f558b4fc 10
+src/app/(dashboard)/dashboard-event-edit/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 7
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+src/app/(normal)/marker/edit/[markerid]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,7
+  s_e9ed806a3d225c::t_6f5345f558b4fc 9
+src/app/(normal)/badge-class/[badgeclassid]/FormatTimeClientOnly.tsx
+  s_e9ed806a3d225c::t_eb4b09f5310860 1-7
+src/app/(normal)/event/checkin/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,9
+  s_e9ed806a3d225c::t_6f5345f558b4fc 10
+src/app/(normal)/marker/[grouphandle]/create/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 7
+src/app/(normal)/group/[handle]/management/invite/success/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 4,9,21
+  s_e9ed806a3d225c::t_6f5345f558b4fc 10,23
+src/app/(normal)/event/[grouphandle]/popup-city/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 12
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,11
+src/app/(normal)/badge-class/create/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 8
+src/app/(normal)/event/[grouphandle]/permission/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 8
+eslint.config.mjs
+  s_e9ed806a3d225c::t_32bd02e03eba03 35
+  s_e9ed806a3d225c::t_e35082798bf39a 23-34
+  s_e9ed806a3d225c::t_f2e011c9b44b74 17-19
+  s_e9ed806a3d225c::t_4aea10a729a660 1-16,20-22,36-42
+src/app/(normal)/event/share/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 6,15,36
+src/app/(normal)/event/[grouphandle]/tracks/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 8
+src/utils/index.ts
+  s_e9ed806a3d225c::t_a90ace8df9bc97 118
+  s_e9ed806a3d225c::t_90fbfafaf519e9 102-108,114-117,119-120
+  s_e9ed806a3d225c::t_1dfeff7f040b6d 109-113
+src/app/(normal)/event/[grouphandle]/setting/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 1,10
+src/app/(normal)/invite/[inviteid]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 11
+src/app/(normal)/voucher/[voucherid]/share/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 5,7
+  s_e9ed806a3d225c::t_6f5345f558b4fc 8
+src/app/(normal)/voucher/[voucherid]/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 12
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+src/app/(normal)/group/[handle]/edit/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,8,21
+src/app/(normal)/event/[grouphandle]/venues/create/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 8
+src/app/(normal)/event/[grouphandle]/tags/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+  s_e9ed806a3d225c::t_6f5345f558b4fc 7
+src/app/(normal)/marker/detail/[markerid]/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 10
+  s_e9ed806a3d225c::t_e619ac254cfbf6 4,9
+src/app/(auth)/verify-bind-email/page.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 23
+src/app/(auth)/verify-bind-phone/page.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 26
+src/app/(normal)/badge-class/[badgeclassid]/page.tsx
+  s_e9ed806a3d225c::t_751a0eeda3614f 14
+  s_e9ed806a3d225c::t_e619ac254cfbf6 4,16,37
+src/app/(normal)/event/checkin-for-participants/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 10
+  s_e9ed806a3d225c::t_e619ac254cfbf6 5,9
+src/app/(dashboard)/dashboard-event-detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_751a0eeda3614f 36
+src/components/client/SearchVenueLocation.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 61,88
+src/app/(normal)/badge/[badgeid]/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 17
+  s_e9ed806a3d225c::t_e619ac254cfbf6 2,16
+src/components/client/SearchMarkerLocation.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 51,54,81
+src/app/(normal)/event/[grouphandle]/venues/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 8
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+src/app/(normal)/group/[handle]/management/invite/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+src/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/page.tsx
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,8
+  s_e9ed806a3d225c::t_6f5345f558b4fc 10
+src/app/(auth)/bind-email/page.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 21
+src/components/client/LocationInput/SearchLocation.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 55,81
+src/app/(auth)/bind-phone/page.tsx
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 27
+src/app/(auth)/authRedirect.ts
+  s_e9ed806a3d225c::t_ae8ef9a9341a70 1,13-14
+src/app/(normal)/map/[grouphandle]/event/page.tsx
+  s_e9ed806a3d225c::t_6f5345f558b4fc 7
+  s_e9ed806a3d225c::t_e619ac254cfbf6 1,6
+bun.lock
+  s_e9ed806a3d225c::t_5ef06da4823c04 34,67-68,72,93-124,127,135-137,139-147,159-163,167,171-175,177,179,181,183,185,187,189,191,193,195,197,199,201,203,205,207,209,211,213,215,217,219,221,225-226,235,237,239,241,243,245,247,249,251,253,377,385-386,391-392,407,409,411,413,415,417,419,421,423,425,481,527-528,537-538,579-580,623,629-630,659-660,663,665,679,681,683,685,709,715,731-732,747,773-776,863-865,901-902,917,931,937-938,1107,1173,1193-1195,1205-1206,1239-1240,1253-1264,1279,1281,1283,1287-1288,1295-1297,1299,1311,1313,1323,1327-1328,1335-1336
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "8b00bf5d01d743fde6b910d9e7fc6980022a0cea",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
