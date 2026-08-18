@@ -115,7 +115,7 @@ function DialogCropper(props: DialogCropperProps) {
         }
     }, [scale])
 
-    return (<div className='w-[300] h-[300] shadow bg-background rounded-lg p-4'>
+    return (<div className='shadow bg-background rounded-lg p-4'>
         <div className='font-semibold mb-3'>
             {'Edit Image'}
         </div>

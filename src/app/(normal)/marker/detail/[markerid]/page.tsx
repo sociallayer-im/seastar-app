@@ -4,7 +4,7 @@ import Avatar from '@/components/Avatar'
 import {cfImage, displayProfileName, awaitProps, AsyncProps} from '@/utils'
 import {selectLang} from '@/app/actions'
 import NoData from '@/components/NoData'
-import RichTextDisplayer from '@/components/client/Editor/Displayer'
+import RichTextDisplayer from '@/components/RichTextDisplayer'
 
 export default async function MarkerDetailPage(props: AsyncProps<MarkerDetailPageDataProps>) {
     const {markerDetail, currProfile, currProfileIsCreator} = await MarkerDetailData(await awaitProps(props))

@@ -7,7 +7,7 @@ import {
     getAvatar
 } from "@/utils"
 import { getLabelColor } from "@/utils/label_color"
-import RichTextDisplayer from "@/components/client/Editor/Displayer"
+import RichTextDisplayer from "@/components/client/RichTextDisplayerClient"
 import { Button, buttonVariants } from "@/components/shadcn/Button"
 import { Badge } from '@/components/shadcn/Badge'
 import { EventDetail, GroupDetail, Profile } from '@sola/sdk'

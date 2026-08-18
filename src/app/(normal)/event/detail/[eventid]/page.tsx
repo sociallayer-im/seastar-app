@@ -13,7 +13,7 @@ import {
 } from "@/utils"
 import { selectLang } from "@/app/actions"
 import { Button, buttonVariants } from "@/components/shadcn/Button"
-import RichTextDisplayer from "@/components/client/Editor/Displayer"
+import RichTextDisplayer from '@/components/RichTextDisplayer'
 import Img from "@/components/Img"
 import Avatar from '@/components/Avatar'
 import AddSingleEventToCalendarApp from '@/components/client/AddSingleEventToCalendarAppBtn'

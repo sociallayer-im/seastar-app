@@ -1,5 +1,5 @@
 # vinext (Vite) build for the seastar-app monorepo. Bun installs and builds;
-# the runtime stage is node:22-slim because vinext's SSR pass showed
+# the runtime stage is node:24-slim because vinext's SSR pass showed
 # intermittent shell errors under the bun runtime while node was clean.
 # Built on a remote amd64 builder via ginger; deployed behind Traefik.
 #
@@ -22,7 +22,7 @@ COPY packages/sola-sdk/package.json packages/sola-sdk/
 RUN bun install --frozen-lockfile --ignore-scripts
 
 # Now the source. node_modules is in .dockerignore, so this cannot clobber the
-# install above. .env.production has to be in the context: `next build` reads it
+# install above. .env.production has to be in the context: the build reads it
 # to inline NEXT_PUBLIC_* into the client bundle.
 COPY . .
 RUN bun --bun run build
@@ -37,6 +37,28 @@ WORKDIR /app
 COPY package.json bun.lock ./
 COPY packages/sola-sdk/package.json packages/sola-sdk/
 RUN bun install --frozen-lockfile --ignore-scripts --production
+
+# `next` is an *optional* peer of @unpic/react (vinext's next/image shim), so
+# bun installs it even though this app dropped Next entirely: 199 MB of the
+# 597 MB production node_modules, in every image, pulled on every deploy.
+# Nothing resolves it — verified by deleting it locally and running a full
+# build plus a production smoke pass on all the main routes.
+#
+# The `test -d` is the point of this block, not a formality: bun's isolated
+# layout is what the paths below are written against, and if a future bun
+# changes it these globs would quietly match nothing and silently ship the
+# 199 MB again. Failing the build instead forces a re-check.
+#
+# `webpack` (9.5 MB, peer of react-server-dom-webpack) is deliberately NOT
+# pruned: removing it leaves dangling symlinks inside a package vinext does
+# use at runtime, which is a poor trade for 9 MB.
+RUN test -d node_modules/.bun/node_modules/next \
+      || (echo "next not found where expected — bun layout changed, re-check this prune" && exit 1) \
+    && rm -rf node_modules/.bun/next@* \
+              node_modules/.bun/node_modules/next \
+              node_modules/.bun/@unpic+react@*/node_modules/next \
+              node_modules/.bun/@unpic+react@*/node_modules/.bin/next \
+              node_modules/next
 
 # node, not bun: vinext requires node >= 22 and its SSR pass misbehaved under
 # the bun runtime in local testing. The bun-installed node_modules are plain JS

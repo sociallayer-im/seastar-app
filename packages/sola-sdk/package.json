@@ -7,8 +7,5 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@apollo/client": "^3.12.5"
-  }
+  "description": ""
 }

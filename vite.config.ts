@@ -49,7 +49,6 @@ export default defineConfig({
             'prosemirror-dropcursor',
             'prosemirror-gapcursor',
             'prosemirror-schema-list',
-            'viem'
         ]
     }
 })
