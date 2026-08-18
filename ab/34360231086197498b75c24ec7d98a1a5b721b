@@ -1,0 +1,59 @@
+src/components/ui/carousel.tsx
+  s_e9ed806a3d225c::t_2beecad38b6646 45-56,58-59,61-64,66-69,71-73,75-77,79-81,83-90,92-94,96-99,101-102,104-107,109-116,118-138,140-144,146-150,166,168-172,188,190-196,219,221-227,250
+src/components/RouteLoading.tsx
+  s_e9ed806a3d225c::t_51dd52d2af82e1 1-7
+src/components/shadcn/Textarea.tsx
+  s_e9ed806a3d225c::t_be1e6b599accf4 4,15
+src/components/shadcn/Slider.tsx
+  s_e9ed806a3d225c::t_5a873685259a2c 24
+  s_e9ed806a3d225c::t_6c9f4c8bc24b5a 8-10
+src/components/shadcn/Switch.tsx
+  s_e9ed806a3d225c::t_c3fa2663a6d0e2 8-10
+  s_e9ed806a3d225c::t_e709016fd1253a 25
+src/components/ui/button.tsx
+  s_e9ed806a3d225c::t_e599e675a4abfc 43-52
+src/components/shadcn/Input.tsx
+  s_e9ed806a3d225c::t_76e045407f4b4d 32-45
+src/components/shadcn/DropdownMenu.tsx
+  s_e9ed806a3d225c::t_1404e79bbdbfdc 21,23-24,37-41,50-54,66,68,70-71,81,83-85,102-106,122,124,126-127,137,139-141,147
+src/components/shadcn/Popover.tsx
+  s_e9ed806a3d225c::t_1137963ba1112b 14-16
+  s_e9ed806a3d225c::t_a2b8251a8c77b4 29
+docs/TODO.md
+  s_e9ed806a3d225c::t_115ce241d68dca 3-7
+src/components/shadcn/Toast/toast.tsx
+  s_e9ed806a3d225c::t_c26398a0b3afc4 11-13,22,42-45,53,55-57,66,68-70,82,84-86,92,94-96,102
+src/components/Img.tsx
+  s_e9ed806a3d225c::t_286785c9421d73 32
+src/components/shadcn/Button/index.tsx
+  s_e9ed806a3d225c::t_77c772c2d962f6 47-56
+src/components/shadcn/Checkbox.tsx
+  s_e9ed806a3d225c::t_f67d62c4114f40 9-11
+  s_e9ed806a3d225c::t_a7eaa6119f258a 26
+src/app/(normal)/discover/loading.tsx
+  s_e9ed806a3d225c::t_48bbf0a6a34347 1-3
+src/app/(normal)/event/[grouphandle]/loading.tsx
+  s_e9ed806a3d225c::t_db874c14c80c95 1-3
+src/app/(normal)/event/detail/[eventid]/loading.tsx
+  s_e9ed806a3d225c::t_b7e9a4798c167c 1-3
+src/app/(normal)/group/[handle]/loading.tsx
+  s_e9ed806a3d225c::t_afecef99f6f387 1-3
+src/app/(normal)/profile/[handle]/loading.tsx
+  s_e9ed806a3d225c::t_1cc696f0a86fbe 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ab34360231086197498b75c24ec7d98a1a5b721b",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
