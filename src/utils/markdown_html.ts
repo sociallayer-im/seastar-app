@@ -41,14 +41,31 @@ function escapeAttr(value: string): string {
 function safeUrl(value: string): string | null {
     const trimmed = value.trim()
     if (!trimmed) return null
-    // Relative, root-relative and anchor links carry no protocol and are fine.
-    if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) {
-        return SAFE_PROTOCOL.test(trimmed) ? trimmed : null
+
+    // Control characters are stripped by browsers *before* the scheme is
+    // parsed, so "java\tscript:" reaches the parser as "javascript:". Testing
+    // the raw string would let that through the scheme check below and fall out
+    // of the relative-URL branch untouched. markdown-it percent-encodes these
+    // today, which is the only reason it is not already exploitable — this does
+    // not depend on that.
+    const probe = trimmed.replace(/[\u0000-\u0020]/g, '')
+
+    // Anything with a colon before the first path/query/fragment separator is
+    // claiming a scheme, and only the allowlisted ones may pass.
+    const schemeEnd = probe.search(/[/?#]/)
+    const beforePath = schemeEnd === -1 ? probe : probe.slice(0, schemeEnd)
+    if (beforePath.includes(':')) {
+        return SAFE_PROTOCOL.test(probe) ? trimmed : null
     }
-    // Protocol-relative "//host" inherits the page's scheme — allowed, as a
-    // plain link; it cannot express a script URL.
+
+    // Relative, root-relative, anchor and protocol-relative ("//host") links
+    // carry no scheme. The last is an open-redirect surface but cannot express
+    // a script URL, and it is what the previous renderer allowed too.
     return trimmed
 }
+
+/** Attribute names come from schema specs today, but never trust that later. */
+const SAFE_ATTR_NAME = /^[a-zA-Z][a-zA-Z0-9-]*$/
 
 const URL_ATTRS = new Set(['href', 'src'])
 
@@ -56,6 +73,7 @@ function renderAttrs(attrs: Record<string, unknown>): string {
     let out = ''
     for (const [name, raw] of Object.entries(attrs)) {
         if (raw === null || raw === undefined || raw === false) continue
+        if (!SAFE_ATTR_NAME.test(name)) continue
         let value = String(raw)
         if (URL_ATTRS.has(name)) {
             const safe = safeUrl(value)

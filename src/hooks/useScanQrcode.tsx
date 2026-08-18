@@ -82,6 +82,13 @@ function DialogScanQrcode(props: ScanQrcodeProps) {
     }, [teardown, props])
 
     useEffect(() => {
+        // Reset on entry, not just at mount: a double-invoked effect (React
+        // StrictMode) would otherwise start with the flag its own cleanup set,
+        // release the stream immediately and sit on "Starting camera..."
+        // forever. vinext does not wrap the App Router in StrictMode today,
+        // which is the only reason this is latent rather than broken.
+        closedRef.current = false
+
         let frameHandle = 0
         let timer: ReturnType<typeof setTimeout> | undefined
         const canvas = document.createElement('canvas')
@@ -139,16 +146,28 @@ function DialogScanQrcode(props: ScanQrcodeProps) {
             if (closedRef.current) return
             setStatus('scanning')
 
-            const detector = await createNativeDetector()
-            const decodeQR = detector
-                ? null
-                : (await import('@/utils/qrcode')).decodeQR
+            let detector = await createNativeDetector()
+            let decodeQR: ((data: Uint8ClampedArray, w: number, h: number) => string | null) | null =
+                detector ? null : (await import('@/utils/qrcode')).decodeQR
+
+            const loadFallbackDecoder = async () => {
+                if (!decodeQR) decodeQR = (await import('@/utils/qrcode')).decodeQR
+                detector = null
+            }
 
             const handleResult = (value: string) => {
                 if (closedRef.current || !value) return
                 props.onResult?.(value)
                 handleClose()
             }
+
+            // A detector can exist, advertise qr_code, and still reject every
+            // call (Chrome's Shape Detection service unavailable, some Android
+            // WebViews). Without this the UI scans forever, resolving nothing
+            // and logging ~10 errors a second, because the JS decoder was never
+            // even imported.
+            let detectFailures = 0
+            const DETECT_FAILURES_BEFORE_FALLBACK = 3
 
             const scanFrame = async () => {
                 if (closedRef.current) return
@@ -160,12 +179,16 @@ function DialogScanQrcode(props: ScanQrcodeProps) {
                 if (detector) {
                     try {
                         const results = await detector.detect(video)
+                        detectFailures = 0
                         if (results[0]?.rawValue) {
                             handleResult(results[0].rawValue)
-                            return
                         }
                     } catch (e: unknown) {
-                        console.error(e)
+                        detectFailures++
+                        if (detectFailures >= DETECT_FAILURES_BEFORE_FALLBACK) {
+                            console.error('[qrcode] native detector unusable, falling back', e)
+                            await loadFallbackDecoder()
+                        }
                     }
                     return
                 }

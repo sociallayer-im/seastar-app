@@ -150,16 +150,6 @@ const CASES = [
     ['长文本', Array.from({length: 40}, (_, i) => `paragraph number ${i} with **bold** text`).join('\n\n')],
 ]
 
-// Inputs that must not survive as executable markup.
-const XSS_CASES = [
-    ['javascript: 链接', '[click](javascript:alert(1))'],
-    ['JS 图片源', '![x](javascript:alert(1))'],
-    ['原始 script 标签', '<script>alert(1)</script>'],
-    ['img onerror', '<img src=x onerror=alert(1)>'],
-    ['data: 链接', '[click](data:text/html,<script>alert(1)</script>)'],
-    ['属性注入', '[a](https://x.com" onmouseover="alert(1))'],
-]
-
 let pass = 0, fail = 0
 const check = (name, ok, detail = '') => {
     ok ? pass++ : fail++
@@ -179,20 +169,74 @@ for (const [name, md] of CASES) {
 // contract the component actually relies on rather than that artefact.
 check('空输入返回空串(组件在此之前已短路)', markdownToHtml('') === '')
 
-console.log('\n2. XSS(输出不得含可执行标记)')
-// Only markup counts. A payload that survives as *escaped text* is exactly the
-// safe outcome, so checking the raw string for "javascript:" would fail on
-// output that is in fact harmless — inspect tags only.
+console.log('\n2. 安全:断言精确输出')
+// Exact expected HTML, not a "looks dangerous?" regex. The earlier regex both
+// produced false positives on correctly-escaped values and, more importantly,
+// passed for inputs that markdown-it alone neutralises — so escapeAttr and
+// safeUrl could have been deleted outright without a single failure. These
+// cases target this file's own escaping.
+const EXACT = [
+    // escapeAttr on a link title: the quote must not close the attribute.
+    ['链接 title 引号逃逸', "[x](https://a.com 't\" onmouseover=\"alert(1)')",
+        '<p><a href="https://a.com" title="t&quot; onmouseover=&quot;alert(1)">x</a></p>'],
+    // escapeAttr on an image alt.
+    ['图片 alt 引号逃逸', '![a" onerror="alert(1)](https://a.com/i.png)',
+        '<p><img src="https://a.com/i.png" alt="a&quot; onerror=&quot;alert(1)"></p>'],
+    // safeUrl must DROP a rejected href rather than fall back to the raw value.
+    ['被拒协议时 href 必须消失', '[x](java+script:alert(1))', '<p><a>x</a></p>'],
+    // Protocol-relative is intentionally allowed (matches the old renderer).
+    ['协议相对 URL 保留', '[x](//evil.com)', '<p><a href="//evil.com">x</a></p>'],
+]
+for (const [name, md, expected] of EXACT) {
+    const actual = markdownToHtml(md)
+    check(name, actual === expected, `期望: ${JSON.stringify(expected)}\n        实际: ${JSON.stringify(actual)}`)
+}
+
+// These must not yield executable markup, whoever stops them.
+const MUST_BE_INERT = [
+    ['javascript: 链接', '[click](javascript:alert(1))'],
+    ['JS 图片源', '![x](javascript:alert(1))'],
+    ['实体编码的协议', '[x](&#106;avascript:alert(1))'],
+    ['冒号实体编码', '[x](javascript&#58;alert(1))'],
+    ['协议中夹控制字符', '[x](java&#9;script:alert(1))'],
+    ['原始 script 标签', '<script>alert(1)</script>'],
+    ['img onerror', '<img src=x onerror=alert(1)>'],
+    ['data: 链接', '[click](data:text/html,<script>alert(1)</script>)'],
+    ['data: SVG 图片', '![x](data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=)'],
+    ['属性注入', '[a](https://x.com" onmouseover="alert(1))'],
+    ['代码围栏 info 串', '```js" onmouseover="alert(1)\ncode\n```'],
+]
+// Only markup counts: a payload surviving as escaped *text* is the safe
+// outcome, so inspect tags rather than the raw string.
+const decodeEntities = (v) => v
+    .replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
 const isDangerous = (html) => {
     const tags = html.match(/<[^>]*>/g) || []
-    return tags.some(tag =>
-        /^<\s*script/i.test(tag) ||
-        /\son\w+\s*=/i.test(tag) ||
-        /(href|src)\s*=\s*"\s*(javascript|data|vbscript):/i.test(tag))
+    return tags.some(tag => {
+        if (/^<\s*script/i.test(tag)) return true
+        // Inspect real attribute name/value pairs. Matching the whole tag text
+        // would flag " onmouseover=" sitting harmlessly *inside* an escaped
+        // value, which is a passing result reported as a failure.
+        const attrs = [...tag.matchAll(/([a-zA-Z][a-zA-Z0-9-]*)\s*=\s*"([^"]*)"/g)]
+        return attrs.some(([, name, value]) =>
+            /^on/i.test(name) ||
+            (/^(href|src)$/i.test(name) &&
+                /^\s*(javascript|vbscript|data):/i.test(decodeEntities(value))))
+    })
 }
-for (const [name, md] of XSS_CASES) {
-    const html = markdownToHtml(md)
-    check(name, !isDangerous(html), `输出: ${JSON.stringify(html)}`)
+for (const [name, md] of MUST_BE_INERT) {
+    check(name, !isDangerous(markdownToHtml(md)), `输出: ${JSON.stringify(markdownToHtml(md))}`)
+}
+
+// Oracle integrity: if this file's own escaping stopped working, the suite
+// above must go red. Without this check the cases could all be passing on
+// markdown-it's behaviour alone, which is exactly what they were doing before.
+console.log('\n3. 反向对照(破坏转义后必须失败)')
+{
+    const brokenAttr = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    const wouldEscape = brokenAttr('t" onmouseover="alert(1)')
+    check('去掉引号转义后会产生可执行属性(证明用例真的在测转义)',
+        /\son\w+\s*=/i.test(`<a title="${wouldEscape}">`))
 }
 
 console.log(`\n${pass}/${pass + fail} 项通过`)
