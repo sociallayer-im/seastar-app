@@ -934,6 +934,7 @@ export const en = {
     'Delete this team?': 'Delete this team? Its members stay in the group, but any discussion board restricted to it will become visible to managers only.',
     'Visible to teams': 'Visible to teams',
     'Show publicly': 'Show publicly',
+    'Owner only': 'owner only',
 }
 
 export type Dictionary = typeof en;

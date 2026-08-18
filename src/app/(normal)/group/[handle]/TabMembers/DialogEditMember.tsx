@@ -26,14 +26,16 @@ import Avatar from '@/components/Avatar'
  * edit leaves no ambiguity about what was stored. Failures roll the switch
  * back and say so.
  */
-export default function DialogEditMember({lang, group, membership, teams, canChangeRole, close}: {
+export default function DialogEditMember({lang, group, membership, teams, isOwner, isManager, close}: {
     lang: Dictionary,
     group: Group,
     membership: Membership,
     teams: Team[],
-    /** Owner-level rows are refused by the API; the toggle is hidden for them
-     *  rather than offered and then rejected. */
-    canChangeRole: boolean,
+    /** Whether the viewer is an owner. An owner may move the switch either
+     *  way; a manager may only promote — see the note on the switch. */
+    isOwner: boolean,
+    /** Whether the viewer manages the group at all. */
+    isManager: boolean,
     close: () => void
 }) {
     const router = useRouter()
@@ -42,6 +44,15 @@ export default function DialogEditMember({lang, group, membership, teams, canCha
     const [inTeams, setInTeams] = useState<string[]>(membership.teams?.map(t => t.id) ?? [])
     const [role, setRole] = useState(membership.role)
     const [busy, setBusy] = useState(false)
+
+    // An owner's role is the owner's business and the API refuses it here.
+    // Your own row needs no special case: a manager's own role is already
+    // "manager", which the rule below leaves locked, and an owner's row is
+    // excluded outright.
+    const showRoleSwitch = isManager && membership.role !== 'owner'
+    // Managers may promote, not demote — so for them the switch only moves
+    // while the person is still a plain member.
+    const roleSwitchEnabled = isOwner || role !== 'manager'
 
     const run = async (fn: () => Promise<unknown>, after: () => void, revert: () => void) => {
         setBusy(true)
@@ -95,10 +106,22 @@ export default function DialogEditMember({lang, group, membership, teams, canCha
             <div className="font-semibold">{membership.user.nickname || membership.user.name}</div>
         </div>
 
-        {canChangeRole &&
-            <label className="flex-row-item-center justify-between py-2 border-b border-gray-100 cursor-pointer">
-                <span className="text-sm">{lang['Manager']}</span>
-                <input type="checkbox" checked={role === 'manager'} disabled={busy}
+        {/* Owners move this either way. A manager may only promote: peers
+            being able to strip each other's role is how one manager removes
+            the others, and the API refuses it — so the switch is shown
+            disabled rather than absent, which would read as "this person
+            cannot be a manager" instead of "not yours to undo". Owner rows and
+            your own row are never editable here. */}
+        {showRoleSwitch &&
+            <label className={`flex-row-item-center justify-between py-2 border-b border-gray-100 ${
+                roleSwitchEnabled ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
+                <span className="text-sm">
+                    {lang['Manager']}
+                    {!roleSwitchEnabled && role === 'manager' &&
+                        <span className="text-xs text-gray-400 ml-2">{lang['Owner only']}</span>}
+                </span>
+                <input type="checkbox" checked={role === 'manager'}
+                    disabled={busy || !roleSwitchEnabled}
                     onChange={toggleManager}/>
             </label>
         }

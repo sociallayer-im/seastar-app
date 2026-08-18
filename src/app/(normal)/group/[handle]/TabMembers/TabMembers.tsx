@@ -214,9 +214,12 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                         }
                         {/* The row is a link to the profile, so this has to
                             stop the click reaching it. Managers only — every
-                            control inside would 403 for anyone else. */}
+                            control inside would 403 for anyone else.
+                            No ml-auto here: AdminNotificationToggle already
+                            claims the free space, and two of them would leave
+                            this one stranded mid-row. */}
                         {isManager &&
-                            <button className="ml-auto shrink-0 text-gray-400 hover:text-gray-700"
+                            <button className="shrink-0 text-gray-400 hover:text-gray-700"
                                 aria-label={lang['Edit']}
                                 onClick={e => {
                                     e.preventDefault()
@@ -225,10 +228,8 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                                         content: close => <DialogEditMember
                                             lang={lang} group={group} membership={member}
                                             teams={allTeams || []}
-                                            // An owner's role is refused by the
-                                            // API, and only an owner may promote.
-                                            canChangeRole={isOwner && member.role !== 'owner'
-                                                && currProfile?.id !== member.user.id}
+                                            isOwner={!!isOwner}
+                                            isManager={isManager}
                                             close={close!}/>
                                     })
                                 }}>

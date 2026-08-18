@@ -912,4 +912,5 @@ export const zh: Dictionary = {
   'Delete this team?': '确定删除该团队？成员仍留在社群里，但仅对该团队可见的讨论板块将只有管理员能看到。',
   'Visible to teams': '可见团队',
   'Show publicly': '对外公开',
+  'Owner only': '仅所有者可改',
 }
