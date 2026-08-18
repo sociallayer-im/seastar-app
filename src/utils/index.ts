@@ -2,7 +2,6 @@ import Cookies from 'js-cookie'
 import { getProfileDetailByAuth } from '@sola/sdk'
 import { sha3_256 } from 'js-sha3'
 import dayjs from "@/libs/dayjs"
-import BigNumber from "bignumber.js"
 import { Payments, PaymentsType } from "@/utils/payment_setting"
 import {
     Event,
@@ -39,7 +38,6 @@ export interface VenueTimeslot {
     end_at: string
     role: string
 }
-import domtoimage from 'dom-to-image'
 import { Dictionary } from '@/lang'
 import {CLIENT_MODE, PHONE_LOGIN, SOLA_APP_SUBDOMAINS} from '@/app/config'
 
@@ -868,6 +866,9 @@ export const saveDomImage = async ({ dom, fileName, scaleFactor = 1 }: {
     const scaleWidth = originWidth * scaleFactor
     const scaleHeight = originHeight * scaleFactor
 
+    // dom-to-image is heavy and only needed for this one export path
+    const domtoimage = (await import('dom-to-image')).default
+
     try {
         const dataUrl = await domtoimage.toPng(dom, {
             width: scaleWidth,
@@ -1109,7 +1110,7 @@ export const methodAmount = (payment: PaymentMethod): {value: number, unit: stri
     if (payment.currency) {
         const code = payment.currency.toLowerCase()
         return {
-            value: BigNumber(payment.price).dividedBy(BigNumber(10).pow(FIAT_DECIMALS)).toNumber(),
+            value: Number(payment.price) / 10 ** FIAT_DECIMALS,
             unit: code.toUpperCase(),
             symbol: FIAT_SYMBOL[code]
         }
@@ -1118,7 +1119,7 @@ export const methodAmount = (payment: PaymentMethod): {value: number, unit: stri
     const targetToken = findMethodToken(payment)
     if (!targetToken) return null
     return {
-        value: BigNumber(payment.price).dividedBy(BigNumber(10).pow(targetToken.decimals)).toNumber(),
+        value: Number(payment.price) / 10 ** targetToken.decimals,
         unit: targetToken.name
     }
 }
@@ -1138,7 +1139,7 @@ export const formatOrderAmount = (minor?: number | null, currency?: string | nul
     if (!currency) return `${minor}`
 
     const code = currency.toLowerCase()
-    const value = BigNumber(minor).dividedBy(BigNumber(10).pow(FIAT_DECIMALS)).toNumber()
+    const value = minor / 10 ** FIAT_DECIMALS
     const symbol = FIAT_SYMBOL[code]
     return symbol ? `${symbol}${value}` : `${value} ${code.toUpperCase()}`
 }

@@ -4,7 +4,10 @@ import {EventDetail, ProfileDetail} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {Button} from '@/components/shadcn/Button'
 import useModal from '@/components/client/Modal/useModal'
-import DialogTicket from '@/components/client/DialogTicket'
+import dynamic from 'next/dynamic'
+
+// DialogTicket (viem payment path) only loads when the dialog is opened
+const DialogTicket = dynamic(() => import('@/components/client/DialogTicket'))
 import {goToEventTab} from '@/app/(normal)/event/detail/[eventid]/EventTabs'
 
 /**

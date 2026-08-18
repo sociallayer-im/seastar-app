@@ -1,6 +1,9 @@
 import chooseFile from "@/utils/choseFile"
 import useModal from "@/components/client/Modal/useModal"
-import DialogCropper from "@/hooks/useUploadAvatar/DialogCropper"
+import dynamic from "next/dynamic"
+
+// cropperjs (+ its CSS) only loads once the user actually picks a file
+const DialogCropper = dynamic(() => import("@/hooks/useUploadAvatar/DialogCropper"))
 import {uploadFile} from "@sola/sdk"
 import {CLIENT_MODE} from '@/app/config'
 import {useToast} from "@/components/shadcn/Toast/use-toast"

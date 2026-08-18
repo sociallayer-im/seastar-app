@@ -1,9 +1,11 @@
-import {Html5Qrcode} from 'html5-qrcode'
 import useModal from '@/components/client/Modal/useModal'
 import {useEffect, useRef} from 'react'
-import {Html5QrcodeResult} from 'html5-qrcode/src/core'
+// Type-only imports — the html5-qrcode implementation (370 KB, the largest
+// client chunk) is loaded on demand inside the dialog effect, not at page load.
+import type {Html5Qrcode} from 'html5-qrcode'
+import type {Html5QrcodeResult} from 'html5-qrcode/src/core'
+import type {CameraDevice} from 'html5-qrcode/src/camera/core'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
-import {CameraDevice} from 'html5-qrcode/src/camera/core'
 
 interface ScanQrcodeProps {
     onResult?: (res: string) => any
@@ -38,6 +40,7 @@ function DialogScanQrcode(props: ScanQrcodeProps) {
 
     useEffect(() => {
         ;(async () => {
+            const {Html5Qrcode} = await import('html5-qrcode')
             html5QrcodeRef.current = new Html5Qrcode('reader')
 
             let cameras: Array<CameraDevice> = []

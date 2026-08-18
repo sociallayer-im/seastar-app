@@ -5,7 +5,10 @@ import {Dictionary} from '@/lang'
 import NoData from '@/components/NoData'
 import {displayTicketPrice, getPaymentMethodChainIcons} from '@/utils'
 import useModal from '@/components/client/Modal/useModal'
-import DialogTicket from '@/components/client/DialogTicket'
+import dynamic from 'next/dynamic'
+
+// DialogTicket (viem payment path) only loads when the dialog is opened
+const DialogTicket = dynamic(() => import('@/components/client/DialogTicket'))
 
 export default function TicketList({eventDetail, lang, currProfile, attended, paymentPending}: {
     eventDetail: EventDetail,

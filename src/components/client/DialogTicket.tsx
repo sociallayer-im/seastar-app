@@ -30,7 +30,7 @@ import {
 import {useEffect, useMemo, useState} from 'react'
 import {useRouter} from 'next/navigation'
 import {isFiatChain, Payments, PaymentSettingToken, PaymentsType} from '@/utils/payment_setting'
-import {executePayHubPayment, PAYMENT_STEP_LABEL, PaymentStep, resolveTokenAddress, tsidToBigInt} from '@/utils/evm_payment'
+import {PAYMENT_STEP_LABEL, PaymentStep, resolveTokenAddress, tsidToBigInt} from '@/utils/evm_payment_steps'
 import {invokeWechatPay, isMobileWechatBrowser} from '@/utils/wechat_pay'
 import DropdownMenu from '@/components/client/DropdownMenu'
 import {Input} from '@/components/shadcn/Input'
@@ -334,6 +334,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
             if (!tokenAddress) throw new Error('Token address not found for this chain')
             if (!payHubAddress) throw new Error('PayHub address not found for this chain')
 
+            // viem is only needed once the user actually pays with crypto
+            const {executePayHubPayment} = await import('@/utils/evm_payment')
             const {txHash, account} = await executePayHubPayment({
                 chain,
                 tokenAddress,
