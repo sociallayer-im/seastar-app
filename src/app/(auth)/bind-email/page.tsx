@@ -18,7 +18,7 @@ export default async function BindEmailPage() {
     if (!profile) redirect('/signin')
     // The backend only lets an email be set once, so there is nothing to do here
     // for an account that already has one.
-    if (profile.email) redirect(returnTargetFromCookies())
+    if (profile.email) redirect(await returnTargetFromCookies())
 
     const {lang} = await selectLang()
 

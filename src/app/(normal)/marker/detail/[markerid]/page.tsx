@@ -1,14 +1,13 @@
 import MarkerDetailData, {MarkerDetailPageDataProps} from '@/app/(normal)/marker/detail/[markerid]/data'
 import {Badge} from '@/components/shadcn/Badge'
 import Avatar from '@/components/Avatar'
-import {cfImage, displayProfileName} from '@/utils'
+import {cfImage, displayProfileName, awaitProps, AsyncProps} from '@/utils'
 import {selectLang} from '@/app/actions'
 import NoData from '@/components/NoData'
 import RichTextDisplayer from '@/components/client/Editor/Displayer'
 
-export default async function MarkerDetailPage(props: MarkerDetailPageDataProps) {
-    const {markerDetail, currProfile, currProfileIsCreator} = await MarkerDetailData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+export default async function MarkerDetailPage(props: AsyncProps<MarkerDetailPageDataProps>) {
+    const {markerDetail, currProfile, currProfileIsCreator} = await MarkerDetailData(await awaitProps(props))
     const {lang} = await selectLang()
 
     return <div className="page-width !pt-4 !pb-12">

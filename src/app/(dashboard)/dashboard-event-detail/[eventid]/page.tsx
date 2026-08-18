@@ -26,7 +26,6 @@ import ClickToCopy from '@/components/client/ClickToCopy'
 import removeMarkdown from 'markdown-to-text'
 import TicketList from '@/app/(normal)/event/detail/[eventid]/TicketList'
 import MyTicketList from '@/app/(normal)/event/detail/[eventid]/MyTicketList'
-import Dynamic from 'next/dynamic'
 import CommentPanel from '@/components/client/CommentPanel'
 import { cache } from 'react'
 import EventParticipantTab from '@/app/(normal)/event/detail/[eventid]/EventParticipantTab'
@@ -34,7 +33,7 @@ import EventTabs from '@/app/(normal)/event/detail/[eventid]/EventTabs'
 import VenueDetailBtn from '@/components/client/VenueDetailBtn'
 import { getLabelColor } from '@/utils/label_color'
 
-const DynamicEventCardStarBtn = Dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
+import DynamicEventCardStarBtn from '@/components/client/StarEventBtnClientOnly'
 
 const cachedEventDetailPage = cache(EventDetailPage)
 

@@ -7,15 +7,14 @@ import React from 'react'
 import NoData from '@/components/NoData'
 import CopyText from '@/components/client/CopyText'
 import Avatar from '@/components/Avatar'
-import {displayProfileName} from '@/utils'
+import {displayProfileName, awaitProps, AsyncProps} from '@/utils'
 import dynamic from 'next/dynamic'
 
 const DisplayDateTime = dynamic(() => import('@/components/client/DisplayDateTime'))
 
-export default async function PromoCodeDetail(props: PromoCodeDetailPageProps) {
+export default async function PromoCodeDetail(props: AsyncProps<PromoCodeDetailPageProps>) {
     const {lang} = await selectLang()
-    const {couponDetail, currProfile, code, records} = await PromoCodeDetailData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+    const {couponDetail, currProfile, code, records} = await PromoCodeDetailData(await awaitProps(props))
 
     const label = couponDetail.discount_type === 'amount' ? lang['Amount Off'] : lang['Percentage Off']
     const value = couponDetail.discount_type === 'amount' ? `${couponDetail.discount / 100} USD` : `${100 - couponDetail.discount / 100}%`

@@ -25,7 +25,7 @@ export default async function RegisterPage(
     // form whose submit can only 401.
     if (!profile) redirect('/signin')
     // Already named — this step is done, don't let them rename by revisiting it.
-    if (profile.name) redirect(returnTargetFromCookies())
+    if (profile.name) redirect(await returnTargetFromCookies())
     // A WeChat account owes a phone number first. Not merely the order we
     // prefer: picking a name closes the merge window (AuthController#mergeable?),
     // so someone who got here early and named themselves could no longer bind a

@@ -2,11 +2,10 @@ import ShareVoucherPageData, {ShareVoucherPageDataProps} from "@/app/(normal)/vo
 import {selectLang} from "@/app/actions"
 import VoucherQRCode from "@/app/(normal)/voucher/[voucherid]/share/VoucherQRCode"
 import ShareVoucherAction from "@/app/(normal)/voucher/[voucherid]/share/ShareVoucherAction"
-import {cfImage} from '@/utils'
+import {cfImage, awaitProps, AsyncProps} from '@/utils'
 
-export default async function ShareVoucherPage(props: ShareVoucherPageDataProps) {
-    const {voucher, voucherCode} = await ShareVoucherPageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+export default async function ShareVoucherPage(props: AsyncProps<ShareVoucherPageDataProps>) {
+    const {voucher, voucherCode} = await ShareVoucherPageData(await awaitProps(props))
     const {lang} = await selectLang()
 
     return <div className="min-h-[calc(100svh-48px)] w-full overflow-auto bg-[#f8f8f8]">

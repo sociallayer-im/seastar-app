@@ -1,5 +1,5 @@
 import BadgePageData, {BadgePageDataProps} from "@/app/(normal)/badge/[badgeid]/data"
-import {cfImage, displayProfileName, getAvatar} from "@/utils"
+import {cfImage, displayProfileName, getAvatar, awaitProps, AsyncProps} from '@/utils'
 import {Button} from "@/components/shadcn/Button"
 import dynamic from "next/dynamic"
 import Avatar from '@/components/Avatar'
@@ -13,9 +13,8 @@ const DynamicShowTime = dynamic(
 )
 
 
-export default async function BadgePage(props: BadgePageDataProps) {
-    const data = await BadgePageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+export default async function BadgePage(props: AsyncProps<BadgePageDataProps>) {
+    const data = await BadgePageData(await awaitProps(props))
 
     return data.isPrivate && !data.isOwner
         ? <PrivateBadge {...data} />

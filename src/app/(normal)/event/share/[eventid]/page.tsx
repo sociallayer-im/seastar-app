@@ -3,7 +3,7 @@ import {selectLang} from '@/app/actions'
 import DisplayDateTime from '@/components/client/DisplayDateTime'
 import QrCode from '@/components/client/QRcode'
 import {headers} from 'next/headers'
-import {cfImage, eventCoverTimeStr, getGmtOffset, pickSearchParam} from '@/utils'
+import {cfImage, eventCoverTimeStr, getGmtOffset, pickSearchParam, AsyncProps} from '@/utils'
 import dynamic from 'next/dynamic'
 import {cache} from 'react'
 import SocialShareBtn from './SocialShareBtn'
@@ -12,7 +12,7 @@ const DynamicShareActionsBtn = dynamic(() => import('@/app/(normal)/event/share/
 
 const cachedEventDetailPage = cache(EventDetailPage)
 
-export async function generateMetadata(props: EventDetailDataProps) {
+export async function generateMetadata(props: AsyncProps<EventDetailDataProps>) {
     const searchParams = await props.searchParams
 
     const {
@@ -33,7 +33,7 @@ export async function generateMetadata(props: EventDetailDataProps) {
     }
 }
 
-export default async function ShareEventPage(props: EventDetailDataProps) {
+export default async function ShareEventPage(props: AsyncProps<EventDetailDataProps>) {
     const searchParams = await props.searchParams
 
     const {

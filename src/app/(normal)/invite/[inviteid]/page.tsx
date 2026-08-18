@@ -1,14 +1,14 @@
+import {awaitProps, AsyncProps} from '@/utils'
 import InvitePageData, { InvitePageDataProps } from '@/app/(normal)/invite/[inviteid]/data'
 import { selectLang } from '@/app/actions'
 import DialogInviteDetail from '@/components/client/DialogInviteDetail'
 
-export default async function InvitePage(props: InvitePageDataProps) {
+export default async function InvitePage(props: AsyncProps<InvitePageDataProps>) {
     const {
         inviteDetail,
         currProfile,
         code,
-    } = await InvitePageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+    } = await InvitePageData(await awaitProps(props))
     const { lang } = await selectLang()
 
     return <div className="w-full min-h-[calc(100svh-48px)]">

@@ -1,3 +1,4 @@
+import {AsyncProps} from '@/utils'
 import GroupPageData, {GroupDataProps} from "@/app/(normal)/group/[handle]/data"
 import {selectLang} from "@/app/actions"
 import TransferOwnerForm from "./TransferOwnerForm"
@@ -7,7 +8,7 @@ export const fetchCache = 'force-no-store'
 
 const cachedGroupPageData = cache(GroupPageData)
 
-export async function generateMetadata(props: GroupDataProps) {
+export async function generateMetadata(props: AsyncProps<GroupDataProps>) {
     const params = await props.params
 
     const {
@@ -20,7 +21,7 @@ export async function generateMetadata(props: GroupDataProps) {
     }
 }
 
-export default async function TransferOwnerPage(props: GroupDataProps) {
+export default async function TransferOwnerPage(props: AsyncProps<GroupDataProps>) {
     const params = await props.params
 
     const {

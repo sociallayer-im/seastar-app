@@ -2,13 +2,12 @@ import {EventDetailDataProps} from '@/app/(normal)/event/detail/[eventid]/data'
 import {selectLang} from '@/app/actions'
 import CheckInData from '@/app/(normal)/event/checkin-for-participants/[eventid]/data'
 import EventParticipantList from '@/components/client/EventParticipantList'
-import {cfImage, eventCoverTimeStr} from '@/utils'
+import {cfImage, eventCoverTimeStr, awaitProps, AsyncProps} from '@/utils'
 import CheckinBtn from '@/app/(normal)/event/checkin-for-participants/[eventid]/CheckinBtn'
 import QrCode from '@/components/client/QRcode'
 
-export default async function CheckinForParticipants(props: EventDetailDataProps) {
-    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+export default async function CheckinForParticipants(props: AsyncProps<EventDetailDataProps>) {
+    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(await awaitProps(props))
     const {lang} = await selectLang()
 
     return <div className="page-width-sm !pt-3 !pb-12">

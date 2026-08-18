@@ -18,7 +18,7 @@ import CopyText from "@/components/client/CopyText"
 import {SocialMedia} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import SelectedBadgeWannaSend from '@/components/client/SelectedBadgeWannaSend'
-import {displayProfileName, getAvatar, isPlatformAdmin, pickSearchParam} from '@/utils'
+import {displayProfileName, getAvatar, isPlatformAdmin, pickSearchParam, AsyncProps} from '@/utils'
 import {Badge} from '@/components/shadcn/Badge'
 import ClickToCopy from '@/components/client/ClickToCopy'
 import {cache} from 'react'
@@ -27,7 +27,7 @@ export const dynamic = 'force-dynamic'
 
 const cachedProfileData = cache(ProfileData)
 
-export async function generateMetadata(props: ProfileDataProps) {
+export async function generateMetadata(props: AsyncProps<ProfileDataProps>) {
     const searchParams = await props.searchParams
 
     const {
@@ -57,7 +57,7 @@ export async function generateMetadata(props: ProfileDataProps) {
     }
 }
 
-export default async function Profile(props: ProfileDataProps) {
+export default async function Profile(props: AsyncProps<ProfileDataProps>) {
     const searchParams = await props.searchParams
 
     const {

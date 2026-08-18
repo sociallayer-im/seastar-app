@@ -20,7 +20,7 @@ export default async function VerifyBindEmailPage(
 
     const profile = await getProfileDetailByAuth({params: {authToken}, clientMode: CLIENT_MODE})
     if (!profile) redirect('/signin')
-    if (profile.email) redirect(returnTargetFromCookies())
+    if (profile.email) redirect(await returnTargetFromCookies())
 
     const {lang} = await selectLang()
 

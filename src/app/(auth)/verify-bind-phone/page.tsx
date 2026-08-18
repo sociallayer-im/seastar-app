@@ -23,7 +23,7 @@ export default async function VerifyBindPhonePage(
     const profile = await getProfileDetailByAuth({params: {authToken}, clientMode: CLIENT_MODE})
     if (!profile) redirect('/signin')
     if (profile.phone) {
-        redirect(!profile.email ? '/bind-email' : !profile.name ? '/register' : returnTargetFromCookies())
+        redirect(!profile.email ? '/bind-email' : !profile.name ? '/register' : await returnTargetFromCookies())
     }
 
     const {lang} = await selectLang()

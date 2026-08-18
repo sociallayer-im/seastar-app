@@ -1,10 +1,10 @@
+import {awaitProps, AsyncProps} from '@/utils'
 import CreateMarkerData, {CreateMarkerDataProps} from '@/app/(normal)/marker/[grouphandle]/create/data'
 import {selectLang} from '@/app/actions'
 import CreateMarkerForm from '@/app/(normal)/marker/[grouphandle]/create/CreateMarkerForm'
 
-export default async function CreateMarkerPage(props: CreateMarkerDataProps) {
-    const {markerDraft, groupDetail} = await CreateMarkerData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+export default async function CreateMarkerPage(props: AsyncProps<CreateMarkerDataProps>) {
+    const {markerDraft, groupDetail} = await CreateMarkerData(await awaitProps(props))
     const {lang} = await selectLang()
 
 

@@ -1,12 +1,12 @@
+import {awaitProps, AsyncProps} from '@/utils'
 import GroupMarkerMapPageData, {GroupMarkerMapPageDataProps} from '@/app/(normal)/map/[grouphandle]/marker/data'
 import GroupEventMapData from '@/app/(normal)/map/[grouphandle]/event/data'
 import {selectLang} from '@/app/actions'
 import MarkerMap from './Map'
 
 
-export default async function GroupMarkerMap(props: GroupMarkerMapPageDataProps) {
-    const {markers, currProfile, groupDetail, category} = await GroupMarkerMapPageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+export default async function GroupMarkerMap(props: AsyncProps<GroupMarkerMapPageDataProps>) {
+    const {markers, currProfile, groupDetail, category} = await GroupMarkerMapPageData(await awaitProps(props))
     const {lang, type} = await selectLang()
 
     return <MarkerMap

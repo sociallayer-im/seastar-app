@@ -1,9 +1,10 @@
+import {AsyncProps} from '@/utils'
 import BadgeClassPageData, {BadgeClassPageDataProps} from "@/app/(normal)/badge-class/[badgeclassid]/data"
 import {getCurrProfile, selectLang} from "@/app/actions"
 import IssueBadgeForm from "@/app/(normal)/badge-class/[badgeclassid]/send-badge/SendBadgeForm"
 import {redirect} from 'next/navigation'
 
-export default async function IssueBadgePage(props: BadgeClassPageDataProps) {
+export default async function IssueBadgePage(props: AsyncProps<BadgeClassPageDataProps>) {
     const params = await props.params
 
     const {

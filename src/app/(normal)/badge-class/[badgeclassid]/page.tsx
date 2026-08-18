@@ -1,8 +1,7 @@
 import BadgeClassPageData, {
     BadgeClassPageDataProps
 } from "@/app/(normal)/badge-class/[badgeclassid]/data"
-import {cfImage, displayProfileName, getAvatar} from "@/utils"
-import dynamic from "next/dynamic"
+import {cfImage, displayProfileName, getAvatar, AsyncProps} from '@/utils'
 import {selectLang} from '@/app/actions'
 import {buttonVariants} from '@/components/shadcn/Button'
 import Avatar from '@/components/Avatar'
@@ -12,12 +11,9 @@ import {cache} from 'react'
 
 const cachedBadgeClassPageData = cache(BadgeClassPageData)
 
-const DynamicShowTime = dynamic(
-    () => import('./FormatTime'),
-    {ssr: false}
-)
+import DynamicShowTime from './FormatTimeClientOnly'
 
-export async function generateMetadata(props: BadgeClassPageDataProps) {
+export async function generateMetadata(props: AsyncProps<BadgeClassPageDataProps>) {
     const searchParams = await props.searchParams
 
     const {
@@ -38,7 +34,7 @@ export async function generateMetadata(props: BadgeClassPageDataProps) {
     }
 }
 
-export default async function BadgeClassPage(props: BadgeClassPageDataProps) {
+export default async function BadgeClassPage(props: AsyncProps<BadgeClassPageDataProps>) {
     const searchParams = await props.searchParams
 
     const {

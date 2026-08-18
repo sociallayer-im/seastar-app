@@ -1,4 +1,4 @@
-import { cookies, headers, type UnsafeUnwrappedCookies, type UnsafeUnwrappedHeaders } from 'next/headers'
+import {cookies, headers} from 'next/headers'
 import {sanitizeReturnTarget} from '@/utils'
 
 /**
@@ -10,5 +10,5 @@ import {sanitizeReturnTarget} from '@/utils'
  * target against the current registrable domain, and there is no
  * window.location to read it from here.
  */
-export const returnTargetFromCookies = (): string =>
-    sanitizeReturnTarget((cookies() as unknown as UnsafeUnwrappedCookies).get('return')?.value, (headers() as unknown as UnsafeUnwrappedHeaders).get('host'))
+export const returnTargetFromCookies = async (): Promise<string> =>
+    sanitizeReturnTarget((await cookies()).get('return')?.value, (await headers()).get('host'))

@@ -1,3 +1,4 @@
+import {awaitProps, AsyncProps} from '@/utils'
 import {selectLang} from "@/app/actions"
 import {buttonVariants} from "@/components/shadcn/Button"
 import PomoCodePageData, {
@@ -5,10 +6,9 @@ import PomoCodePageData, {
 } from '@/app/(normal)/event/detail/[eventid]/promo-code/data'
 import NoData from '@/components/NoData'
 
-export default async function PromoCodeListPage(props: PromoCodePageProps) {
+export default async function PromoCodeListPage(props: AsyncProps<PromoCodePageProps>) {
     const {lang} = await selectLang()
-    const {eventDetail, coupons} = await PomoCodePageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+    const {eventDetail, coupons} = await PomoCodePageData(await awaitProps(props))
 
     return <div className="min-h-[calc(100svh-48px)] w-full">
         <div className="page-width-md min-h-[calc(100svh-48px) px-3 !pb-12 pt-0">

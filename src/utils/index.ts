@@ -99,6 +99,25 @@ export const signOut = () => {
     Cookies.remove(AUTH_FIELD)
 }
 
+/**
+ * Next 15 made a page's `params`/`searchParams` Promises. Every route here
+ * hands its whole props object to a `data.ts` loader that still (correctly)
+ * declares them as plain objects — so pages resolve them at the boundary with
+ * this, and the loaders stay untouched. Values that are already plain objects
+ * pass through `await` unchanged.
+ */
+export type AsyncProps<P> = {
+    [K in keyof P]: K extends 'params' | 'searchParams' ? Promise<P[K]> : P[K]
+}
+
+export async function awaitProps<P extends {params?: unknown, searchParams?: unknown}>(props: P | AsyncProps<P>): Promise<P> {
+    return {
+        ...props,
+        params: await props.params,
+        searchParams: await props.searchParams
+    } as unknown as P
+}
+
 export const pickSearchParam = (param?: string | string[]): string | undefined => {
     const value = Array.isArray(param) ? param[0] : param
     return value === 'undefined' ? undefined : value

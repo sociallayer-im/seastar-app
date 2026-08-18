@@ -1,10 +1,11 @@
+import {AsyncProps} from '@/utils'
 import EditGroup from './EditGroup'
 import {selectLang} from "@/app/actions"
 import GroupPageData, {GroupDataProps} from '@/app/(normal)/group/[handle]/data'
 
 export const fetchCache = 'force-no-store'
 
-export async function generateMetadata(props: GroupDataProps) {
+export async function generateMetadata(props: AsyncProps<GroupDataProps>) {
     const params = await props.params
 
     const {
@@ -17,7 +18,7 @@ export async function generateMetadata(props: GroupDataProps) {
     }
 }
 
-export default async function EditGroupPage(props: GroupDataProps) {
+export default async function EditGroupPage(props: AsyncProps<GroupDataProps>) {
     const params = await props.params
 
     const {

@@ -24,7 +24,7 @@ export default async function BindPhonePage() {
     // here for an account that already has one — move it along the same chain
     // onboardingTarget would.
     if (profile.phone) {
-        redirect(!profile.email ? '/bind-email' : !profile.name ? '/register' : returnTargetFromCookies())
+        redirect(!profile.email ? '/bind-email' : !profile.name ? '/register' : await returnTargetFromCookies())
     }
 
     const {lang} = await selectLang()

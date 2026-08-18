@@ -1,6 +1,6 @@
 import {CANONICAL_ORIGIN} from '@/app/config'
 import GroupPageData, {GroupDataProps} from "@/app/(normal)/group/[handle]/data"
-import {displayProfileName, getAvatar, pickSearchParam} from "@/utils"
+import {displayProfileName, getAvatar, pickSearchParam, AsyncProps} from '@/utils'
 import {Badge} from "@/components/shadcn/Badge"
 import BtnGroupQrcode from "@/app/(normal)/group/[handle]/BtnGroupQrcode"
 import {Media_Meta} from "@/utils/social_media_meta"
@@ -21,7 +21,7 @@ export const dynamic = 'force-dynamic'
 
 const cachedGroupPageData = cache(GroupPageData)
 
-export async function generateMetadata(props: GroupDataProps) {
+export async function generateMetadata(props: AsyncProps<GroupDataProps>) {
     const searchParams = await props.searchParams
 
     const {
@@ -49,7 +49,7 @@ export async function generateMetadata(props: GroupDataProps) {
     }
 }
 
-export default async function GroupPage(props: GroupDataProps) {
+export default async function GroupPage(props: AsyncProps<GroupDataProps>) {
     const searchParams = await props.searchParams
 
     const {

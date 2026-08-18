@@ -1,12 +1,12 @@
+import {awaitProps, AsyncProps} from '@/utils'
 import {MarkerDetailPageDataProps} from '@/app/(normal)/marker/detail/[markerid]/data'
 import {selectLang} from '@/app/actions'
 import MarkerEditData from '@/app/(normal)/marker/edit/[markerid]/data'
 import EditMarkerForm from '@/app/(normal)/marker/edit/[markerid]/EditMarkerForm'
 
-export default async function MarkerEditPage(props: MarkerDetailPageDataProps) {
+export default async function MarkerEditPage(props: AsyncProps<MarkerDetailPageDataProps>) {
     const {lang} = await selectLang()
-    const {markerDetail, group} = await MarkerEditData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+    const {markerDetail, group} = await MarkerEditData(await awaitProps(props))
     if (!group) {
         throw new Error('Marker has no group')
     }

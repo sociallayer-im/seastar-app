@@ -332,13 +332,13 @@ export default function RichTextEditor({initText, onChange, editorRef}: {
         }
     }, [])
 
-    if (editorRef) {
-        useImperativeHandle(editorRef, () => ({
-            initText: (text: string) => {
-                intiEditor(text || '')
-            }
-        }))
-    }
+    // Unconditional: useImperativeHandle on a null/undefined ref is a no-op,
+    // and calling it inside `if (editorRef)` broke the rules of hooks.
+    useImperativeHandle(editorRef, () => ({
+        initText: (text: string) => {
+            intiEditor(text || '')
+        }
+    }))
 
     const uploadImgCommend = () => {
         const targetCommand = editorMenuCommand.insertMenu.find(i => i.name === 'Upload Image')

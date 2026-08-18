@@ -2,14 +2,13 @@ import {selectLang} from "@/app/actions"
 import EditVenueData, {EditVenuePageProps} from '@/app/(normal)/event/[grouphandle]/venues/edit/[venueid]/data'
 import {VenueAvailability, VenueDetail} from '@sola/sdk'
 import {Dictionary} from '@/lang'
-import {formatVenueDate, prefixUrl} from '@/utils'
+import {formatVenueDate, prefixUrl, awaitProps, AsyncProps} from '@/utils'
 
 export const dynamic = 'force-dynamic'
 
-export default async function EditVenuePage(props: EditVenuePageProps) {
+export default async function EditVenuePage(props: AsyncProps<EditVenuePageProps>) {
     const {lang} = await selectLang()
-    const { venueDetail } = await EditVenueData({checkPermissions: false, /* @next-codemod-error 'props' is used with spread syntax (...). Any asynchronous properties of 'props' must be awaited when accessed. */
-    ...props})
+    const { venueDetail } = await EditVenueData({checkPermissions: false, ...(await awaitProps(props))})
 
     return <VenueDetailPage venue={venueDetail} lang={lang} />
 }

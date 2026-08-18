@@ -1,3 +1,4 @@
+import {awaitProps, AsyncProps} from '@/utils'
 import {EventDetailDataProps} from '@/app/(normal)/event/detail/[eventid]/data'
 import {selectLang} from '@/app/actions'
 import CheckInData from '@/app/(normal)/event/checkin/[eventid]/data'
@@ -5,9 +6,8 @@ import EventParticipantList from '@/components/client/EventParticipantList'
 import {headers} from 'next/headers'
 import QrCode from '@/components/client/QRcode'
 
-export default async function Checkin(props: EventDetailDataProps) {
-    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+export default async function Checkin(props: AsyncProps<EventDetailDataProps>) {
+    const {eventDetail, isEventOperator, currProfile, participants} = await CheckInData(await awaitProps(props))
     const {lang} = await selectLang()
 
     const currPath = (await headers()).get('x-current-path')

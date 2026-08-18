@@ -1,15 +1,15 @@
+import {awaitProps, AsyncProps} from '@/utils'
 import VoucherPageData, {VoucherPageDataProps} from '@/app/(normal)/voucher/[voucherid]/data'
 import {selectLang} from '@/app/actions'
 import DialogVoucherDetails from '@/components/client/DialogVoucherDetail'
 
-export default async function VoucherPage(props: VoucherPageDataProps) {
+export default async function VoucherPage(props: AsyncProps<VoucherPageDataProps>) {
     const {
         voucher,
         voucherCode,
         currProfile,
         receiver
-    } = await VoucherPageData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+    } = await VoucherPageData(await awaitProps(props))
     const {lang} = await selectLang()
 
     return <div className="w-full min-h-[calc(100svh-48px)]">

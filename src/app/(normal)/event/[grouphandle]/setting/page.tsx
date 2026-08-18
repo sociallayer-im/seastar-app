@@ -1,3 +1,4 @@
+import {awaitProps} from '@/utils'
 import GroupEventSettingData, { GroupEventSettingDataProps } from "@/app/(normal)/event/[grouphandle]/setting/data"
 import { selectLang } from "@/app/actions"
 import ExportEventParticipantBtn from "@/components/client/ExportEventParticipantBtn"
@@ -6,8 +7,7 @@ import AdminNotificationToggle from "@/components/client/AdminNotificationToggle
 import { buttonVariants } from "@/components/shadcn/Button"
 
 export default async function GroupEventSettingPage(props: GroupEventSettingDataProps) {
-    const { groupDetail, currProfile, venues, tracks } = await GroupEventSettingData(/* @next-codemod-error 'props' is passed as an argument. Any asynchronous properties of 'props' must be awaited when accessed. */
-    props)
+    const { groupDetail, currProfile, venues, tracks } = await GroupEventSettingData(await awaitProps(props))
     const { lang } = await selectLang()
 
     const currMembership = currProfile

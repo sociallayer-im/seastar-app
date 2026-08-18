@@ -1,8 +1,9 @@
+import {AsyncProps} from '@/utils'
 import {selectLang} from "@/app/actions"
 import IssueBadgeForm from "./InviteForm"
 import GroupPageData, {GroupDataProps} from '@/app/(normal)/group/[handle]/data'
 
-export default async function IssueBadgePage(props: GroupDataProps) {
+export default async function IssueBadgePage(props: AsyncProps<GroupDataProps>) {
     const params = await props.params
 
     const {

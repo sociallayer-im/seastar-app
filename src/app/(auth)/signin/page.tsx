@@ -25,7 +25,7 @@ export default async function SignInPage(props: {searchParams?: Promise<{error?:
     if (authToken) {
         const profile = await getProfileDetailByAuth({params: {authToken}, clientMode: CLIENT_MODE})
         if (profile && !profile.name) redirect('/register')
-        if (profile) redirect(returnTargetFromCookies())
+        if (profile) redirect(await returnTargetFromCookies())
     }
 
     const {lang} = await selectLang()

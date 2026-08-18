@@ -58,7 +58,7 @@ export default function SearchVenueLocation({
 
         let res = customAddress ? [customAddress]  : []
         if (predictions?.length) {
-            const _predictions = predictions.filter(p => !!p.place_id)
+            const _predictions = predictions.filter((p: any) => !!p.place_id)
             res = res.concat(_predictions)
         }
         setPredictions(res)
@@ -85,7 +85,7 @@ export default function SearchVenueLocation({
             placesService.getDetails({
                 fields: ['geometry', 'formatted_address', 'name', 'place_id'],
                 placeId: prediction.place_id
-            }, (place) => {
+            }, (place: any) => {
                 if (place) {
                     setDraft({
                         ...draft,
