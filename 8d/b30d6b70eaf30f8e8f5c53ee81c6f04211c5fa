@@ -1,0 +1,21 @@
+docs/PERF_OPTIMIZATION.md
+  s_e9ed806a3d225c::t_2baf05c0ecabab 1-161
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_52b5dded2761e7 516
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "8db30d6b70eaf30f8e8f5c53ee81c6f04211c5fa",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
