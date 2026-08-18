@@ -3,11 +3,13 @@
 import DropdownMenu from "@/components/client/DropdownMenu"
 import Avatar from '@/components/Avatar'
 import {useEffect, useState} from 'react'
+import {useRouter} from 'next/navigation'
 import {Dictionary} from '@/lang'
 import {ProfileDetail} from '@sola/sdk'
 import {bindEmailUrl, signOut} from '@/utils'
 
 export default function ProfileMenu({lang, currentPath, ...props}: { profile: ProfileDetail, lang: Dictionary, currentPath: string }) {
+    const router = useRouter()
     const handleSignOut = () => {
         // signOut() owns the cookie's domain, which has to match what setAuth
         // wrote or the removal silently does nothing.
@@ -40,7 +42,8 @@ export default function ProfileMenu({lang, currentPath, ...props}: { profile: Pr
 
     const handleSelect = (opt: Menu) => {
         !!opt.action && opt.action()
-        !!opt.href && (window.location.href = opt.href)
+        // bindEmailUrl may point at an external auth origin (NEXT_PUBLIC_SIGN_IN_URL)
+        if (opt.href) opt.href.startsWith('/') ? router.push(opt.href) : (window.location.href = opt.href)
     }
 
     const [hasUnreadActivities, setHasUnreadActivities] = useState(0)

@@ -50,7 +50,7 @@ export default function OauthApps({lang, applications}: {lang: Dictionary, appli
     const withAuth = async (fn: (authToken: string) => Promise<void>) => {
         const authToken = getAuth()
         if (!authToken) {
-            window.location.href = '/signin'
+            router.push('/signin')
             return
         }
         const loading = showLoading()

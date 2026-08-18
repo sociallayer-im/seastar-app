@@ -3,8 +3,10 @@
 import { Button } from "@/components/shadcn/Button"
 import { Dictionary } from "@/lang"
 import { toast, useToast } from "@/components/shadcn/Toast/use-toast"
+import {useRouter} from 'next/navigation'
 
 export default function InviteSuccessAction({ groupName, lang, id, code }: { groupName: string, lang: Dictionary, id?: string, code?: string }) {
+    const router = useRouter()
     const { toast } = useToast()
 
     const handleCopyLink = () => {
@@ -17,7 +19,7 @@ export default function InviteSuccessAction({ groupName, lang, id, code }: { gro
     }
 
     const toGroup = () => {
-        window.location.href = `/group/${groupName}`
+        router.push(`/group/${groupName}`)
     }
 
     return <div className="flex flex-col w-[330px] mx-auto">

@@ -8,8 +8,10 @@ import {getAuth, normalizeGroupPermission} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {useRouter} from 'next/navigation'
 
 export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDetail, lang: Dictionary}) {
+    const router = useRouter()
     const [draft, setDraft] = useState(groupDetail)
 
     const {showLoading, closeModal} = useModal()
@@ -28,7 +30,7 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
             })
             toast({title: lang['Save successful'], variant: 'success'})
             setTimeout(() => {
-                window.location.href = `/event/${groupDetail.name}/setting`
+                router.push(`/event/${groupDetail.name}/setting`)
             }, 1500)
         } catch (e: unknown) {
             console.error(e)

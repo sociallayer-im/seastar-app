@@ -35,7 +35,7 @@ export default function TopicCreateForm({lang, group, categories}: {
     const submit = async () => {
         const authToken = getAuth()
         if (!authToken) {
-            window.location.href = `/signin?return=/event/${group.name}/discussion/create`
+            router.push(`/signin?return=/event/${group.name}/discussion/create`)
             return
         }
         if (!title.trim() || !categoryId) return

@@ -9,6 +9,7 @@ import { useState } from 'react'
 import useModal from '@/components/client/Modal/useModal'
 import { cfImage, getAuth, clientToSignIn, displayProfileName } from '@/utils'
 import { CLIENT_MODE } from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export interface VoucherDetailProps {
     voucherDetail: VoucherDetail
@@ -33,6 +34,7 @@ export default function DialogVoucherDetail({
     currProfile,
     receiver
 }: VoucherDetailProps) {
+    const router = useRouter()
 
 
     const { showLoading, closeModal } = useModal()
@@ -81,7 +83,7 @@ export default function DialogVoucherDetail({
                     clientMode: CLIENT_MODE
                 })
             }
-            window.location.href = `/profile/${currProfile!.name}?tab=badges`
+            router.push(`/profile/${currProfile!.name}?tab=badges`)
         } catch (e: unknown) {
             closeModal(loading)
             console.error(e)
@@ -103,7 +105,7 @@ export default function DialogVoucherDetail({
             if (close) {
                 close()
             } else {
-                window.location.href = `/profile/${currProfile!.name}?tab=badges`
+                router.push(`/profile/${currProfile!.name}?tab=badges`)
             }
         } catch (e: unknown) {
             closeModal(loading)

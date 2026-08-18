@@ -9,8 +9,10 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
 import {clientRedirectToReturn, getAuth, HANDLE_MAX_LENGTH, HANDLE_MIN_LENGTH, toHandleInput, verifyHandle} from '@/utils'
+import {useRouter} from 'next/navigation'
 
 export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill?: string}) {
+    const router = useRouter()
     const [username, setUsername] = useState(prefill || '')
     const [error, setError] = useState('')
     const {showLoading, closeModal} = useModal()
@@ -30,7 +32,7 @@ export default function RegisterForm({lang, prefill}: {lang: Dictionary, prefill
         if (error || !username) return
         const authToken = getAuth()
         if (!authToken) {
-            window.location.href = '/signin'
+            router.push('/signin')
             return
         }
 

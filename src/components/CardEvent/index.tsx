@@ -9,6 +9,7 @@ import { Dictionary } from '@/lang'
 import { EventWithJoinStatus, EventRole } from '@sola/sdk'
 import EventKindLabel from "@/components/EventKind"
 import Img from '@/components/Img'
+import Link from 'next/link'
 
 const DynamicEventCardStarBtn = dynamic(() => import('@/components/client/StarEventBtn'), { ssr: false })
 const DynamicFormatEventDuration = dynamic(() => import('@/components/client/FormatEventDuration'), { ssr: false })
@@ -47,7 +48,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
     // schedule views still use the popup: there a card is a block in a grid the
     // reader is scanning, and leaving the grid to check one event loses their
     // place. A list has no such geometry to preserve.
-    return <a href={`/event/detail/${event.id}`}
+    return <Link href={`/event/detail/${event.id}`}
         id={id}
         style={customStyle}
         className={`overflow-hidden relative shadow-sm flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02] ${className} ${highlight ? 'bg-[#f1f1f1]' : ''}`}>
@@ -163,5 +164,5 @@ export default function CardEvent({ event, className, id, style, lang, highlight
                     </div>
                 </div>
         }
-    </a>
+    </Link>
 }

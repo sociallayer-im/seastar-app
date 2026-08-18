@@ -9,8 +9,10 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
 import {getAuth, onboardingTarget, returnTarget, setAuth} from '@/utils'
+import {useRouter} from 'next/navigation'
 
 export default function FormVerifyBindPhone({lang, phone}: {lang: Dictionary, phone: string}) {
+    const router = useRouter()
     const [code, setCode] = useState('')
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -18,7 +20,7 @@ export default function FormVerifyBindPhone({lang, phone}: {lang: Dictionary, ph
     const confirm = async () => {
         const authToken = getAuth()
         if (!authToken) {
-            window.location.href = '/signin'
+            router.push('/signin')
             return
         }
 
@@ -103,7 +105,7 @@ export default function FormVerifyBindPhone({lang, phone}: {lang: Dictionary, ph
         </Button>
         <div className="flex flex-row justify-between mt-3">
             <Button variant="ghost" onClick={() => {
-                window.location.href = '/bind-phone'
+                router.push('/bind-phone')
             }}>{lang['Back']}</Button>
             <Button variant="ghost" onClick={resend}>{lang['Resend Code']}</Button>
         </div>

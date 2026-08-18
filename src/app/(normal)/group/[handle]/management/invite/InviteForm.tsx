@@ -14,6 +14,7 @@ import resolveLocalCsvFile from '@/utils/resolveLocalCsvFile'
 import useModal from '@/components/client/Modal/useModal'
 import {CLIENT_MODE} from '@/app/config'
 import Radio from '@/components/client/Radio'
+import {useRouter} from 'next/navigation'
 
 
 export interface InviteFormProps {
@@ -25,6 +26,7 @@ type RoleOpt = { label: string, value: string }
 
 
 export default function InviteForm({lang, group}: InviteFormProps) {
+    const router = useRouter()
     const [receivers, setReceivers] = useState<Profile[]>([])
     const [reason, setReason] = useState('')
     const [role, setRole] = useState('member')
@@ -94,7 +96,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             },
             clientMode: CLIENT_MODE
         })
-        window.location.href = `/group/${group.name}/management/invite/success?role=${role}&id=${newInvite.id}`
+        router.push(`/group/${group.name}/management/invite/success?role=${role}&id=${newInvite.id}`)
     }
 
     const handleSendAccountInvite = async () => {
@@ -119,7 +121,7 @@ export default function InviteForm({lang, group}: InviteFormProps) {
             },
             clientMode: CLIENT_MODE
         })
-        window.location.href = `/group/${group.name}/management/invite/success?role=${role}`
+        router.push(`/group/${group.name}/management/invite/success?role=${role}`)
     }
 
     const handleSend = async () => {

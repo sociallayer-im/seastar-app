@@ -5,6 +5,7 @@ import {getAuth} from '@/utils'
 import {starDiscussionItem, unstarDiscussionItem} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
+import {useRouter} from 'next/navigation'
 
 /**
  * Star a topic or a reply, with the count beside it.
@@ -25,6 +26,7 @@ export default function StarDiscussionBtn({itemType, itemId, starred, count, siz
     size?: 'normal' | 'small',
     className?: string
 }) {
+    const router = useRouter()
     const [isStarred, setIsStarred] = useState(starred)
     const [total, setTotal] = useState(count)
     const [busy, setBusy] = useState(false)
@@ -37,7 +39,7 @@ export default function StarDiscussionBtn({itemType, itemId, starred, count, siz
 
         const authToken = getAuth()
         if (!authToken) {
-            window.location.href = `/signin?return=${encodeURIComponent(window.location.pathname)}`
+            router.push(`/signin?return=${encodeURIComponent(window.location.pathname)}`)
             return
         }
         if (busy) return

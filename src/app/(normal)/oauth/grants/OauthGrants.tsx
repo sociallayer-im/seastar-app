@@ -27,7 +27,7 @@ export default function OauthGrants({lang, langType, grants}: {
         onConfig: async () => {
             const authToken = getAuth()
             if (!authToken) {
-                window.location.href = '/signin'
+                router.push('/signin')
                 return
             }
             const loading = showLoading()

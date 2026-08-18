@@ -13,8 +13,10 @@ import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {useState} from 'react'
 import {Button} from '@/components/shadcn/Button'
 import {CLIENT_MODE} from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export default function EditEventForm({redirect=true, ...props}: { lang: Dictionary, data: CreateEventPageDataType, redirect?: boolean }) {
+    const router = useRouter()
     const {showLoading, closeModal, openModal} = useModal()
     const {showConfirmDialog} = useConfirmDialog()
     const {toast} = useToast()
@@ -45,7 +47,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                 })
             }
             if (redirect) {
-                redirect && (window.location.href = `/event/detail/${event.id}`)
+                redirect && (router.push(`/event/detail/${event.id}`))
             } else {
                 toast({description: 'Event updated successfully', variant: 'success'})
             }
@@ -80,7 +82,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                 }, clientMode: CLIENT_MODE
             })
             if (redirect) {
-                window.location.href = `/event/detail/${eventDraft.id}`
+                router.push(`/event/detail/${eventDraft.id}`)
             } else {
                 toast({description: 'Event updated successfully', variant: 'success'})
             }
@@ -134,7 +136,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                     })
                     toast({description: 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
-                        window.location.href = `/event/${props.data.groupDetail.name}`
+                        router.push(`/event/${props.data.groupDetail.name}`)
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)
@@ -170,7 +172,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
 
                     toast({description: 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
-                        window.location.href = `/event/${props.data.groupDetail.name}`
+                        router.push(`/event/${props.data.groupDetail.name}`)
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)

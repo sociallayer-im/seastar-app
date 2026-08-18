@@ -13,6 +13,7 @@ import {Button} from '@/components/shadcn/Button'
 import Img from '@/components/Img'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
+import {useRouter} from 'next/navigation'
 
 export default function ConsentForm({lang, langType, query, info}: {
     lang: Dictionary
@@ -20,6 +21,7 @@ export default function ConsentForm({lang, langType, query, info}: {
     query: OauthAuthorizeQuery
     info: OauthAuthorizeInfo
 }) {
+    const router = useRouter()
     const [busy, setBusy] = useState(false)
     const {toast} = useToast()
     // The scope descriptions come from the API in both languages, so the
@@ -30,7 +32,7 @@ export default function ConsentForm({lang, langType, query, info}: {
     const decide = async (decision: 'allow' | 'deny') => {
         const authToken = getAuth()
         if (!authToken) {
-            window.location.href = '/signin'
+            router.push('/signin')
             return
         }
 

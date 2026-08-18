@@ -41,7 +41,7 @@ export default function FormsHub({lang, created, filled, initialTab}: {
         content: lang['Are you sure you want to delete this form?'],
         onConfig: async () => {
             const authToken = getAuth()
-            if (!authToken) { window.location.href = '/signin'; return }
+            if (!authToken) { router.push('/signin'); return }
             const loading = showLoading()
             try {
                 await deleteForm({params: {slug: form.slug, authToken}, clientMode: CLIENT_MODE})

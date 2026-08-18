@@ -3,6 +3,7 @@
 import {Button} from "@/components/shadcn/Button"
 import {Dictionary} from "@/lang"
 import {toast, useToast} from "@/components/shadcn/Toast/use-toast"
+import {useRouter} from 'next/navigation'
 
 export interface ShareVoucherActionProps {
     voucherId: string
@@ -13,6 +14,7 @@ export interface ShareVoucherActionProps {
 }
 
 export default function ShareVoucherAction(props: ShareVoucherActionProps) {
+    const router = useRouter()
     const {toast} = useToast()
 
     const handleCopyLink = () => {
@@ -29,7 +31,7 @@ export default function ShareVoucherAction(props: ShareVoucherActionProps) {
     }
     
     const toProfile = () => {
-        window.location.href = `/profile/${props.profileHandle}`
+        router.push(`/profile/${props.profileHandle}`)
     }
     
     return <div className="flex flex-col w-[330px] mx-auto">

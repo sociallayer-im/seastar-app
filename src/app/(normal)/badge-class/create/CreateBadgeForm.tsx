@@ -15,6 +15,7 @@ import {Badge} from '@/components/shadcn/Badge'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {CLIENT_MODE} from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export interface CreateBadgeFormProps extends Awaited<ReturnType<typeof CreateBadgePageData>> {
     lang: Dictionary
@@ -37,6 +38,7 @@ export default function CreateBadgeForm({
                                             currProfile,
                                             availableGroupCreator
                                         }: CreateBadgeFormProps) {
+    const router = useRouter()
 
     const {showPresetAvatar} = useUploadAvatar()
     const {showLoading, closeModal} = useModal()
@@ -125,7 +127,7 @@ export default function CreateBadgeForm({
                     url.searchParams.set('event_badge', badgeClass.id.toString())
                     window.location.href = url.toString()
                 } else {
-                    window.location.href = `/badge-class/${badgeClass.id}/send-badge${window.location.search}`
+                    router.push(`/badge-class/${badgeClass.id}/send-badge${window.location.search}`)
                 }
             }, 1000)
         } catch (e: unknown) {

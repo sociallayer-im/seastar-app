@@ -8,8 +8,10 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import PhoneNumberInput, {CN_MOBILE_RE, stripPhone} from '@/components/client/PhoneNumberInput'
+import {useRouter} from 'next/navigation'
 
 export default function BindPhoneForm({lang}: {lang: Dictionary}) {
+    const router = useRouter()
     const [phone, setPhone] = useState('')
     const [error, setError] = useState('')
     const submitting = useRef(false)
@@ -32,7 +34,7 @@ export default function BindPhoneForm({lang}: {lang: Dictionary}) {
             // so a bind code can never be replayed as a login code — a login
             // code minted here would be a way to sign in as that number's owner.
             await requestPhoneCode({params: {phone: number, context: 'bind_phone'}, clientMode: CLIENT_MODE})
-            window.location.href = `/verify-bind-phone?phone=${encodeURIComponent(number)}`
+            router.push(`/verify-bind-phone?phone=${encodeURIComponent(number)}`)
         } catch (e: unknown) {
             toast({
                 title: lang['Bind Phone Number'],

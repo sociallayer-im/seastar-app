@@ -7,9 +7,11 @@ import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import PhoneNumberInput, {CN_MOBILE_RE, stripPhone} from '@/components/client/PhoneNumberInput'
+import {useRouter} from 'next/navigation'
 
 /** SMS sign-in. Rendered only where PHONE_LOGIN is on — CN. */
 export default function PhoneSignIn({lang}: {lang: Dictionary}) {
+    const router = useRouter()
     const [phone, setPhone] = useState('')
     const [error, setError] = useState('')
     // A ref, not state: this guards against double-submit within a single tick
@@ -33,7 +35,7 @@ export default function PhoneSignIn({lang}: {lang: Dictionary}) {
         const loading = showLoading()
         try {
             await requestPhoneCode({params: {phone: number}, clientMode: CLIENT_MODE})
-            window.location.href = `/verify-phone?phone=${encodeURIComponent(number)}`
+            router.push(`/verify-phone?phone=${encodeURIComponent(number)}`)
         } catch (e: unknown) {
             toast({
                 title: lang['Sign In'],

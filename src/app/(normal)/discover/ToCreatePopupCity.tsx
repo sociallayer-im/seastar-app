@@ -3,8 +3,10 @@
 import {Button} from '@/components/shadcn/Button'
 import {Dictionary} from '@/lang'
 import {clientToSignIn, getAuth} from '@/utils'
+import {useRouter} from 'next/navigation'
 
 export default function ToCreatePopupCity({lang}: { lang: Dictionary }) {
+    const router = useRouter()
 
     const handleToCreateGroup = () => {
         const auth = getAuth()
@@ -13,7 +15,7 @@ export default function ToCreatePopupCity({lang}: { lang: Dictionary }) {
             return
         }
 
-        window.location.href = '/group/create'
+        router.push('/group/create')
     }
 
     return <div style={{background: 'url(/images/popup_city_bg.jpg)', backgroundSize: '100% 100%'}}

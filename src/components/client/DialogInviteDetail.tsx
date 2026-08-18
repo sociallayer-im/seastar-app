@@ -10,6 +10,7 @@ import useModal from '@/components/client/Modal/useModal'
 import { useState } from 'react'
 import { CLIENT_MODE } from '@/app/config'
 import { useToast } from '@/components/shadcn/Toast/use-toast'
+import {useRouter} from 'next/navigation'
 
 export interface DialogInviteDetailProps {
     inviteDetail: InviteDetail
@@ -37,6 +38,7 @@ function TicketInfo({ ticket }: { ticket: GroupTicket }) {
 }
 
 export default function DialogInviteDetail({ inviteDetail, isManager, lang, close, code }: DialogInviteDetailProps) {
+    const router = useRouter()
     const { showLoading, closeModal } = useModal()
     const [error, setError] = useState('')
 
@@ -83,7 +85,7 @@ export default function DialogInviteDetail({ inviteDetail, isManager, lang, clos
             })
 
             setTimeout(() => {
-                window.location.href = `/group/${inviteDetail.group.name}`
+                router.push(`/group/${inviteDetail.group.name}`)
                 close?.()
             }, 1000)
         } catch (e: unknown) {

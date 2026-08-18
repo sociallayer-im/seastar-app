@@ -7,6 +7,7 @@ import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export interface CreateMarkerFormProps {
     draft: MarkerDraft
@@ -15,6 +16,7 @@ export interface CreateMarkerFormProps {
 }
 
 export default function CreateMarkerForm({draft, lang, groupDetail}: CreateMarkerFormProps) {
+    const router = useRouter()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
@@ -33,7 +35,7 @@ export default function CreateMarkerForm({draft, lang, groupDetail}: CreateMarke
             })
 
             setTimeout(() => {
-                window.location.href = `/map/${groupDetail.name}/marker`
+                router.push(`/map/${groupDetail.name}/marker`)
             }, 2000)
         } catch (e: unknown) {
             console.error(e)

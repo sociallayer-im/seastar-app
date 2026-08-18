@@ -11,10 +11,12 @@ import useShowVoucher from '@/hooks/useShowVoucher'
 import {setActivityRead} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
 import Dynamic from 'next/dynamic'
+import {useRouter} from 'next/navigation'
 
 const DynamicDisplayDateTime = Dynamic(() => import('@/components/client/DisplayDateTime'), {ssr: false})
 
 export default function Notifications({activities, lang}: { activities: ActivityDetail[], lang: Dictionary }) {
+    const router = useRouter()
     const {showVoucher} = useShowVoucher()
 
 
@@ -53,7 +55,7 @@ export default function Notifications({activities, lang}: { activities: Activity
         // handled on the group join page / pending invites flow.
         const groupName = typeof activity.payload?.group_name === 'string' ? activity.payload.group_name : null
         if (groupName) {
-            window.location.href = `/group/${groupName}`
+            router.push(`/group/${groupName}`)
         }
     }
 

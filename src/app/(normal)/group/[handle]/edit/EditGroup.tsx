@@ -17,6 +17,7 @@ import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
 import Avatar from '@/components/Avatar'
+import {useRouter} from 'next/navigation'
 
 export interface EditProfileProps {
     group: GroupDetail
@@ -28,6 +29,7 @@ export interface EditProfileProps {
 }
 
 export default function EditProfile({group, lang, isManager, isOwner, members, currProfileHandle}: EditProfileProps) {
+    const router = useRouter()
     const [newGroup, setNewGroup] = useState<GroupDetail>(group)
     const [parentGroup, setParentGroup] = useState<Group | null>(group.parent || null)
     const [parentHandleInput, setParentHandleInput] = useState(group.parent?.name || '')
@@ -110,7 +112,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                 clientMode: CLIENT_MODE
             })
             toast({title: 'Group updated'})
-            window.location.href = '/group/' + newGroup.name
+            router.push('/group/' + newGroup.name)
         } catch (e: unknown) {
             console.error('[EditGroup]: ', e)
             toast({title: e instanceof Error ? e.message : 'Failed to update Group', variant: 'destructive'})
@@ -137,7 +139,7 @@ export default function EditProfile({group, lang, isManager, isOwner, members, c
                         params: {groupId: group.id, authToken: authToken!},
                         clientMode: CLIENT_MODE
                     })
-                    window.location.href = `/profile/${currProfileHandle}`
+                    router.push(`/profile/${currProfileHandle}`)
                 } catch (e: unknown) {
                     console.error(e)
                     closeModal(loading)

@@ -19,6 +19,7 @@ import FormFieldsInput, {
     FormValues,
     validateFormValues
 } from '@/components/client/FormFieldsInput'
+import {useRouter} from 'next/navigation'
 
 /**
  * "What did I write on my application, and can I fix it?"
@@ -42,12 +43,13 @@ export default function MyApplicationBtn({eventId, lang, className, editable}: {
     /** Pending: still editable. Decided: read-only. */
     editable: boolean
 }) {
+    const router = useRouter()
     const {showLoading, closeModal, openModal} = useModal()
     const {toast} = useToast()
 
     const open = async () => {
         const authToken = getAuth()
-        if (!authToken) { window.location.href = '/signin'; return }
+        if (!authToken) { router.push('/signin'); return }
 
         const loading = showLoading()
         try {

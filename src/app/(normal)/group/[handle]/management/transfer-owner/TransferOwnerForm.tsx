@@ -10,6 +10,7 @@ import useConfirmDialog from '@/hooks/useConfirmDialog'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {CLIENT_MODE} from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export interface MemberManagementFormProps {
     members: Membership[],
@@ -18,6 +19,7 @@ export interface MemberManagementFormProps {
 }
 
 export default function TransferOwnerForm({members, lang, group}: MemberManagementFormProps) {
+    const router = useRouter()
     const memberList = members.filter(m => m.role !== 'owner')
     const [selected, setSelected] = useState<Membership | null>(null)
     const {showConfirmDialog} = useConfirmDialog()
@@ -50,7 +52,7 @@ export default function TransferOwnerForm({members, lang, group}: MemberManageme
                 },
                 clientMode: CLIENT_MODE
             })
-            window.location.href = `/group/${group.name}`
+            router.push(`/group/${group.name}`)
         } catch (e: unknown) {
             console.error(e)
             closeModal(loading)

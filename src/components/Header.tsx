@@ -1,5 +1,6 @@
 import { getCurrProfile, selectLang } from "@/app/actions"
-import Image from "next/image"
+import Link from "next/link"
+import Img from "@/components/Img"
 import LangSwitcher from "@/components/client/LangSwitcher"
 import ProfileMenu from "@/components/client/ProfileMenu"
 import { headers } from "next/headers"
@@ -16,26 +17,26 @@ export default async function Header({sticky = true}:{sticky?: boolean}) {
     return <header className={`w-full h-[48px] shadow-sm bg-(--background) ${sticky ? 'sticky top-0 z-999' : ''}`}>
         <div className="page-width w-full flex-row-item-center justify-between items-center h-[48px]">
             <div className="flex-row-item-center">
-                <a href="/" className="sm:block hidden">
-                    <img src={process.env.NEXT_PUBLIC_APP_LOGO || '/images/logo_horizontal.svg'} width={102} height={32} alt={process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}/>
-                </a>
-                <a href="/" className="sm:hidden block">
-                    <img src="/images/sola_logo_compact.png" width={32} height={32} alt="Social Layer"/>
-                </a>
-                <a href="/discover"
+                <Link href="/" className="sm:block hidden">
+                    <Img src={process.env.NEXT_PUBLIC_APP_LOGO || '/images/logo_horizontal.svg'} width={102} height={32} priority alt={process.env.NEXT_PUBLIC_APP_TITLE || "Social Layer"}/>
+                </Link>
+                <Link href="/" className="sm:hidden block">
+                    <Img src="/images/sola_logo_compact.png" width={32} height={32} priority alt="Social Layer"/>
+                </Link>
+                <Link href="/discover"
                    className={`ml-3 text-xs font-semibold ${currentPath?.includes('discover') ? 'text-primary-foreground' : ''}`}>
                     {lang['Discover']}
-                </a>
-                {!!profile && <a href="/my-events/attended"
+                </Link>
+                {!!profile && <Link href="/my-events/attended"
                                  className={`ml-3 text-xs font-semibold ${currentPath?.includes('/my-events/') ? 'text-primary-foreground' : ''}`}>
                     {lang['My Events']}
-                </a>}
+                </Link>}
                 {/* Signed-in only, like My Events: the hub is entirely about
                     your own forms, and it redirects to /signin anyway. */}
-                {!!profile && <a href="/forms"
+                {!!profile && <Link href="/forms"
                                  className={`ml-3 text-xs font-semibold ${currentPath?.startsWith('/forms') ? 'text-primary-foreground' : ''}`}>
                     {lang['Forms']}
-                </a>}
+                </Link>}
             </div>
             <div className="flex-row-item-center text-xs relative">
                 <HeaderSearchBar lang={lang} />

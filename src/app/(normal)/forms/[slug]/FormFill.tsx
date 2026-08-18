@@ -46,7 +46,7 @@ export default function FormFill({lang, form, submission, signedIn}: {
     const submit = async () => {
         const authToken = getAuth()
         if (!authToken) {
-            window.location.href = `/signin?return=/forms/${form.slug}`
+            router.push(`/signin?return=/forms/${form.slug}`)
             return
         }
 

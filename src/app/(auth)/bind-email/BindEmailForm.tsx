@@ -9,10 +9,12 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
 import {clientRedirectToReturn, getAuth, returnTarget} from '@/utils'
+import {useRouter} from 'next/navigation'
 
 const EMAIL_RE = /^[\w.+-]+@([\w-]+\.)+[\w-]{2,63}$/
 
 export default function BindEmailForm({lang}: {lang: Dictionary}) {
+    const router = useRouter()
     const [email, setEmail] = useState('')
     const [error, setError] = useState('')
     const submitting = useRef(false)
@@ -48,7 +50,7 @@ export default function BindEmailForm({lang}: {lang: Dictionary}) {
             // so a bind code can never be replayed as a login code — a login
             // code minted here would be a way to take over the address.
             await requestEmailCode({params: {email: address, context: 'bind_email'}, clientMode: CLIENT_MODE})
-            window.location.href = `/verify-bind-email?email=${encodeURIComponent(address)}`
+            router.push(`/verify-bind-email?email=${encodeURIComponent(address)}`)
         } catch (e: unknown) {
             toast({
                 title: lang['Bind Email'],

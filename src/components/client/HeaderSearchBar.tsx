@@ -4,14 +4,16 @@ import {useState} from 'react'
 import {Input} from '@/components/shadcn/Input'
 import {Button} from '@/components/shadcn/Button'
 import {Dictionary} from '@/lang'
+import {useRouter} from 'next/navigation'
 
 export default function HeaderSearchBar({lang}: { lang: Dictionary }) {
+    const router = useRouter()
     const [keyword, setKeyword] = useState('')
     const [active, setActive] = useState(false)
 
     const handleSearch = () => {
         if (!keyword.trim()) return
-        window.location.href = `/search?keyword=${encodeURIComponent(keyword)}`
+        router.push(`/search?keyword=${encodeURIComponent(keyword)}`)
     }
 
     const style = active ? {width: '350px', height: '32px', position: 'absolute'} : {width: '14px'}

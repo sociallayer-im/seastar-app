@@ -9,6 +9,7 @@ import Img from '@/components/Img'
 import Avatar from '@/components/Avatar'
 import StarDiscussionBtn from '@/components/client/StarDiscussionBtn'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 
 // ssr: false because a locale-formatted date cannot survive hydration — see
 // the note in LocalTime.
@@ -32,7 +33,7 @@ export default function CardTopic({topic, href, lang}: {
 }) {
     const author = topic.user?.nickname || topic.user?.name
 
-    return <a href={href}
+    return <Link href={href}
         className="overflow-hidden relative shadow-sm flex rounded-lg p-3 xs:flex-row flex-col flex-nowrap bg-background duration-200 hover:scale-[1.02]">
         <div className="flex-1 mr-2 order-2 xs:order-1">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
@@ -92,5 +93,5 @@ export default function CardTopic({topic, href, lang}: {
                     src={cfImage(topic.image_url, {width: 280, height: 280, fit: 'cover'})} alt=""/>
             </div>
         }
-    </a>
+    </Link>
 }

@@ -14,8 +14,10 @@ import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {ProfileDetail, updateProfile} from '@sola/sdk'
 import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
 import StripeKeysManager from './StripeKeysManager'
+import {useRouter} from 'next/navigation'
 
 export default function EditProfile({profile, lang}: { profile: ProfileDetail, lang: Dictionary }) {
+    const router = useRouter()
     const [newProfile, setNewProfile] = useState<ProfileDetail>(profile)
     const {uploadAvatar} = useUploadAvatar()
     const {openModal, showLoading, closeModal} = useModal()
@@ -54,7 +56,7 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                 clientMode: CLIENT_MODE
             })
             toast({title: 'Profile updated'})
-            window.location.href = '/profile/' + newProfile.name
+            router.push('/profile/' + newProfile.name)
         } catch (e: unknown) {
             console.error('[EditProfile]: ', e)
             toast({title: e instanceof Error ? e.message : 'Failed to update profile', variant: 'destructive'})

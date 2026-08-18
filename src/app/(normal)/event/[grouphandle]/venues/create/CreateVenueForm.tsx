@@ -7,6 +7,7 @@ import useModal from '@/components/client/Modal/useModal'
 import { useToast } from '@/components/shadcn/Toast/use-toast'
 import { getAuth } from '@/utils'
 import { CLIENT_MODE } from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export interface CreateVenueFormProps {
     lang: Dictionary,
@@ -15,6 +16,7 @@ export interface CreateVenueFormProps {
 }
 
 export default function CreateVenueForm({ lang, venueDetail, groupDetail }: CreateVenueFormProps) {
+    const router = useRouter()
 
     const { showLoading, closeModal } = useModal()
     const { toast } = useToast()
@@ -32,7 +34,7 @@ export default function CreateVenueForm({ lang, venueDetail, groupDetail }: Crea
             })
             toast({ title: lang['Create successful'], variant: 'success' })
             setTimeout(() => {
-                window.location.href = `/event/${groupDetail.name}/venues`
+                router.push(`/event/${groupDetail.name}/venues`)
             }, 2000)
         } catch (e: unknown) {
             console.error(e)

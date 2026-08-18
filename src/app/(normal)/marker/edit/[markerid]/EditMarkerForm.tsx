@@ -8,6 +8,7 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {CLIENT_MODE} from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export interface EditMarkerFormProps {
     lang: Dictionary,
@@ -16,6 +17,7 @@ export interface EditMarkerFormProps {
 }
 
 export default function EditMarkerForm({lang, draft, group}: EditMarkerFormProps) {
+    const router = useRouter()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
     const {showConfirmDialog} = useConfirmDialog()
@@ -38,7 +40,7 @@ export default function EditMarkerForm({lang, draft, group}: EditMarkerFormProps
             })
 
             setTimeout(() => {
-                window.location.href = `/marker/detail/${draft.id}`
+                router.push(`/marker/detail/${draft.id}`)
             }, 2000)
         } catch (e: unknown) {
             console.error(e)
@@ -74,7 +76,7 @@ export default function EditMarkerForm({lang, draft, group}: EditMarkerFormProps
                     })
 
                     setTimeout(() => {
-                        window.location.href = `/map/${group.name}/marker`
+                        router.push(`/map/${group.name}/marker`)
                     }, 2000)
                 } catch (e: unknown) {
                     console.error(e)

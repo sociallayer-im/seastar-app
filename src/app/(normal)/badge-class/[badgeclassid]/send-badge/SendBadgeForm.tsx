@@ -11,6 +11,7 @@ import {cfImage, getAuth} from '@/utils'
 import useModal from '@/components/client/Modal/useModal'
 import {CLIENT_MODE} from '@/app/config'
 import Radio from '@/components/client/Radio'
+import {useRouter} from 'next/navigation'
 
 export interface SendBadgeFormProps {
     badgeClass: BadgeClassDetail
@@ -20,6 +21,7 @@ export interface SendBadgeFormProps {
 }
 
 export default function SendBadgeForm({badgeClass, lang, toProfile, isPrivate}: SendBadgeFormProps) {
+    const router = useRouter()
     const {showLoading, closeModal} = useModal()
 
     const [isCodeVoucher, setIsCodeVoucher] = useState(!toProfile && !isPrivate)
@@ -162,7 +164,7 @@ export default function SendBadgeForm({badgeClass, lang, toProfile, isPrivate}: 
                 >{lang['Send']}</Button>
                 <Button variant="secondary"
                         onClick={() => {
-                            window.location.href = `/badge-class/${badgeClass.id}`
+                            router.push(`/badge-class/${badgeClass.id}`)
                         }}>
                     {lang['Later']}
                 </Button>

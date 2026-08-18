@@ -9,8 +9,10 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Button} from '@/components/shadcn/Button'
 import {Input} from '@/components/shadcn/Input'
 import {clientRedirectToReturn, getAuth, returnTarget, setAuth} from '@/utils'
+import {useRouter} from 'next/navigation'
 
 export default function FormVerifyBindEmail({lang, email}: {lang: Dictionary, email: string}) {
+    const router = useRouter()
     const [code, setCode] = useState('')
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -18,7 +20,7 @@ export default function FormVerifyBindEmail({lang, email}: {lang: Dictionary, em
     const confirm = async () => {
         const authToken = getAuth()
         if (!authToken) {
-            window.location.href = '/signin'
+            router.push('/signin')
             return
         }
 
@@ -98,7 +100,7 @@ export default function FormVerifyBindEmail({lang, email}: {lang: Dictionary, em
         </Button>
         <div className="flex flex-row justify-between mt-3">
             <Button variant="ghost" onClick={() => {
-                window.location.href = '/bind-email'
+                router.push('/bind-email')
             }}>{lang['Back']}</Button>
             <Button variant="ghost" onClick={resend}>{lang['Resend Code']}</Button>
         </div>

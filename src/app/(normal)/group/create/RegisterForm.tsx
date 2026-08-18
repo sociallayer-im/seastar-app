@@ -14,8 +14,10 @@ import TimezonePicker from '@/components/client/TimezonePicker'
 import DatePicker from '@/components/client/DatePicker'
 import Dayjs from '@/libs/dayjs'
 import useUploadImage from '@/hooks/useUploadImage'
+import {useRouter} from 'next/navigation'
 
 export default function RegisterForm(props: { lang: Dictionary }) {
+    const router = useRouter()
     const {showConfirmDialog} = useConfirmDialog()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
@@ -77,7 +79,7 @@ export default function RegisterForm(props: { lang: Dictionary }) {
     }
 
     const handleSkip = () => {
-        window.location.href = `/group/${handle}`
+        router.push(`/group/${handle}`)
     }
 
     const handleCreatePopupCity = async () => {
@@ -128,7 +130,7 @@ export default function RegisterForm(props: { lang: Dictionary }) {
             })
             toast({title: props.lang['You have create a Popup-City'], variant: 'success'})
             setTimeout(() => {
-                window.location.href = `/group/${handle}`
+                router.push(`/group/${handle}`)
             }, 1500)
         } catch (e: unknown) {
             console.error(e)

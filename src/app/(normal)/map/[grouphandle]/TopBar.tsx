@@ -11,6 +11,7 @@ import {emptyMarker} from '@/app/(normal)/marker/[grouphandle]/create/data'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {getAuth} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export default function TopBar({groupDetail, lang, markerCategory}: {
     groupDetail: GroupDetail,
@@ -119,6 +120,7 @@ export interface DialogCreateMarkerProps {
 }
 
 function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarkerProps) {
+    const router = useRouter()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
@@ -140,7 +142,7 @@ function DialogCreateMarker({draft, lang, close, groupDetail}: DialogCreateMarke
             })
 
             setTimeout(() => {
-                window.location.href = `../../event/[grouphandle]/map/${groupDetail.name}/marker`
+                router.push(`/map/${groupDetail.name}/marker`)
             }, 2000)
         } catch (e: unknown) {
             console.error(e)

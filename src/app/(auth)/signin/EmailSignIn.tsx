@@ -7,6 +7,7 @@ import {CLIENT_MODE} from '@/app/config'
 import useModal from '@/components/client/Modal/useModal'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
 import {Input} from '@/components/shadcn/Input'
+import {useRouter} from 'next/navigation'
 
 // Intentionally the same permissive shape the auth app used. The backend
 // re-validates with URI::MailTo::EMAIL_REGEXP and owns the real verdict; this
@@ -14,6 +15,7 @@ import {Input} from '@/components/shadcn/Input'
 const EMAIL_RE = /^[\w.+-]+@([\w-]+\.)+[\w-]{2,63}$/
 
 export default function EmailSignIn({lang}: {lang: Dictionary}) {
+    const router = useRouter()
     const [email, setEmail] = useState('')
     const [error, setError] = useState('')
     // A ref, not state: this guards against double-submit within a single tick
@@ -37,7 +39,7 @@ export default function EmailSignIn({lang}: {lang: Dictionary}) {
             await requestEmailCode({params: {email: address}, clientMode: CLIENT_MODE})
             // Same URL the standalone auth app navigated to, so the flow (and
             // browser-back out of it) behaves exactly as before.
-            window.location.href = `/verify-email?email=${encodeURIComponent(address)}`
+            router.push(`/verify-email?email=${encodeURIComponent(address)}`)
         } catch (e: unknown) {
             toast({
                 title: lang['Sign In'],

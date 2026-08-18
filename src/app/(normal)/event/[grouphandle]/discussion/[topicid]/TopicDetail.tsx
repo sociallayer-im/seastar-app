@@ -60,7 +60,7 @@ export default function TopicDetail({lang, groupDetail, topic, replies: initialR
     const submit = async () => {
         const token = authToken()
         if (!token) {
-            window.location.href = `/signin?return=/event/${groupDetail.name}/discussion/${topic.id}`
+            router.push(`/signin?return=/event/${groupDetail.name}/discussion/${topic.id}`)
             return
         }
         if (!content.trim()) return

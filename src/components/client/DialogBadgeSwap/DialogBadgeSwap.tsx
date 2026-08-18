@@ -9,8 +9,10 @@ import useScanQrcode from '@/hooks/useScanQrcode'
 import {displayProfileName, getAuth} from '@/utils'
 import {getBadgeDetailByBadgeId, swapBadge} from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code: string, close?: () => any }) {
+    const router = useRouter()
     const {closeModal, showLoading} = useModal()
     const {toast} = useToast()
     const {scanQrcode} = useScanQrcode()
@@ -52,7 +54,7 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
                     setSuccess(true)
                     setTimeout(() => {
                         props.close?.()
-                        window.location.href = `/profile/${user.name}?tab=badges`
+                        router.push(`/profile/${user.name}?tab=badges`)
                     }, 500)
                 } catch (e: any) {
                     console.error(e)
@@ -80,7 +82,7 @@ function DialogBadgeSwap(props: { badge: Badge, currProfile: ProfileDetail, code
                             description: 'Swap success',
                             variant: 'success'
                         })
-                        window.location.href = `/profile/${user.name}?tab=badges`
+                        router.push(`/profile/${user.name}?tab=badges`)
                     }, 1500)
                 }
             })

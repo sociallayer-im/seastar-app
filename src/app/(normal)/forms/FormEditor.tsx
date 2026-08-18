@@ -49,7 +49,7 @@ export default function FormEditor({lang, form}: {
 
     const save = async () => {
         const authToken = getAuth()
-        if (!authToken) { window.location.href = '/signin?return=/forms'; return }
+        if (!authToken) { router.push('/signin?return=/forms'); return }
 
         // A question with no label is an empty row the author left behind, not
         // a question — the API rejects it outright, so drop it here rather

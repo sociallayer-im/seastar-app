@@ -16,8 +16,10 @@ import {getAuth, processEventRoles} from '@/utils'
 import {RepeatFormType} from '@/app/(normal)/event/[grouphandle]/create/RepeatForm'
 import {CLIENT_MODE} from '@/app/config'
 import {ApplicationFormDraft} from '@/app/(normal)/event/[grouphandle]/create/EventForm'
+import {useRouter} from 'next/navigation'
 
 export default function CreateEventForm(props: { lang: Dictionary, data: CreateEventPageDataType }) {
+    const router = useRouter()
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
 
@@ -41,7 +43,7 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
                     clientMode: CLIENT_MODE
                 })
             }
-            window.location.href = `/event/share/${event.id}`
+            router.push(`/event/share/${event.id}`)
         } catch (e: unknown) {
             console.error(e)
             toast({
@@ -73,7 +75,7 @@ export default function CreateEventForm(props: { lang: Dictionary, data: CreateE
                 clientMode: CLIENT_MODE
             })
 
-            window.location.href = `/event/share/${events[0]?.id}`
+            router.push(`/event/share/${events[0]?.id}`)
         } catch (e: unknown) {
             console.error(e)
             toast({

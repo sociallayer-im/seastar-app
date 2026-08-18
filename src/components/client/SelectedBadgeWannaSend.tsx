@@ -11,6 +11,7 @@ import {
     ProfileDetail
 } from '@sola/sdk'
 import {CLIENT_MODE} from '@/app/config'
+import {useRouter} from 'next/navigation'
 
 export interface SelectedBadgeWannaSendProps {
     children?: ReactNode
@@ -32,6 +33,7 @@ export default function SelectedBadgeWannaSend({
                                                    className
                                                }: SelectedBadgeWannaSendProps) {
 
+    const router = useRouter()
     const {showLoading, closeModal} = useModal()
     const {selectBadgeClass} = useSelectBadgeClass()
 
@@ -67,7 +69,7 @@ export default function SelectedBadgeWannaSend({
                         sendBadgeUrl = sendBadgeUrl + `?to=${toProfileHandle}`
                     }
 
-                    window.location.href = sendBadgeUrl
+                    router.push(sendBadgeUrl)
                 }
             })
         } catch (e: unknown) {
