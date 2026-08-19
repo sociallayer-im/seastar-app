@@ -39,7 +39,7 @@ builder:
   push_registry: mirror-registry.sola.day
   # ginger's default is mode=min, which exports only the FINAL stage to
   # <image>:buildcache. This Dockerfile is three-stage and the expensive step —
-  # `bun install`, ~700 MB of node_modules — is in the `build` stage, so min
+  # `pnpm install`, node_modules — is in the `build` stage, so min
   # never wrote it to the registry: it survived only in the wamo builder's
   # local buildkit cache, and would be lost the moment that container is
   # recreated or pruned. max exports every stage.

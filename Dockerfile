@@ -1,81 +1,58 @@
-# vinext (Vite) build for the seastar-app monorepo. Bun installs and builds;
-# the runtime stage is node:24-slim because vinext's SSR pass showed
-# intermittent shell errors under the bun runtime while node was clean.
-# Built on a remote amd64 builder via ginger; deployed behind Traefik.
+# vinext (Vite) build for the seastar-app monorepo.
 #
-# Bun is pinned rather than tracking `oven/bun:1`: a floating base tag changes
-# digest whenever upstream releases, which invalidates every layer below it and
-# turns an incremental deploy into a full cold build. 1.3.14 is what local dev
-# runs, and is what `oven/bun:1` resolved to when this was pinned.
-FROM oven/bun:1.3.14 AS build
+# Every stage is node — no bun anywhere. That is not a preference: vinext
+# builds *incompletely* under bun's runtime. The build exits 0 and prints
+# "Build complete", but dist/client comes out at ~1.6 MB instead of ~4 MB and
+# the resulting server answers 404 to every route, health check included. It
+# cost three failed deploys on 2026-08-19, each presenting as a health-check
+# timeout rather than a build failure. Dropping bun's `--bun` flag was not
+# enough either, because oven/bun ships a shim at
+# /usr/local/bun-node-fallback-bin/node that re-executes bun, so honouring
+# vinext's `#!/usr/bin/env node` shebang still landed on bun.
+#
+# pnpm is the package manager (pnpm-lock.yaml, pnpm-workspace.yaml), pinned via
+# package.json's packageManager field and enabled through corepack.
+#
+# Built on a remote amd64 builder via ginger; deployed behind Traefik.
+FROM node:24-slim AS build
 WORKDIR /app
+RUN corepack enable
 
 # Dependencies first, in their own layer, so an ordinary source change reuses
-# the cached install instead of re-resolving ~700MB of node_modules every
-# deploy. Only the manifests are copied here — the workspace member manifests
-# included, since `workspaces: [packages/*]` is resolved at install time and
-# bun errors out if packages/sola-sdk/package.json is missing.
+# the cached install instead of re-resolving node_modules every deploy. Only the
+# manifests are copied here — the workspace member manifest included, since
+# pnpm-workspace.yaml is resolved at install time and pnpm errors out if
+# packages/sola-sdk/package.json is missing.
 #
-# --ignore-scripts avoids native builds (e.g. better-sqlite3) we don't need.
-COPY package.json bun.lock ./
+# --ignore-scripts skips native postinstall steps we do not need; every
+# platform-specific dependency here ships prebuilt binaries.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/sola-sdk/package.json packages/sola-sdk/
-RUN bun install --frozen-lockfile --ignore-scripts
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Now the source. node_modules is in .dockerignore, so this cannot clobber the
 # install above. .env.production has to be in the context: the build reads it
 # to inline NEXT_PUBLIC_* into the client bundle.
 COPY . .
-# The build MUST run under real node. vinext builds incompletely under bun's
-# runtime: the command exits 0 and prints "Build complete", but dist/client
-# comes out at ~1.6 MB instead of ~8 MB and the server then answers 404 to
-# every route, health check included. That broke three deploys on 2026-08-19,
-# presenting as a health-check timeout rather than a build failure.
-#
-# Dropping `--bun` is not enough: oven/bun ships a fake `node` at
-# /usr/local/bun-node-fallback-bin/node that re-executes bun, so `bun run`
-# honouring vinext's `#!/usr/bin/env node` shebang still lands on bun. A real
-# node has to be on PATH ahead of it.
-COPY --from=node:24-slim /usr/local/bin/node /usr/local/bin/node
-RUN node --version | grep -q '^v24' \
-    && node node_modules/vinext/dist/cli.js build
+RUN pnpm run build
 
 # Runtime dependencies only. The build above needs the devDependencies
 # (typescript, tailwind, postcss, sass, vite), but `vinext start` does not —
 # shipping them meant most of node_modules rode along in the deployed image,
-# paid for on every push and pull. Verified locally: a --production install
-# serves the dist/ build (vinext + ipaddr.js are regular dependencies).
-FROM oven/bun:1.3.14 AS prod-deps
+# paid for on every push and pull. Verified: a production install serves the
+# dist/ build (vinext and ipaddr.js are regular dependencies, and everything
+# else the server bundle needs is inlined into dist/ at build time).
+#
+# Note pnpm, unlike bun, does not install optional peer dependencies — so the
+# 199 MB of `next` that bun pulled in as an optional peer of @unpic/react, and
+# that this Dockerfile used to prune explicitly, never arrives at all.
+FROM node:24-slim AS prod-deps
 WORKDIR /app
-COPY package.json bun.lock ./
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/sola-sdk/package.json packages/sola-sdk/
-RUN bun install --frozen-lockfile --ignore-scripts --production
+RUN pnpm install --frozen-lockfile --ignore-scripts --prod
 
-# `next` is an *optional* peer of @unpic/react (vinext's next/image shim), so
-# bun installs it even though this app dropped Next entirely: 199 MB of the
-# 597 MB production node_modules, in every image, pulled on every deploy.
-# Nothing resolves it — verified by deleting it locally and running a full
-# build plus a production smoke pass on all the main routes.
-#
-# The `test -d` is the point of this block, not a formality: bun's isolated
-# layout is what the paths below are written against, and if a future bun
-# changes it these globs would quietly match nothing and silently ship the
-# 199 MB again. Failing the build instead forces a re-check.
-#
-# `webpack` (9.5 MB, peer of react-server-dom-webpack) is deliberately NOT
-# pruned: removing it leaves dangling symlinks inside a package vinext does
-# use at runtime, which is a poor trade for 9 MB.
-RUN test -d node_modules/.bun/node_modules/next \
-      || (echo "next not found where expected — bun layout changed, re-check this prune" && exit 1) \
-    && rm -rf node_modules/.bun/next@* \
-              node_modules/.bun/node_modules/next \
-              node_modules/.bun/@unpic+react@*/node_modules/next \
-              node_modules/.bun/@unpic+react@*/node_modules/.bin/next \
-              node_modules/next
-
-# node, not bun: vinext requires node >= 22 and its SSR pass misbehaved under
-# the bun runtime in local testing. The bun-installed node_modules are plain JS
-# (--ignore-scripts, no native builds), so they run under node unchanged.
-# 24 = active LTS; verified locally (vinext start under 24.18, full smoke pass).
 FROM node:24-slim AS production
 WORKDIR /app
 ENV NODE_ENV=production

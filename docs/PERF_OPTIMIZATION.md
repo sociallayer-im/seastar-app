@@ -418,7 +418,7 @@ href 等用例,并加了反向对照。实测:破坏 `escapeAttr` → 3 项失�
 mkdir sim && cd sim
 cp <repo>/package.json <repo>/bun.lock . && mkdir -p packages/sola-sdk
 cp <repo>/packages/sola-sdk/package.json packages/sola-sdk/
-bun install --frozen-lockfile --ignore-scripts --production
+pnpm install --frozen-lockfile --ignore-scripts --production
 # 执行 Dockerfile 里的 prune,然后:
 cp -R <repo>/dist <repo>/public <repo>/packages ./
 cp <repo>/next.config.mjs <repo>/.env.production ./

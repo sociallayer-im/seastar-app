@@ -16,15 +16,16 @@ API 面的兼容层),**业务代码零逻辑改动** —— 所有源码修改�
 | ESLint | 8 + .eslintrc | 9 + eslint.config.mjs(flat) |
 | Tailwind | 3.4.19 | 4.3.3(CSS `@theme`,无 tailwind.config.ts) |
 | ProseMirror | 旧 minor | 全家最新 1.x + overrides 锁单版本 |
-| 运行时镜像 | oven/bun | node:24-slim(vinext 需 node≥22;bun 下 SSR 偶发出错) |
+| 运行时镜像 | oven/bun | node:24-slim |
+| 包管理器 | bun | pnpm(2026-08-19 起) |
 
 ## 常用命令
 
 ```bash
-bun run dev          # vinext dev(Vite + HMR),端口跟 --port
-bun run build        # vinext build → dist/
-bun run start        # vinext start(读 PORT/HOST,不是 HOSTNAME)
-bun run lint         # eslint 直跑
+pnpm run dev          # vinext dev(Vite + HMR),端口跟 --port
+pnpm run build        # vinext build → dist/
+pnpm run start        # vinext start(读 PORT/HOST,不是 HOSTNAME)
+pnpm run lint         # eslint 直跑
 npx tsc --noEmit     # next-env.d.ts 由 vinext dev 生成/管理,勿手改
 ```
 
