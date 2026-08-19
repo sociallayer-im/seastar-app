@@ -74,11 +74,15 @@ ssh:
 
 builder:
   arch: amd64
-  remote: ssh://ubuntu@homepod
+  # Built on wamo.city over SSH rather than on homepod: the deploy host is the
+  # one serving production and has ~8 GB free, while wamo has 19 GB and 405 GB
+  # of disk. Nothing runs locally — buildx drives the remote daemon through
+  # this SSH endpoint, so no local Docker daemon is needed.
+  remote: ssh://ubuntu@wamo.city
   # ginger's default is mode=min, which exports only the FINAL stage to the
   # registry build cache. This Dockerfile is three-stage and the expensive step
-  # — `bun install` — lives in the `build` stage, so min never cached it
-  # anywhere but the wamo builder's own local store, one `docker buildx prune`
+  # — `pnpm install` — lives in the `build` stage, so min never cached it
+  # anywhere but the builder's own local store, one `docker buildx prune`
   # away from a cold rebuild. max exports every stage. Verified from ginger's
   # actual invocation: --cache-to type=registry,mode=min,ref=<image>:buildcache.
   cache: max
