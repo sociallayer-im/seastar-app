@@ -1,0 +1,34 @@
+src/app/(normal)/addresses/AddressBook.tsx
+  s_e9ed806a3d225c::t_7df3eecc30d403 1-115
+src/app/(normal)/addresses/page.tsx
+  s_e9ed806a3d225c::t_c1c875285243e8 1-22
+src/app/(normal)/orders/page.tsx
+  s_e9ed806a3d225c::t_cdb39a1ad91fac 21-29
+src/lang/en.ts
+  s_e9ed806a3d225c::t_b3641c2055a86b 965-970
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_b3641c2055a86b 943-948
+src/app/(normal)/shop/[handle]/checkout/CheckoutForm.tsx
+  s_e9ed806a3d225c::t_dea3b2825d2d27 5,7
+  s_e9ed806a3d225c::t_4e29d8d387b05a 17
+  s_e9ed806a3d225c::t_9375fcbf3eae2f 128-138
+  s_e9ed806a3d225c::t_d18bf2b97d4544 100-108
+src/components/client/ShippingAddressForm.tsx
+  s_e9ed806a3d225c::t_95e9eb59bb42ef 1-126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "75313e1aaf31c4fec610dd7560e83e690484a31b",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
