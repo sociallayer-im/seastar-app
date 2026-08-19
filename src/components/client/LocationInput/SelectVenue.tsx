@@ -10,6 +10,9 @@ import {LegacyVenueLocation} from '@/utils'
 import {isEventTimeSuitable} from "@/utils"
 import {EventDraftType, VenueDetail} from '@sola/sdk'
 
+/** Marks the action row in the venue list. A real venue always has an id. */
+const CREATE_VENUE_ID = ''
+
 export interface SelectVenueProps extends LocationInputProps {
     onSwitchToCreateLocation: () => void
 }
@@ -26,7 +29,7 @@ export default function SelectVenue({
     const {openModal} = useModal()
 
     const setVenue = (venue: VenueDetail & LegacyVenueLocation) => {
-        if (!venue.id) {
+        if (venue.id === CREATE_VENUE_ID) {
             onSwitchToCreateLocation()
         } else {
             const eventDraft = {
@@ -58,9 +61,17 @@ export default function SelectVenue({
         })
     }
 
+    // "New Location" is an action, not a venue, but DropdownMenu takes a flat
+    // option list — so it rides along as a row with an empty id, which setVenue
+    // and VenueOpt both test for. That shortcut is why this file had a security
+    // bug: with the list typed as venues there was nowhere to put the row's
+    // icon, so it was smuggled into `name` as an HTML string, which forced
+    // dangerouslySetInnerHTML onto the option renderer — and that then applied
+    // to every real, API-supplied venue name too. Keep the row's data plain;
+    // anything visual about it belongs in VenueOpt.
     const createLocationOpt = {
-        id: '',
-        name: `<i class="uil-plus-circle text-lg"></i> ${lang['New Location']}`
+        id: CREATE_VENUE_ID,
+        name: lang['New Location']
     } as VenueDetail
 
     const toLink = (url: string) => {
@@ -166,6 +177,16 @@ export interface VenueOptProps {
 }
 
 function VenueOpt({venue, lang, isManager, isMember, event}: VenueOptProps) {
+    // The action row is not a venue: it has no availabilities, capacity or
+    // address, and running the suitability check against it only worked
+    // because every field it reads happened to be undefined.
+    if (venue.id === CREATE_VENUE_ID) {
+        return <div className="webkit-box-clamp-1">
+            <i className="uil-plus-circle text-lg mr-1"/>
+            {venue.name}
+        </div>
+    }
+
     const inapplicable = isEventTimeSuitable(
         event.timezone!,
         event.start_time,

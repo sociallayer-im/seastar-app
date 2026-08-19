@@ -13,6 +13,7 @@ import {
   cfImage,
   checkTrackSuitable,
   eventCoverTimeStr,
+  getAuth,
   isEventTimeSuitable,
 } from "@/utils"
 import SelectedEventHost from "@/components/client/SelectedEventHost"
@@ -154,6 +155,7 @@ export default function EventForm({
             timezone: draft.timezone!,
             venueId: draft.venue_id,
             excludeEventId: draft.id,
+            authToken: getAuth(),
           },
           clientMode: CLIENT_MODE,
         })

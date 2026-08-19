@@ -689,17 +689,25 @@ export type GetOccupiedTimeEventProps = {
     endTime: string,
     timezone: string,
     venueId: string | null,
-    excludeEventId?: string
+    excludeEventId?: string,
+    /**
+     * Required: VenuesController only skips authentication for `show`, so a
+     * tokenless conflict check 401s. It did, on every venue+time change in the
+     * event editor — swallowed by the caller's catch, so the double-booking
+     * warning simply never appeared.
+     */
+    authToken?: string
 }
 
 export const getOccupiedTimeEvent = async ({
-    params: {startTime, endTime, venueId, excludeEventId},
+    params: {startTime, endTime, venueId, excludeEventId, authToken},
     clientMode
 }: SolaSdkFunctionParams<GetOccupiedTimeEventProps>) => {
     if (!venueId) return null
     const data = await request<{ event: Event | null }>(`/venues/${venueId}/conflict`, {
         params: {start_time: startTime, end_time: endTime, exclude_event_id: excludeEventId},
         clientMode,
+        authToken,
         noCache: true
     })
     return data.event
