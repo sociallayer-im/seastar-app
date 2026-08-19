@@ -1,0 +1,20 @@
+ginger.yml
+  s_e9ed806a3d225c::t_b33bf64922980c 97-99,101,115
+  s_e9ed806a3d225c::t_542de935244499 100,102-113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "363d4fab0f132c6fc0beddf125dbe39b500c2e2d",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
