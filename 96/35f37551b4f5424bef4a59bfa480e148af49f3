@@ -1,0 +1,36 @@
+src/app/(normal)/shop/[handle]/management/settings/ShippingRateEditor.tsx
+  s_e9ed806a3d225c::t_087c01d6b464b8 5-306
+src/lang/en.ts
+  s_e9ed806a3d225c::t_93849c2c2fbfe1 1069-1071,1073-1092
+  s_e9ed806a3d225c::t_8bfca3954c1a4f 1072
+src/app/(normal)/shop/[handle]/management/orders/SellerOrderList.tsx
+  s_e9ed806a3d225c::t_419a7df8854be3 1-152
+src/app/(normal)/shop/[handle]/management/products/ProductManager.tsx
+  s_e9ed806a3d225c::t_419a7df8854be3 1-105
+src/app/(normal)/shop/[handle]/management/settings/page.tsx
+  s_e9ed806a3d225c::t_419a7df8854be3 1-27
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_93849c2c2fbfe1 1047-1070
+src/app/(normal)/shop/[handle]/management/products/page.tsx
+  s_e9ed806a3d225c::t_419a7df8854be3 1-19
+src/app/(normal)/shop/[handle]/management/orders/page.tsx
+  s_e9ed806a3d225c::t_419a7df8854be3 1-35
+src/app/(normal)/shop/[handle]/management/page.tsx
+  s_e9ed806a3d225c::t_419a7df8854be3 1-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9635f37551b4f5424bef4a59bfa480e148af49f3",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
