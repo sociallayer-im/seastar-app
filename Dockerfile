@@ -25,13 +25,19 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # install above. .env.production has to be in the context: the build reads it
 # to inline NEXT_PUBLIC_* into the client bundle.
 COPY . .
-# `bun run build`, NOT `bun --bun run build`. The --bun flag forces vite to run
-# under bun's runtime instead of node, and vinext builds incompletely there:
-# the command still exits 0 and prints "Build complete", but dist/client comes
-# out at ~1.6 MB instead of ~8 MB and the server then 404s every single route.
-# That is what broke the 2026-08-19 deploys — twice — while the health check
-# failure looked like a memory or networking problem.
-RUN bun run build
+# The build MUST run under real node. vinext builds incompletely under bun's
+# runtime: the command exits 0 and prints "Build complete", but dist/client
+# comes out at ~1.6 MB instead of ~8 MB and the server then answers 404 to
+# every route, health check included. That broke three deploys on 2026-08-19,
+# presenting as a health-check timeout rather than a build failure.
+#
+# Dropping `--bun` is not enough: oven/bun ships a fake `node` at
+# /usr/local/bun-node-fallback-bin/node that re-executes bun, so `bun run`
+# honouring vinext's `#!/usr/bin/env node` shebang still lands on bun. A real
+# node has to be on PATH ahead of it.
+COPY --from=node:24-slim /usr/local/bin/node /usr/local/bin/node
+RUN node --version | grep -q '^v24' \
+    && node node_modules/vinext/dist/cli.js build
 
 # Runtime dependencies only. The build above needs the devDependencies
 # (typescript, tailwind, postcss, sass, vite), but `vinext start` does not —
