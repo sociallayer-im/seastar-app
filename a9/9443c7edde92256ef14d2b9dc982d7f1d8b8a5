@@ -1,0 +1,21 @@
+src/components/client/DropdownMenu.tsx
+  s_e9ed806a3d225c::t_9c0505c6294a9f 92-95,105
+.dockerignore
+  s_e9ed806a3d225c::t_94c924e29193ab 20-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a99443c7edde92256ef14d2b9dc982d7f1d8b8a5",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
