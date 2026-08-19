@@ -17,3 +17,9 @@ node_modules
 .storybook
 .idea
 dist
+# vinext's local cache. It holds the downloaded font files AND a style.css
+# whose URLs are absolute paths on whoever built it. Committed once by
+# accident, it rode into the image through `COPY . .`, vinext reused it instead
+# of regenerating, and every production page shipped
+# url(/Users/<someone>/.../poppins-*.woff2) — a 404 for every font, site-wide.
+.vinext

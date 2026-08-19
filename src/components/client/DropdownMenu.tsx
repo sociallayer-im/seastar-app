@@ -89,6 +89,10 @@ export default function DropdownMenu<T>(props: {
         setShow(false)
     }
 
+    // opacity-100, not opacity-1: Tailwind 3 had no `opacity-1` in its scale so
+    // the class did nothing and the open menu rendered fully opaque. Tailwind 4
+    // resolves numeric utilities, so the same class became opacity: 1% and every
+    // dropdown in the app opened invisibly.
     return <div className="dropwdown relative" ref={dropdownRef}>
         <div className={`$dropdown-trigger ${props.className || ''}`}
             ref={triggerRef}
@@ -98,7 +102,7 @@ export default function DropdownMenu<T>(props: {
         <div
             ref={contentRef}
             style={positionStyle}
-            className={`${show ? 'opacity-1 visible' : 'opacity-0 invisible'} dropdown-content max-h-[250px] overflow-auto fixed bg-background shadow-sm rounded-lg p-2 z-9999 decoration-2`}>
+            className={`${show ? 'opacity-100 visible' : 'opacity-0 invisible'} dropdown-content max-h-[250px] overflow-auto fixed bg-background shadow-sm rounded-lg p-2 z-9999 decoration-2`}>
             {props.options.map((option, index) => <div
                 className={`${props.optDividers ? 'border-gray-100 border-t': 'rounded-lg mb-1'} last:mb-0 first:border-0 py-2 px-3 cursor-pointer hover:bg-[#F1F1F1] ${props.value?.find(v => v[props.valueKey] === option[props.valueKey]) ? 'bg-[#F1F1F1]' : ''}`}
                 key={index}
