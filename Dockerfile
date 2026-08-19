@@ -25,7 +25,13 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # install above. .env.production has to be in the context: the build reads it
 # to inline NEXT_PUBLIC_* into the client bundle.
 COPY . .
-RUN bun --bun run build
+# `bun run build`, NOT `bun --bun run build`. The --bun flag forces vite to run
+# under bun's runtime instead of node, and vinext builds incompletely there:
+# the command still exits 0 and prints "Build complete", but dist/client comes
+# out at ~1.6 MB instead of ~8 MB and the server then 404s every single route.
+# That is what broke the 2026-08-19 deploys — twice — while the health check
+# failure looked like a memory or networking problem.
+RUN bun run build
 
 # Runtime dependencies only. The build above needs the devDependencies
 # (typescript, tailwind, postcss, sass, vite), but `vinext start` does not —
