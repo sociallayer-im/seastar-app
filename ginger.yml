@@ -94,8 +94,25 @@ builder:
 # so it will schedule more than physically exists — raising any limit here needs
 # the actual free memory checked first (`free -h` on sg.sola.day), not just
 # Nomad's accounting.
+# 900 MB was measured against `next start` and was never re-measured for
+# vinext. The 2026-08-19 deploy died on it: the container was OOM-killed at
+# ~916 MB RSS while warming up on live traffic, Nomad auto-reverted, and the
+# site stayed on the old image — no outage, but no deploy either.
+#
+# Measured on this host against the actual image: idle 78 MB, and a
+# 400-request burst at 50 concurrency only reaches ~130 MB. So the working set
+# is small and this ceiling exists for the warm-up spike under real traffic,
+# which is what 900 MB could not absorb.
+#
+# Node sizes its heap from the cgroup limit, not host RAM (verified: 900 MB ->
+# 498 MB heap, 1536 MB -> 864 MB, 2048 MB -> 1120 MB), so it already collects
+# rather than overrunning the ceiling; the OOM was total RSS — heap plus
+# everything outside it — not the heap alone. Do NOT add
+# --max-old-space-size here: at this cgroup size it would only raise the heap
+# cap above what Node picks and squeeze the non-heap space that actually ran
+# out.
 resources:
-  memory: 900
+  memory: 1536
 
 env:
   NODE_ENV: production
