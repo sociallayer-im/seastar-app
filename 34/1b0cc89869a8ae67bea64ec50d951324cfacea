@@ -1,0 +1,63 @@
+src/lang/en.ts
+  s_e9ed806a3d225c::t_00ab151e4add0a 1085
+  s_e9ed806a3d225c::t_33ba360709fd40 968
+  s_e9ed806a3d225c::t_0f5337c53fbb4e 1082
+  s_e9ed806a3d225c::t_582d847a361bbd 1083-1084
+src/app/(normal)/shop/[handle]/management/orders/page.tsx
+  s_e9ed806a3d225c::t_4a1f51c704f501 13,16-17,26,33
+src/app/(normal)/orders/[orderNo]/page.tsx
+  s_e9ed806a3d225c::t_119bd6857b4efd 11,32
+src/app/(normal)/shop/[handle]/product/[productId]/page.tsx
+  s_e9ed806a3d225c::t_6b5a231703a6a0 11,47-50
+src/app/(normal)/shop/[handle]/management/products/ProductManager.tsx
+  s_e9ed806a3d225c::t_119bd6857b4efd 66
+src/app/(normal)/shop/[handle]/page.tsx
+  s_e9ed806a3d225c::t_cc2df6aa72deb6 9,42-47,80-84
+src/components/client/ProfileMenu.tsx
+  s_e9ed806a3d225c::t_7e492a8a670801 10,36-44
+  s_e9ed806a3d225c::t_c3cc8cec54864d 45
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_582d847a361bbd 1061-1062
+  s_e9ed806a3d225c::t_33ba360709fd40 946
+  s_e9ed806a3d225c::t_0f5337c53fbb4e 1060
+  s_e9ed806a3d225c::t_00ab151e4add0a 1063
+src/app/(normal)/shop/[handle]/checkout/CheckoutForm.tsx
+  s_e9ed806a3d225c::t_33ba360709fd40 38-42,132-156,161,185,187
+src/app/(normal)/shop/[handle]/cart/page.tsx
+  s_e9ed806a3d225c::t_6b5a231703a6a0 9
+  s_e9ed806a3d225c::t_7ca9e12ab9d3b1 29
+src/components/Pager.tsx
+  s_e9ed806a3d225c::t_582d847a361bbd 15-17,29,40
+  s_e9ed806a3d225c::t_8b71c76b6ed95c 1-14,18-28,30-39,41-44
+src/app/(normal)/shop/[handle]/checkout/page.tsx
+  s_e9ed806a3d225c::t_6b5a231703a6a0 9,41
+src/utils/order_status.ts
+  s_e9ed806a3d225c::t_f915d27b4414fb 1-34
+src/app/(normal)/shop/[handle]/management/orders/SellerOrderList.tsx
+  s_e9ed806a3d225c::t_cc067eb3eedc48 15,24,27,106-113
+  s_e9ed806a3d225c::t_00ab151e4add0a 6,128-150,152,155-158,160-164,167-170,172,195-227
+  s_e9ed806a3d225c::t_119bd6857b4efd 14,39,41,64
+  s_e9ed806a3d225c::t_43b6a8a4b16761 171,173-178
+src/components/ShopNav.tsx
+  s_e9ed806a3d225c::t_7ca9e12ab9d3b1 23,28-30,36,48,58
+  s_e9ed806a3d225c::t_b814a0b26ef514 1-22,24-27,31-35,37-47,49-57,59-60
+src/app/(normal)/orders/page.tsx
+  s_e9ed806a3d225c::t_072e787ee93b77 10,16,21-22,41
+  s_e9ed806a3d225c::t_119bd6857b4efd 11-12,45,51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "341b0cc89869a8ae67bea64ec50d951324cfacea",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
