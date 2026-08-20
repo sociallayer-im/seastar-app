@@ -1,0 +1,41 @@
+src/app/(normal)/shop/[handle]/management/after-sales/SellerAfterSaleList.tsx
+  s_e9ed806a3d225c::t_7be8423d96a7a3 1-229
+src/app/(normal)/orders/[orderNo]/page.tsx
+  s_e9ed806a3d225c::t_63eb08716fb3be 4,11,29-41,52-55
+  s_e9ed806a3d225c::t_638f4574e90d19 56
+src/app/(normal)/shop/[handle]/management/page.tsx
+  s_e9ed806a3d225c::t_a476d0e05dc2f3 43,50-55
+packages/sola-sdk/src/shop/after_sale.ts
+  s_e9ed806a3d225c::t_cb7a8c6595bd3f 3-164
+  s_e9ed806a3d225c::t_881c6a961c54c2 1-2
+packages/sola-sdk/src/index.ts
+  s_e9ed806a3d225c::t_37f09e5861fa86 24
+src/utils/after_sale.ts
+  s_e9ed806a3d225c::t_8b974d68d5b441 1-69
+src/lang/en.ts
+  s_e9ed806a3d225c::t_e4426f28159171 1086-1124
+src/app/(normal)/orders/[orderNo]/AfterSalePanel.tsx
+  s_e9ed806a3d225c::t_bacee03a1061cb 1-281
+src/app/(normal)/shop/[handle]/management/after-sales/page.tsx
+  s_e9ed806a3d225c::t_b7b93a59e10aa8 1-34
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_e4426f28159171 1064-1102
+packages/sola-sdk/src/shop/types.ts
+  s_e9ed806a3d225c::t_37f09e5861fa86 420-476
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "666a6aba1125e72aca05b4eb7c7c052d613337c4",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
