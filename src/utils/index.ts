@@ -655,7 +655,12 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
     const members = groupDetail.memberships.filter(m => m.role === 'member')
 
     const isManager = groupDetail.memberships.some(m => m.user.name === profile?.name && (m.role === 'manager' || m.role === 'owner'))
-    const isMember = groupDetail.memberships.some(m => m.user.name === profile?.name)
+    // A membership_card grant carries expires_at; everything else (manager/owner
+    // rows, permanent group-ticket grants) has it null, so this mirrors the
+    // backend's Membership#active? — a lapsed card holder is no longer a member
+    // client-side either, matching what the backend will actually authorize.
+    const currMembership = groupDetail.memberships.find(m => m.user.name === profile?.name)
+    const isMember = !!currMembership && (!currMembership.expires_at || new Date(currMembership.expires_at) > new Date())
     const isIssuer = false
     const isOwner = owner?.user?.name === profile?.name
 
@@ -692,6 +697,10 @@ export const analyzeGroupMembershipAndCheckProfilePermissions = (groupDetail: Gr
         isMember,
         isIssuer,
         isOwner,
+        // Only set for a membership_card grant that hasn't lapsed (isMember is
+        // already false past this point) — null for permanent members/managers/
+        // owners, so a caller only needs to render it when both are truthy.
+        currMembershipExpiresAt: isMember ? currMembership?.expires_at ?? null : null,
         canPublishEvent,
         canSubmitEvent,
         canJoinEvent,

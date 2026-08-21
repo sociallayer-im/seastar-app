@@ -495,6 +495,7 @@ const ticketBody = (t: TicketDraft, groupId: string | null) => ({
     end_date: t.end_date,
     days_allowed: t.days_allowed || [],
     tracks_allowed: t.tracks_allowed || [],
+    membership_duration_days: t.membership_duration_days,
     payment_methods_attributes: (t.payment_methods || []).map(pm => ({
         id: pm.id,
         _destroy: pm._destroy,

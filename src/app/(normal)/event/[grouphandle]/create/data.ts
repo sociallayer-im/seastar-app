@@ -96,6 +96,7 @@ export const emptyTicket: TicketDraft = {
   payment_methods: [],
   tracks_allowed: [],
   ticket_type: "event",
+  membership_duration_days: 30,
 }
 
 /**

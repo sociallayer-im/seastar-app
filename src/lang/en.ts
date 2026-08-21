@@ -277,6 +277,13 @@ export const en = {
     "Booking Window (Optional)": "Booking Window (Optional)",
     "Restrict which dates this venue can be booked. Leave either side blank for no limit.": "Restrict which dates this venue can be booked. Leave either side blank for no limit.",
     "Require Approval (Optional)": "Require Approval (Optional)",
+    "Membership card": "Membership card",
+    "Membership card hint": "Buying this ticket grants Member status for the chosen duration. Buying again before it expires extends the remaining time.",
+    "Membership duration": "Membership duration",
+    "7 days": "7 days",
+    "30 days": "30 days",
+    "365 days": "365 days",
+    "Custom days": "Custom days",
     "Opening Hours": "Opening Hours",
     "Add dates when your availability changes from your daily hours.":
         "Add dates when your availability changes from your daily hours.",
@@ -344,6 +351,7 @@ export const en = {
     "Are you sure you want to leave the group?":
         "Are you sure you want to leave the group?",
     "Invite Member": "Invite Member",
+    "Member until": "Member until",
     "Invite Message (Optional)": "Invite Message (Optional)",
     "Create Invite Link": "Create Invite Link",
     "Users join the group via a link":
