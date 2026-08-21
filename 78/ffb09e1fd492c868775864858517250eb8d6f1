@@ -1,0 +1,40 @@
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_e9ed806a3d225c::t_00fce2cd90faf4 311,313
+src/app/(normal)/event/share/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_00fce2cd90faf4 77,79
+src/app/(dashboard)/dashboard-event-detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_00fce2cd90faf4 164,166,304-305
+src/utils/index.ts
+  s_e9ed806a3d225c::t_d3f68323f0807a 487-490
+  s_e9ed806a3d225c::t_c35f5581ef31bc 350-351
+  s_e9ed806a3d225c::t_c02abdc67a7c51 1226-1228
+  s_e9ed806a3d225c::t_f2f7a8c4d3def3 42,47-51
+  s_e9ed806a3d225c::t_a65a1945a27d83 805,807-809
+  s_e9ed806a3d225c::t_1524b351384a10 52
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_00fce2cd90faf4 216,218,556-557
+src/components/CardEvent/index.tsx
+  s_e9ed806a3d225c::t_00fce2cd90faf4 162,164
+src/components/client/ScheduleEventPopup/index.tsx
+  s_e9ed806a3d225c::t_00fce2cd90faf4 60,106,108
+src/libs/dayjs.ts
+  s_e9ed806a3d225c::t_0a14653d086e8e 3-8
+src/app/(normal)/event/checkin-for-participants/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_00fce2cd90faf4 26,28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "78ffb09e1fd492c868775864858517250eb8d6f1",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
