@@ -1,0 +1,32 @@
+src/app/(normal)/event/[grouphandle]/create/TicketForm.tsx
+  s_e9ed806a3d225c::t_8e8ca758932114 202,216-217
+  s_e9ed806a3d225c::t_455292f83130c8 520-535
+  s_e9ed806a3d225c::t_98ac2122b0d93d 168
+src/lang/en.ts
+  s_e9ed806a3d225c::t_6799c275b18462 280-281
+  s_e9ed806a3d225c::t_40a82c0b82fb3e 349
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_2330296712a6fc 86-87
+src/app/(normal)/group/[handle]/TabMembers/TabMembers.tsx
+  s_e9ed806a3d225c::t_9803c8c10633e2 210-217
+  s_e9ed806a3d225c::t_57c4d44428a2dc 16
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_1291ab571dfeab 275-276
+  s_e9ed806a3d225c::t_c86b519253f203 343
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b98377121ad587410391b901a5e3046355332da0",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
