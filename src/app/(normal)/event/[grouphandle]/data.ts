@@ -43,6 +43,7 @@ export default async function GroupEventHomeData({
         isOwner,
         isMember,
         isIssuer,
+        currMembershipExpiresAt,
         canPublishEvent,
         canSubmitEvent
     } = analyzeGroupMembershipAndCheckProfilePermissions(groupDetail, currProfile)
@@ -145,6 +146,7 @@ export default async function GroupEventHomeData({
         isOwner,
         isMember,
         isIssuer,
+        currMembershipExpiresAt,
         canPublishEvent,
         canSubmitEvent,
         categories,

@@ -18,6 +18,7 @@ import DiscussionPanel from '@/app/(normal)/event/[grouphandle]/DiscussionPanel'
 import DialogEventHomeFilter from "@/components/client/DialogEventHomeFilter"
 import { PAGE_SIZE } from "./data"
 import Footer from "@/components/Footer"
+import dayjs from "@/libs/dayjs"
 
 interface GroupEventHomeProps {
     lang: Dictionary,
@@ -36,6 +37,8 @@ export default function GroupEventHome({ data, lang, langType, initialTab }: Gro
         members,
         isManager,
         isOwner,
+        isMember,
+        currMembershipExpiresAt,
         filterOpts,
         mapMarkers,
         canPublishEvent,
@@ -197,6 +200,15 @@ export default function GroupEventHome({ data, lang, langType, initialTab }: Gro
                     </div>
                     <div className='text-xs'>{members.length} {lang['Members']} <i className="uil-arrow-right" /></div>
                 </a>
+
+                {/* Only ever set for a still-valid membership_card grant —
+                    isMember already goes false past expiry (analyzeGroupMembershipAndCheckProfilePermissions),
+                    and this stays null for permanent members/managers/owners. */}
+                {isMember && !!currMembershipExpiresAt &&
+                    <div className="text-xs text-gray-500 mb-3 -mt-2">
+                        {lang['Member until']} {dayjs(currMembershipExpiresAt).locale(langType === 'zh' ? 'zh' : 'en').format('YYYY/MM/DD')}
+                    </div>
+                }
 
                 <a href={`/event/${groupDetail.name}/schedule/compact`}
                     className={`${buttonVariants({ variant: "warm" })} w-full`}>
