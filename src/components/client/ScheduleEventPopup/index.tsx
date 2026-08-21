@@ -57,7 +57,7 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
     return <div className="flex flex-col max-h-[90svh] sm:max-w-[725px] max-w-[365px] w-[95vw] shadow-sm bg-(--background) sm:p-9 rounded-lg p-3">
         <div className="flex flex-row flex-nowrap shrink-0">
             <div className="flex-1">
-                <div className="text-xs font-semibold sm:my-3 my-2">{formatEventDuration(event.start_time, event.end_time, event.timezone)}</div>
+                <div className="text-xs font-semibold sm:my-3 my-2">{formatEventDuration(event.start_time, event.end_time, event.timezone, lang)}</div>
                 <div className="flex-row-item-center sm:my-2 my-1">
                     {eventProcess === 'ongoing' && <Badge variant='ongoing'>Ongoing</Badge>}
                     {eventProcess === 'past' && <Badge variant='past'>Past</Badge>}
@@ -103,9 +103,9 @@ export default function ScheduleEventPopup({ event, timezone, lang, starred, pro
                             {event.title}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">
-                            {eventCoverTimeStr(event.start_time!, event.timezone!).date}
+                            {eventCoverTimeStr(event.start_time!, event.timezone!, lang).date}
                             <br />
-                            {eventCoverTimeStr(event.start_time!, event.timezone!).time}
+                            {eventCoverTimeStr(event.start_time!, event.timezone!, lang).time}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[240px]">
                             {event.place?.name}

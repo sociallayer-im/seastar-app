@@ -161,9 +161,9 @@ export default async function EventDetail(
                                 </div>
                                 <div
                                     className="text-lg absolute font-semibold left-[76px] top-[178px]">
-                                    {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).date}
+                                    {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!, lang).date}
                                     <br />
-                                    {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).time}
+                                    {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!, lang).time}
                                 </div>
                                 <div
                                     className="text-lg absolute font-semibold left-[76px] top-[240px]">
@@ -301,8 +301,8 @@ export default async function EventDetail(
                             <i className="uil-calendar-alt text-base"></i>
                         </div>
                         <div>
-                            <div className="font-semibold text-base">{getEventDetailPageTimeStr(eventDetail).date}</div>
-                            <div className="text-gray-400 text-base">{getEventDetailPageTimeStr(eventDetail).time}</div>
+                            <div className="font-semibold text-base">{getEventDetailPageTimeStr(eventDetail, lang).date}</div>
+                            <div className="text-gray-400 text-base">{getEventDetailPageTimeStr(eventDetail, lang).time}</div>
                             {!!recurring &&
                                 <RecurringListBtn lang={lang} recurring={recurring} currEventId={eventDetail.id} />
                             }

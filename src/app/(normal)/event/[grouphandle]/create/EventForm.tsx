@@ -308,9 +308,9 @@ export default function EventForm({
                     {draft.title || lang["Event Name"]}
                   </div>
                   <div className="text-lg absolute font-semibold left-[76px] top-[178px]">
-                    {eventCoverTimeStr(draft.start_time!, draft.timezone!).date}
+                    {eventCoverTimeStr(draft.start_time!, draft.timezone!, lang).date}
                     <br />
-                    {eventCoverTimeStr(draft.start_time!, draft.timezone!).time}
+                    {eventCoverTimeStr(draft.start_time!, draft.timezone!, lang).time}
                   </div>
                   <div className="text-lg absolute font-semibold left-[76px] top-[240px]">
                     {draft.location}

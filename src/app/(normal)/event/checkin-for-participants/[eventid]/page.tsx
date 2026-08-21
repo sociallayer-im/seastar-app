@@ -23,9 +23,9 @@ export default async function CheckinForParticipants(props: AsyncProps<EventDeta
                             {eventDetail.title || lang['Event Name']}
                         </div>
                         <div
-                            className="text-lg absolute font-semibold left-[76px] top-[178px]">{eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).date}
+                            className="text-lg absolute font-semibold left-[76px] top-[178px]">{eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!, lang).date}
                             <br/>
-                            {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!).time}
+                            {eventCoverTimeStr(eventDetail.start_time!, eventDetail.timezone!, lang).time}
                         </div>
                         <div
                             className="text-lg absolute font-semibold left-[76px] top-[240px]">{eventDetail.place?.name}</div>

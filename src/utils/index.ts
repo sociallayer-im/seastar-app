@@ -39,9 +39,16 @@ export interface VenueTimeslot {
     role: string
 }
 import { Dictionary } from '@/lang'
+import { zh } from '@/lang/zh'
 import {CLIENT_MODE, PHONE_LOGIN, SOLA_APP_SUBDOMAINS} from '@/app/config'
 
 export const AUTH_FIELD = process.env.NEXT_PUBLIC_AUTH_FIELD!
+
+// getLang() (src/lang/index.ts) hands back one of the two dictionary module
+// objects verbatim, so identity comparison against `zh` is a reliable way to
+// recover which language a caller is in without threading a second
+// langType prop through every component that already carries `lang`.
+const dayjsLocale = (lang?: Dictionary) => (lang === zh ? 'zh' : 'en')
 
 /**
  * The registrable parent domain, so the session cookie is shared across
@@ -340,8 +347,8 @@ export function calculateDuration(start: Date, end: Date) {
     return res
 }
 
-export function eventCoverTimeStr(date: string, timezone: string) {
-    const time = dayjs.tz(new Date(date).getTime(), timezone)
+export function eventCoverTimeStr(date: string, timezone: string, lang?: Dictionary) {
+    const time = dayjs.tz(new Date(date).getTime(), timezone).locale(dayjsLocale(lang))
     const offset = time.utcOffset() / 60
     return {
         date: time.format('ddd, MMM DD, YYYY'),
@@ -477,9 +484,10 @@ export function displayTicketPrice(ticket: Ticket) {
         .join(' / ')
 }
 
-export function getEventDetailPageTimeStr(event: Event) {
-    const startTime = dayjs.tz(new Date(event.start_time).getTime(), event.timezone || 'UTC')
-    const endTime = dayjs.tz(new Date(event.end_time!).getTime(), event.timezone || 'UTC')
+export function getEventDetailPageTimeStr(event: Event, lang?: Dictionary) {
+    const locale = dayjsLocale(lang)
+    const startTime = dayjs.tz(new Date(event.start_time).getTime(), event.timezone || 'UTC').locale(locale)
+    const endTime = dayjs.tz(new Date(event.end_time!).getTime(), event.timezone || 'UTC').locale(locale)
     const offset = startTime.utcOffset() / 60
 
     const startDateStr = startTime.format('ddd, MMM DD, YYYY')
@@ -794,10 +802,11 @@ export const formatEventTime = (dateTimeStr: string, timezone?: string | null) =
         }) + ` ${GMT}`
 }
 
-export const formatEventDuration = (startTime: string, endTime: string, timezone?: string | null) => {
+export const formatEventDuration = (startTime: string, endTime: string, timezone?: string | null, lang?: Dictionary) => {
     const tz = timezone || dayjs.tz.guess()
-    const start = dayjs.tz(new Date(startTime).getTime(), tz)
-    const end = dayjs.tz(new Date(endTime).getTime(), tz)
+    const locale = dayjsLocale(lang)
+    const start = dayjs.tz(new Date(startTime).getTime(), tz).locale(locale)
+    const end = dayjs.tz(new Date(endTime).getTime(), tz).locale(locale)
     const utcOffset = start.utcOffset() / 60
     const GMT = utcOffset >= 0 ? `GMT+${utcOffset}` : `GMT${utcOffset}`
     const now = dayjs.tz(new Date(), tz)
@@ -1214,8 +1223,9 @@ export const formatVenueDate = (venue: VenueDetail, lang: Dictionary) => {
         return lang['Before {date}'].replace('{date}', end_date)
     }
 
-    const startDate = dayjs(start_date!)
-    const endDate = dayjs(end_date!)
+    const locale = dayjsLocale(lang)
+    const startDate = dayjs(start_date!).locale(locale)
+    const endDate = dayjs(end_date!).locale(locale)
 
     if (startDate.year() === endDate.year()) {
         return `${startDate.format('DD MMM')} - ${endDate.format('DD MMM')}, ${startDate.format('YYYY')}`

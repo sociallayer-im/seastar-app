@@ -159,9 +159,9 @@ export default function CardEvent({ event, className, id, style, lang, highlight
                             {event.title}
                         </div>
                         <div className="text-lg absolute font-semibold left-[76px] top-[178px]">
-                            {eventCoverTimeStr(event.start_time!, event.timezone!).date}
+                            {eventCoverTimeStr(event.start_time!, event.timezone!, lang).date}
                             <br />
-                            {eventCoverTimeStr(event.start_time!, event.timezone!).time}
+                            {eventCoverTimeStr(event.start_time!, event.timezone!, lang).time}
                         </div>
                         {!!event.place?.name &&
                             <div className="text-lg absolute font-semibold left-[76px] top-[240px]">
