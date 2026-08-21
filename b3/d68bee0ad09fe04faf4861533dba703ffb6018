@@ -1,0 +1,139 @@
+src/app/(normal)/profile/[handle]/edit/withdrawals/page.tsx
+  s_e9ed806a3d225c::t_fad20dc2cbe6c8 1-24
+packages/sola-sdk/src/event/ticket.ts
+  s_e9ed806a3d225c::t_2f9d70d64e1f90 168-200
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_9a0bf9d19077d5 722-735,737-738,752-753
+  s_e9ed806a3d225c::t_f0f79676072946 742
+  s_e9ed806a3d225c::t_e17817e5c08af5 743-749
+  s_e9ed806a3d225c::t_82cb18598c5f72 739-741
+  s_e9ed806a3d225c::t_3f01dcb58367bd 113
+  s_e9ed806a3d225c::t_cc783442e2955e 188
+  s_e9ed806a3d225c::t_f84091aedff034 262-263
+  s_e9ed806a3d225c::t_40197f2df461bc 433-434
+  s_e9ed806a3d225c::t_e58626d6dff795 586
+  s_e9ed806a3d225c::t_f8451d6f7e6d6b 736
+  s_e9ed806a3d225c::t_cb03e9a9623720 750-751
+src/app/api/wechat/wechat.ts
+  s_e9ed806a3d225c::t_4657addd3b9fda 121-132
+  s_e9ed806a3d225c::t_ac35befa8bdfe5 83-85,118-120,133-156
+src/components/client/EventTicketOrderList.tsx
+  s_e9ed806a3d225c::t_e0f5a0466d9608 5
+  s_e9ed806a3d225c::t_f6298fdf40cbd6 97-99,109
+  s_e9ed806a3d225c::t_686080c8672477 197-227
+src/app/(normal)/profile/[handle]/edit/withdrawals/WithdrawalsManager.tsx
+  s_e9ed806a3d225c::t_fdae2a1e49fea6 1-11,13,17-31,36,41-43,46-52,56-58,62-64,88-91,93-94,99,101-103,109-112,114-125,127-136,138-141,146,205,207,218,222,225-226
+  s_e9ed806a3d225c::t_ba31d8b1e4eac1 164,170-171
+  s_e9ed806a3d225c::t_ee81b4296d8f3e 12,14-16,32-35,37-40,44-45,53-55,59-61,65-87,92,95-98,100,104-108,113,126,137,142-145,147-163,165-169,172-204,206,208-216,219-221,223-224
+  s_e9ed806a3d225c::t_46ebb87560df85 217
+src/app/(normal)/discover/page.tsx
+  s_e9ed806a3d225c::t_33842f38ce8ba0 183
+src/utils/index.ts
+  s_e9ed806a3d225c::t_bed82041bda8ae 1157-1200
+src/app/(normal)/event/share/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_230e86a9146cac 141
+  s_e9ed806a3d225c::t_eaba230cf8ed1e 125
+  s_e9ed806a3d225c::t_67d6a6804e5ce8 52-57
+  s_e9ed806a3d225c::t_3c1ca17f21e907 9
+src/app/(normal)/event/detail/[eventid]/EventParticipantTab.tsx
+  s_e9ed806a3d225c::t_caebeedc033ffc 78-81
+  s_e9ed806a3d225c::t_47337027b33731 54
+  s_e9ed806a3d225c::t_013e15a2ff1fc4 135
+  s_e9ed806a3d225c::t_220f32790cef7a 6-7
+packages/sola-sdk/src/wechat/wechat.ts
+  s_e9ed806a3d225c::t_fdf00721d7b254 155-158,166-167
+  s_e9ed806a3d225c::t_dae0a055adc627 174-203,205-207,209-212
+  s_e9ed806a3d225c::t_83ca73145860f1 204,208
+  s_e9ed806a3d225c::t_6ed1f86d8e3d02 50-63,73-74,82,95,99-101,103-108,110,112-113,116-121,123,125-132,134-142
+  s_e9ed806a3d225c::t_c5629701985528 2
+  s_e9ed806a3d225c::t_049bde052ede43 64-72,75-81,83-94,96-98,102,109,111,115,122,124,133
+  s_e9ed806a3d225c::t_c27f1b36a5366a 114
+src/components/Footer.tsx
+  s_e9ed806a3d225c::t_a5131a7eb97668 3-4,6
+  s_e9ed806a3d225c::t_3899cd5ff2bc03 61
+  s_e9ed806a3d225c::t_3c6fc714058fc0 56-60,62-63
+src/lang/en.ts
+  s_e9ed806a3d225c::t_e610bb8843e1e6 764
+  s_e9ed806a3d225c::t_a45bd12a2ada4c 442-443
+  s_e9ed806a3d225c::t_cd433dc3188115 267-268
+  s_e9ed806a3d225c::t_cc783442e2955e 192
+  s_e9ed806a3d225c::t_f134f57ee3b3a5 758
+  s_e9ed806a3d225c::t_69e1fdd76da35e 116
+  s_e9ed806a3d225c::t_518abc4282eefc 765-771
+  s_e9ed806a3d225c::t_2e17a734b5b2b8 772-773
+  s_e9ed806a3d225c::t_a610a073b43118 603
+  s_e9ed806a3d225c::t_23a002a1fe4ead 761-763
+  s_e9ed806a3d225c::t_9e79f2480b5971 744-757,759-760,774-775
+src/hooks/useWechatShare.ts
+  s_e9ed806a3d225c::t_7c6b0b8293cf38 1-91
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_72b469b4322a9f 18
+  s_e9ed806a3d225c::t_b1e8bd276c167d 12
+  s_e9ed806a3d225c::t_627e8cb94b2c70 630-631
+src/components/CardEvent/index.tsx
+  s_e9ed806a3d225c::t_80e4f59940f994 29
+  s_e9ed806a3d225c::t_1b3eca480fa7bc 4
+  s_e9ed806a3d225c::t_77c23f00f27714 124-127,130-134
+packages/sola-sdk/src/group/group.ts
+  s_e9ed806a3d225c::t_01c9ba16766b0d 91
+src/app/(iframe)/schedule/week/[grouphandle]/WeeklyViewEventItem.tsx
+  s_e9ed806a3d225c::t_1056242f2988b4 8
+  s_e9ed806a3d225c::t_d0abd7b0d3342b 14
+  s_e9ed806a3d225c::t_45baaa5ea4b325 118,120-123
+src/app/(normal)/profile/[handle]/edit/EditProfile.tsx
+  s_e9ed806a3d225c::t_c4991b7c8cf5a1 15,18
+  s_e9ed806a3d225c::t_0d06a6e5a39ade 140-150
+src/app/api/wechat/callback/route.ts
+  s_e9ed806a3d225c::t_3b0dd683d1730e 43-44
+src/app/(normal)/admin/withdrawals/page.tsx
+  s_e9ed806a3d225c::t_83ad54e61764f6 1-13,15-17,20-21,24-25
+  s_e9ed806a3d225c::t_de071d30e5b1a9 14,18-19,22-23
+src/app/(dashboard)/dashboard-event-detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_005d49077a3575 12,17
+  s_e9ed806a3d225c::t_74b1bebe9907f9 378-379
+src/app/api/wechat/jsapi.ts
+  s_e9ed806a3d225c::t_202dedd2f352ab 1-83
+src/components/client/EventHomeFilter.tsx
+  s_e9ed806a3d225c::t_71bd542b489c41 69-79
+src/app/(normal)/admin/withdrawals/AdminWithdrawalsList.tsx
+  s_e9ed806a3d225c::t_7ac9bed6065ac8 1-25,27-30,33-38,47-60,65-68,76-82,90-131,135-149,164-165
+  s_e9ed806a3d225c::t_4fcc83ee31c87a 26,31-32,39-46,61-64,69-75,83-89,132-134,150-163
+src/app/api/wechat/jsapi-signature/route.ts
+  s_e9ed806a3d225c::t_88a83f30c1485b 1-27
+src/components/MeetingLinkText.tsx
+  s_e9ed806a3d225c::t_bed3457ff6d8d6 1-28
+packages/sola-sdk/src/auth/auth.ts
+  s_e9ed806a3d225c::t_5aabb1e0d73d5e 232-235,244-245
+src/app/(normal)/event/[grouphandle]/GroupEventHome.tsx
+  s_e9ed806a3d225c::t_1792e0865510ff 282
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_d7991bfd220d26 35-38
+packages/sola-sdk/src/event/event.ts
+  s_e9ed806a3d225c::t_c3336809ea62ba 53
+src/app/(normal)/admin/withdrawals/data.ts
+  s_e9ed806a3d225c::t_5007f73099fd88 7-8,12-13,16,24,27
+  s_e9ed806a3d225c::t_1df9cc4a22d511 1-6,9-11,14-15,17-23,25-26,28
+src/app/(normal)/event/share/[eventid]/SocialShareBtn.tsx
+  s_e9ed806a3d225c::t_4467c5f37010e5 3-8,25,27-39,52-61
+src/app/(normal)/event/[grouphandle]/permission/PermissonForm.tsx
+  s_e9ed806a3d225c::t_7036f81fa5fb89 87-97
+  s_e9ed806a3d225c::t_7e1a31e85271ba 6
+src/app/api/wechat/bind-openid/callback/route.ts
+  s_e9ed806a3d225c::t_81dba5e8eb106c 63-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b3d68bee0ad09fe04faf4861533dba703ffb6018",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
