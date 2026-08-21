@@ -40,6 +40,8 @@ export async function GET(req: NextRequest) {
             params: {
                 wechatOpenid: identity.openid,
                 wechatUnionid: identity.unionid,
+                wechatNickname: identity.nickname,
+                wechatAvatarUrl: identity.avatarUrl,
                 nextToken
             },
             clientMode: CLIENT_MODE

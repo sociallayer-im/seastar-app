@@ -9,12 +9,13 @@ import {
     eventCoverTimeStr,
     genGoogleMapLink,
     getAvatar,
-    getEventDetailPageTimeStr, normalizeGroupPermission, pickSearchParam, prefixUrl
+    getEventDetailPageTimeStr, normalizeGroupPermission, pickSearchParam
 } from "@/utils"
 import { selectLang } from "@/app/actions"
 import { Button, buttonVariants } from "@/components/shadcn/Button"
 import RichTextDisplayer from '@/components/RichTextDisplayer'
 import Img from "@/components/Img"
+import MeetingLinkText from '@/components/MeetingLinkText'
 import Avatar from '@/components/Avatar'
 import AddSingleEventToCalendarApp from '@/components/client/AddSingleEventToCalendarAppBtn'
 import EventFeedbackBtn from '@/components/EventFeedbackBtn'
@@ -626,10 +627,8 @@ export default async function EventDetail(
                             </div>
                             <div>
                                 <div className="font-semibold text-base">{lang['Online Meeting']}</div>
-                                <a href={prefixUrl(eventDetail.meeting_url)} target={'_blank'}
-                                    className="text-gray-400 text-base hover:text-blue-400">
-                                    {eventDetail.meeting_url}
-                                </a>
+                                <MeetingLinkText meetingUrl={eventDetail.meeting_url} lang={lang}
+                                    className="text-gray-400 text-base hover:text-blue-400"/>
                             </div>
                         </div>
                     }

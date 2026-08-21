@@ -229,6 +229,10 @@ export const signInWithGoogle = async ({params, clientMode}: SolaSdkFunctionPara
 export const trustedSignIn = async ({params, clientMode}: SolaSdkFunctionParams<{
     wechatOpenid?: string,
     wechatUnionid?: string,
+    /** From WeChat's /sns/userinfo — used as the display name (nickname), never as the account's handle. */
+    wechatNickname?: string,
+    /** From WeChat's /sns/userinfo (headimgurl) — only ever fills a blank avatar server-side, never overwrites one. */
+    wechatAvatarUrl?: string,
     nextToken: string
 }>) => {
     return await request<AuthResult>('/auth/trusted_signin', {
@@ -237,6 +241,8 @@ export const trustedSignIn = async ({params, clientMode}: SolaSdkFunctionParams<
         body: {
             wechat_openid: params.wechatOpenid,
             wechat_unionid: params.wechatUnionid,
+            wechat_nickname: params.wechatNickname,
+            wechat_avatar_url: params.wechatAvatarUrl,
             next_token: params.nextToken
         }
     })

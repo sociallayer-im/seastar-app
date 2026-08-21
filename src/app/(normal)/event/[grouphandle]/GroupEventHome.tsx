@@ -279,7 +279,7 @@ export default function GroupEventHome({ data, lang, langType, initialTab }: Gro
             </div>
         </div>
         <div className="page-width">
-            <Footer lang={lang} />
+            <Footer lang={lang} currProfile={currProfile} />
         </div>
     </div>
 }

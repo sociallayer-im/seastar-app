@@ -180,7 +180,7 @@ export default async function DiscoverPage() {
             </div>
         </div>
 
-        <Footer lang={lang} />
+        <Footer lang={lang} currProfile={currProfile} />
         <Feedback />
     </div>
 }

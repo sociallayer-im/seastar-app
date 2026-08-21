@@ -1,5 +1,11 @@
 'use client'
 
+import {useEffect, useState} from 'react'
+import {Dictionary} from '@/lang'
+import {isWechatBrowser} from '@/utils/wechat_pay'
+import useWechatShare, {WechatShareData} from '@/hooks/useWechatShare'
+import {useToast} from '@/components/shadcn/Toast/use-toast'
+
 // Share intents are plain URLs — no library needed (icons were always inline SVG).
 const shareLinks = (url: string) => {
     const u = encodeURIComponent(url)
@@ -8,7 +14,6 @@ const shareLinks = (url: string) => {
         facebook: `https://www.facebook.com/sharer/sharer.php?u=${u}`,
         telegram: `https://telegram.me/share/url?url=${u}`,
         bluesky: `https://bsky.app/intent/compose?text=${u}`,
-        linkedin: `https://linkedin.com/sharing/share-offsite/?url=${u}`,
         email: `mailto:?body=${u}`,
     }
 }
@@ -17,9 +22,21 @@ const openShareWindow = (href: string) => {
     window.open(href, '_blank', 'noopener,noreferrer,width=550,height=500')
 }
 
-export default function SocialShareBtn(props: { shareUrl: string }) {
+export default function SocialShareBtn(props: { shareUrl: string, shareData: WechatShareData, lang: Dictionary }) {
     const links = shareLinks(props.shareUrl)
-    return <div className="flex flex-row gap-6 my-4 justify-center">
+    const [inWechat, setInWechat] = useState(false)
+
+    // Client-only: the WeChat in-app browser can't be told apart from a
+    // regular one until the UA is read in the browser.
+    useEffect(() => setInWechat(isWechatBrowser()), [])
+
+    // Configures WeChat's native "···" share sheet — a no-op outside WeChat's
+    // browser, where there's no bridge to configure.
+    useWechatShare(props.shareData)
+
+    const {toast} = useToast()
+
+    return <div className="flex flex-row gap-6 my-4 justify-center flex-wrap">
         <button aria-label="Share on X" onClick={() => openShareWindow(links.twitter)}>
             <svg viewBox="0 0 64 64" width="32" height="32"><circle cx="32" cy="32" r="32" fill="#000000"></circle><path d="M 41.116 18.375 h 4.962 l -10.8405 12.39 l 12.753 16.86 H 38.005 l -7.821 -10.2255 L 21.235 47.625 H 16.27 l 11.595 -13.2525 L 15.631 18.375 H 25.87 l 7.0695 9.3465 z m -1.7415 26.28 h 2.7495 L 24.376 21.189 H 21.4255 z" fill="white"></path></svg>
         </button>
@@ -32,9 +49,16 @@ export default function SocialShareBtn(props: { shareUrl: string }) {
         <button aria-label="Share on Bluesky" onClick={() => openShareWindow(links.bluesky)}>
             <svg viewBox="0 0 64 64" width="32" height="32"><circle cx="32" cy="32" r="32" fill="#1185FE"></circle><path d="M21.945 18.886C26.015 21.941 30.393 28.137 32 31.461 33.607 28.137 37.985 21.941 42.055 18.886 44.992 16.681 49.75 14.975 49.75 20.403 49.75 21.487 49.128 29.51 48.764 30.813 47.497 35.341 42.879 36.496 38.772 35.797 45.951 37.019 47.778 41.067 43.833 45.114 36.342 52.801 33.066 43.186 32.227 40.722 32.073 40.27 32.001 40.059 32 40.238 31.999 40.059 31.927 40.27 31.773 40.722 30.934 43.186 27.658 52.801 20.167 45.114 16.222 41.067 18.049 37.019 25.228 35.797 21.121 36.496 16.503 35.341 15.236 30.813 14.872 29.51 14.25 21.487 14.25 20.403 14.25 14.975 19.008 16.681 21.945 18.886Z" fill="white"></path></svg>
         </button>
-        <button aria-label="Share on LinkedIn" onClick={() => openShareWindow(links.linkedin)}>
-            <svg viewBox="0 0 64 64" width="32" height="32"><circle cx="32" cy="32" r="32" fill="#0077B5"></circle><path d="M20.4,44h5.4V26.6h-5.4V44z M23.1,18c-1.7,0-3.1,1.4-3.1,3.1c0,1.7,1.4,3.1,3.1,3.1 c1.7,0,3.1-1.4,3.1-3.1C26.2,19.4,24.8,18,23.1,18z M39.5,26.2c-2.6,0-4.4,1.4-5.1,2.8h-0.1v-2.4h-5.2V44h5.4v-8.6 c0-2.3,0.4-4.5,3.2-4.5c2.8,0,2.8,2.6,2.8,4.6V44H46v-9.5C46,29.8,45,26.2,39.5,26.2z" fill="white"></path></svg>
-        </button>
+        {inWechat &&
+            <button aria-label="Share on WeChat"
+                onClick={() => toast({description: props.lang['Tap ··· in the top right to share to WeChat']})}>
+                <svg viewBox="0 0 64 64" width="32" height="32">
+                    <circle cx="32" cy="32" r="32" fill="#07C160"></circle>
+                    <path d="M25.5 20c-6.9 0-12.5 4.6-12.5 10.3 0 3.2 1.8 6.1 4.7 8.1l-1.2 3.6 4.2-2.1c1.5.4 3.1.6 4.8.6h1.1c-.2-.8-.3-1.6-.3-2.4 0-6.1 5.8-11.1 13-11.1h.3C38.6 22.5 32.5 20 25.5 20zm-4.3 6.8c1 0 1.7.7 1.7 1.6s-.8 1.6-1.7 1.6c-1 0-1.9-.7-1.9-1.6s.9-1.6 1.9-1.6zm8.6 0c1 0 1.7.7 1.7 1.6s-.8 1.6-1.7 1.6c-1 0-1.9-.7-1.9-1.6s.9-1.6 1.9-1.6z" fill="white"></path>
+                    <path d="M39.5 29c-6 0-10.8 4-10.8 8.9 0 4.9 4.9 8.9 10.8 8.9.9 0 1.8-.1 2.7-.3l3.6 1.8-1-3.1c2.4-1.6 3.9-4 3.9-6.9C48.7 33 43.9 29 39.5 29zm-3.4 6.6c-.8 0-1.4-.6-1.4-1.3s.6-1.3 1.4-1.3c.8 0 1.4.6 1.4 1.3s-.6 1.3-1.4 1.3zm6.8 0c-.8 0-1.4-.6-1.4-1.3s.6-1.3 1.4-1.3c.8 0 1.4.6 1.4 1.3s-.6 1.3-1.4 1.3z" fill="#07C160"></path>
+                </svg>
+            </button>
+        }
         <a aria-label="Share via email" href={links.email}>
             <svg viewBox="0 0 64 64" width="32" height="32"><circle cx="32" cy="32" r="32" fill="#7f7f7f"></circle><path d="M17,22v20h30V22H17z M41.1,25L32,32.1L22.9,25H41.1z M20,39V26.6l12,9.3l12-9.3V39H20z" fill="white"></path></svg>
         </a>

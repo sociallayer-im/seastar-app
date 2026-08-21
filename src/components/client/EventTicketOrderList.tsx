@@ -2,7 +2,7 @@
 
 import {displayProfileName, formatOrderAmount} from '@/utils'
 import {Dictionary} from '@/lang'
-import {EventDetail, TicketItemOrder} from '@sola/sdk'
+import {EventDetail, EventOrderSummaryEntry, TicketItemOrder} from '@sola/sdk'
 import Avatar from '@/components/Avatar'
 import dynamic from 'next/dynamic'
 import {Button} from '@/components/shadcn/Button'
@@ -94,6 +94,9 @@ export interface EventTicketOrderListProps {
      *  the refund button inside it was unreachable. Now the caller fetches
      *  them when the tab is opened. */
     orders: TicketItemOrder[]
+    /** Per-rail revenue rollup (GET /tickets/order_summary) — empty until it
+     *  loads or when there's nothing to show. */
+    summary?: EventOrderSummaryEntry[]
     /** Reload the orders after a refund, so the row's new status and its new
      *  history entry appear without a page navigation. */
     onChanged?: () => void | Promise<void>
@@ -103,6 +106,7 @@ export interface EventTicketOrderListProps {
 export default function EventTicketOrderList({
                                                  lang,
                                                  orders,
+                                                 summary,
                                                  onChanged,
                                                  isEventOperator
                                              }: EventTicketOrderListProps) {
@@ -190,6 +194,37 @@ export default function EventTicketOrderList({
     }
 
     return <div>
+        {isEventOperator && !!summary?.length &&
+            <div className="mb-4 rounded-lg border border-gray-200 divide-y divide-gray-100">
+                {summary.map(entry =>
+                    <div key={`${entry.payment_provider}-${entry.currency}`} className="p-3 text-sm">
+                        <div className="flex items-center justify-between">
+                            <span className="text-gray-500">
+                                {lang['Total revenue']} ({entry.payment_provider})
+                            </span>
+                            <span className="font-semibold">
+                                {formatOrderAmount(entry.gross_amount, entry.currency)}
+                            </span>
+                        </div>
+                        {entry.withdrawable_amount !== undefined &&
+                            <>
+                                <div className="flex items-center justify-between mt-1">
+                                    <span className="text-gray-500">{lang['Available to withdraw']}</span>
+                                    <span className="font-semibold text-green-600">
+                                        {formatOrderAmount(entry.withdrawable_amount, entry.currency)}
+                                    </span>
+                                </div>
+                                <div className="text-xs text-gray-400 mt-1">
+                                    {lang['WeChat Pay charges a {wechat_pct}% fee and sola charges a {sola_pct}% fee; the rest is available to withdraw.']
+                                        .replace('{wechat_pct}', String(entry.wechat_fee_pct))
+                                        .replace('{sola_pct}', String(entry.sola_fee_pct))}
+                                </div>
+                            </>
+                        }
+                    </div>
+                )}
+            </div>
+        }
         {!!orders.length && isEventOperator &&
             <div onClick={downloadCSV}
                  className="flex-row-item-center py-2 text-sm text-blue-400 cursor-pointer">

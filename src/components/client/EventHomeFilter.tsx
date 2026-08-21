@@ -66,6 +66,17 @@ export default function EventHomeFilter({filterOpts, groupDetail, lang, isManage
                     }
                 </a>
             }
+            {isManager &&
+                <a href="?collection=pending"
+                   className={`relative mr-4${filterOpts.collection === 'pending' ? ' font-semibold text-2xl' : ''}`}>
+                    {lang['Pending']}
+                    {filterOpts.collection === 'pending' &&
+                        <img src="/images/title_hightlight.png"
+                             className="absolute left-0 top-0 translate-x-[-12px]"
+                             alt=""/>
+                    }
+                </a>
+            }
         </div>
 
         <div className="flex-row-item-center my-3">

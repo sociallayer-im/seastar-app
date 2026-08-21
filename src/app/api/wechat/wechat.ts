@@ -80,6 +80,9 @@ export const authorizeUrl = (
 export interface WechatIdentity {
     openid: string
     unionid?: string
+    /** From /sns/userinfo — best-effort; absent if that follow-up call failed. */
+    nickname?: string
+    avatarUrl?: string
 }
 
 /**
@@ -112,5 +115,43 @@ export const exchangeCode = async (code: string): Promise<WechatIdentity | null>
         return null
     }
 
-    return {openid: String(data.openid), unionid: data.unionid ? String(data.unionid) : undefined}
+    const identity: WechatIdentity = {openid: String(data.openid), unionid: data.unionid ? String(data.unionid) : undefined}
+
+    // snsapi_userinfo (unlike snsapi_base) entitles this follow-up call for
+    // nickname/avatar — and only that scope's consent screen lets WeChat
+    // actually answer it, so skip the call entirely under snsapi_base (the
+    // silent payment openid-backfill leg) rather than make a request that
+    // would just fail every time. Best-effort either way: openid/unionid
+    // alone are enough to identify the account; nickname/avatar only ever
+    // backfill a blank field (see AuthController#bind_wechat).
+    if (String(data.scope ?? '').includes('userinfo')) {
+        const profile = await fetchUserInfo(data.access_token, identity.openid)
+        if (profile) {
+            identity.nickname = profile.nickname
+            identity.avatarUrl = profile.avatarUrl
+        }
+    }
+
+    return identity
+}
+
+const fetchUserInfo = async (accessToken: string, openid: string): Promise<{ nickname?: string, avatarUrl?: string } | null> => {
+    try {
+        const params = new URLSearchParams({access_token: accessToken, openid, lang: 'zh_CN'})
+        const res = await fetch(`https://api.weixin.qq.com/sns/userinfo?${params}`, {cache: 'no-store'})
+        const data = await res.json().catch(() => ({}))
+        if (!res.ok || data.errcode) {
+            // snsapi_base carries no consent for this — an errcode here is
+            // expected on that scope, not necessarily a real failure.
+            console.error('wechat: userinfo fetch failed', {errcode: data.errcode, errmsg: data.errmsg})
+            return null
+        }
+        return {
+            nickname: data.nickname ? String(data.nickname) : undefined,
+            avatarUrl: data.headimgurl ? String(data.headimgurl) : undefined
+        }
+    } catch (e) {
+        console.error('wechat: userinfo fetch threw', e)
+        return null
+    }
 }

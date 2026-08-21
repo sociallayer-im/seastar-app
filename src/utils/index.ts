@@ -1154,6 +1154,50 @@ export const prefixUrl = (url: string) => {
     }
 }
 
+export interface ParsedMeetingLink {
+    /** Always a clickable https URL, whatever the stored value looked like. */
+    href: string
+    isTencentMeeting: boolean
+    /** e.g. "842-149-562" — only present when isTencentMeeting and a code was found in the pasted text. */
+    meetingCode: string | null
+    /** The raw URL text, for a non-Tencent link where there's nothing nicer to show. */
+    displayText: string
+}
+
+// Tencent Meeting invites are commonly copy-pasted as the WHOLE "邀请您参加
+// 腾讯会议..." block rather than just the join link — dumped as plain text
+// (the previous behavior everywhere meeting_url was rendered), that block is
+// not clickable at all. This finds the actual join URL inside it (or treats
+// the whole field as a URL if it already was one) and, for Tencent Meeting
+// specifically, pulls out the dial-in code too so the link can show
+// "腾讯会议 842-149-562" instead of either a raw multi-line paste or a bare URL.
+export const parseMeetingLink = (raw: string | null | undefined): ParsedMeetingLink | null => {
+    const trimmed = raw?.trim()
+    if (!trimmed) return null
+
+    const urlMatch = trimmed.match(/https?:\/\/\S+/)
+    // Strip trailing punctuation a sentence/paste often leaves stuck to a URL.
+    const href = urlMatch ? urlMatch[0].replace(/[),.，。]+$/, '') : prefixUrl(trimmed)
+    if (!href) return null
+
+    let hostname = ''
+    try {
+        hostname = new URL(href).hostname
+    } catch {
+        return null
+    }
+    const isTencentMeeting = /(^|\.)meeting\.tencent\.com$/i.test(hostname) || /(^|\.)wemeet\.qq\.com$/i.test(hostname)
+
+    const codeMatch = trimmed.match(/(?:腾讯会议|Meeting ID)[:：\s]*([\d][\d\- ]{5,}[\d])/i)
+
+    return {
+        href,
+        isTencentMeeting,
+        meetingCode: codeMatch ? codeMatch[1].trim() : null,
+        displayText: urlMatch ? urlMatch[0] : trimmed
+    }
+}
+
 export const formatVenueDate = (venue: VenueDetail, lang: Dictionary) => {
     // soon venues carry no start/end date columns — kept optional so the label
     // degrades to "Unlimited".

@@ -165,6 +165,39 @@ export const getEventTicketItems = async ({params, clientMode}: SolaSdkFunctionP
     }
 }
 
+/** One rail+currency row from GET /tickets/order_summary. */
+export interface EventOrderSummaryEntry {
+    payment_provider: string
+    currency: string | null
+    /** Minor units (matches TicketItem.amount / formatOrderAmount). */
+    gross_amount: number
+    /** Only present for payment_provider === 'wechat' — the only rail whose
+     *  money sits in the platform's own account rather than the organizer's
+     *  (Stripe: organizer's own merchant account; crypto: organizer's own
+     *  wallet, direct on-chain). */
+    wechat_fee_pct?: number
+    sola_fee_pct?: number
+    withdrawable_amount?: number
+}
+
+/** Organizer-only revenue rollup for the orders tab — managers only. */
+export const getEventOrderSummary = async ({params, clientMode}: SolaSdkFunctionParams<{
+    eventId: string,
+    authToken: string
+}>) => {
+    try {
+        const res = await request<{ summary: EventOrderSummaryEntry[] }>('/tickets/order_summary', {
+            params: {event_id: params.eventId},
+            authToken: params.authToken,
+            clientMode,
+            noCache: true
+        })
+        return res.summary
+    } catch {
+        return [] as EventOrderSummaryEntry[]
+    }
+}
+
 export const getPurchasedTicketItemsByProfileNameAndEventId = async ({params, clientMode}: SolaSdkFunctionParams<{
     profileName: string,
     eventId: string,

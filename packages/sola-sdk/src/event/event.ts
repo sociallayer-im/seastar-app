@@ -50,7 +50,7 @@ export const sortEventsByTime = (a: Event, b: Event): number => {
     return bEndTime - aEndTime
 }
 
-export type EventCollectionType = "upcoming" | "past" | "ongoing" | undefined
+export type EventCollectionType = "upcoming" | "past" | "ongoing" | "pending" | undefined
 
 /** Filter params for GET /events (soon browse listing). */
 export type EventListFilterProps = {

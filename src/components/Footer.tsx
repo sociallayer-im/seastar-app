@@ -1,7 +1,9 @@
 import {Dictionary} from '@/lang'
 import {Award} from 'lucide-react'
+import {ProfileDetail} from '@sola/sdk'
+import {isPlatformAdmin} from '@/utils'
 
-function Footer({lang}: {lang: Dictionary}) {
+function Footer({lang, currProfile}: {lang: Dictionary, currProfile?: ProfileDetail | null}) {
     return <div className="mt-20 sm:flex-row flex-col flex p-4 border-gray-500 sm:justify-between justify-center"
                 style={{borderTop: '1px solid #f1f1f1'}}>
         <div className="flex flex-col justify-center sm:justify-start">
@@ -51,6 +53,14 @@ function Footer({lang}: {lang: Dictionary}) {
                 <a href={'/oauth/apps'}>{lang['Developer']}</a>
                 <a href={'/oauth/grants'} className="ml-3">{lang['Authorized Applications']}</a>
             </div>
+            {/* Platform-admin only — hidden rather than shown-and-403'd like
+                the OAuth links above, since this exposes every group's bank
+                details and there's no reason to advertise that it exists. */}
+            {isPlatformAdmin(currProfile) &&
+                <div className="flex-row-item-center justify-center sm:justify-start mt-2 text-sm">
+                    <a href={'/admin/withdrawals'}>{lang['Admin: WeChat Pay Withdrawals']}</a>
+                </div>
+            }
             {!!process.env.NEXT_PUBLIC_ICP_LICENSE &&
                 <div className="mb-2 text-sm mt-3 sm:text-left text-center">{process.env.NEXT_PUBLIC_ICP_LICENSE}</div>
             }

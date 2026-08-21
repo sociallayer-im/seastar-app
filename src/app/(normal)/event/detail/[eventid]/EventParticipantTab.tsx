@@ -3,6 +3,8 @@
 import {Dictionary} from '@/lang'
 import {
     EventDetail,
+    EventOrderSummaryEntry,
+    getEventOrderSummary,
     getEventParticipants,
     getEventTicketItems,
     Participant,
@@ -49,6 +51,7 @@ export default function EventParticipantTab({
     // a genuinely empty list.
     const [participants, setParticipants] = useState<Participant[] | null>(eventDetail.participants ?? null)
     const [orders, setOrders] = useState<TicketItemOrder[] | null>(null)
+    const [summary, setSummary] = useState<EventOrderSummaryEntry[]>([])
     const [failed, setFailed] = useState(false)
 
     const showOrders = !!eventDetail.tickets?.length && isEventOperator
@@ -69,6 +72,10 @@ export default function EventParticipantTab({
     const loadOrders = useCallback(async () => {
         try {
             setOrders(await getEventTicketItems({
+                params: {eventId: eventDetail.id, authToken: getAuth()!},
+                clientMode: CLIENT_MODE
+            }))
+            setSummary(await getEventOrderSummary({
                 params: {eventId: eventDetail.id, authToken: getAuth()!},
                 clientMode: CLIENT_MODE
             }))
@@ -125,6 +132,7 @@ export default function EventParticipantTab({
                 : <EventTicketOrderList
                     lang={lang}
                     orders={orders}
+                    summary={summary}
                     onChanged={loadOrders}
                     isEventOperator={isEventOperator}
                 />)

@@ -3,6 +3,7 @@
 import {GroupDetail, updateGroup} from '@sola/sdk'
 import {Dictionary} from '@/lang'
 import {Button} from '@/components/shadcn/Button'
+import {Switch} from '@/components/shadcn/Switch'
 import {useState} from 'react'
 import {getAuth, normalizeGroupPermission} from '@/utils'
 import {CLIENT_MODE} from '@/app/config'
@@ -82,6 +83,17 @@ export default function PermissonForm({lang, groupDetail}: {groupDetail: GroupDe
                     }
                 </div>
             </Button>
+
+            <div className="mt-4 flex-row-item-center justify-between">
+                <div>
+                    <div className="font-semibold text-sm">{lang['Require approval for events']}</div>
+                    <div className="text-gray-500 text-xs">{lang['Events created by non-managers stay pending until a manager approves them']}</div>
+                </div>
+                <Switch
+                    checked={!!draft.require_event_approval}
+                    onClick={() => setDraft({...draft, require_event_approval: !draft.require_event_approval})}
+                />
+            </div>
 
             <div className="font-semibold mb-1 mt-4">{lang['Who can join events']}</div>
             <Button variant={'secondary'} className='w-full mb-3'

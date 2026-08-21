@@ -88,6 +88,7 @@ export const updateGroup = async ({params: {group, authToken}, clientMode}: Sola
                 can_publish_event: group.can_publish_event,
                 can_join_event: group.can_join_event,
                 can_view_event: group.can_view_event,
+                require_event_approval: group.require_event_approval,
                 // Both must be listed here AND in soon's group_params permit
                 // list. A field missing from either one is dropped silently —
                 // the settings page saves, and the value never lands.

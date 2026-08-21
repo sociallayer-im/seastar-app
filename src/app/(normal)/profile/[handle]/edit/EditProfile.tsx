@@ -12,9 +12,10 @@ import DialogEditSocialMedia from "@/components/client/DialogEditSocialMedia"
 import Cookies from "js-cookie"
 import {useToast} from "@/components/shadcn/Toast/use-toast"
 import {ProfileDetail, updateProfile} from '@sola/sdk'
-import {CLIENT_MODE, STRIPE_ENABLED} from '@/app/config'
+import {CLIENT_MODE, STRIPE_ENABLED, WECHAT_PAY_ENABLED} from '@/app/config'
 import StripeKeysManager from './StripeKeysManager'
 import {useRouter} from 'next/navigation'
+import Link from 'next/link'
 
 export default function EditProfile({profile, lang}: { profile: ProfileDetail, lang: Dictionary }) {
     const router = useRouter()
@@ -135,6 +136,17 @@ export default function EditProfile({profile, lang}: { profile: ProfileDetail, l
                 </div>
             </div>
             {STRIPE_ENABLED && <StripeKeysManager lang={lang}/>}
+
+            {WECHAT_PAY_ENABLED &&
+                <Link href={`/profile/${profile.name}/edit/withdrawals`}
+                    className="flex-row-item-center justify-between border border-gray-200 rounded-lg p-3 mt-6">
+                    <div>
+                        <div className="font-semibold text-sm">{lang['WeChat Pay Withdrawals']}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">{lang['View your withdrawal records and request a withdrawal']}</div>
+                    </div>
+                    <i className="uil-angle-right-b text-2xl text-gray-400"/>
+                </Link>
+            }
 
             <div className="flex-row-item-center sm:justify-center my-4">
                 <Button variant={'secondary'} className="flex-1 sm:grow-0 sm:min-w-36 mr-4" onClick={() => {

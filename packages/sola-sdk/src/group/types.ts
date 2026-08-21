@@ -32,6 +32,10 @@ export interface GroupDetail extends Group {
     can_publish_event: string
     can_join_event: string
     can_view_event: string
+    /** When true, an event created by anyone but a manager/owner is forced into
+     *  "pending" status server-side and needs a manager's #approve before it's
+     *  visible to anyone but its owner. */
+    require_event_approval: boolean
     /** Whether this group shows discussion boards. Off unless a manager turns
      *  it on — and the deployment's own DISCUSSION_ENABLED is authoritative
      *  above it, so true here still means nothing where the feature is off. */

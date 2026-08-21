@@ -60,6 +60,12 @@ export async function GET(req: NextRequest) {
                 authToken,
                 wechatOpenid: identity.openid,
                 wechatUnionid: identity.unionid,
+                // This leg authorizes with snsapi_base (see authorizeUrl's
+                // doc comment) — no consent screen, so WeChat won't actually
+                // return a nickname/avatar here. Threaded through anyway for
+                // the rare case scope ever changes; harmless when undefined.
+                wechatNickname: identity.nickname,
+                wechatAvatarUrl: identity.avatarUrl,
                 nextToken
             },
             clientMode: CLIENT_MODE

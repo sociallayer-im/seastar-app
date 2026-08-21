@@ -6,6 +6,7 @@ import {headers} from 'next/headers'
 import {cfImage, eventCoverTimeStr, getGmtOffset, pickSearchParam, AsyncProps} from '@/utils'
 import {cache} from 'react'
 import SocialShareBtn from './SocialShareBtn'
+import MeetingLinkText from '@/components/MeetingLinkText'
 
 import DynamicShareActionsBtn from '@/app/(normal)/event/share/[eventid]/ShareActionsBtnClientOnly'
 
@@ -48,6 +49,12 @@ export default async function ShareEventPage(props: AsyncProps<EventDetailDataPr
     const {eventDetail, groupDetail} = await cachedEventDetailPage(eventid, pickSearchParam(tab))
     const {lang} = await selectLang()
     const shareUrl = `${new URL((await headers()).get('x-current-path')!).origin}/event/detail/${eventDetail.id}`
+    const shareData = {
+        title: eventDetail.title || lang['Event Name'],
+        desc: eventDetail.place?.name || lang['Join this event on Social Layer'],
+        link: shareUrl,
+        imgUrl: eventDetail.image_url ? cfImage(eventDetail.image_url, {width: 300, height: 300, format: 'auto', quality: 85}) : ''
+    }
 
     return <div className="min-h-svh w-full">
         <div className="page-width min-h-svh px-3 pt-0 pb-16!">
@@ -115,7 +122,7 @@ export default async function ShareEventPage(props: AsyncProps<EventDetailDataPr
                     {
                         !!eventDetail.meeting_url && <div className="text-xs flex flex-row items-start  mt-2">
                             <i className="uil-link mr-1"/>
-                            <div>{eventDetail.meeting_url}</div>
+                            <MeetingLinkText meetingUrl={eventDetail.meeting_url} lang={lang}/>
                         </div>
                     }
 
@@ -131,7 +138,7 @@ export default async function ShareEventPage(props: AsyncProps<EventDetailDataPr
                 </div>
 
                 <div className="my-3 w-[335px] mx-auto">
-                    <SocialShareBtn shareUrl={shareUrl} />
+                    <SocialShareBtn shareUrl={shareUrl} shareData={shareData} lang={lang} />
                     <DynamicShareActionsBtn lang={lang} eventDetail={eventDetail} groupHandle={groupDetail.name}/>
                 </div>
             </div>

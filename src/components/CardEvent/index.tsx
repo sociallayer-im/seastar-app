@@ -1,7 +1,7 @@
 'use client'
 
 import { getLabelColor } from "@/utils/label_color"
-import { cfImage, checkProcess, eventCoverTimeStr } from "@/utils"
+import { cfImage, checkProcess, eventCoverTimeStr, parseMeetingLink } from "@/utils"
 import { Badge } from "@/components/shadcn/Badge"
 import { CSSProperties, ReactElement, useState } from "react"
 import dynamic from 'next/dynamic'
@@ -26,6 +26,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
     isManager?: boolean
 }) {
     const eventProcess = checkProcess(event.start_time, event.end_time)
+    const meetingLink = parseMeetingLink(event.meeting_url)
     const status = event.status
     const [highlighted, setHighlighted] = useState(highlight)
 
@@ -120,11 +121,17 @@ export default function CardEvent({ event, className, id, style, lang, highlight
                         className="whitespace-nowrap max-w-[160px] overflow-hidden text-ellipsis">{event.place?.name}</span>
                 </div>
             }
-            {!!event.meeting_url &&
+            {!!meetingLink &&
+                // Plain text, not a link: the whole card is already an <a> to
+                // the event page (nesting an anchor inside it is invalid
+                // HTML), and that page is where the real clickable link lives.
                 <div className="h-6 flex-row-item-center text-xs sm:text-sm">
                     <i className="uil-link mr-1 text-sm" />
-                    <span
-                        className="whitespace-nowrap max-w-[160px] overflow-hidden text-ellipsis"> {event.meeting_url}</span>
+                    <span className="whitespace-nowrap max-w-[160px] overflow-hidden text-ellipsis">
+                        {meetingLink.isTencentMeeting
+                            ? (meetingLink.meetingCode ? `${lang['Tencent Meeting']} ${meetingLink.meetingCode}` : lang['Tencent Meeting'])
+                            : meetingLink.displayText}
+                    </span>
                 </div>
             }
             {!!(event as any).group &&

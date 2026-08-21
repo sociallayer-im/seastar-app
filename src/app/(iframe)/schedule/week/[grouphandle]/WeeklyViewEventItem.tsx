@@ -5,12 +5,13 @@ import {IframeSchedulePageDataEventDetail} from "./data"
 import {getLabelColor} from "@/utils/label_color"
 import dayjs from "@/libs/dayjs"
 import {memo, useEffect, useState} from "react"
-import {cfImage, genGoogleMapLink, getAvatar} from "@/utils"
+import {cfImage, genGoogleMapLink, getAvatar, parseMeetingLink} from "@/utils"
 import useScheduleEventPopup from '@/hooks/useScheduleEventPopup'
 import {Dictionary} from '@/lang'
 
 function WeeklyViewEventItem({event, timezone, lang}: {event: IframeSchedulePageDataEventDetail, timezone: string, lang: Dictionary}) {
     const {showPopup} = useScheduleEventPopup()
+    const meetingLink = parseMeetingLink(event.meeting_url)
 
     const start = dayjs.tz(new Date(event.start_time).getTime(), timezone)
     const end = dayjs.tz(new Date(event.end_time).getTime(), timezone)
@@ -114,10 +115,12 @@ function WeeklyViewEventItem({event, timezone, lang}: {event: IframeSchedulePage
                 : null
             }
 
-            {!!event.meeting_url ?
+            {!!meetingLink ?
                 <OuterLink
-                    text={'Online meeting'}
-                    href={event.meeting_url}
+                    text={meetingLink.isTencentMeeting
+                        ? (meetingLink.meetingCode ? `Tencent Meeting ${meetingLink.meetingCode}` : 'Tencent Meeting')
+                        : 'Online meeting'}
+                    href={meetingLink.href}
                 />
                 : null
             }
