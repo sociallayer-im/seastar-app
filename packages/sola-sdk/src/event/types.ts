@@ -93,6 +93,9 @@ export interface Ticket {
     days_allowed: string[] | null,
     tracks_allowed: string[] | null,
     created_at: string,
+    /** Only meaningful when ticket_type is "membership_card" — how long a
+     *  purchase grants/extends Member status for. Ignored otherwise. */
+    membership_duration_days: number,
     payment_methods?: PaymentMethod[]
 }
 
@@ -156,6 +159,7 @@ export interface TicketDraft extends Pick<Ticket, 'title' | 'content' | 'check_b
     start_date?: string | null
     end_date?: string | null
     days_allowed?: string[] | null
+    membership_duration_days?: number
     _destroy?: string
 }
 

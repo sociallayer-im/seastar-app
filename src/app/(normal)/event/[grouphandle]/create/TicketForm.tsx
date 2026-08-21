@@ -523,14 +523,47 @@ function TicketItem({
                 <div className="flex-row-item-center cursor-pointer"
                      onClick={() => setTicketDraft({
                          ...ticketDraft,
-                         ticket_type: ticketDraft.ticket_type === 'membership_card' ? 'event' : 'membership_card'
+                         ticket_type: ticketDraft.ticket_type === 'membership_card' ? 'event' : 'membership_card',
+                         membership_duration_days: ticketDraft.membership_duration_days || 30
                      })}>
-                    <div className="text-sm mr-6">{lang['Monthly membership card']}</div>
+                    <div className="text-sm mr-6">{lang['Membership card']}</div>
                     {ticketDraft.ticket_type === 'membership_card'
                         ? <i className="uil-check-circle text-2xl text-green-500"/>
                         : <i className="uil-circle text-2xl text-gray-500"/>}
                 </div>
-                <div className="text-xs text-gray-500">{lang['Monthly membership card hint']}</div>
+                <div className="text-xs text-gray-500">{lang['Membership card hint']}</div>
+                {
+                    ticketDraft.ticket_type === 'membership_card' &&
+                    <div className="mt-3">
+                        <div className="text-sm mb-1">{lang['Membership duration']}</div>
+                        <div className="flex-row-item-center gap-2">
+                            {[7, 30, 365].map(days =>
+                                <div key={days}
+                                     className={`px-3 py-1 rounded-full text-sm cursor-pointer border ${
+                                         ticketDraft.membership_duration_days === days
+                                             ? 'border-green-500 text-green-500'
+                                             : 'border-gray-300 text-gray-500'
+                                     }`}
+                                     onClick={() => setTicketDraft({...ticketDraft, membership_duration_days: days})}>
+                                    {days === 7 && lang['7 days']}
+                                    {days === 30 && lang['30 days']}
+                                    {days === 365 && lang['365 days']}
+                                </div>
+                            )}
+                            <Input type="number"
+                                   min={1}
+                                   placeholder={lang['Custom days']}
+                                   className="w-28"
+                                   value={[7, 30, 365].includes(ticketDraft.membership_duration_days || 0)
+                                       ? ''
+                                       : (ticketDraft.membership_duration_days || '')}
+                                   onChange={e => setTicketDraft({
+                                       ...ticketDraft,
+                                       membership_duration_days: parseInt(e.target.value) || 0
+                                   })}/>
+                        </div>
+                    </div>
+                }
             </div>
         }
         <div className="my-3">
