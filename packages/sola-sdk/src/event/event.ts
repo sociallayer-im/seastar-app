@@ -788,6 +788,8 @@ export const createRecurringEvent = async ({params, clientMode}: SolaSdkFunction
             require_approval: d.require_approval,
             category: d.category,
             kind: d.kind,
+            image_url: d.image_url,
+            image_note: d.image_note,
             tags: d.tags || [],
             requirement_tags: d.requirement_tags || []
         },
@@ -846,6 +848,8 @@ export const updateRecurringEvent = async ({
             require_approval: eventDraft.require_approval,
             category: eventDraft.category,
             kind: eventDraft.kind,
+            image_url: eventDraft.image_url,
+            image_note: eventDraft.image_note,
             tags: eventDraft.tags || [],
             requirement_tags: eventDraft.requirement_tags || []
         },
