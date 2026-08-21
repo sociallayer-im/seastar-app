@@ -33,15 +33,17 @@ ssh:
 
 builder:
   arch: amd64
-  # Build overseas (clean upstream: npm/fonts/base images), no China crutches.
-  remote: ssh://ubuntu@wamo.city
-  # Push to the Singapore mirror; juluo pulls the same image from registry.juluo.xyz.
-  push_registry: mirror-registry.sola.day
+  # Moved from wamo.city to homepod (2026-08-21), same as ginger.yml — a
+  # dedicated 3 GB-capped buildx builder now isolates this from production.
+  # No more push_registry: mirror-registry.sola.day is retired, and there's
+  # no other registry to route this build's own CN-baked image through —
+  # push straight to registry.juluo.xyz (registry: above).
+  remote: ssh://ubuntu@homepod
   # ginger's default is mode=min, which exports only the FINAL stage to
   # <image>:buildcache. This Dockerfile is three-stage and the expensive step —
   # `pnpm install`, node_modules — is in the `build` stage, so min
-  # never wrote it to the registry: it survived only in the wamo builder's
-  # local buildkit cache, and would be lost the moment that container is
+  # never wrote it to the registry: it survived only in the builder's local
+  # buildkit cache, and would be lost the moment that container is
   # recreated or pruned. max exports every stage.
   cache: max
 

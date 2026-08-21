@@ -1,5 +1,5 @@
 service: seastar-app
-image: home-registry.sola.day/sola/seastar-app
+image: registry.sola.day/sola/seastar-app
 
 runner: nomad
 egress: traefik
@@ -9,9 +9,15 @@ servers:
     hosts: [homepod.sola.day]
     primary: true
 
-# 自建 registry（yatch）。2026-08-02 起不再经 ghcr。
+# 自建 registry（yatch）。2026-08-02 起不再经 ghcr。registry.sola.day is the
+# home-registry.sola.day instance under its new domain (added 2026-08-21).
+# Unlike soon, seastar-app is NOT synced to registry.juluo.xyz — its
+# NEXT_PUBLIC_* config is baked in at build time and genuinely differs
+# between SG and CN (see ginger.cn.yml's build pipeline), so CN keeps
+# building and pushing its own image straight to registry.juluo.xyz;
+# syncing this SG image over would just overwrite it with the wrong config.
 registry:
-  server: home-registry.sola.day
+  server: registry.sola.day
   username: sola
   password: YATCH_TOKEN
 
@@ -74,11 +80,12 @@ ssh:
 
 builder:
   arch: amd64
-  # Built on wamo.city over SSH rather than on homepod: the deploy host is the
-  # one serving production and has ~8 GB free, while wamo has 19 GB and 405 GB
-  # of disk. Nothing runs locally — buildx drives the remote daemon through
-  # this SSH endpoint, so no local Docker daemon is needed.
-  remote: ssh://ubuntu@wamo.city
+  # Moved from wamo.city to homepod itself (2026-08-21) now that the build
+  # runs through a dedicated `docker-container`-driver buildx builder capped
+  # at 3 GB memory (not a ginger setting — see DEPLOYMENT.md's build
+  # section), so it can no longer starve the production containers sharing
+  # this host the way an uncapped build could have.
+  remote: ssh://ubuntu@homepod
   # ginger's default is mode=min, which exports only the FINAL stage to the
   # registry build cache. This Dockerfile is three-stage and the expensive step
   # — `pnpm install` — lives in the `build` stage, so min never cached it
