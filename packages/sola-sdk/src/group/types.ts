@@ -83,6 +83,8 @@ export interface Membership {
      */
     admin_notification: boolean
     created_at: string
+    /** Null = permanent. Set only by a membership_card purchase; past this time, Member status no longer applies. */
+    expires_at: string | null
     user: Profile
     /**
      * The teams this person is in, within THIS group. Sent with the roster so

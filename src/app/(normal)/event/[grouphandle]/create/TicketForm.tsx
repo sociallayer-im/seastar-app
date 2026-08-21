@@ -165,6 +165,7 @@ export default function TicketForm({
                     key={index}
                     index={index + 1}
                     eventId={event.id}
+                    isGroupTicketEvent={!!event.is_group_ticket_event}
                     ticket={t}
                     tracks={tracks}
                     eventRoles={event.event_roles || []}
@@ -198,6 +199,7 @@ export interface TicketItemProps {
     eventRoles: EventRole[],
     itemChecker?: { check: () => boolean }
     errors?: TicketErrMsg
+    isGroupTicketEvent?: boolean
 }
 
 function TicketItem({
@@ -211,7 +213,8 @@ function TicketItem({
                         lang,
                         eventRoles,
                         timezone,
-                        eventId
+                        eventId,
+                        isGroupTicketEvent
                     }: TicketItemProps) {
     const {selectBadgeClass} = useSelectBadgeClass()
     const {showLoading, closeModal} = useModal()
@@ -514,6 +517,22 @@ function TicketItem({
                 </div>
             }
         </div>
+        {
+            isGroupTicketEvent &&
+            <div className="my-3">
+                <div className="flex-row-item-center cursor-pointer"
+                     onClick={() => setTicketDraft({
+                         ...ticketDraft,
+                         ticket_type: ticketDraft.ticket_type === 'membership_card' ? 'event' : 'membership_card'
+                     })}>
+                    <div className="text-sm mr-6">{lang['Monthly membership card']}</div>
+                    {ticketDraft.ticket_type === 'membership_card'
+                        ? <i className="uil-check-circle text-2xl text-green-500"/>
+                        : <i className="uil-circle text-2xl text-gray-500"/>}
+                </div>
+                <div className="text-xs text-gray-500">{lang['Monthly membership card hint']}</div>
+            </div>
+        }
         <div className="my-3">
             <div className="flex-row-item-center cursor-pointer"
                  onClick={() => setTicketDraft({...ticketDraft, need_approval: !ticketDraft.need_approval})}>

@@ -13,6 +13,7 @@ import useModal from '@/components/client/Modal/useModal'
 import DialogEditMember from '@/app/(normal)/group/[handle]/TabMembers/DialogEditMember'
 import {getLabelColor} from '@/utils/label_color'
 import LeaveGroupBtn from '@/app/(normal)/group/[handle]/TabMembers/LeaveGroupBtn'
+import dayjs from '@/libs/dayjs'
 
 export interface TabMembersProps {
     members: Membership[]
@@ -205,6 +206,14 @@ export default function TabMembers({members, isManager, isMember, currProfile, i
                         <div className="min-w-0 break-all">{member.user.nickname || member.user.name}</div>
                         {member.role !== 'member' &&
                             <Badge variant={"past"} className="capitalize shrink-0">{member.role}</Badge>
+                        }
+                        {/* membership_card purchases stamp expires_at; a lapsed
+                            row already lost Member status server-side (Membership#active?),
+                            so this only ever shows a still-valid window. */}
+                        {member.role === 'member' && !!member.expires_at && dayjs(member.expires_at).isAfter(dayjs()) &&
+                            <Badge variant={"upcoming"} className="shrink-0">
+                                {lang['Member until']} {dayjs(member.expires_at).format('YYYY/MM/DD')}
+                            </Badge>
                         }
                         {currProfile?.name === member.user.name &&
                             <Badge variant={"upcoming"} className="capitalize shrink-0">You</Badge>

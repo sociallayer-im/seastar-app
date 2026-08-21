@@ -272,6 +272,8 @@ export const zh: Dictionary = {
   "Booking Window (Optional)": "可预订时间范围（可选）",
   "Restrict which dates this venue can be booked. Leave either side blank for no limit.": "限制该场地可被预订的日期范围，留空表示不限制。",
   "Require Approval (Optional)": "需要批准（可选）",
+  "Monthly membership card": "月费会员卡",
+  "Monthly membership card hint": "购买后获得30天的会员权限，在有效期内再次购买会在剩余时间基础上再叠加30天。",
   "Opening Hours": "营业时间",
   "Add dates when your availability changes from your daily hours.":
     "添加日期，以便您的可用性从每日小时数更改。",
@@ -338,6 +340,7 @@ export const zh: Dictionary = {
     "您确定要将此群组的所有权转让给此成员吗",
   "Are you sure you want to leave the group?": "您确定要离开群组吗？",
   "Invite Member": "邀请成员",
+  "Member until": "会员有效期至",
   "Invite Message (Optional)": "邀请消息（可选）",
   "Create Invite Link": "创建邀请链接",
   "Users join the group via a link":
