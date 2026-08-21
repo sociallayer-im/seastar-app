@@ -761,7 +761,7 @@ export default function EventForm({
                       </div>
                       <div
                         onClick={() => {
-                          setDraft({ ...draft, visibility: "public" })
+                          setDraft({ ...draft, visibility: "normal" })
                         }}
                         className={`flex-row-item-center justify-between border cursor-pointer p-2 rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
                       >
@@ -772,36 +772,62 @@ export default function EventForm({
                           <div className="text-gray-500 text-xs font-normal">
                             {
                               lang[
-                              "Select a normal event, the event you created is shown to all users."
+                              "Listed publicly. Who can register still follows the community's registration setting."
                               ]
                             }
                           </div>
                         </div>
-                        {draft.visibility !== "private" ? (
+                        {draft.visibility !== "unlisted" && draft.visibility !== "open_registration" ? (
                           <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
                         ) : (
                           <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
                         )}
                       </div>
+                      {data.groupDetail.can_join_event !== "everyone" && (
+                        <div
+                          onClick={() => {
+                            setDraft({ ...draft, visibility: "open_registration" })
+                          }}
+                          className={`flex-row-item-center justify-between border cursor-pointer p-2 rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
+                        >
+                          <div>
+                            <div className="text-xs font-semibold">
+                              {lang["Open Registration"]}
+                            </div>
+                            <div className="text-gray-500 text-xs font-normal">
+                              {
+                                lang[
+                                "Anyone can register for this event, even though the community normally requires membership to register."
+                                ]
+                              }
+                            </div>
+                          </div>
+                          {draft.visibility === "open_registration" ? (
+                            <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
+                          ) : (
+                            <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500" />
+                          )}
+                        </div>
+                      )}
                       <div
                         onClick={() => {
-                          setDraft({ ...draft, visibility: "private" })
+                          setDraft({ ...draft, visibility: "unlisted" })
                         }}
                         className={`flex-row-item-center justify-between border cursor-pointer p-2  rounded-lg mt-2 h-auto border-gray-200 w-full text-left hover:bg-gray-100`}
                       >
                         <div>
                           <div className="text-xs font-semibold">
-                            {lang["Private Event"]}
+                            {lang["Unlisted Event"]}
                           </div>
                           <div className="text-gray-500 text-xs font-normal">
                             {
                               lang[
-                              "Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page."
+                              "Not shown in public listings. Only reachable by direct link, and visible to community members on the My Events page."
                               ]
                             }
                           </div>
                         </div>
-                        {draft.visibility === "private" ? (
+                        {draft.visibility === "unlisted" ? (
                           <i className="shrink-0 ml-2 uil-check-circle text-2xl text-green-500" />
                         ) : (
                           <i className="shrink-0 ml-2 uil-circle text-2xl text-gray-500" />

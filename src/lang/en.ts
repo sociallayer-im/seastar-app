@@ -414,6 +414,7 @@ export const en = {
     Upcoming: "Upcoming",
     Past: "Past",
     Private: "Private",
+    Unlisted: "Unlisted",
     Reset: "Reset",
     "All Time": "All Time",
     Today: "Today",
@@ -425,14 +426,14 @@ export const en = {
     Seats: "Seats",
     Display: "Display",
     "Normal Event": "Normal Event",
-    "Select a normal event, the event you created is shown to all users.":
-        "Select a normal event, the event you created is shown to all users.",
-    "Private Event": "Private Event",
-    "Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.":
-        "Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.",
-    "Public Event": "Public Event",
-    "Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.":
-        "Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.",
+    "Listed publicly. Who can register still follows the community's registration setting.":
+        "Listed publicly. Who can register still follows the community's registration setting.",
+    "Open Registration": "Open Registration",
+    "Anyone can register for this event, even though the community normally requires membership to register.":
+        "Anyone can register for this event, even though the community normally requires membership to register.",
+    "Unlisted Event": "Unlisted Event",
+    "Not shown in public listings. Only reachable by direct link, and visible to community members on the My Events page.":
+        "Not shown in public listings. Only reachable by direct link, and visible to community members on the My Events page.",
     "You can set up POAP after the event is created.":
         "You can set up POAP after the event is created.",
     "Share Event": "Share Event",

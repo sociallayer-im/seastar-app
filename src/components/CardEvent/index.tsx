@@ -66,7 +66,7 @@ export default function CardEvent({ event, className, id, style, lang, highlight
         <div className="flex-1 mr-2 order-2 xs:order-1">
             <div className="flex-row-item-center flex-wrap scale-90 sm:scale-100 origin-top-left">
                 {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
-                {event.visibility === 'private' && <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
+                {event.visibility === 'unlisted' && <Badge variant='private' className="mr-1">{lang['Unlisted']}</Badge>}
                 {status === 'pending' && <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
                 {status === 'cancelled' && <Badge variant='cancel' className="mr-1">{lang['Cancelled']}</Badge>}
 

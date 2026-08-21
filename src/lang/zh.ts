@@ -405,6 +405,7 @@ export const zh: Dictionary = {
   Upcoming: "即将到来",
   Past: "已结束",
   Private: "私密",
+  Unlisted: "不公开列出",
   Reset: "重置",
   "All Time": "全部时间",
   Today: "今天",
@@ -416,14 +417,14 @@ export const zh: Dictionary = {
   Seats: "座位",
   Display: "展示",
   "Normal Event": "普通活动",
-  "Select a normal event, the event you created is shown to all users.":
-    "您创建的活动对所有用户可见。",
-  "Private Event": "私密活动",
-  "Select a private event, the event you created can only be viewed through the link, and users can view the event in My Event page.":
-    '您创建的活动只能通过链接查看，用户可以在"我的活动"页面查看该活动。',
-  "Public Event": "公开活动",
-  "Select a public event, the event you created is open to the public, even if the global setting is set to members-only visibility.":
-    "创建的活动对公众开放，即使全局设置为仅成员可见。",
+  "Listed publicly. Who can register still follows the community's registration setting.":
+    "公开展示，能否报名仍然遵循社区的报名设置。",
+  "Open Registration": "开放报名",
+  "Anyone can register for this event, even though the community normally requires membership to register.":
+    "即使社区要求必须是成员才能报名，这个活动仍然对所有人开放报名。",
+  "Unlisted Event": "不公开列出的活动",
+  "Not shown in public listings. Only reachable by direct link, and visible to community members on the My Events page.":
+    '不会出现在公开列表中，只能通过链接访问，社区成员可以在"我的活动"页面看到。',
   "You can set up POAP after the event is created.":
     "您可以在创建活动后设置 POAP。",
   "Share Event": "分享活动",

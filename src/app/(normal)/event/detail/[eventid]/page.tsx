@@ -437,8 +437,8 @@ export default async function EventDetail(
                             {lang['Group ticket event']}
                         </Badge>}
                     {eventProcess === 'past' && <Badge variant='past' className="mr-1">{lang['Past']}</Badge>}
-                    {eventDetail.visibility === 'private' &&
-                        <Badge variant='private' className="mr-1">{lang['Private']}</Badge>}
+                    {eventDetail.visibility === 'unlisted' &&
+                        <Badge variant='private' className="mr-1">{lang['Unlisted']}</Badge>}
                     {eventDetail.status === 'pending' &&
                         <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
                     {eventDetail.status === 'cancelled' &&
