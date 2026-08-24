@@ -9,7 +9,7 @@ import {
     getEventForm,
     getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId,
     getPendingTicketItemsByProfileNameAndEventId, getRecurringById,
-    Recurring, Ticket
+    Recurring, SolaApiError, Ticket
 } from '@sola/sdk'
 import {AVNeeds, SeatingStyle, ExternalCatering} from '@/app/configForSpecifyGroup'
 import {CLIENT_MODE} from '@/app/config'
@@ -35,14 +35,26 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     // which is all this function needs to decide the RSVP state.
     const [currProfile, eventDetail] = await Promise.all([
         getCurrProfile(),
-        (async () => getEventDetailById({
-            params: {
-                eventId: eventid,
-                authToken: await getServerSideAuth(),
-                includeParticipants: false
-            },
-            clientMode: CLIENT_MODE
-        }))()
+        (async () => {
+            try {
+                return await getEventDetailById({
+                    params: {
+                        eventId: eventid,
+                        authToken: await getServerSideAuth(),
+                        includeParticipants: false
+                    },
+                    clientMode: CLIENT_MODE
+                })
+            } catch (e) {
+                // The backend answers 403 (not 404) for a draft/archived/unlisted
+                // event the viewer can't see (EventPolicy#show?) — requestOrNull
+                // only swallows 404, so this would otherwise crash the page with
+                // an unhandled SolaApiError instead of falling through to the
+                // existing !eventDetail -> /404 redirect below.
+                if (e instanceof SolaApiError && e.status === 403) return null
+                throw e
+            }
+        })()
     ])
     if (!eventDetail) {
         redirect('/404')

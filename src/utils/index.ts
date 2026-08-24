@@ -842,6 +842,21 @@ export function isSupportedDownloadCardBrowser() {
     return supportedBrowsers.some(browser => userAgent.indexOf(browser) !== -1)
 }
 
+// dom-to-image fetches each <img> src itself to embed it, and datastore.sola.day
+// (the R2-backed image host) sends no Access-Control-Allow-Origin header — that
+// fetch is blocked cross-origin, which is what throws "Failed to capture image:
+// Unknown error" out of saveDomImage below. Routing through the app's own
+// same-origin /api/image-proxy sidesteps it without touching R2/Cloudflare config.
+const proxyCrossOriginImg = (src: string): string => {
+    try {
+        const url = new URL(src, window.location.origin)
+        if (url.origin === window.location.origin) return src
+        return `/api/image-proxy?url=${encodeURIComponent(url.toString())}`
+    } catch {
+        return src
+    }
+}
+
 export const saveDomImage = async ({ dom, fileName, scaleFactor = 1 }: {
     dom: HTMLElement,
     fileName: string,
@@ -849,6 +864,9 @@ export const saveDomImage = async ({ dom, fileName, scaleFactor = 1 }: {
 }): Promise<void> => {
     // Wait for all images to load before converting to PNG
     const images = dom.querySelectorAll('img')
+    const originalSrcs = Array.from(images).map(img => img.src)
+    images.forEach(img => { img.src = proxyCrossOriginImg(img.src) })
+
     const imageLoadPromises = Array.from(images).map(img => {
         return new Promise<void>((resolve) => {
             if (img.complete) {
@@ -907,6 +925,8 @@ export const saveDomImage = async ({ dom, fileName, scaleFactor = 1 }: {
         document.body.removeChild(a)
     } catch (error) {
         throw new Error(`Failed to capture image: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+        images.forEach((img, i) => { img.src = originalSrcs[i] })
     }
 }
 

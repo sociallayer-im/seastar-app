@@ -14,7 +14,7 @@
 # package.json's packageManager field and enabled through corepack.
 #
 # Built on a remote amd64 builder via ginger; deployed behind Traefik.
-FROM node:24-slim AS build
+FROM node:24.19-slim AS build
 WORKDIR /app
 RUN corepack enable
 
@@ -46,14 +46,14 @@ RUN pnpm run build
 # Note pnpm, unlike bun, does not install optional peer dependencies — so the
 # 199 MB of `next` that bun pulled in as an optional peer of @unpic/react, and
 # that this Dockerfile used to prune explicitly, never arrives at all.
-FROM node:24-slim AS prod-deps
+FROM node:24.19-slim AS prod-deps
 WORKDIR /app
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/sola-sdk/package.json packages/sola-sdk/
 RUN pnpm install --frozen-lockfile --ignore-scripts --prod
 
-FROM node:24-slim AS production
+FROM node:24.19-slim AS production
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
