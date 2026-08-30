@@ -1,0 +1,55 @@
+src/app/(normal)/group/[handle]/edit/EditGroup.tsx
+  s_e9ed806a3d225c::t_0498e9790cc7c7 247-256
+src/app/(normal)/event/[grouphandle]/data.ts
+  s_e9ed806a3d225c::t_943e716d99953e 154
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_c8f9c0a9adc0ac 46-49
+package.json
+  s_e9ed806a3d225c::t_3eaf608b8a1c82 16
+src/app/(normal)/discover/PopupCityMap.tsx
+  s_e9ed806a3d225c::t_60e40efb972d8f 4,19-23,25,27,37-38
+src/app/(normal)/map/[grouphandle]/marker/Map.tsx
+  s_e9ed806a3d225c::t_bf5f2fdb62b5bc 3
+  s_e9ed806a3d225c::t_a718997913cf14 88
+  s_e9ed806a3d225c::t_30f8664587b976 50-60
+src/components/client/LazyMapMount.tsx
+  s_e9ed806a3d225c::t_675df46c7ad63b 1-41
+src/components/client/Map.tsx
+  s_e9ed806a3d225c::t_1e32ed82e9e474 4-13,15,49-53,55,58,68,92,99-102,106-157,161-162,165-172,182,200
+src/app/(normal)/event/[grouphandle]/EventHomeMap.tsx
+  s_e9ed806a3d225c::t_f4babb0f679351 2,14-19
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_5e991a6773f5c5 342
+src/app/(normal)/map/[grouphandle]/event/Map.tsx
+  s_e9ed806a3d225c::t_c831ccbaf16da3 23-26,30,37
+  s_e9ed806a3d225c::t_94c9b361eaf928 4
+  s_e9ed806a3d225c::t_dc119bbca14b74 73-78,82
+src/app/(normal)/map/[grouphandle]/event/data.ts
+  s_e9ed806a3d225c::t_53e2d2533dd22f 33
+packages/sola-sdk/src/group/group.ts
+  s_e9ed806a3d225c::t_25029f921f93c8 96-97
+src/app/(normal)/map/[grouphandle]/marker/data.ts
+  s_e9ed806a3d225c::t_892f5e6aec12ac 34-35
+src/lang/en.ts
+  s_e9ed806a3d225c::t_2227fe2cfcd2f4 347
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_e9ed806a3d225c::t_cf5c8e62ce3df7 216
+pnpm-lock.yaml
+  s_e9ed806a3d225c::t_c9041ec7e1d483 24-26,355-357,1059-1061,1085-1087,1482-1485,1665-1667,2147-2149,2556-2561,3149-3150,3173-3176,3583-3584,3716-3717,4170-4173
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "1e1189b5f2a5d6867cc106a53ceb4c77e79efc4f",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
