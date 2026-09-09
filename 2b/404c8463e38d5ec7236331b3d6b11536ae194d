@@ -1,0 +1,19 @@
+package.json
+  s_e9ed806a3d225c::t_c30468a6492ff0 83-96,98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "2b404c8463e38d5ec7236331b3d6b11536ae194d",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
