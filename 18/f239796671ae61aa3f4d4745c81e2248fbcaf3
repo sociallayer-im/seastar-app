@@ -1,0 +1,98 @@
+src/app/(normal)/event/[grouphandle]/hackathon/HackathonForm.tsx
+  s_e9ed806a3d225c::t_821786e4cf14a5 143
+  s_e9ed806a3d225c::t_1e8d979491a708 171
+  s_e9ed806a3d225c::t_0de8384ed580d5 1-50,55-57,59-60,64-142,144-170,172-190
+  s_e9ed806a3d225c::t_90a4b39168b7a9 51-54,58,61-63
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/projects/[projectid]/ProjectDetail.tsx
+  s_e9ed806a3d225c::t_717df391e10e80 1-10,12-71,73-78,80-90,92-106,108-209,211-231
+  s_e9ed806a3d225c::t_1c7ff48f5cea20 11,107
+  s_e9ed806a3d225c::t_8cf15d2622011d 72,79,91,210
+src/app/(normal)/event/[grouphandle]/HackathonPanel.tsx
+  s_e9ed806a3d225c::t_f570266cd7695f 1-104
+src/app/(normal)/event/[grouphandle]/create/EventForm.tsx
+  s_e9ed806a3d225c::t_ca9ccb545be1a2 607-619
+packages/sola-sdk/src/hackathon/types.ts
+  s_e9ed806a3d225c::t_ba31efc2ea2aee 1-149
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_944b4a0012ece7 56-59
+src/app/(normal)/group/[handle]/edit/EditGroup.tsx
+  s_e9ed806a3d225c::t_06fff6e9e3b32f 18
+  s_e9ed806a3d225c::t_7164f1955ba9cd 267-276
+src/app/(normal)/event/[grouphandle]/permission/PermissonForm.tsx
+  s_e9ed806a3d225c::t_06fff6e9e3b32f 9
+  s_e9ed806a3d225c::t_a4e764f070011a 178-193
+src/app/(normal)/event/[grouphandle]/hackathon/create/page.tsx
+  s_e9ed806a3d225c::t_142a9c042f8de5 1-20
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/edit/page.tsx
+  s_e9ed806a3d225c::t_1ab407d5d9aeb4 1-16
+src/lang/en.ts
+  s_e9ed806a3d225c::t_821786e4cf14a5 1135
+  s_e9ed806a3d225c::t_1e8d979491a708 1136
+  s_e9ed806a3d225c::t_8cf15d2622011d 1137
+  s_e9ed806a3d225c::t_9d35a10996d46e 1134
+  s_e9ed806a3d225c::t_e2cc9248dd52a2 1052-1133
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/projects/create/page.tsx
+  s_e9ed806a3d225c::t_6c86440899a294 1-18
+packages/sola-sdk/src/group/group.ts
+  s_e9ed806a3d225c::t_0309edda5ad802 99-101
+src/app/(normal)/event/[grouphandle]/GroupEventHome.tsx
+  s_e9ed806a3d225c::t_06fff6e9e3b32f 19,54-55,64,68,148,163-167,183-184
+  s_e9ed806a3d225c::t_b88e10884c9b91 185-186
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/HackathonDetail.tsx
+  s_e9ed806a3d225c::t_8032e69b2ad92d 1-133,135-233
+  s_e9ed806a3d225c::t_1e8d979491a708 134
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/projects/[projectid]/edit/page.tsx
+  s_e9ed806a3d225c::t_b483bbc2abd947 1-19
+packages/sola-sdk/src/event/types.ts
+  s_e9ed806a3d225c::t_33c0172b2ec020 138-139
+packages/sola-sdk/src/hackathon/hackathon.ts
+  s_e9ed806a3d225c::t_e29355ea80fe32 1-273
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_8105872573f03a 547-565
+packages/sola-sdk/src/index.ts
+  s_e9ed806a3d225c::t_bc365a1f2eb3fe 23-24
+src/app/config.ts
+  s_e9ed806a3d225c::t_9b8faf19c9871d 80-83
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/data.ts
+  s_e9ed806a3d225c::t_0125cdfd47ba7f 1-19
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_e2cc9248dd52a2 1030-1111
+  s_e9ed806a3d225c::t_821786e4cf14a5 1113
+  s_e9ed806a3d225c::t_8cf15d2622011d 1115
+  s_e9ed806a3d225c::t_9d35a10996d46e 1112
+  s_e9ed806a3d225c::t_1e8d979491a708 1114
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/projects/[projectid]/data.ts
+  s_e9ed806a3d225c::t_b8f5767881b5d7 1-16
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/projects/[projectid]/page.tsx
+  s_e9ed806a3d225c::t_885bb412e008af 1-21
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/projects/ProjectForm.tsx
+  s_e9ed806a3d225c::t_25991a65d5a811 1-125
+package.json
+  s_e9ed806a3d225c::t_4775cc785d163d 83-95,97
+.env
+  s_e9ed806a3d225c::t_2036664f04fce6 38-39
+src/app/(normal)/event/[grouphandle]/data.ts
+  s_e9ed806a3d225c::t_92c20e3ab783c2 128-134
+  s_e9ed806a3d225c::t_1fb7b7c1a0e1ac 171-172
+  s_e9ed806a3d225c::t_06fff6e9e3b32f 12
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/page.tsx
+  s_e9ed806a3d225c::t_173dda43077450 1-19
+bun.lock
+  s_e9ed806a3d225c::t_9804cb1956158f 1-958
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "18f239796671ae61aa3f4d4745c81e2248fbcaf3",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
