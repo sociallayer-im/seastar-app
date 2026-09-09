@@ -1,0 +1,70 @@
+packages/sola-sdk/src/index.ts
+  s_e9ed806a3d225c::t_ba5b474490add3 21-22
+src/app/(normal)/event/[grouphandle]/permission/PermissonForm.tsx
+  s_e9ed806a3d225c::t_af95a764b662c4 9
+  s_e9ed806a3d225c::t_c808e75928d109 162-177
+src/app/(normal)/event/[grouphandle]/poll/[pollid]/edit/page.tsx
+  s_e9ed806a3d225c::t_094d4b360b6fc2 1-16
+src/app/(normal)/event/[grouphandle]/GroupEventHome.tsx
+  s_e9ed806a3d225c::t_584e4a2b89d9e1 51-52,58-59,61-65,68,72
+  s_e9ed806a3d225c::t_3c1dbbdf218194 18
+  s_e9ed806a3d225c::t_37d2c55b3b4b89 144,149-158,170-171
+  s_e9ed806a3d225c::t_40042abadd03c8 172-173
+src/app/(normal)/event/[grouphandle]/poll/[pollid]/PollDetail.tsx
+  s_e9ed806a3d225c::t_865c46692b065d 1-188,190-196,198-232,234-315
+  s_e9ed806a3d225c::t_394a432172e8c7 233
+  s_e9ed806a3d225c::t_7de38c5d5288b9 197
+  s_e9ed806a3d225c::t_6c6efcc3212a85 189
+src/app/(normal)/event/[grouphandle]/poll/create/page.tsx
+  s_e9ed806a3d225c::t_cdc6f0f49537ea 1-20
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_35acdf4803fe10 953-1001
+.env
+  s_e9ed806a3d225c::t_7b5d1d8966a730 19-20
+src/lang/en.ts
+  s_e9ed806a3d225c::t_35acdf4803fe10 975-1023
+src/app/(normal)/group/[handle]/edit/EditGroup.tsx
+  s_e9ed806a3d225c::t_2fe926e0ba9469 257-266
+  s_e9ed806a3d225c::t_4067484c0fbb5b 18
+src/app/(normal)/event/[grouphandle]/poll/[pollid]/data.ts
+  s_e9ed806a3d225c::t_7c8dbe6301084c 1-21
+packages/sola-sdk/src/group/group.ts
+  s_e9ed806a3d225c::t_376f0f6d1c28c8 97-99
+packages/sola-sdk/src/poll/types.ts
+  s_e9ed806a3d225c::t_083de2e0b11a76 1-91
+src/app/(normal)/event/[grouphandle]/poll/[pollid]/page.tsx
+  s_e9ed806a3d225c::t_34b376d971653b 1-19
+packages/sola-sdk/src/poll/poll.ts
+  s_e9ed806a3d225c::t_d6c962543b254c 108-111,113-128
+  s_e9ed806a3d225c::t_2cdcf4aa4bb521 2-3
+  s_e9ed806a3d225c::t_3f7dc19a0b084c 1,4-107,112
+src/app/(normal)/event/[grouphandle]/poll/PollForm.tsx
+  s_e9ed806a3d225c::t_7b5ebdb1c95899 1-171
+src/app/(normal)/event/[grouphandle]/PollPanel.tsx
+  s_e9ed806a3d225c::t_6c6efcc3212a85 105
+  s_e9ed806a3d225c::t_b42979d38a5478 1-104,106-116
+src/app/(normal)/event/[grouphandle]/data.ts
+  s_e9ed806a3d225c::t_d697a4c6418270 120-127
+  s_e9ed806a3d225c::t_d7d73afcf8ed36 162-163
+  s_e9ed806a3d225c::t_1a5eabdb810891 12
+packages/sola-sdk/src/group/types.ts
+  s_e9ed806a3d225c::t_908e7718d2467c 50-55
+src/app/config.ts
+  s_e9ed806a3d225c::t_40c55838995ea4 76-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "a3283c165d05832c776f501e99e2d156e01a102f",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
