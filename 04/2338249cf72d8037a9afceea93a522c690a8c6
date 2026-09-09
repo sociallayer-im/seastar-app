@@ -1,0 +1,25 @@
+src/lang/en.ts
+  s_e9ed806a3d225c::t_b3da9a757ef963 1139
+src/app/(normal)/group/create/RegisterForm.tsx
+  s_e9ed806a3d225c::t_b3da9a757ef963 68,139
+src/app/(auth)/register/RegisterForm.tsx
+  s_e9ed806a3d225c::t_b3da9a757ef963 60-61,73
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_b3da9a757ef963 1114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "042338249cf72d8037a9afceea93a522c690a8c6",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
