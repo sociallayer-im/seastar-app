@@ -1,0 +1,71 @@
+src/app/(normal)/event/detail/[eventid]/promo-code/generate/PromoCodeForm.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 39
+src/app/(iframe)/schedule/week/[grouphandle]/WeeklyViewEventItem.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 8,16-17,19
+src/app/(normal)/event/checkin/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 17
+src/components/client/FormatEventDuration.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 2,4-5
+src/components/client/LocalTime.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 16-19,29-30
+src/app/(normal)/badge-class/[badgeclassid]/page.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 90
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/HackathonDetail.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 134,187
+src/app/(normal)/discover/page.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 89
+src/components/client/DialogVoucherDetail.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 209
+src/app/(normal)/group/[handle]/management/invite/InviteForm.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 177
+src/app/(normal)/badge-class/[badgeclassid]/send-badge/SendBadgeForm.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 92,110,112
+src/app/(iframe)/schedule/list/[grouphandle]/ScheduleListView.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 16,131,182
+src/app/(normal)/badge-class/create/CreateBadgeForm.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 210
+src/components/client/DialogTicket.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 643,661
+src/app/(iframe)/schedule/week/[grouphandle]/ScheduleWeekView.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 12,97
+src/components/CardEvent/index.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 101,108-109
+src/utils/index.ts
+  s_e9ed806a3d225c::t_a9d44424315ceb 42,53-86,388,527-528,532-536,834-848,850,855,869,871-872,875,1301-1303
+src/app/(iframe)/schedule/compact/[grouphandle]/ScheduleCompactView.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 13,97,148
+src/app/(normal)/event/[grouphandle]/GroupEventHome.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 280
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_10ec365f69a4fd 19-20,22,28-29,33-34,39,51,65,82,84,90-92,109,114,129-133,135,138,140-142,144,152-153,155-157,160-164,169-170,172-173,176-177,179-181,184-185,187,191-194,197,199-200,206,208-209,235,244,247,268-269,271-272,276-278,289-290,303,315,318,323,338,340-342,345,351,360,375,378-381,384-385,387,389,394,405,418-422,424-425,438,448,450,452-453,456,461,465,472,479-480,482,485-486,488-490,494-495,504-505,507,518,520,524,528-529,534-536,546-547,556-558,562,566-567,569,571,581,584,587,593,604,757,759,763-765,768,771,774,776-777,779,781,789,984
+  s_e9ed806a3d225c::t_a9d44424315ceb 364,987-988
+  s_e9ed806a3d225c::t_17335f727dda7a 989-992
+src/components/CardEvent/FormatEventTime.tsx
+  s_e9ed806a3d225c::t_a9d44424315ceb 2,4-5
+src/lang/en.ts
+  s_e9ed806a3d225c::t_17335f727dda7a 1039-1042
+  s_e9ed806a3d225c::t_10ec365f69a4fd 215
+  s_e9ed806a3d225c::t_a9d44424315ceb 1037-1038
+src/app/(normal)/event/[grouphandle]/hackathon/HackathonForm.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 171
+src/components/client/ScheduleEventPopup/index.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 190
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_e9ed806a3d225c::t_10ec365f69a4fd 286,363,456
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "7bd2d0f91e430cbfc6e97d053e8222da02388edf",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
