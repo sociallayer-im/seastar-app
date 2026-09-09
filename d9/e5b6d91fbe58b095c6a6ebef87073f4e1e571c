@@ -1,0 +1,43 @@
+src/lang/en.ts
+  s_e9ed806a3d225c::t_98fad97de61ada 1024-1039
+packages/sola-sdk/src/poll/types.ts
+  s_e9ed806a3d225c::t_f4561ffd1b3871 2-3,38-40,74-76,99-100
+packages/sola-sdk/src/discussion/types.ts
+  s_e9ed806a3d225c::t_f4561ffd1b3871 2,4-6,19-20
+src/app/(normal)/event/[grouphandle]/discussion/create/TopicCreateForm.tsx
+  s_e9ed806a3d225c::t_f4561ffd1b3871 32
+packages/sola-sdk/src/discussion/discussion.ts
+  s_e9ed806a3d225c::t_f4561ffd1b3871 193,205
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_98fad97de61ada 1002-1017
+src/app/(normal)/event/[grouphandle]/boards/page.tsx
+  s_e9ed806a3d225c::t_3937b33b894cac 1-31
+src/app/(normal)/event/[grouphandle]/poll/PollForm.tsx
+  s_e9ed806a3d225c::t_6520fa7a267c16 3,7-8,47-79,81-82,100-101,174-218,220
+  s_e9ed806a3d225c::t_ed940e269559c1 219
+  s_e9ed806a3d225c::t_408f922cdaa46a 221
+src/app/(normal)/event/[grouphandle]/setting/page.tsx
+  s_e9ed806a3d225c::t_f2dfda871d1ac4 8
+  s_e9ed806a3d225c::t_5011d6807a83b7 58-69
+src/app/(normal)/event/[grouphandle]/boards/BoardManagement.tsx
+  s_e9ed806a3d225c::t_06d2b319c9d7ee 1-169
+src/app/(normal)/event/[grouphandle]/poll/[pollid]/PollDetail.tsx
+  s_e9ed806a3d225c::t_6520fa7a267c16 194-201
+  s_e9ed806a3d225c::t_10fe33c37ccd1d 271
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "d9e5b6d91fbe58b095c6a6ebef87073f4e1e571c",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
