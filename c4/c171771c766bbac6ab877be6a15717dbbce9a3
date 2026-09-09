@@ -1,0 +1,27 @@
+src/app/(normal)/event/[grouphandle]/hackathon/[hackathonid]/projects/[projectid]/ProjectDetail.tsx
+  s_e9ed806a3d225c::t_e7e35f86b9cd9a 63,199
+src/lang/en.ts
+  s_e9ed806a3d225c::t_e7e35f86b9cd9a 1135
+packages/sola-sdk/src/hackathon/hackathon.ts
+  s_e9ed806a3d225c::t_e7e35f86b9cd9a 193-194,198
+packages/sola-sdk/src/hackathon/types.ts
+  s_e9ed806a3d225c::t_e7e35f86b9cd9a 13,59
+src/lang/zh.ts
+  s_e9ed806a3d225c::t_e7e35f86b9cd9a 1113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "c4c171771c766bbac6ab877be6a15717dbbce9a3",
+  "prompts": {},
+  "sessions": {
+    "s_e9ed806a3d225c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "931f6a9c-6836-4bdb-a9b8-4af9de9ee16d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
