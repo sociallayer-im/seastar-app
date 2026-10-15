@@ -1,0 +1,14 @@
+src/components/Footer.tsx
+  h_b053bf74bef223 13,77-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "30332d3e10448c4ace1461dc456c0e77172868ae",
+  "prompts": {},
+  "humans": {
+    "h_b053bf74bef223": {
+      "author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
