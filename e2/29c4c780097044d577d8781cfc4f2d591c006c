@@ -1,0 +1,24 @@
+src/app/(auth)/bind-phone/BindPhoneForm.tsx
+  h_b053bf74bef223 14,60-62
+src/app/(auth)/bind-phone/page.tsx
+  h_b053bf74bef223 9-12,30,33
+src/app/(auth)/oauth/authorize/ConsentForm.tsx
+  h_b053bf74bef223 50-57
+src/app/(auth)/oauth/authorize/page.tsx
+  h_b053bf74bef223 3,5,13-21,47-61
+src/lang/en.ts
+  h_b053bf74bef223 47-48
+src/lang/zh.ts
+  h_b053bf74bef223 40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e229c4c780097044d577d8781cfc4f2d591c006c",
+  "prompts": {},
+  "humans": {
+    "h_b053bf74bef223": {
+      "author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
