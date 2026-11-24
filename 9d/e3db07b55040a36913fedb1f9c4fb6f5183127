@@ -1,0 +1,35 @@
+packages/sola-sdk/src/group/group.ts
+  s_a4066d71f584a5::t_97794dfeab1fc3 261-267,271,282
+public/files/invite_temp.csv
+  s_a4066d71f584a5::t_c301d0fa5a077b 1
+src/app/(normal)/group/[handle]/management/invite/InviteForm.tsx
+  s_a4066d71f584a5::t_8dbf6d662f11b5 5,8,13,23,29,31,36-39,61-63,65-70,72-74,89,106,112,115-125,128-137,141-142,151-157,160,164-183,240-241,247-257,280-295,306
+src/app/(normal)/group/[handle]/management/invite/page.tsx
+  s_a4066d71f584a5::t_ed41ce0eea22db 14,18
+src/app/(normal)/group/join/[handle]/page.tsx
+  s_a4066d71f584a5::t_0013f39aa11e7c 1-9
+src/app/(normal)/invite/[inviteid]/data.ts
+  s_a4066d71f584a5::t_8db9b6e0004f15 2,19-23,28-30,36
+src/app/(normal)/invite/[inviteid]/page.tsx
+  s_a4066d71f584a5::t_566329c7d29e68 11-12,16-21
+src/components/client/DialogInviteDetail.tsx
+  s_a4066d71f584a5::t_4a0dba11dc72fc 44-48,53-55,99-101,189-198
+src/utils/resolveLocalCsvFile.ts
+  s_a4066d71f584a5::t_f5ab5b572fd0a9 1,3-4,6-10,12-38,40-69,72-82,85-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9de3db07b55040a36913fedb1f9c4fb6f5183127",
+  "prompts": {},
+  "sessions": {
+    "s_a4066d71f584a5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20931-091c-72e3-a378-56e730c09435",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
