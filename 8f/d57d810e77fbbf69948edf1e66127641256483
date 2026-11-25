@@ -1,0 +1,23 @@
+packages/sola-sdk/src/event/event.ts
+  s_a4066d71f584a5::t_495429505be71c 120,124,127-128
+src/app/(normal)/event/detail/[eventid]/EventParticipantTab.tsx
+  s_a4066d71f584a5::t_4069d54c8e8697 159
+src/components/client/EventParticipantList.tsx
+  s_a4066d71f584a5::t_a1324d1ae412bd 6,25,40,262-273,275-292
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8fd57d810e77fbbf69948edf1e66127641256483",
+  "prompts": {},
+  "sessions": {
+    "s_a4066d71f584a5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20931-091c-72e3-a378-56e730c09435",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
