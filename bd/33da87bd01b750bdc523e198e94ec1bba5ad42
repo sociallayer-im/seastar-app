@@ -1,0 +1,31 @@
+src/app/(normal)/event/[grouphandle]/create/data.ts
+  s_a4066d71f584a5::t_24fd78bb9d3822 1,182
+src/app/(normal)/event/[grouphandle]/timezone/TimezoneForm.tsx
+  s_a4066d71f584a5::t_427391d6371d69 3,13
+src/app/(normal)/event/edit/[eventid]/data.ts
+  s_a4066d71f584a5::t_b3baad7de1863c 1,40
+src/components/client/EventDateTimeInput/index.tsx
+  s_a4066d71f584a5::t_e010004de60494 22
+src/components/client/TimezonePicker.tsx
+  s_a4066d71f584a5::t_d52513dfaeee2b 4,9-19,35,41,44,80
+src/libs/dayjs.ts
+  s_a4066d71f584a5::t_d1d8ca43ed0ec1 1-2,27-44
+src/libs/timezones.ts
+  s_a4066d71f584a5::t_24e9f5fa5ceeff 1-607
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bd33da87bd01b750bdc523e198e94ec1bba5ad42",
+  "prompts": {},
+  "sessions": {
+    "s_a4066d71f584a5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20931-091c-72e3-a378-56e730c09435",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
