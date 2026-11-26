@@ -296,6 +296,11 @@ export default async function EventDetail(
                             </div>
                         }
 
+                        {currProfileAttended && !!currProfileParticipant &&
+                            <CancelRegistrationBtn lang={lang} kind="participation"
+                                eventId={eventDetail.id} participantId={currProfileParticipant.id}
+                                className="mt-2 w-full text-xs" />}
+
                         {/* Reaching your own answers used to mean finding
                             yourself in the participants tab — which a ticketed
                             event hides from everyone but the organizer, so on

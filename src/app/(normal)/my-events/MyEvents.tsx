@@ -3,6 +3,7 @@ import {selectLang} from "@/app/actions"
 import {EventWithJoinStatus} from '@sola/sdk'
 import NoData from '@/components/NoData'
 import NavTabs from '@/components/client/NavTabs'
+import CancelRegistrationBtn from '@/components/client/CancelRegistrationBtn'
 
 export default async function MyEvents({events, tab}: { events: EventWithJoinStatus[], tab: string }) {
     const {lang} = await selectLang()
@@ -28,12 +29,14 @@ export default async function MyEvents({events, tab}: { events: EventWithJoinSta
                     <div className="grid gap-4">
                         {!events.length && <NoData />}
                         {events.map((event) => (
-                            <CardEvent
-                                lang={lang}
-                                key={event.id}
-                                event={event}
-                                className="hover:shadow-md"
-                            />
+                            <div key={event.id}>
+                                <CardEvent lang={lang} event={event} className="hover:shadow-md" />
+                                {tab === 'attended' && event.is_attending &&
+                                    <div className="mt-2 flex justify-end">
+                                        <CancelRegistrationBtn lang={lang} kind="participation"
+                                            eventId={event.id} className="text-xs" />
+                                    </div>}
+                            </div>
                         ))}
                     </div>
                 </NavTabs>

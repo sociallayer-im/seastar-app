@@ -451,6 +451,11 @@ export const zh: Dictionary = {
   "Check In": "签到",
   "Accept to join": "批准加入",
   "Cancel Participation": "取消参与",
+  "Cancel participation confirmation with refund": "确定取消报名？已付款的门票需要先联系主办方退款。",
+  "Contact the organizer to arrange a refund before cancelling.": "请先联系主办方退款，再取消报名。",
+  "Remove participant": "移除参与者",
+  "Participant removed": "已移除参与者",
+  "Remove this participant? Paid orders can still be refunded from Orders.": "确定移除此参与者？已付款订单仍可在「订单」中退款。",
   "Are you sure you want to cancel your participation?": "您确定要取消参与吗？",
   "Participation cancelled": "参与已取消",
   "Are you sure you want to check in for this participant?":
