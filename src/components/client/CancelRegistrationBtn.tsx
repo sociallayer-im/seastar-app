@@ -4,7 +4,7 @@ import {Button} from '@/components/shadcn/Button'
 import {Dictionary} from '@/lang'
 import {CLIENT_MODE} from '@/app/config'
 import {getAuth} from '@/utils'
-import {cancelUnpaidItem, cancelParticipant} from '@sola/sdk'
+import {cancelUnpaidItem, cancelParticipant, cancelAttendEvent} from '@sola/sdk'
 import useModal from '@/components/client/Modal/useModal'
 import useConfirmDialog from '@/hooks/useConfirmDialog'
 import {useToast} from '@/components/shadcn/Toast/use-toast'
@@ -20,8 +20,8 @@ import {useToast} from '@/components/shadcn/Toast/use-toast'
  * which is what makes the register/buy buttons come back on reload — so the
  * page is deliberately reloaded rather than patched in place.
  *
- * Only for registrations that did NOT succeed. Giving back a paid ticket is a
- * refund, which is the organizer's action and a different flow entirely.
+ * Settled registrations can also be withdrawn; paid tickets require an
+ * organizer refund before the backend permits cancellation.
  */
 export default function CancelRegistrationBtn({
     lang, className, ticketItemId, participantId, eventId, kind
@@ -33,7 +33,7 @@ export default function CancelRegistrationBtn({
     /** The participant row, for an application with no order behind it. */
     participantId?: string | null
     eventId: string
-    kind: 'order' | 'application'
+    kind: 'order' | 'application' | 'participation' | 'remove'
 }) {
     const {showLoading, closeModal} = useModal()
     const {showConfirmDialog} = useConfirmDialog()
@@ -52,18 +52,22 @@ export default function CancelRegistrationBtn({
                     params: {eventId, participantId, authToken},
                     clientMode: CLIENT_MODE
                 })
+            } else if (kind === 'participation') {
+                await cancelAttendEvent({params: {eventId, authToken}, clientMode: CLIENT_MODE})
             } else {
                 return
             }
 
             toast({
-                title: kind === 'order' ? lang['Order cancelled'] : lang['Application cancelled'],
+                title: kind === 'remove' ? lang['Participant removed'] : kind === 'order' ? lang['Order cancelled'] : kind === 'participation' ? lang['Participation cancelled'] : lang['Application cancelled'],
                 variant: 'success'
             })
             window.location.reload()
         } catch (e: unknown) {
             toast({
-                title: e instanceof Error ? e.message : 'Failed to cancel',
+                title: e instanceof Error && e.message.includes('refund required before cancel')
+                    ? lang['Contact the organizer to arrange a refund before cancelling.']
+                    : e instanceof Error ? e.message : 'Failed to cancel',
                 variant: 'destructive'
             })
         } finally {
@@ -71,18 +75,24 @@ export default function CancelRegistrationBtn({
         }
     }
 
+    const label = kind === 'remove' ? lang['Remove participant'] : kind === 'order' ? lang['Cancel Order']
+        : kind === 'participation' ? lang['Cancel Participation'] : lang['Cancel Application']
+
     return <Button
+        type="button"
         variant={'secondary'}
         className={className}
         onClick={() => showConfirmDialog({
             lang,
             type: 'danger',
-            title: kind === 'order' ? lang['Cancel Order'] : lang['Cancel Application'],
-            content: kind === 'order'
+            title: label,
+            content: kind === 'remove' ? lang['Remove this participant? Paid orders can still be refunded from Orders.'] : kind === 'order'
                 ? lang['Are you sure you want to cancel this order? You can register again afterwards.']
-                : lang['Are you sure you want to withdraw your application? You can apply again afterwards.'],
+                : kind === 'participation'
+                    ? lang['Cancel participation confirmation with refund']
+                    : lang['Are you sure you want to withdraw your application? You can apply again afterwards.'],
             onConfig: doCancel
         })}>
-        <span>{kind === 'order' ? lang['Cancel Order'] : lang['Cancel Application']}</span>
+        <span>{label}</span>
     </Button>
 }

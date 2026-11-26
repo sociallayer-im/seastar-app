@@ -1,5 +1,7 @@
 'use client'
 
+import CancelRegistrationBtn from '@/components/client/CancelRegistrationBtn'
+
 import React from 'react'
 import {getAuth, shortWalletAddress} from '@/utils'
 import {Dictionary} from '@/lang'
@@ -403,6 +405,9 @@ export default function EventParticipantList({
                                         {lang['Cancel Participation']}
                                     </div>
                                 }
+                                {isEventOperator && participant.user.id !== currProfile?.id && participant.status === 'attending' &&
+                                    <CancelRegistrationBtn lang={lang} kind="remove" eventId={eventDetail.id}
+                                        participantId={participant.id} className="ml-2 h-7 px-2 text-xs" />}
                                 {isEventOperator && !participant.checked_in_at && participant.status !== 'pending' && participant.status !== 'declined' &&
                                     <div onClick={() => handleCheckInForParticipant(participant)}
                                          className="cursor-pointer h-7 rounded-lg px-2 ml-2 border border-gray-300 flex flex-row-item-center text-xs text-white bg-black font-semibold">

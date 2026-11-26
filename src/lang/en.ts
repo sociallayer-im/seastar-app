@@ -461,6 +461,11 @@ export const en = {
     "Check In": "Check In",
     "Accept to join": "Accept to join",
     "Cancel Participation": "Cancel Participation",
+    "Cancel participation confirmation with refund": "Cancel your participation? Paid tickets require a refund from the organizer before cancellation.",
+    "Contact the organizer to arrange a refund before cancelling.": "Contact the organizer to arrange a refund before cancelling.",
+    "Remove participant": "Remove participant",
+    "Participant removed": "Participant removed",
+    "Remove this participant? Paid orders can still be refunded from Orders.": "Remove this participant? Paid orders can still be refunded from Orders.",
     "Are you sure you want to cancel your participation?":
         "Are you sure you want to cancel your participation?",
     "Participation cancelled": "Participation cancelled",

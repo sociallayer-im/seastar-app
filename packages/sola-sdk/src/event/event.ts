@@ -273,31 +273,16 @@ export const cancelAttendEvent = async ({params: {eventId, authToken}, clientMod
     eventId: string,
     authToken: string
 }>) => {
-    const me = await request<{ id: string }>('/users/me', {authToken, clientMode, noCache: true})
-    let page = 1
-    for (; ;) {
-        const res = await request<Paginated<Participant>>(`/events/${eventId}/participants`, {
-            params: {page, limit: 100}, authToken, clientMode, noCache: true
-        })
-        const mine = res.data.find(p => p.user?.id === me.id)
-        if (mine) {
-            await request(`/events/${eventId}/participants/${mine.id}`, {
-                method: 'DELETE', authToken, clientMode
-            })
-            return
-        }
-        if (!res.meta.next_page) break
-        page = res.meta.next_page
-    }
-    throw new Error('You are not attending this event')
+    const event = await getEventDetailById({params: {eventId, authToken, includeParticipants: false}, clientMode})
+    if (!event?.current_participant) throw new Error('You are not registered for this event')
+    await cancelParticipant({params: {eventId, participantId: event.current_participant.id, authToken}, clientMode})
 }
 
 /**
  * Withdraw a participant record we already have the id of — which the event
  * page does, from `current_participant`.
  *
- * `cancelAttendEvent` above pages the whole attendee list to find the same
- * row; prefer this one wherever the id is already in hand. The API soft-
+ * Prefer this one wherever the id is already in hand. The API soft-
  * deletes: the row survives as `cancelled` (so a paid order stays refundable)
  * and re-registering later reuses it.
  */
