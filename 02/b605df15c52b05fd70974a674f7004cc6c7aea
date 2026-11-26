@@ -1,0 +1,31 @@
+packages/sola-sdk/src/event/event.ts
+  s_a4066d71f584a5::t_54efca72c632ef 276-278,285
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_a4066d71f584a5::t_186dfab4a24deb 299-303
+src/app/(normal)/my-events/MyEvents.tsx
+  s_a4066d71f584a5::t_72cd470e642854 6,32-39
+src/components/client/CancelRegistrationBtn.tsx
+  s_a4066d71f584a5::t_fcb301f98a4503 7,23-24,36,55-56,62,68-70,78-80,82,88-89,91-93,96
+src/components/client/EventParticipantList.tsx
+  s_a4066d71f584a5::t_46bacb5f9ebd2e 3-4,408-410
+src/lang/en.ts
+  s_a4066d71f584a5::t_9a52e59c4d0bb6 464-468
+src/lang/zh.ts
+  s_a4066d71f584a5::t_d5946fe6bd9d4a 454-458
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "02b605df15c52b05fd70974a674f7004cc6c7aea",
+  "prompts": {},
+  "sessions": {
+    "s_a4066d71f584a5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20931-091c-72e3-a378-56e730c09435",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
