@@ -1,0 +1,19 @@
+src/app/(normal)/event/detail/[eventid]/EventParticipantTab.tsx
+  s_a4066d71f584a5::t_acb3891dfa54da 39-44,59,79,81-84,87,91-92,94-95,98-99,111,124-125,135-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ece8cc6c60f6ee5854e4100b26cf31c1d58ce9c",
+  "prompts": {},
+  "sessions": {
+    "s_a4066d71f584a5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20931-091c-72e3-a378-56e730c09435",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
