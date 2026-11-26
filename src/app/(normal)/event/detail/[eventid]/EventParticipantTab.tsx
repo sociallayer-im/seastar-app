@@ -36,7 +36,12 @@ export interface EventParticipantTabProps {
  * is mounted by EventTabs the first time its tab is opened, and the orders
  * request waits for the Orders segment on top of that.
  */
-export default function EventParticipantTab({
+export default function EventParticipantTab(props: EventParticipantTabProps) {
+    const key = JSON.stringify([props.eventDetail.id, props.currProfile?.id, !!props.isEventOperator])
+    return <ParticipantPanel key={key} {...props}/>
+}
+
+function ParticipantPanel({
                                                 lang,
                                                 eventDetail,
                                                 isEventOperator,
@@ -51,6 +56,7 @@ export default function EventParticipantTab({
     // a genuinely empty list.
     const [participants, setParticipants] = useState<Participant[] | null>(eventDetail.participants ?? null)
     const [orders, setOrders] = useState<TicketItemOrder[] | null>(null)
+    const [ordersFailed, setOrdersFailed] = useState(false)
     const [summary, setSummary] = useState<EventOrderSummaryEntry[]>([])
     const [failed, setFailed] = useState(false)
 
@@ -70,28 +76,27 @@ export default function EventParticipantTab({
     }, [eventDetail.id])
 
     const loadOrders = useCallback(async () => {
+        setOrdersFailed(false)
         try {
-            setOrders(await getEventTicketItems({
-                params: {eventId: eventDetail.id, authToken: getAuth()!},
-                clientMode: CLIENT_MODE
-            }))
-            setSummary(await getEventOrderSummary({
-                params: {eventId: eventDetail.id, authToken: getAuth()!},
-                clientMode: CLIENT_MODE
-            }))
+            const request = {params: {eventId: eventDetail.id, authToken: getAuth()!}, clientMode: CLIENT_MODE}
+            const [items, totals] = await Promise.all([getEventTicketItems(request), getEventOrderSummary(request)])
+            setOrders(items)
+            setSummary(totals)
         } catch (e) {
             console.error(e)
-            setOrders([])
+            setOrdersFailed(true)
         }
     }, [eventDetail.id])
 
-    useEffect(() => {
-        if (participants === null) loadParticipants()
-    }, [participants, loadParticipants])
+    const activeTab = showOrders ? tab : 'participants'
 
     useEffect(() => {
-        if (tab === 'orders' && orders === null) loadOrders()
-    }, [tab, orders, loadOrders])
+        if (activeTab === 'participants' && participants === null) loadParticipants()
+    }, [activeTab, participants, loadParticipants])
+
+    useEffect(() => {
+        if (activeTab === 'orders' && orders === null) loadOrders()
+    }, [activeTab, orders, loadOrders])
 
     // A segmented control rather than two standalone buttons: these are two
     // views of the same thing, and full-size buttons read as actions — on a
@@ -103,7 +108,7 @@ export default function EventParticipantTab({
             type="button"
             onClick={() => setTab(value)}
             className={`flex-1 sm:flex-none sm:px-4 rounded-full py-1.5 text-xs sm:text-sm whitespace-nowrap transition-colors
-                ${tab === value ? 'bg-white shadow-xs font-semibold text-gray-900' : 'text-gray-500'}`}>
+                ${activeTab === value ? 'bg-white shadow-xs font-semibold text-gray-900' : 'text-gray-500'}`}>
             {label}
             {count !== undefined && <span className="ml-1 text-[11px] opacity-70">({count})</span>}
         </button>
@@ -116,8 +121,8 @@ export default function EventParticipantTab({
             </div>
         </div>}
 
-        {tab === 'participants'
-            ? (participants === null
+        {activeTab === 'participants'
+            ? (participants === null || failed
                 ? <ListSkeleton failed={failed} onRetry={loadParticipants} lang={lang}/>
                 : <EventParticipantList
                     lang={lang}
@@ -127,8 +132,8 @@ export default function EventParticipantTab({
                     isEventOperator={isEventOperator}
                     canViewAllSubmissions={canViewAllSubmissions}
                     currProfile={currProfile}/>)
-            : (orders === null
-                ? <ListSkeleton lang={lang}/>
+            : (orders === null || ordersFailed
+                ? <ListSkeleton failed={ordersFailed} onRetry={loadOrders} lang={lang}/>
                 : <EventTicketOrderList
                     lang={lang}
                     orders={orders}
