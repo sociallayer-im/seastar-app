@@ -1,0 +1,29 @@
+src/lang/zh.ts
+  s_a4066d71f584a5::t_6ff83cc23ca269 4-6
+src/components/client/DialogTicket.tsx
+  s_a4066d71f584a5::t_be23b4398092a7 45,52,188,392-393,410-413,424,629-639
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_a4066d71f584a5::t_c2b0334a03fc45 12,86,104,106,112,211
+src/app/(normal)/event/detail/[eventid]/TicketList.tsx
+  s_a4066d71f584a5::t_bf89f5f420904a 3,5-9,11,18,26,30-32,34-68,73,87,90-113,117,119-120
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_a4066d71f584a5::t_36cdd722e5363f 116,337,342-346,700
+src/lang/en.ts
+  s_a4066d71f584a5::t_a3c131f8e5ddaf 2-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "98ce13fcd8c0bfce3b80609737c51f5c1cee16fc",
+  "prompts": {},
+  "sessions": {
+    "s_a4066d71f584a5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20931-091c-72e3-a378-56e730c09435",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
