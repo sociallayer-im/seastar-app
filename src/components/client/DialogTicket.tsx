@@ -42,13 +42,14 @@ import {Switch} from '@/components/shadcn/Switch'
 
 export interface DialogTicketProps {
     ticket: Ticket
+    existingOrder?: TicketItem
     lang: Dictionary
     eventDetail: EventDetail
     currProfile?: ProfileDetail | null
     close: () => void
 }
 
-export default function DialogTicket({ticket, lang, currProfile, close, eventDetail}: DialogTicketProps) {
+export default function DialogTicket({ticket, lang, currProfile, close, eventDetail, existingOrder}: DialogTicketProps) {
     const {showLoading, closeModal} = useModal()
     const {toast} = useToast()
     const [paymentError, setPaymentError] = useState<string>('')
@@ -184,7 +185,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     // Membership gate: eligible when the ticket lists no groups, or the signed-in
     // profile belongs to ANY of them. The server enforces this on rsvp too —
     // this is display only.
-    const gated = !!ticket.check_group_ids?.length
+    const gated = !existingOrder && !!ticket.check_group_ids?.length
     const [memberEligible, setMemberEligible] = useState<boolean>(!gated)
     const [gateGroups, setGateGroups] = useState<Group[]>([])
     useEffect(() => {
@@ -388,7 +389,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
     }
 
     const handleEVMPayment = async (ticketItem: TicketItem) => {
-        if (!selectedMethod || !selectedPaymentType) return
+        const paymentType = existingOrder ? Payments.find(type => type.chain === existingOrder.chain) : selectedPaymentType
+        const method = existingOrder ? ticket.payment_methods?.find(item => item.id === existingOrder.payment_method_id) : selectedMethod
         setPaymentError('')
 
         // Already paid, only the reporting failed: never send a second transfer.
@@ -405,9 +407,10 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         }
 
         try {
-            const chain = selectedPaymentType.chain
-            const tokenAddress = resolveTokenAddress(selectedMethod, chain)
-            const payHubAddress = selectedPaymentType.payHub
+            if (!method || !paymentType) throw new Error(lang['Payment failed, please try again'])
+            const chain = paymentType.chain
+            const tokenAddress = resolveTokenAddress(method, chain)
+            const payHubAddress = paymentType.payHub
             if (!tokenAddress) throw new Error('Token address not found for this chain')
             if (!payHubAddress) throw new Error('PayHub address not found for this chain')
 
@@ -418,7 +421,7 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
                 chain,
                 tokenAddress,
                 payHubAddress,
-                receiverAddress: selectedMethod.receiver_address!,
+                receiverAddress: method.receiver_address!,
                 amount: BigInt(ticketItem.amount ?? 0),
                 eventId: ticketItem.event_id || eventDetail.id,
                 orderNumber: tsidToBigInt(ticketItem.id),
@@ -622,6 +625,17 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
         if (discountedPrice === null || !selectedMethod || !selectedToken) return 0
         return (selectedMethod.price - discountedPrice) / 10 ** selectedToken.decimals
     }, [discountedPrice, selectedMethod, selectedToken])
+
+    if (existingOrder) {
+        return <div className="bg-background w-[96vw] sm:w-[400px] rounded-lg p-4">
+            <h2 className="mb-3 text-xl font-semibold">{ticket.title}</h2>
+            <Button className="w-full" disabled={confirming || !['idle', 'error'].includes(paymentStep)}
+                    onClick={() => void handleEVMPayment(existingOrder)}>{lang['Continue payment']}</Button>
+            {paymentStep !== 'idle' && paymentStep !== 'error' &&
+                <p role="status" className="mt-2">{PAYMENT_STEP_LABEL[paymentStep]}</p>}
+            {paymentError && <p role="alert" className="mt-2 text-red-600">{paymentError}</p>}
+        </div>
+    }
 
     return <div
         className="bg-background sm:p-4 p-3 rounded-lg shadow-sm max-h-svh overflow-y-auto w-[96vw] sm:w-[400px]">

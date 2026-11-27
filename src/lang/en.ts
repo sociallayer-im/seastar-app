@@ -1,4 +1,7 @@
 export const en = {
+    'View unpaid orders': 'View unpaid orders',
+    'Unpaid order': 'Unpaid order',
+    'Continue payment': 'Continue payment',
     "Go": "Go",
     "Resend Code": "Resend Code",
     "or": "or",

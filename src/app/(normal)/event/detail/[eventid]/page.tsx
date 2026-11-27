@@ -113,7 +113,7 @@ export default async function EventDetail(
         currProfilePending,
         currProfilePaymentPending,
         currProfileParticipant,
-        pendingTicketItemId,
+        pendingOrders,
         currProfileCheckedIn,
         isTicketEvent,
         eventProcess,
@@ -334,21 +334,16 @@ export default async function EventDetail(
                             stuck here until the sweeper expires the order,
                             because the API refuses a second one for the same
                             ticket. */}
-                        {isTicketEvent && !currProfileAttended && currProfilePaymentPending &&
+                        {isTicketEvent && (pendingOrders.length > 0 || (!currProfileAttended && currProfilePaymentPending)) &&
                             <div className="mt-2">
                                 <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
                                     {lang['Order awaiting payment']}
                                 </div>
-                                {!!pendingTicketItemId &&
-                                    <div className="flex-row-item-center mt-2">
-                                        <CancelRegistrationBtn
-                                            lang={lang}
-                                            kind="order"
-                                            eventId={eventDetail.id}
-                                            ticketItemId={pendingTicketItemId}
-                                            className="text-xs flex-1"/>
-                                    </div>
-                                }
+                                {!!pendingOrders.length &&
+                                    <a className={buttonVariants({variant: 'secondary'})}
+                                       href={`/event/detail/${eventDetail.id}?tab=tickets`}>
+                                        {lang['View unpaid orders']}
+                                    </a>}
                             </div>
                         }
 
@@ -702,7 +697,7 @@ export default async function EventDetail(
                                 lang={lang}
                                 currProfile={currProfile}
                                 attended={currProfileAttended || currProfilePending}
-                                paymentPending={currProfilePaymentPending} />
+                                paymentPending={currProfilePaymentPending} pendingOrders={pendingOrders} />
                         }] : []),
                         ...(showParticipants ? [{
                             key: 'participants' as const,

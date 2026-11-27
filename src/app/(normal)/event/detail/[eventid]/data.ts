@@ -9,7 +9,7 @@ import {
     getEventForm,
     getGroupDetailByName, getPurchasedTicketItemsByProfileNameAndEventId,
     getPendingTicketItemsByProfileNameAndEventId, getRecurringById,
-    Recurring, SolaApiError, Ticket
+    Recurring, SolaApiError, Ticket, TicketItem
 } from '@sola/sdk'
 import {AVNeeds, SeatingStyle, ExternalCatering} from '@/app/configForSpecifyGroup'
 import {CLIENT_MODE} from '@/app/config'
@@ -83,7 +83,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
             // the order itself and not just currProfilePaymentPending: cancelling
             // an abandoned attempt takes its id, and without a way to cancel, the
             // "awaiting payment" notice is a dead end the buyer cannot leave.
-            let pendingTicketItemId: string | null = null
+            let pendingOrders: TicketItem[] = []
             if (!!currProfile && !!eventDetail.tickets?.length) {
                 const token = await getServerSideAuth()
                 const [ticketItems, pendingItems] = await Promise.all([
@@ -101,15 +101,15 @@ export default async function EventDetailPage(eventid: string, tab='content'){
                     const ticket = eventDetail.tickets?.find(t => t.id === item.ticket_id)
                     !!ticket && ticketsPurchased.push(ticket)
                 })
-                pendingTicketItemId = pendingItems[0]?.id || null
+                pendingOrders = pendingItems.filter(item => item.user_id === currProfile.id)
             }
-            return {ticketsPurchased, pendingTicketItemId}
+            return {ticketsPurchased, pendingOrders}
         })()
     ])
     if (!groupDetail) {
         redirect('/404')
     }
-    const {ticketsPurchased, pendingTicketItemId} = ticketState
+    const {ticketsPurchased, pendingOrders} = ticketState
 
     const {
         isManager: isGroupManager,
@@ -208,7 +208,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
         canPublishEvent: !!currProfile && canSubmitEvent,
         canViewAllSubmissions: !!currProfile && (isGroupManager || isGroupOwner || isEventCreator),
         ticketsPurchased,
-        pendingTicketItemId,
+        pendingOrders,
         currProfileParticipant,
         externalCatering,
         seatingStyle,

@@ -1,6 +1,9 @@
 import type { Dictionary } from "./index"
 
 export const zh: Dictionary = {
+    'View unpaid orders': '查看待付款订单',
+    'Unpaid order': '待付款订单',
+    'Continue payment': '继续付款',
   "Go": "继续",
   "Resend Code": "重新发送验证码",
   "or": "或",
