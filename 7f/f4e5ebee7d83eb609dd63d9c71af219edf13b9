@@ -1,0 +1,35 @@
+packages/sola-sdk/src/event/event.ts
+  s_a4066d71f584a5::t_4d831a2cb5e478 668,853
+src/app/(normal)/event/detail/[eventid]/TicketList.tsx
+  s_a4066d71f584a5::t_3cbeb47259f60b 32-33,90,105,109-111
+src/app/(normal)/event/detail/[eventid]/data.ts
+  s_a4066d71f584a5::t_ce799570616d9a 169
+src/app/(normal)/event/detail/[eventid]/page.tsx
+  s_a4066d71f584a5::t_89c5ed0c3ce91f 340,445-446
+src/app/(normal)/event/edit/[eventid]/EditEventForm.tsx
+  s_a4066d71f584a5::t_ed15a5a3601eb5 134,138,167,175
+src/components/client/DialogTicket.tsx
+  s_a4066d71f584a5::t_c9c6da237fa5f7 210-211
+src/components/client/EventTicketOrderList.tsx
+  s_a4066d71f584a5::t_5a0a352b5dbf92 42-43
+src/lang/en.ts
+  s_a4066d71f584a5::t_e11261c2bdb43a 2-5
+src/lang/zh.ts
+  s_a4066d71f584a5::t_659b5b2dd9d4a3 4-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ff4e5ebee7d83eb609dd63d9c71af219edf13b9",
+  "prompts": {},
+  "sessions": {
+    "s_a4066d71f584a5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20931-091c-72e3-a378-56e730c09435",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": "jiangplus <jiang.plus.times@gmail.com>"
+    }
+  }
+}
