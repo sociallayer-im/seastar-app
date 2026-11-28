@@ -131,11 +131,11 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                 const authToken = getAuth()
                 const loading = showLoading()
                 try {
-                    await cancelEvent({
+                    const result = await cancelEvent({
                         params: {eventId: eventDraft.id!, authToken: authToken!},
                         clientMode: CLIENT_MODE
                     })
-                    toast({description: 'Event cancelled', variant: 'success'})
+                    toast({description: result?.status === 'cancelling' ? props.lang['Cancellation in progress'] : 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
                         router.push(`/event/${props.data.groupDetail.name}`)
                         router.refresh()
@@ -164,7 +164,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                 const authToken = getAuth()
                 const loading = showLoading()
                 try {
-                    await cancelRecurringEvent({
+                    const result = await cancelRecurringEvent({
                         params: {
                             recurringId: eventDraft.recurring_id!,
                             afterEventId: selector === 'after' ? eventDraft.id! : undefined,
@@ -172,7 +172,7 @@ export default function EditEventForm({redirect=true, ...props}: { lang: Diction
                         }, clientMode: CLIENT_MODE
                     })
 
-                    toast({description: 'Event cancelled', variant: 'success'})
+                    toast({description: result.cancelling ? props.lang['Cancellation in progress'] : 'Event cancelled', variant: 'success'})
                     setTimeout(() => {
                         router.push(`/event/${props.data.groupDetail.name}`)
                         router.refresh()

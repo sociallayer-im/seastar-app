@@ -39,6 +39,8 @@ const ORDER_STATUS_LABEL: Record<string, string> = {
 // back to its own name, so a new backend action shows up as a readable slug
 // rather than vanishing from the timeline.
 const ACTIVITY_LABEL: Record<string, string> = {
+    event_cancellation_payment_check: 'Cancellation payment checked',
+    payment_received_after_event_cancellation: 'Payment received during cancellation — refund required',
     order_placed: 'Order placed',
     prepay_created: 'Payment started',
     checkout_session_created: 'Payment started',

@@ -166,7 +166,7 @@ export default async function EventDetailPage(eventid: string, tab='content'){
     const showParticipants = !eventDetail?.tickets?.length || isEventOperator
 
     // check if the current user can access the event
-    const canAccess = (isEventOperator || canJoinEvent) && eventDetail.status !== 'cancelled' && eventDetail.status !== 'closed'
+    const canAccess = eventDetail.status !== 'cancelling' && (isEventOperator || canJoinEvent) && !['cancelling', 'cancelled'].includes(eventDetail.status || '') && eventDetail.status !== 'closed'
 
     // requirement_tags is not in soon's EventBlueprint — the tags-based
     // logistics hints only render when the backend starts emitting it.

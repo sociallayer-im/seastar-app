@@ -207,7 +207,8 @@ export default function DialogTicket({ticket, lang, currProfile, close, eventDet
 
     const soldOut = ticket.quantity === 0
 
-    const stopSelling = ticket.end_time && new Date(ticket.end_time).getTime() < new Date().getTime()
+    const stopSelling = ticket.status !== 'normal' ||
+        (!!ticket.end_time && new Date(ticket.end_time).getTime() < Date.now())
 
     const paymentTypes = useMemo(() => {
         if (!ticket.payment_methods) return []

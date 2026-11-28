@@ -337,7 +337,7 @@ export default async function EventDetail(
                         {isTicketEvent && (pendingOrders.length > 0 || (!currProfileAttended && currProfilePaymentPending)) &&
                             <div className="mt-2">
                                 <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
-                                    {lang['Order awaiting payment']}
+                                    {lang[['cancelling', 'cancelled'].includes(eventDetail.status || '') ? 'Cancellation payment notice' : 'Order awaiting payment']}
                                 </div>
                                 {!!pendingOrders.length &&
                                     <a className={buttonVariants({variant: 'secondary'})}
@@ -442,6 +442,8 @@ export default async function EventDetail(
                         <Badge variant='private' className="mr-1">{lang['Unlisted']}</Badge>}
                     {eventDetail.status === 'pending' &&
                         <Badge variant='pending' className="mr-1">{lang['Pending']}</Badge>}
+                    {eventDetail.status === 'cancelling' &&
+                        <Badge variant="pending" className="mr-1">{lang['Cancellation in progress']}</Badge>}
                     {eventDetail.status === 'cancelled' &&
                         <Badge variant='cancel' className="mr-1">{lang['Cancelled']}</Badge>}
                     {isEventClosed && <Badge variant='cancel' className="mr-1">Closed</Badge>}

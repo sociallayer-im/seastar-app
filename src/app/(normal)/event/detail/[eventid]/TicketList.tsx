@@ -29,7 +29,8 @@ export default function TicketList({eventDetail, lang, currProfile, attended, pa
     const {openModal} = useModal()
     const [resuming, setResuming] = useState<string | null>(null)
     const [error, setError] = useState<{id: string, message: string} | null>(null)
-    const locked = attended || paymentPending || pendingOrders.length > 0
+    const cancellationStarted = ['cancelling', 'cancelled'].includes(eventDetail.status || '')
+    const locked = cancellationStarted || attended || paymentPending || pendingOrders.length > 0
 
     const resumeOrder = async (order: TicketItem) => {
         const authToken = getAuth()
@@ -86,7 +87,7 @@ export default function TicketList({eventDetail, lang, currProfile, attended, pa
             {attended && <div className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-lg px-4 py-2 mb-3">You have already registered for this event.</div>}
             {((!attended && paymentPending) || pendingOrders.length > 0) &&
                 <div className="text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 mb-3">
-                    {lang['Order awaiting payment']}
+                    {lang[cancellationStarted ? 'Cancellation payment notice' : 'Order awaiting payment']}
                     {pendingOrders.map(order => {
                         const ticket = tickets?.find(item => item.id === order.ticket_id)
                         const participant = eventDetail.current_participant
@@ -101,12 +102,13 @@ export default function TicketList({eventDetail, lang, currProfile, attended, pa
                             {amount && <p className="mt-1">{amount}</p>}
                             {awaitingApproval && <p className="mt-1">{lang['Under Review']}</p>}
                             <div className="mt-2 flex flex-wrap gap-2">
-                                {!awaitingApproval && (fiat || ticket) &&
+                                {!cancellationStarted && !awaitingApproval && (fiat || ticket) &&
                                     <Button disabled={!!resuming} onClick={() => fiat ? void resumeOrder(order) : ticket && showTicket(ticket, order)}>
                                         {lang['Continue payment']}
                                     </Button>}
-                                <CancelRegistrationBtn lang={lang} kind="order" eventId={eventDetail.id}
-                                                       ticketItemId={order.id}/>
+                                {!cancellationStarted &&
+                                    <CancelRegistrationBtn lang={lang} kind="order" eventId={eventDetail.id}
+                                                       ticketItemId={order.id}/>}
                             </div>
                             {error?.id === order.id && <p role="alert" className="mt-2 text-red-600">{error.message}</p>}
                         </div>

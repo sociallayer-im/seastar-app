@@ -1,4 +1,8 @@
 export const en = {
+    'Cancellation payment checked': 'Cancellation payment checked',
+    'Payment received during cancellation — refund required': 'Payment received during cancellation — refund required',
+    'Cancellation in progress': 'Cancellation in progress',
+    'Cancellation payment notice': 'This event is being cancelled. Payment is unavailable while the organizer reconciles orders.',
     'View unpaid orders': 'View unpaid orders',
     'Unpaid order': 'Unpaid order',
     'Continue payment': 'Continue payment',

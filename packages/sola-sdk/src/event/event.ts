@@ -665,7 +665,7 @@ export const cancelEvent = async ({params: {eventId, authToken}, clientMode}: So
     eventId: string,
     authToken: string
 }>) => {
-    await request(`/events/${eventId}`, {method: 'DELETE', authToken, clientMode})
+    return await request<{status: 'cancelling'} | undefined>(`/events/${eventId}`, {method: 'DELETE', authToken, clientMode})
 }
 
 // --- venue conflict ---
@@ -850,7 +850,7 @@ export const cancelRecurringEvent = async ({
     params: {recurringId, afterEventId, authToken},
     clientMode
 }: SolaSdkFunctionParams<CancelRecurringEventProps>) => {
-    await request(`/recurring/${recurringId}/cancel`, {
+    return await request<{cancelled: number, cancelling?: number}>(`/recurring/${recurringId}/cancel`, {
         method: 'POST',
         body: {
             selector: afterEventId ? 'after' : 'all',

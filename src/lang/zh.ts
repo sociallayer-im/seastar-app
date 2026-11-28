@@ -1,6 +1,10 @@
 import type { Dictionary } from "./index"
 
 export const zh: Dictionary = {
+    'Cancellation payment checked': '已核对取消活动的付款状态',
+    'Payment received during cancellation — refund required': '活动取消期间收到付款，需退款',
+    'Cancellation in progress': '取消处理中',
+    'Cancellation payment notice': '活动正在取消。主办方核对订单期间无法继续付款。',
     'View unpaid orders': '查看待付款订单',
     'Unpaid order': '待付款订单',
     'Continue payment': '继续付款',
